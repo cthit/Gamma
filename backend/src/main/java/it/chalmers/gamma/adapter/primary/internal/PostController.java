@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.post.PostFacade;
-
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +32,7 @@ public final class PostController {
         return this.postFacade.getAll();
     }
 
-    private static class PostNotFoundResponse extends NotFoundResponse { }
+    private static class PostNotFoundResponse extends NotFoundResponse {
+    }
 
 }

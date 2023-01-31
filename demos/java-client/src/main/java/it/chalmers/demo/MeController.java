@@ -17,7 +17,8 @@ public class MeController {
 
     @GetMapping("/me")
     public Object user(Authentication authentication) {
-        System.out.println(authentication.getAuthorities());
+        System.out.println("WHAT");
+        System.out.println(authentication);
         return authentication;
     }
 

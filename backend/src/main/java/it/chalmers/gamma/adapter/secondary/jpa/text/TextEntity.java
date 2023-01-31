@@ -3,9 +3,11 @@ package it.chalmers.gamma.adapter.secondary.jpa.text;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.common.TextId;
-import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -13,7 +15,7 @@ import java.util.UUID;
 public class TextEntity extends ImmutableEntity<TextId> {
 
     @Id
-    @Column(name = "text_id")
+    @Column(name = "text_id", columnDefinition = "uuid")
     private final UUID id;
 
     @Column(name = "sv")
@@ -49,7 +51,6 @@ public class TextEntity extends ImmutableEntity<TextId> {
     }
 
     public void apply(Text newText) {
-
         this.sv = newText.sv().value();
         this.en = newText.en().value();
     }

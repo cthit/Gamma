@@ -7,41 +7,20 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientId;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
-import it.chalmers.gamma.app.client.domain.Scope;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.group.domain.EmailPrefix;
-import it.chalmers.gamma.app.group.domain.Group;
-import it.chalmers.gamma.app.group.domain.GroupId;
-import it.chalmers.gamma.app.group.domain.GroupMember;
-import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.group.domain.*;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Name;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserAuthority;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
-import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
-import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
+import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.LocalRunnerAuthentication;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,22 +34,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedInUserMemberOfGroup;
-import static it.chalmers.gamma.app.authentication.AccessGuard.passwordCheck;
-import static it.chalmers.gamma.app.authentication.AccessGuard.userHasAcceptedClient;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.BDDMockito.given;
@@ -79,20 +45,6 @@ import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(SpringExtension.class)
 class AccessGuardTest {
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
-    private AuthorityLevelRepository authorityLevelRepository;
-
-    @InjectMocks
-    private AccessGuard accessGuard;
-
-    @BeforeEach
-    public void clearSecurityContext() {
-        SecurityContextHolder.clearContext();
-    }
 
     private static final GammaUser adminUser = new GammaUser(
             UserId.generate(),
@@ -128,7 +80,6 @@ class AccessGuardTest {
                     null
             )
     );
-
     private static final Post member = new Post(
             PostId.generate(),
             0,
@@ -138,9 +89,7 @@ class AccessGuardTest {
             ),
             new EmailPrefix("ledamot")
     );
-
     private static final SuperGroupType committee = new SuperGroupType("committee");
-
     private static final SuperGroup digIT = new SuperGroup(
             SuperGroupId.generate(),
             0,
@@ -152,7 +101,6 @@ class AccessGuardTest {
                     "Manages the student divisions digital systems"
             )
     );
-
     private static final Group digIT18 = new Group(
             GroupId.generate(),
             0,
@@ -169,7 +117,7 @@ class AccessGuardTest {
             Optional.empty(),
             Optional.empty()
     );
-
+    private static final AuthorityLevelName digIt18Authority = new AuthorityLevelName(digIT18.name().value());
     private static final Group digIT19 = new Group(
             GroupId.generate(),
             0,
@@ -180,12 +128,9 @@ class AccessGuardTest {
             Optional.empty(),
             Optional.empty()
     );
-
+    private static final AuthorityLevelName digitAuthority = new AuthorityLevelName(digIT.name().value());
     private static final AuthorityLevelName adminAuthority = new AuthorityLevelName("admin");
     private static final AuthorityLevelName matAuthority = new AuthorityLevelName("mat");
-    private static final AuthorityLevelName digitAuthority = new AuthorityLevelName(digIT.name().value());
-    private static final AuthorityLevelName digIt18Authority = new AuthorityLevelName(digIT18.name().value());
-
     private static final Map<UserId, List<UserAuthority>> userAuthoritiesMap = new HashMap<>() {{
         put(normalUser.id(), List.of(
                 new UserAuthority(matAuthority, AuthorityType.AUTHORITY),
@@ -196,7 +141,6 @@ class AccessGuardTest {
                 new UserAuthority(adminAuthority, AuthorityType.AUTHORITY)
         ));
     }};
-
     private static final ApiKey clientApiKey = new ApiKey(
             ApiKeyId.generate(),
             new PrettyName("My api key"),
@@ -207,7 +151,6 @@ class AccessGuardTest {
             ApiKeyType.CLIENT,
             ApiKeyToken.generate()
     );
-
     private static final Client client = new Client(
             ClientUid.generate(),
             ClientId.generate(),
@@ -223,41 +166,7 @@ class AccessGuardTest {
             Collections.singletonList(normalUser),
             Optional.of(clientApiKey)
     );
-
-    private static final ApiKey chalmersitApi = new ApiKey(
-            ApiKeyId.generate(),
-            new PrettyName("chalmers.it api key"),
-            new Text(
-                    "chalmers.it api nyckel",
-                    "chalmers.it api key"
-            ),
-            ApiKeyType.INFO,
-            ApiKeyToken.generate()
-    );
-
-    private static final ApiKey goldappsitApi = new ApiKey(
-            ApiKeyId.generate(),
-            new PrettyName("goldapps api key"),
-            new Text(
-                    "goldapps api nyckel",
-                    "goldapps api key"
-            ),
-            ApiKeyType.GOLDAPPS,
-            ApiKeyToken.generate()
-    );
-
-    private static final ApiKey whitelistApi = new ApiKey(
-            ApiKeyId.generate(),
-            new PrettyName("whitelist api key"),
-            new Text(
-                    "whitelist api nyckel",
-                    "whitelist api key"
-            ),
-            ApiKeyType.WHITELIST,
-            ApiKeyToken.generate()
-    );
-
-    private static final ApiAuthenticationDetails CLIENT_API_DETAILS = new ApiAuthenticationDetails() {
+    private static final ApiAuthentication CLIENT_API_DETAILS = new ApiAuthentication() {
         @Override
         public ApiKey get() {
             return clientApiKey;
@@ -268,11 +177,40 @@ class AccessGuardTest {
             return Optional.of(client);
         }
     };
-
-    private static final ApiAuthenticationDetails CHALMERSIT_API_DETAILS = new ApiAuthenticationDetails() {
+    private static final ApiKey infoApi = new ApiKey(
+            ApiKeyId.generate(),
+            new PrettyName("chalmers.it api key"),
+            new Text(
+                    "chalmers.it api nyckel",
+                    "chalmers.it api key"
+            ),
+            ApiKeyType.INFO,
+            ApiKeyToken.generate()
+    );
+    private static final ApiKey goldappsitApi = new ApiKey(
+            ApiKeyId.generate(),
+            new PrettyName("goldapps api key"),
+            new Text(
+                    "goldapps api nyckel",
+                    "goldapps api key"
+            ),
+            ApiKeyType.GOLDAPPS,
+            ApiKeyToken.generate()
+    );
+    private static final ApiKey whitelistApi = new ApiKey(
+            ApiKeyId.generate(),
+            new PrettyName("whitelist api key"),
+            new Text(
+                    "whitelist api nyckel",
+                    "whitelist api key"
+            ),
+            ApiKeyType.WHITELIST,
+            ApiKeyToken.generate()
+    );
+    private static final ApiAuthentication INFO_API_DETAILS = new ApiAuthentication() {
         @Override
         public ApiKey get() {
-            return chalmersitApi;
+            return infoApi;
         }
 
         @Override
@@ -280,8 +218,7 @@ class AccessGuardTest {
             return Optional.empty();
         }
     };
-
-    private static final ApiAuthenticationDetails GOLDAPPS_API_DETAILS = new ApiAuthenticationDetails() {
+    private static final ApiAuthentication GOLDAPPS_API_DETAILS = new ApiAuthentication() {
         @Override
         public ApiKey get() {
             return goldappsitApi;
@@ -292,8 +229,7 @@ class AccessGuardTest {
             return Optional.empty();
         }
     };
-
-    private static final ApiAuthenticationDetails WHITELIST_API_DETAILS = new ApiAuthenticationDetails() {
+    private static final ApiAuthentication WHITELIST_API_DETAILS = new ApiAuthentication() {
         @Override
         public ApiKey get() {
             return whitelistApi;
@@ -304,8 +240,7 @@ class AccessGuardTest {
             return Optional.empty();
         }
     };
-
-    private static final UserAuthenticationDetails adminAuthenticated = new UserAuthenticationDetails() {
+    private static final UserAuthentication adminAuthenticated = new UserAuthentication() {
         @Override
         public GammaUser get() {
             return adminUser;
@@ -317,8 +252,7 @@ class AccessGuardTest {
         }
 
     };
-
-    private static final UserAuthenticationDetails normalUserAuthenticated = new UserAuthenticationDetails() {
+    private static final UserAuthentication normalUserAuthenticated = new UserAuthentication() {
         @Override
         public GammaUser get() {
             return normalUser;
@@ -329,6 +263,17 @@ class AccessGuardTest {
             return Collections.emptyList();
         }
     };
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private AuthorityLevelRepository authorityLevelRepository;
+    @InjectMocks
+    private AccessGuard accessGuard;
+
+    @BeforeEach
+    public void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     public void Given_Admin_Expect_isAdmin_To_NotThrow() {
@@ -573,7 +518,7 @@ class AccessGuardTest {
 
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
-                    .thenReturn(wrapDetails(CHALMERSIT_API_DETAILS));
+                    .thenReturn(wrapDetails(INFO_API_DETAILS));
             assertThatNoException()
                     .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.INFO)));
         }
@@ -605,7 +550,7 @@ class AccessGuardTest {
 
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
-                    .thenReturn(wrapDetails(CHALMERSIT_API_DETAILS));
+                    .thenReturn(wrapDetails(INFO_API_DETAILS));
         }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
@@ -700,10 +645,10 @@ class AccessGuardTest {
     }
 
     @Test
-    public void Given_IsChalmersITApi_Expect_userHasAcceptedClient_To_Throw() {
+    public void Given_IsInfoApi_Expect_userHasAcceptedClient_To_Throw() {
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
-                    .thenReturn(wrapDetails(CHALMERSIT_API_DETAILS));
+                    .thenReturn(wrapDetails(INFO_API_DETAILS));
 
             assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
                     .isThrownBy(() -> this.accessGuard.require(userHasAcceptedClient(adminUser.id())));
@@ -715,7 +660,8 @@ class AccessGuardTest {
     public void Given_BootstrapAuthenticatedAdmin_Expect_isLocalRunner_To_NotThrow() {
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
-                    .thenReturn(wrapDetails(new LocalRunnerAuthenticationDetails() { }));
+                    .thenReturn(wrapDetails(new LocalRunnerAuthentication() {
+                    }));
 
             assertThatNoException()
                     .isThrownBy(() -> this.accessGuard.require(isLocalRunner()));

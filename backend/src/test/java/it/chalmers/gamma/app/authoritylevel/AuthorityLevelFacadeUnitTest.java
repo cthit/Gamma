@@ -30,31 +30,9 @@ import java.util.Optional;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
-import static it.chalmers.gamma.utils.DomainUtils.chair;
-import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static it.chalmers.gamma.utils.DomainUtils.dragit;
-import static it.chalmers.gamma.utils.DomainUtils.drawit;
-import static it.chalmers.gamma.utils.DomainUtils.emeritus;
-import static it.chalmers.gamma.utils.DomainUtils.prit;
-import static it.chalmers.gamma.utils.DomainUtils.styrit;
-import static it.chalmers.gamma.utils.DomainUtils.u1;
-import static it.chalmers.gamma.utils.DomainUtils.u2;
-import static it.chalmers.gamma.utils.DomainUtils.u3;
-import static it.chalmers.gamma.utils.DomainUtils.u4;
-import static it.chalmers.gamma.utils.DomainUtils.u5;
-import static it.chalmers.gamma.utils.DomainUtils.u6;
-import static it.chalmers.gamma.utils.DomainUtils.u8;
-import static it.chalmers.gamma.utils.DomainUtils.u9;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.assertj.core.api.Assertions.assertThatNullPointerException;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.doThrow;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.inOrder;
-import static org.mockito.BDDMockito.verify;
+import static it.chalmers.gamma.utils.DomainUtils.*;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
 class AuthorityLevelFacadeUnitTest {
@@ -77,11 +55,14 @@ class AuthorityLevelFacadeUnitTest {
     @InjectMocks
     private AuthorityLevelFacade authorityLevelFacade;
 
+    private static AuthorityLevel.SuperGroupPost sgp(SuperGroup sg, Post p) {
+        return new AuthorityLevel.SuperGroupPost(sg, p);
+    }
+
     @BeforeEach
     public void clearSecurityContext() {
         SecurityContextHolder.clearContext();
     }
-
 
     @Test
     public void Given_AValidName_Expect_create_To_CreateValidAuthorityLevel() throws AuthorityLevelRepository.AuthorityLevelAlreadyExistsException {
@@ -658,10 +639,6 @@ class AuthorityLevelFacadeUnitTest {
 
             return this;
         }
-    }
-
-    private static AuthorityLevel.SuperGroupPost sgp(SuperGroup sg, Post p) {
-        return new AuthorityLevel.SuperGroupPost(sg, p);
     }
 
 }

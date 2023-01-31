@@ -44,19 +44,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-import static it.chalmers.gamma.utils.DomainUtils.addAll;
-import static it.chalmers.gamma.utils.DomainUtils.asSaved;
-import static it.chalmers.gamma.utils.DomainUtils.chair;
-import static it.chalmers.gamma.utils.DomainUtils.committee;
-import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static it.chalmers.gamma.utils.DomainUtils.digit18;
-import static it.chalmers.gamma.utils.DomainUtils.gm;
-import static it.chalmers.gamma.utils.DomainUtils.member;
-import static it.chalmers.gamma.utils.DomainUtils.treasurer;
-import static it.chalmers.gamma.utils.DomainUtils.u1;
-import static it.chalmers.gamma.utils.DomainUtils.u3;
-import static it.chalmers.gamma.utils.DomainUtils.u4;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -176,14 +164,14 @@ public class GroupFacadeIntegrationTest {
                                 .superGroup(newSuperGroup.withVersion(1))
                                 .version(2)
                                 .groupMembers(group.groupMembers()
-                                        .stream()
-                                        //If the user is locked, remove
+                                                .stream()
+                                                //If the user is locked, remove
 //                                        .filter(groupMember -> !(groupMember.user().extended().locked() || !groupMember.user().extended().acceptedUserAgreement()) )
-                                        .map(groupMember -> new GroupMember(
-                                                groupMember.post().withVersion(1),
-                                                groupMember.unofficialPostName(),
-                                                asSaved(groupMember.user()))
-                                        ).toList()
+                                                .map(groupMember -> new GroupMember(
+                                                        groupMember.post().withVersion(1),
+                                                        groupMember.unofficialPostName(),
+                                                        asSaved(groupMember.user()))
+                                                ).toList()
                                 )
                                 .build()
                 ));

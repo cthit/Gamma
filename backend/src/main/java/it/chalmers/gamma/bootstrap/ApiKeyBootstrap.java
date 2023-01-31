@@ -1,12 +1,8 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

@@ -38,13 +38,13 @@ function modifyData(groups, superGroup) {
 }
 
 const DisplayGroupsTable = ({
-    title,
-    groups,
-    columnsOrder,
-    margin = {},
-    superGroup,
-    backButton
-}) => {
+                                title,
+                                groups,
+                                columnsOrder,
+                                margin = {},
+                                superGroup,
+                                backButton
+                            }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     if (groups == null) {

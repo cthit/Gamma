@@ -31,12 +31,12 @@ function generateHeaderTexts(text) {
 }
 
 const DisplayMembersTable = ({
-    group,
-    users,
-    noUsersText,
-    margin = "0px",
-    title
-}) => {
+                                 group,
+                                 users,
+                                 noUsersText,
+                                 margin = "0px",
+                                 title
+                             }) => {
     const [text, activeLanguage] = useDigitTranslations(translations);
 
     return (
@@ -54,8 +54,8 @@ const DisplayMembersTable = ({
             data={users.map(user => {
                 const officialPostName =
                     activeLanguage === "sv"
-                        ? user.post.svText
-                        : user.post.enText;
+                        ? user.post.svName
+                        : user.post.enName;
 
                 const unofficialPostName =
                     user.unofficialPostName === officialPostName ||

@@ -20,12 +20,11 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 @Service
 public class UserResetPasswordFacade extends Facade {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserResetPasswordFacade.class);
     private final MailService mailService;
     private final UserRepository userRepository;
     private final PasswordResetRepository passwordResetRepository;
     private final FindUserByIdentifier findUserByIdentifier;
-
-    private static Logger LOGGER = LoggerFactory.getLogger(UserResetPasswordFacade.class);
 
     public UserResetPasswordFacade(AccessGuard accessGuard,
                                    MailService mailService,

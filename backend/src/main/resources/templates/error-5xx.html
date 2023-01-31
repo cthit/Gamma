@@ -1,7 +1,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
     <title>Internal Server Error</title>
 </head>
 <body style="background-color: rgb(238,238,238)">
@@ -14,9 +14,9 @@
     </p>
     <img th:src="@{/img/500.gif}">
     <br><br>
-    <a href="https://github.com/cthit/Gamma/issues/new" class="black-color text--roboto">
+    <a class="black-color text--roboto" href="https://github.com/cthit/Gamma/issues/new">
         Click here to add an issue on
-        <img th:src="@{/img/GitHub_Logo.png}" style="height: 20px" alt="This should be a github logo">
+        <img alt="This should be a github logo" style="height: 20px" th:src="@{/img/GitHub_Logo.png}">
     </a>
 </div>
 </body>

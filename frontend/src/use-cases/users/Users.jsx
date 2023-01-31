@@ -26,7 +26,6 @@ import {
 } from "api/users/props.users.api";
 import { editUser } from "api/users/put.users.api";
 
-import DisplayGroupsTable from "common/elements/display-groups-table/DisplayGroupsTable.element";
 import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import {
     generateUserCustomDetailsRenders,
@@ -51,9 +50,9 @@ import translations from "./Users.translations";
 import UserGroupsTable from "./usergroupstable";
 
 const UserImage = styled.img`
-    width: 250px;
-    max-height: 500px;
-    margin: auto;
+  width: 250px;
+  max-height: 500px;
+  margin: auto;
 `;
 
 const Users = () => {
@@ -156,7 +155,7 @@ const Users = () => {
             detailsRenderCardEnd={data =>
                 admin ? (
                     <>
-                        <div style={{ marginTop: "8px" }} />
+                        <div style={{ marginTop: "8px" }}/>
                         <DigitLayout.Center>
                             <DigitButton
                                 outlined
@@ -172,9 +171,9 @@ const Users = () => {
                 ) : null
             }
             statusRenders={{
-                403: () => <InsufficientAccess />,
-                404: () => <FourOFour />,
-                500: (error, reset) => <FiveZeroZero reset={reset} />
+                403: () => <InsufficientAccess/>,
+                404: () => <FourOFour/>,
+                500: (error, reset) => <FiveZeroZero reset={reset}/>
             }}
             useHistoryGoBackOnBack
         />

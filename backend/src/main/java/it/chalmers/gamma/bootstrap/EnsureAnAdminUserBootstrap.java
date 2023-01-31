@@ -5,17 +5,7 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +96,8 @@ public class EnsureAnAdminUserBootstrap {
                         admin,
                         adminUser.id().value()
                 );
-            } catch (AuthorityLevelFacade.UserNotFoundException | AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
+            } catch (AuthorityLevelFacade.UserNotFoundException |
+                     AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
                 LOGGER.error("Failed to add user to authority level", e);
             }
 

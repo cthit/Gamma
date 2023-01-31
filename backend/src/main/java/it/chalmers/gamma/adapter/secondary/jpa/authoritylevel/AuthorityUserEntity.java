@@ -2,10 +2,9 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "authority_user")

@@ -1,14 +1,13 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
 import it.chalmers.gamma.security.GammaRequestCache;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class LoginController {
@@ -38,7 +37,7 @@ public class LoginController {
         model.addAttribute("authorizing", isAuthorizing);
 
         /*
-         * There might be a situation where a user starts a authorizing
+         * There might be a situation where a user starts an authorizing
          * against a client, but stops while the redirect request has been cached.
          * This makes sure that the user when actually trying to login to the
          * Gamma frontend that they're redirect to that, and not redirected

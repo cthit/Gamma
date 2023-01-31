@@ -11,13 +11,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 
@@ -32,53 +26,6 @@ public class GoldappsFacade extends Facade {
         this.groupRepository = groupRepository;
     }
 
-    public record GoldappsPostDTO(UUID postId,
-                                  String svText,
-                                  String enText,
-                                  String emailPrefix) {
-        public GoldappsPostDTO(Post post) {
-            this(post.id().value(),
-                    post.name().sv().value(),
-                    post.name().en().value(),
-                    post.emailPrefix().value());
-        }
-    }
-
-    public record GoldappsUserPostDTO(GoldappsPostDTO post,
-                                      GoldappsUserDTO user) {
-        public GoldappsUserPostDTO(GroupMember groupMember) {
-            this(new GoldappsPostDTO(groupMember.post()),
-                    new GoldappsUserDTO(groupMember.user()));
-        }
-    }
-
-    public record GoldappsUserDTO(String email,
-                                  String cid,
-                                  String firstName,
-                                  String lastName,
-                                  String nick) {
-        public GoldappsUserDTO(GammaUser user) {
-            this(user.extended().email().value(),
-                    user.cid().value(),
-                    user.firstName().value(),
-                    user.lastName().value(),
-                    user.nick().value());
-        }
-    }
-    public record GoldappsSuperGroupDTO(String name,
-                                        String prettyName,
-                                        String type,
-                                        List<GoldappsUserPostDTO> members) {
-        public GoldappsSuperGroupDTO(SuperGroup superGroup, List<GoldappsUserPostDTO> members) {
-            this(superGroup.name().value(),
-                    superGroup.prettyName().value(),
-                    superGroup.type().value(),
-                    members
-            );
-        }
-
-    }
-
     public List<GoldappsSuperGroupDTO> getSuperGroupsByTypes(List<String> superGroupTypes) {
         this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
 
@@ -87,16 +34,6 @@ public class GoldappsFacade extends Facade {
 
 
         return null;
-    }
-
-    private static class SuperGroupWithMembers {
-        private final SuperGroup superGroup;
-        private final Set<GoldappsUserPostDTO> members;
-
-        private SuperGroupWithMembers(SuperGroup superGroup, Set<GoldappsUserPostDTO> members) {
-            this.superGroup = superGroup;
-            this.members = members;
-        }
     }
 
     /**
@@ -161,6 +98,64 @@ public class GoldappsFacade extends Facade {
                 .filter(user -> user.extended().gdprTrained())
                 .map(GoldappsUserDTO::new)
                 .toList();
+    }
+
+    public record GoldappsPostDTO(UUID postId,
+                                  String svText,
+                                  String enText,
+                                  String emailPrefix) {
+        public GoldappsPostDTO(Post post) {
+            this(post.id().value(),
+                    post.name().sv().value(),
+                    post.name().en().value(),
+                    post.emailPrefix().value());
+        }
+    }
+
+    public record GoldappsUserPostDTO(GoldappsPostDTO post,
+                                      GoldappsUserDTO user) {
+        public GoldappsUserPostDTO(GroupMember groupMember) {
+            this(new GoldappsPostDTO(groupMember.post()),
+                    new GoldappsUserDTO(groupMember.user()));
+        }
+    }
+
+    public record GoldappsUserDTO(String email,
+                                  String cid,
+                                  String firstName,
+                                  String lastName,
+                                  String nick) {
+        public GoldappsUserDTO(GammaUser user) {
+            this(user.extended().email().value(),
+                    user.cid().value(),
+                    user.firstName().value(),
+                    user.lastName().value(),
+                    user.nick().value());
+        }
+    }
+
+    public record GoldappsSuperGroupDTO(String name,
+                                        String prettyName,
+                                        String type,
+                                        List<GoldappsUserPostDTO> members) {
+        public GoldappsSuperGroupDTO(SuperGroup superGroup, List<GoldappsUserPostDTO> members) {
+            this(superGroup.name().value(),
+                    superGroup.prettyName().value(),
+                    superGroup.type().value(),
+                    members
+            );
+        }
+
+    }
+
+    private static class SuperGroupWithMembers {
+        private final SuperGroup superGroup;
+        private final Set<GoldappsUserPostDTO> members;
+
+        private SuperGroupWithMembers(SuperGroup superGroup, Set<GoldappsUserPostDTO> members) {
+            this.superGroup = superGroup;
+            this.members = members;
+        }
     }
 
 

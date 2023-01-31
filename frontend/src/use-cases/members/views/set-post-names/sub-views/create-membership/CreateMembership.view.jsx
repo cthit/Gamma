@@ -18,21 +18,21 @@ import translations from "./CreateMembership.view.translations";
 import { act } from "react-dom/test-utils";
 
 const CustomRow = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin-bottom: 16px;
-    align-items: center;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 16px;
+  align-items: center;
 
-    @media (max-width: 600px) {
-        flex-direction: column;
-        align-self: center;
-    }
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-self: center;
+  }
 `;
 
 function getDifferentPostNames(posts, activeLanguage) {
     const output = {};
     posts.forEach(post => {
-        output[post.id] = post[activeLanguage + "Text"];
+        output[post.id] = post[activeLanguage + "Name"];
     });
 
     return output;
@@ -48,9 +48,9 @@ const CreateMembership = ({ posts, value, innerInputs }) => {
                     alignCenter
                     text={
                         value[USER_FIRST_NAME] +
-                        ' "' +
+                        " \"" +
                         value[USER_NICK] +
-                        '" ' +
+                        "\" " +
                         value[USER_LAST_NAME]
                     }
                 />

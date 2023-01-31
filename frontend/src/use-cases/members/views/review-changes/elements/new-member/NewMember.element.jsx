@@ -3,13 +3,13 @@ import React from "react";
 import { DigitText } from "@cthit/react-digit-components";
 
 const NewMember = ({
-    firstName,
-    lastName,
-    nick,
-    unofficialPostName,
-    post = {},
-    activeLanguage
-}) => (
+                       firstName,
+                       lastName,
+                       nick,
+                       unofficialPostName,
+                       post = {},
+                       activeLanguage
+                   }) => (
     <DigitText.Text
         text={
             firstName +
@@ -18,7 +18,7 @@ const NewMember = ({
             "' " +
             lastName +
             ": " +
-            (activeLanguage === "sv" ? post.svText : post.enText) +
+            (activeLanguage === "sv" ? post.svName : post.enName) +
             " / " +
             unofficialPostName
         }

@@ -1,3 +1,7 @@
 {
-    "YourApprovedClients": ["Your approved clients", "Dina godkända klienter"]
+    "YourApprovedClients": ["Your approved clients", "Dina godkända klienter"],
+    "YouHaveNotApprovedAnyClient": [
+        "You have not approved any clients",
+        "Du har inte godkänt några klienter"
+    ]
 }

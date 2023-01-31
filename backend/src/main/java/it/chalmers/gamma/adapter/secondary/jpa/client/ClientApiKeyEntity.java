@@ -2,16 +2,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.client.domain.ClientUid;
+import jakarta.persistence.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +11,7 @@ import java.util.UUID;
 public class ClientApiKeyEntity extends ImmutableEntity<UUID> {
 
     @Id
-    @Column(name = "client_uid")
+    @Column(name = "client_uid", columnDefinition = "uuid")
     private UUID clientUid;
 
     @OneToOne

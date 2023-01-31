@@ -4,15 +4,11 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
-import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
+import jakarta.servlet.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -36,7 +32,7 @@ public class UpdateUserPrincipalFilter implements Filter {
             final GammaUser gammaUser = userDetailsRepository.getGammaUserByUser();
             final List<UserAuthority> authorities = this.authorityLevelRepository.getByUser(gammaUser.id());
 
-            UserAuthenticationDetails userPrincipal = new UserAuthenticationDetails() {
+            UserAuthentication userPrincipal = new UserAuthentication() {
                 @Override
                 public GammaUser get() {
                     return gammaUser;

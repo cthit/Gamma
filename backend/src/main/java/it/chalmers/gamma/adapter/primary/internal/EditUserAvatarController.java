@@ -2,8 +2,8 @@ package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.image.ImageFacade;
-import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
+import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,8 @@ public class EditUserAvatarController {
         return new EditedProfilePictureResponse();
     }
 
-    private static class EditedProfilePictureResponse extends SuccessResponse { }
+    private static class EditedProfilePictureResponse extends SuccessResponse {
+    }
 
     private static class FileIssueResponse extends ErrorResponse {
         public FileIssueResponse() {

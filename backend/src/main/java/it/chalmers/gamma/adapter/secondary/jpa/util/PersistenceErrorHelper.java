@@ -1,12 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.postgresql.util.PSQLException;
 import org.postgresql.util.ServerErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 

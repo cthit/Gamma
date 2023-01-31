@@ -12,12 +12,11 @@ import java.time.Instant;
 @Service
 public class SettingsRepositoryAdapter implements SettingsRepository {
 
-    private final SettingsJpaRepository repository;
-
     private static final PersistenceErrorState superGroupTypeNotFound = new PersistenceErrorState(
-            "settings_info_api_super_group_types_super_group_type_name_fkey",
+            null,
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
+    private final SettingsJpaRepository repository;
 
     public SettingsRepositoryAdapter(SettingsJpaRepository repository) {
         this.repository = repository;
@@ -26,6 +25,16 @@ public class SettingsRepositoryAdapter implements SettingsRepository {
     @Override
     public boolean hasSettings() {
         return this.repository.findTopByOrderByVersionDesc().isPresent();
+    }
+
+    /**
+     * Assumes that there's always one settings entity available.
+     */
+    @Override
+    public Settings getSettings() {
+        SettingsEntity settingsEntity = repository.findTopByOrderByVersionDesc()
+                .orElseThrow(IllegalStateException::new);
+        return settingsEntity.toDomain();
     }
 
     @Override
@@ -46,16 +55,6 @@ public class SettingsRepositoryAdapter implements SettingsRepository {
 
             throw e;
         }
-    }
-
-    /**
-     * Assumes that there's always one settings entity available.
-     */
-    @Override
-    public Settings getSettings() {
-        SettingsEntity settingsEntity = repository.findTopByOrderByVersionDesc()
-                .orElseThrow(IllegalStateException::new);
-        return settingsEntity.toDomain();
     }
 
     private SettingsEntity toEntity(Settings settings) {

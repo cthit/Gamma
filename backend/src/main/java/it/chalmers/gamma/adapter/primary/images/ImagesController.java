@@ -57,8 +57,8 @@ public class ImagesController {
                         (type.equals("jpg") || type.equals("jpeg")
                                 ? MediaType.IMAGE_JPEG
                                 : type.equals("png")
-                                        ? MediaType.IMAGE_PNG
-                                        : MediaType.IMAGE_GIF)
+                                ? MediaType.IMAGE_PNG
+                                : MediaType.IMAGE_GIF)
                 )
                 .body(imageDetails.data());
     }

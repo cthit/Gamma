@@ -1,11 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PostPersist;
+import jakarta.persistence.Transient;
 import org.springframework.data.domain.Persistable;
 
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.Transient;
 import java.util.Objects;
 
 @MappedSuperclass
@@ -27,7 +27,7 @@ public abstract class AbstractEntity<ID> implements Persistable<ID> {
 
     @Override
     public final int hashCode() {
-        assert(getId() != null);
+        assert (getId() != null);
 
         return Objects.hash(getId().hashCode());
     }

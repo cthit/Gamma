@@ -8,12 +8,12 @@ import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
-import it.chalmers.gamma.security.principal.LocalRunnerAuthenticationDetails;
-import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.LocalRunnerAuthentication;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +28,89 @@ public class AccessGuard {
                        UserRepository userRepository) {
         this.authorityLevelRepository = authorityLevelRepository;
         this.userRepository = userRepository;
+    }
+
+    public static AccessChecker isAdmin() {
+        return (authorityLevelRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthenticated) {
+                return userAuthenticated.isAdmin();
+            }
+
+            return false;
+        };
+    }
+
+    public static AccessChecker passwordCheck(String password) {
+        return (authorityLevelRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthenticated) {
+                GammaUser user = userAuthenticated.get();
+                return userRepository.checkPassword(user.id(), new UnencryptedPassword(password));
+            }
+
+            return false;
+        };
+    }
+
+    public static AccessChecker isApi(ApiKeyType apiKeyType) {
+        return (authorityLevelRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
+                return apiPrincipal.get().keyType() == apiKeyType;
+            }
+
+            return false;
+        };
+    }
+
+    public static AccessChecker isClientApi() {
+        return (authorityLevelRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
+                return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
+            }
+
+            return false;
+        };
+    }
+
+    public static AccessChecker isSignedInUserMemberOfGroup(Group group) {
+        return (authorityLevelRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userPrincipal) {
+                GammaUser user = userPrincipal.get();
+                return group.groupMembers().stream().anyMatch(groupMember -> groupMember.user().equals(user));
+            }
+
+            return false;
+        };
+    }
+
+    public static AccessChecker isSignedIn() {
+        return (authorityLevelRepository, userRepository)
+                -> AuthenticationExtractor.getAuthentication() instanceof UserAuthentication;
+    }
+
+    public static AccessChecker isNotSignedIn() {
+        return (authorityLevelRepository, userRepository) ->
+                AuthenticationExtractor.getAuthentication() == null;
+    }
+
+    public static AccessChecker userHasAcceptedClient(UserId id) {
+        return (authorityLevelRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
+                if (apiPrincipal.getClient().isPresent()) {
+                    Client client = apiPrincipal.getClient().get();
+                    return client.approvedUsers().stream().anyMatch(user -> user.id().equals(id));
+                }
+            }
+
+            return false;
+        };
+    }
+
+    /**
+     * Such as Bootstrap
+     */
+    public static AccessChecker isLocalRunner() {
+        return (authorityLevelRepository, userRepository) ->
+                AuthenticationExtractor.getAuthentication() instanceof LocalRunnerAuthentication;
     }
 
     public void require(AccessChecker check) {
@@ -60,101 +143,11 @@ public class AccessGuard {
         return check.validate(authorityLevelRepository, userRepository);
     }
 
-    public static AccessChecker isAdmin() {
-        return (authorityLevelRepository, userRepository) -> {
-            if (getAuthenticationDetails() instanceof UserAuthenticationDetails userAuthenticated) {
-                return userAuthenticated.isAdmin();
-            }
-
-            return false;
-        };
-    }
-
-    public static AccessChecker passwordCheck(String password) {
-        return (authorityLevelRepository, userRepository) -> {
-            if (getAuthenticationDetails() instanceof UserAuthenticationDetails userAuthenticated) {
-                GammaUser user = userAuthenticated.get();
-                return userRepository.checkPassword(user.id(), new UnencryptedPassword(password));
-            }
-
-            return false;
-        };
-    }
-
-    public static AccessChecker isApi(ApiKeyType apiKeyType) {
-        return (authorityLevelRepository, userRepository) -> {
-            if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
-                return apiPrincipal.get().keyType() == apiKeyType;
-            }
-
-            return false;
-        };
-    }
-
-    public static AccessChecker isClientApi() {
-        return (authorityLevelRepository, userRepository) -> {
-            if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
-                return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
-            }
-
-            return false;
-        };
-    }
-
-    public static AccessChecker isSignedInUserMemberOfGroup(Group group) {
-        return (authorityLevelRepository, userRepository) -> {
-            if (getAuthenticationDetails() instanceof UserAuthenticationDetails userPrincipal) {
-                GammaUser user = userPrincipal.get();
-                return group.groupMembers().stream().anyMatch(groupMember -> groupMember.user().equals(user));
-            }
-
-            return false;
-        };
-    }
-
-    public static AccessChecker isSignedIn() {
-        return (authorityLevelRepository, userRepository)
-                -> getAuthenticationDetails() instanceof UserAuthenticationDetails;
-    }
-
-    public static AccessChecker isNotSignedIn() {
-        return (authorityLevelRepository, userRepository) ->
-                getAuthenticationDetails() == null;
-    }
-
-    public static AccessChecker userHasAcceptedClient(UserId id) {
-        return (authorityLevelRepository, userRepository) -> {
-            if (getAuthenticationDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
-                if (apiPrincipal.getClient().isPresent()) {
-                    Client client = apiPrincipal.getClient().get();
-                    return client.approvedUsers().stream().anyMatch(user -> user.id().equals(id));
-                }
-            }
-
-            return false;
-        };
-    }
-
-    /**
-     * Such as Bootstrap
-     */
-    public static AccessChecker isLocalRunner() {
-        return (authorityLevelRepository, userRepository) ->
-                getAuthenticationDetails() instanceof LocalRunnerAuthenticationDetails;
-    }
-
     public interface AccessChecker {
         boolean validate(AuthorityLevelRepository authorityLevelRepository, UserRepository userRepository);
     }
 
-    public static class AccessDeniedException extends RuntimeException { }
-
-    private static Object getAuthenticationDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            return null;
-        }
-
-        return SecurityContextHolder.getContext().getAuthentication().getDetails();
+    public static class AccessDeniedException extends RuntimeException {
     }
 
 }

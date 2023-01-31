@@ -1,23 +1,23 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
 
-    protected MutableEntity() {
-        this.version = 0;
-    }
-
     /**
      * It is the responsibility of each entity converter to manage the version.
-     * Not using @javax.persistence.Version since it doesn't handle foreign keys
+     * Not using @jakarta.persistence.Version since it doesn't handle foreign keys
      * such as members for a group.
      */
     @Column(name = "version")
     private int version;
+
+    protected MutableEntity() {
+        this.version = 0;
+    }
 
     /**
      * If not the correct version is provided, then the data
@@ -44,6 +44,9 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
         return this.version;
     }
 
-    public static class IllegalEntityStateException extends RuntimeException { }
-    public static class StaleDomainObjectException extends RuntimeException { }
+    public static class IllegalEntityStateException extends RuntimeException {
+    }
+
+    public static class StaleDomainObjectException extends RuntimeException {
+    }
 }

@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:2.6.4"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.1"
     }
 }
 
@@ -20,7 +20,7 @@ apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 group = "it.chalmers"
 version = "1.0.0-SNAPSHOT"
-sourceCompatibility = 17
+sourceCompatibility = 19
 mainClassName = "it.chalmers.gamma.GammaApplication"
 
 repositories {
@@ -33,62 +33,59 @@ dependencies {
     )
 
      implementation(
-            "org.springframework:spring-tx:5.3.22",
-            "org.springframework.security:spring-security-core:5.7.2",
-            "org.springframework.security:spring-security-web:5.7.2",
-            "org.springframework.boot:spring-boot-starter-security:2.7.2",
-            "org.springframework.security:spring-security-oauth2-authorization-server:0.3.1",
-            "org.springframework:spring-beans:5.3.16",
-            "org.springframework.data:spring-data-jpa:2.6.2",
-            "org.springframework:spring-core:5.3.16",
-            "org.springframework:spring-web:5.3.16",
-            "org.springframework:spring-context:5.3.16",
-            "org.springframework:spring-webmvc:5.3.16",
-            "org.springframework.security:spring-security-config:5.6.2",
-            "org.springframework.boot:spring-boot-autoconfigure:2.6.4",
-            "org.springframework.session:spring-session-core:2.6.2",
-            "org.springframework.boot:spring-boot:2.6.4",
-            "org.springframework.boot:spring-boot-starter-validation:2.6.4",
-             "org.apache.tomcat.embed:tomcat-embed-core:9.0.58",
-            "org.apache.httpcomponents:httpcore:4.4.15",
-            "javax.persistence:javax.persistence-api:2.2",
-            'org.apache.httpcomponents:httpclient:4.5.13',
-            "javax.transaction:javax.transaction-api:1.3",
-            'org.slf4j:slf4j-api:1.7.36',
-            'com.fasterxml.jackson.core:jackson-annotations:2.13.2',
-            'com.fasterxml.jackson.core:jackson-databind:2.13.2',
-            'com.fasterxml.jackson.core:jackson-core:2.13.2',
             "com.googlecode.json-simple:json-simple:1.1.1",
-            "io.jsonwebtoken:jjwt:0.9.1",
             "commons-io:commons-io:2.11.0",
-            "org.apache.httpcomponents:httpmime:4.5.13",
-            "io.soabase.record-builder:record-builder-core:32",
-            "javax.servlet:servlet-api:2.5",
-            "javax.servlet:javax.servlet-api:4.0.1",
-            "org.postgresql:postgresql:42.3.3"
+            "io.jsonwebtoken:jjwt:0.9.1",
+            "io.soabase.record-builder:record-builder-core:35",
+            "org.apache.httpcomponents:httpcore:4.4.15",
+            "org.apache.httpcomponents:httpmime:4.5.14",
+            "org.apache.tomcat.embed:tomcat-embed-core:10.1.4",
+            "org.postgresql:postgresql:42.5.1",
+            "org.springframework.boot:spring-boot-autoconfigure:3.0.1",
+            "org.springframework.boot:spring-boot-starter-data-jpa:3.0.1",
+            "org.springframework.boot:spring-boot-starter-security:3.0.1",
+            "org.springframework.boot:spring-boot-starter-validation:3.0.1",
+            "org.springframework.boot:spring-boot:3.0.1",
+            "org.springframework.data:spring-data-jpa:3.0.0",
+            "org.springframework.security:spring-security-config:6.0.1",
+            "org.springframework.security:spring-security-core:6.0.1",
+            "org.springframework.security:spring-security-oauth2-authorization-server:1.0.0",
+            "org.springframework.security:spring-security-web:6.0.1",
+            "org.springframework.session:spring-session-core:3.0.0",
+            "org.springframework:spring-beans:6.0.3",
+            "org.springframework:spring-context:6.0.3",
+            "org.springframework:spring-core:6.0.3",
+            "org.springframework:spring-tx:6.0.3",
+            "org.springframework:spring-webmvc:6.0.3",
+            "org.springframework:spring-websocket:6.0.3",
+            'com.fasterxml.jackson.core:jackson-annotations:2.14.0',
+            'com.fasterxml.jackson.core:jackson-core:2.14.0',
+            'com.fasterxml.jackson.core:jackson-databind:2.14.0',
+            'org.apache.httpcomponents:httpclient:4.5.14',
+            'org.springframework.data:spring-data-redis:3.0.1'
     )
 
     runtimeOnly(
-            "org.springframework.boot:spring-boot-devtools:2.6.4",
-            "org.springframework.boot:spring-boot-starter-data-jpa:2.6.4",
-            "org.springframework.boot:spring-boot-starter-web:2.6.4",
-            "org.springframework.boot:spring-boot-starter-data-redis:2.6.4",
-            "org.springframework.session:spring-session-data-redis:2.6.2",
-            "org.springframework.boot:spring-boot-starter-thymeleaf:2.6.4",
-            "org.flywaydb:flyway-core:8.5.2"
+            "org.flywaydb:flyway-core:9.11.0",
+            "org.springframework.boot:spring-boot-devtools:3.0.1",
+            "org.springframework.boot:spring-boot-starter-data-jpa:3.0.1",
+            "org.springframework.boot:spring-boot-starter-data-redis:3.0.1",
+            "org.springframework.boot:spring-boot-starter-thymeleaf:3.0.1",
+            "org.springframework.boot:spring-boot-starter-web:3.0.1",
+            "org.springframework.session:spring-session-data-redis:3.0.0",
     )
 
     testImplementation(
-            "org.springframework.boot:spring-boot-starter-test:2.6.4",
-            "org.springframework.security:spring-security-test:5.6.2",
-            "org.testcontainers:junit-jupiter:1.16.3",
-            "org.testcontainers:postgresql:1.16.3",
-            "com.tngtech.archunit:archunit:0.23.1",
-            "org.flywaydb:flyway-core:8.5.2",
-            "org.mockito:mockito-inline:4.3.1",
-            "io.rest-assured:rest-assured:4.5.1",
-            "io.rest-assured:json-path:4.5.1",
-            "io.rest-assured:xml-path:4.5.1"
+            "com.tngtech.archunit:archunit:1.0.0",
+            "io.rest-assured:json-path:5.3.0",
+            "io.rest-assured:rest-assured:5.3.0",
+            "io.rest-assured:xml-path:5.3.0",
+            "org.flywaydb:flyway-core:9.11.0",
+            "org.mockito:mockito-inline:4.11.0",
+            "org.springframework.boot:spring-boot-starter-test:3.0.1",
+            "org.springframework.security:spring-security-test:5.7.3",
+            "org.testcontainers:junit-jupiter:1.17.6",
+            "org.testcontainers:postgresql:1.17.6",
     )
 }
 

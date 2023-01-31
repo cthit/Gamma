@@ -18,16 +18,19 @@ public class UserAgreementAdminController {
         this.settingsFacade = settingsFacade;
     }
 
-    private record ConfirmPassword(String password) { }
-
     @PostMapping
     public UserAgreementHasBeenResetResponse resetUserAgreement(@RequestBody ConfirmPassword password) {
         this.settingsFacade.resetUserAgreement(password.password);
         return new UserAgreementHasBeenResetResponse();
     }
 
-    public static class UserAgreementHasBeenResetResponse extends SuccessResponse { }
+    private record ConfirmPassword(String password) {
+    }
 
-    public static class IncorrectPasswordResponse extends BadRequestResponse { }
+    public static class UserAgreementHasBeenResetResponse extends SuccessResponse {
+    }
+
+    public static class IncorrectPasswordResponse extends BadRequestResponse {
+    }
 
 }

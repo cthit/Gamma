@@ -5,12 +5,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
-import it.chalmers.gamma.app.client.domain.Scope;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import org.assertj.core.api.Assertions;
@@ -30,10 +25,7 @@ import java.util.Optional;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.doThrow;
-import static org.mockito.BDDMockito.inOrder;
-import static org.mockito.BDDMockito.verify;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
 class ClientFacadeUnitTest {

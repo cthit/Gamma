@@ -2,18 +2,12 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
-import it.chalmers.gamma.app.client.domain.Scope;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.client.domain.ClientId;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.slf4j.Logger;
@@ -48,7 +42,7 @@ public class ClientBootstrap {
     }
 
     public void runOauthClient() {
-        if(!this.bootstrapSettings.mocking() || !this.clientRepository.getAll().isEmpty()) {
+        if (!this.bootstrapSettings.mocking() || !this.clientRepository.getAll().isEmpty()) {
             return;
         }
         LOGGER.info("========== CLIENT BOOTSTRAP ==========");
@@ -70,9 +64,10 @@ public class ClientBootstrap {
                         new RedirectUrl(redirectUrl),
                         prettyName,
                         new Text(),
-                        new ArrayList<>(),
+                        List.of(new AuthorityLevelName("admin")),
                         Arrays.asList(Scope.values()),
-                        allUsers,
+//                        allUsers,
+                        new ArrayList<>(),
                         Optional.of(
                                 new ApiKey(
                                         ApiKeyId.generate(),

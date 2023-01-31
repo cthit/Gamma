@@ -5,6 +5,9 @@ import { on401 } from "common/utils/error-handling/error-handling";
 
 const path = "/api/internal";
 
+axios.defaults.xsrfCookieName = "XSRF-TOKEN";
+axios.defaults.xsrfHeaderName = "X-XSRF-TOKEN";
+
 const error401Redirect = error => {
     try {
         if (
@@ -41,22 +44,9 @@ export function getRequest(endpoint, convert, redirect = true) {
     );
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2)
-        return parts
-            .pop()
-            .split(";")
-            .shift();
-}
-
 export function postRequest(endpoint, data, redirect = true) {
     return wrapWithPromise(
-        () =>
-            axios.post(removeLastSlash(path + endpoint), data, {
-                "X-XSRF-TOKEN": getCookie("XSRF-TOKEN")
-            }),
+        () => axios.post(removeLastSlash(path + endpoint), data),
         redirect ? error401Redirect : () => {}
     );
 }
@@ -64,25 +54,16 @@ export function postRequest(endpoint, data, redirect = true) {
 export function deleteRequest(endpoint, data, redirect) {
     return wrapWithPromise(
         () =>
-            axios.delete(
-                removeLastSlash(path + endpoint),
-                {
-                    data
-                },
-                {
-                    "X-XSRF-TOKEN": getCookie("XSRF-TOKEN")
-                }
-            ),
+            axios.delete(removeLastSlash(path + endpoint), {
+                data
+            }),
         redirect ? error401Redirect : () => {}
     );
 }
 
 export function putRequest(endpoint, data, redirect) {
     return wrapWithPromise(
-        () =>
-            axios.put(removeLastSlash(path + endpoint), data, {
-                "X-XSRF-TOKEN": getCookie("XSRF-TOKEN")
-            }),
+        () => axios.put(removeLastSlash(path + endpoint), data),
         redirect ? error401Redirect : () => {}
     );
 }

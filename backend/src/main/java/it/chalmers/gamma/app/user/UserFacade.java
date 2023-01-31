@@ -10,17 +10,9 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserMembership;
-import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
-import org.springframework.security.core.context.SecurityContextHolder;
+import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -28,11 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
-import static it.chalmers.gamma.app.authentication.AccessGuard.userHasAcceptedClient;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 @Component
 public class UserFacade extends Facade {
@@ -50,33 +38,6 @@ public class UserFacade extends Facade {
         this.groupRepository = groupRepository;
         this.settingsRepository = settingsRepository;
     }
-
-    public record UserDTO(String cid,
-                          String nick,
-                          String firstName,
-                          String lastName,
-                          UUID id,
-                          int acceptanceYear) {
-
-        public UserDTO(GammaUser user) {
-            this(user.cid().value(),
-                    user.nick().value(),
-                    user.firstName().value(),
-                    user.lastName().value(),
-                    user.id().value(),
-                    user.acceptanceYear().value());
-        }
-    }
-
-    public record UserGroupDTO(GroupFacade.GroupWithMembersDTO group, PostFacade.PostDTO post) {
-        public UserGroupDTO(UserMembership userMembership) {
-            this(
-                    new GroupFacade.GroupWithMembersDTO(userMembership.group()),
-                    new PostFacade.PostDTO(userMembership.post())
-            );
-        }
-    }
-    public record UserWithGroupsDTO(UserDTO user, List<UserGroupDTO> groups) { }
 
     public Optional<UserWithGroupsDTO> get(UUID id) {
         UserId userId = new UserId(id);
@@ -117,8 +78,8 @@ public class UserFacade extends Facade {
 
         Settings settings = settingsRepository.getSettings();
 
-        if (SecurityContextHolder.getContext().getAuthentication().getDetails() instanceof ApiAuthenticationDetails apiPrincipal) {
-            Client client = apiPrincipal.getClient().orElseThrow();
+        if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiAuthentication) {
+            Client client = apiAuthentication.getClient().orElseThrow();
             return client.approvedUsers()
                     .stream()
                     .filter(user -> user.extended().acceptedUserAgreement())
@@ -142,6 +103,71 @@ public class UserFacade extends Facade {
         } catch (UserRepository.UserNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public Optional<UserExtendedWithGroupsDTO> getAsAdmin(UUID id) {
+        accessGuard.require(isAdmin());
+
+        UserId userId = new UserId(id);
+
+        Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
+        if (maybeUser.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(
+                new UserExtendedWithGroupsDTO(
+                        maybeUser.get(),
+                        getUserGroups(userId)
+                )
+        );
+    }
+
+    public void updateUser(UpdateUser updateUser) {
+        accessGuard.require(isAdmin());
+
+        GammaUser oldUser = this.userRepository.get(new UserId(updateUser.id)).orElseThrow();
+        this.userRepository.save(
+                oldUser.with()
+                        .nick(new Nick(updateUser.nick))
+                        .firstName(new FirstName(updateUser.firstName))
+                        .lastName(new LastName(updateUser.lastName))
+                        .language(Language.valueOf(updateUser.language))
+                        .extended(oldUser.extended().with()
+                                .email(new Email(updateUser.email))
+                                .build()
+                        )
+                        .build()
+        );
+    }
+
+    public record UserDTO(String cid,
+                          String nick,
+                          String firstName,
+                          String lastName,
+                          UUID id,
+                          int acceptanceYear) {
+
+        public UserDTO(GammaUser user) {
+            this(user.cid().value(),
+                    user.nick().value(),
+                    user.firstName().value(),
+                    user.lastName().value(),
+                    user.id().value(),
+                    user.acceptanceYear().value());
+        }
+    }
+
+    public record UserGroupDTO(GroupFacade.GroupWithMembersDTO group, PostFacade.PostDTO post) {
+        public UserGroupDTO(UserMembership userMembership) {
+            this(
+                    new GroupFacade.GroupWithMembersDTO(userMembership.group()),
+                    new PostFacade.PostDTO(userMembership.post())
+            );
+        }
+    }
+
+    public record UserWithGroupsDTO(UserDTO user, List<UserGroupDTO> groups) {
     }
 
     public record UserExtendedDTO(String cid,
@@ -173,24 +199,8 @@ public class UserFacade extends Facade {
             );
         }
     }
-    public record UserExtendedWithGroupsDTO(UserExtendedDTO user, List<UserGroupDTO> groups) { }
 
-    public Optional<UserExtendedWithGroupsDTO> getAsAdmin(UUID id) {
-        accessGuard.require(isAdmin());
-
-        UserId userId = new UserId(id);
-
-        Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
-        if (maybeUser.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                new UserExtendedWithGroupsDTO(
-                        maybeUser.get(),
-                        getUserGroups(userId)
-                )
-        );
+    public record UserExtendedWithGroupsDTO(UserExtendedDTO user, List<UserGroupDTO> groups) {
     }
 
     public record UpdateUser(UUID id,
@@ -198,24 +208,7 @@ public class UserFacade extends Facade {
                              String firstName,
                              String lastName,
                              String email,
-                             String language) { }
-
-    public void updateUser(UpdateUser updateUser) {
-        accessGuard.require(isAdmin());
-
-        GammaUser oldUser = this.userRepository.get(new UserId(updateUser.id)).orElseThrow();
-        this.userRepository.save(
-                oldUser.with()
-                        .nick(new Nick(updateUser.nick))
-                        .firstName(new FirstName(updateUser.firstName))
-                        .lastName(new LastName(updateUser.lastName))
-                        .language(Language.valueOf(updateUser.language))
-                        .extended(oldUser.extended().with()
-                                .email(new Email(updateUser.email))
-                                .build()
-                        )
-                        .build()
-        );
+                             String language) {
     }
 
 }

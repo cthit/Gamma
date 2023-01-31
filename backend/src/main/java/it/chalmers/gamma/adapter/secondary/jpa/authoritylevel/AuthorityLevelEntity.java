@@ -1,15 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import jakarta.persistence.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,20 +11,18 @@ import java.util.Set;
 @Table(name = "authority_level")
 public class AuthorityLevelEntity extends ImmutableEntity<String> {
 
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<AuthorityPostEntity> postEntityList;
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<AuthorityUserEntity> userEntityList;
+    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    protected Set<AuthoritySuperGroupEntity> superGroupEntityList;
     @Id
     @Column(name = "authority_level")
     private String authorityLevel;
 
-    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    protected Set<AuthorityPostEntity> postEntityList;
-
-    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    protected Set<AuthorityUserEntity> userEntityList;
-
-    @OneToMany(mappedBy = "id.authorityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    protected Set<AuthoritySuperGroupEntity> superGroupEntityList;
-
-    protected AuthorityLevelEntity() {}
+    protected AuthorityLevelEntity() {
+    }
 
     public AuthorityLevelEntity(String name) {
         this.authorityLevel = name;

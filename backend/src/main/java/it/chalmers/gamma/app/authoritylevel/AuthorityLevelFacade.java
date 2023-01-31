@@ -16,11 +16,11 @@ import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -64,25 +64,6 @@ public class AuthorityLevelFacade extends Facade {
             this.authorityLevelRepository.delete(new AuthorityLevelName(name));
         } catch (AuthorityLevelRepository.AuthorityLevelNotFoundException e) {
             throw new AuthorityLevelNotFoundException();
-        }
-    }
-
-    public record SuperGroupPostDTO(SuperGroupFacade.SuperGroupDTO superGroup, PostFacade.PostDTO post) {
-        public SuperGroupPostDTO(AuthorityLevel.SuperGroupPost post) {
-            this(new SuperGroupFacade.SuperGroupDTO(post.superGroup()), new PostFacade.PostDTO(post.post()));
-        }
-    }
-
-    public record AuthorityLevelDTO(
-            String authorityLevelName,
-            List<SuperGroupFacade.SuperGroupDTO> superGroups,
-            List<UserFacade.UserDTO> users,
-            List<SuperGroupPostDTO> posts) {
-        public AuthorityLevelDTO(AuthorityLevel authorityLevel) {
-            this(authorityLevel.name().value(),
-                    authorityLevel.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList(),
-                    authorityLevel.users().stream().map(UserFacade.UserDTO::new).toList(),
-                    authorityLevel.posts().stream().map(SuperGroupPostDTO::new).toList());
         }
     }
 
@@ -212,9 +193,35 @@ public class AuthorityLevelFacade extends Facade {
         this.authorityLevelRepository.save(authorityLevel.withUsers(newUsers));
     }
 
-    public static class AuthorityLevelNotFoundException extends Exception { }
-    public static class SuperGroupNotFoundException extends Exception { }
-    public static class UserNotFoundException extends Exception { }
-    public static class PostNotFoundException extends Exception { }
+    public record SuperGroupPostDTO(SuperGroupFacade.SuperGroupDTO superGroup, PostFacade.PostDTO post) {
+        public SuperGroupPostDTO(AuthorityLevel.SuperGroupPost post) {
+            this(new SuperGroupFacade.SuperGroupDTO(post.superGroup()), new PostFacade.PostDTO(post.post()));
+        }
+    }
+
+    public record AuthorityLevelDTO(
+            String authorityLevelName,
+            List<SuperGroupFacade.SuperGroupDTO> superGroups,
+            List<UserFacade.UserDTO> users,
+            List<SuperGroupPostDTO> posts) {
+        public AuthorityLevelDTO(AuthorityLevel authorityLevel) {
+            this(authorityLevel.name().value(),
+                    authorityLevel.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList(),
+                    authorityLevel.users().stream().map(UserFacade.UserDTO::new).toList(),
+                    authorityLevel.posts().stream().map(SuperGroupPostDTO::new).toList());
+        }
+    }
+
+    public static class AuthorityLevelNotFoundException extends Exception {
+    }
+
+    public static class SuperGroupNotFoundException extends Exception {
+    }
+
+    public static class UserNotFoundException extends Exception {
+    }
+
+    public static class PostNotFoundException extends Exception {
+    }
 
 }

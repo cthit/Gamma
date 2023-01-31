@@ -8,6 +8,8 @@ import java.util.Optional;
 public interface PasswordResetRepository {
 
     PasswordResetToken createNewToken(GammaUser user);
+
     Optional<PasswordResetToken> getToken(UserId id);
+
     void removeToken(PasswordResetToken token);
 }

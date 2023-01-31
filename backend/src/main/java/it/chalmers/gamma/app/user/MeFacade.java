@@ -2,25 +2,20 @@ package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserAuthority;
-import it.chalmers.gamma.app.user.domain.UserMembership;
-import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.GammaAuthenticationDetails;
-import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
-import org.springframework.security.core.context.SecurityContextHolder;
+import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.GammaAuthentication;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,36 +26,23 @@ public class MeFacade extends Facade {
 
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
-    private final AuthorityLevelRepository authorityLevelRepository;
     private final GroupRepository groupRepository;
 
     public MeFacade(AccessGuard accessGuard,
                     UserRepository userRepository,
                     ClientRepository clientRepository,
-                    AuthorityLevelRepository authorityLevelRepository,
                     GroupRepository groupRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
-        this.authorityLevelRepository = authorityLevelRepository;
         this.groupRepository = groupRepository;
-    }
-
-    public record UserApprovedClientDTO(String prettyName,
-                                        String svDescription,
-                                        String enDescription) {
-        public UserApprovedClientDTO(Client client) {
-            this(client.prettyName().value(),
-                    client.description().sv().value(),
-                    client.description().en().value());
-        }
     }
 
     public List<UserApprovedClientDTO> getSignedInUserApprovals() {
         this.accessGuard.require(isSignedIn());
 
-        if (SecurityContextHolder.getContext().getAuthentication().getDetails() instanceof UserAuthenticationDetails userPrincipal) {
-            GammaUser user = userPrincipal.get();
+        if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthentication) {
+            GammaUser user = userAuthentication.get();
             return this.clientRepository.getClientsByUserApproved(user.id())
                     .stream()
                     .map(UserApprovedClientDTO::new)
@@ -70,7 +52,113 @@ public class MeFacade extends Facade {
         }
     }
 
-    public record MyAuthority(String authority, String type) { }
+    public void deleteUserApproval(UUID clientUid) {
+        this.accessGuard.require(isSignedIn());
+
+        if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthentication) {
+            this.clientRepository.deleteUserApproval(new ClientUid(clientUid), userAuthentication.get().id());
+        }
+    }
+
+    public MeDTO getMe() {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        GammaUser user = null;
+        List<UserAuthority> authorities = new ArrayList<>();
+        if (authenticated instanceof UserAuthentication userAuthentication) {
+            user = userAuthentication.get();
+            authorities = userAuthentication.getAuthorities();
+        }
+
+        if (user == null) {
+            throw new IllegalCallerException("Can only be called by signed in sessions");
+        }
+
+        List<MyMembership> groups = this.groupRepository
+                .getAllByUser(user.id())
+                .stream()
+                .map(MyMembership::new)
+                .toList();
+
+        return new MeDTO(user, groups, authorities);
+    }
+
+    public void updateMe(UpdateMe updateMe) {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        if (authenticated instanceof UserAuthentication userAuthentication) {
+            GammaUser oldMe = userAuthentication.get();
+            GammaUser newMe = oldMe.with()
+                    .nick(new Nick(updateMe.nick))
+                    .firstName(new FirstName(updateMe.firstName))
+                    .lastName(new LastName(updateMe.lastName))
+                    .language(Language.valueOf(updateMe.language))
+                    .extended(oldMe.extended().with()
+                            .email(new Email(updateMe.email))
+                            .build()
+                    )
+                    .build();
+
+            this.userRepository.save(newMe);
+        }
+    }
+
+    public void updatePassword(UpdatePassword updatePassword) {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        if (authenticated instanceof UserAuthentication userAuthentication) {
+            GammaUser me = userAuthentication.get();
+            if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
+                this.userRepository.setPassword(me.id(), new UnencryptedPassword(updatePassword.newPassword));
+            }
+        }
+    }
+
+    public void deleteMe(String password) {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        if (authenticated instanceof UserAuthentication userAuthentication) {
+            GammaUser me = userAuthentication.get();
+            if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
+                try {
+                    this.userRepository.delete(me.id());
+                } catch (UserRepository.UserNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void acceptUserAgreement() {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        if (authenticated instanceof UserAuthentication userAuthentication
+                && !userAuthentication.get().extended().acceptedUserAgreement()) {
+            try {
+                this.userRepository.acceptUserAgreement(userAuthentication.get().id());
+            } catch (UserRepository.UserNotFoundException e) {
+                throw new IllegalStateException();
+            }
+        }
+    }
+
+    public record UserApprovedClientDTO(UUID clientUid,
+                                        String name,
+                                        String svDescription,
+                                        String enDescription,
+                                        List<String> scopes) {
+        public UserApprovedClientDTO(Client client) {
+            this(client.clientUid().value(),
+                    client.prettyName().value(),
+                    client.description().sv().value(),
+                    client.description().en().value(),
+                    client.scopes().stream().map(Enum::name).toList());
+        }
+    }
+
+    public record MyAuthority(String authority, String type) {
+    }
+
+    public record MyMembership(PostFacade.PostDTO post, GroupFacade.GroupDTO group, String unofficialPostName) {
+        public MyMembership(UserMembership userMembership) {
+            this(new PostFacade.PostDTO(userMembership.post()), new GroupFacade.GroupDTO(userMembership.group()), userMembership.unofficialPostName().value());
+        }
+    }
 
     public record MeDTO(String nick,
                         String firstName,
@@ -81,10 +169,10 @@ public class MeFacade extends Facade {
                         int acceptanceYear,
                         boolean gdprTrained,
                         boolean userAgreement,
-                        List<UserMembership> groups,
+                        List<MyMembership> groups,
                         List<MyAuthority> authorities,
                         String language) {
-        public MeDTO(GammaUser user, List<UserMembership> groups, List<UserAuthority> authorities) {
+        public MeDTO(GammaUser user, List<MyMembership> groups, List<UserAuthority> authorities) {
             this(user.nick().value(),
                     user.firstName().value(),
                     user.lastName().value(),
@@ -101,92 +189,14 @@ public class MeFacade extends Facade {
         }
     }
 
-
-    public MeDTO getMe() {
-        GammaAuthenticationDetails authenticated = getAuthenticationDetails();
-        GammaUser user = null;
-        if (authenticated instanceof UserAuthenticationDetails userPrincipal) {
-            user = userPrincipal.get();
-        }
-
-        if (user == null) {
-            throw new IllegalCallerException("Can only be called by signed in sessions");
-        }
-
-        List<UserMembership> groups = this.groupRepository.getAllByUser(user.id());
-        List<UserAuthority> authorities = this.authorityLevelRepository.getByUser(user.id());
-
-        return new MeDTO(user, groups, authorities);
-    }
-
     public record UpdateMe(String nick,
                            String firstName,
                            String lastName,
                            String email,
-                           String language) { }
-
-
-    public void updateMe(UpdateMe updateMe) {
-        GammaAuthenticationDetails authenticated = getAuthenticationDetails();
-        if (authenticated instanceof UserAuthenticationDetails userPrincipal) {
-            GammaUser oldMe = userPrincipal.get();
-            GammaUser newMe = oldMe.with()
-                    .nick(new Nick(updateMe.nick))
-                    .firstName(new FirstName(updateMe.firstName))
-                    .lastName(new LastName(updateMe.lastName))
-                    .language(Language.valueOf(updateMe.language))
-                    .extended(oldMe.extended().with()
-                            .email(new Email(updateMe.email))
-                            .build()
-                    )
-                    .build();
-
-            this.userRepository.save(newMe);
-        }
+                           String language) {
     }
 
-    public record UpdatePassword(String oldPassword, String newPassword) { }
-
-    public void updatePassword(UpdatePassword updatePassword) {
-        GammaAuthenticationDetails authenticated = getAuthenticationDetails();
-        if (authenticated instanceof UserAuthenticationDetails userPrincipal) {
-            GammaUser me = userPrincipal.get();
-            if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
-                this.userRepository.setPassword(me.id(), new UnencryptedPassword(updatePassword.newPassword));
-            }
-        }
-    }
-
-    public void deleteMe(String password) {
-        GammaAuthenticationDetails authenticated = getAuthenticationDetails();
-        if (authenticated instanceof UserAuthenticationDetails userPrincipal) {
-            GammaUser me = userPrincipal.get();
-            if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
-                try {
-                    this.userRepository.delete(me.id());
-                } catch (UserRepository.UserNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    //TODO: Should only locked user be able to accept user agreement?
-    //TODO: I guess you cannot accept a user agreement if you already have accepted it.
-    public void acceptUserAgreement() {
-        GammaAuthenticationDetails authenticated = getAuthenticationDetails();
-        if (authenticated instanceof UserAuthenticationDetails userAuthenticationDetails
-                && userAuthenticationDetails.get().extended().locked()) {
-            try {
-                this.userRepository.acceptUserAgreement(userAuthenticationDetails.get().id());
-            } catch (UserRepository.UserNotFoundException e) {
-                throw new IllegalStateException();
-            }
-        }
-    }
-
-    private GammaAuthenticationDetails getAuthenticationDetails() {
-        return (GammaAuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+    public record UpdatePassword(String oldPassword, String newPassword) {
     }
 
 }

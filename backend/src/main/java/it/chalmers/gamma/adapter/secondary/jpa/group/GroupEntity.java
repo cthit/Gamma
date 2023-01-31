@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.group.domain.GroupId;
-import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
 public class GroupEntity extends MutableEntity<UUID> {
 
     @Id
-    @Column(name = "group_id")
+    @Column(name = "group_id", columnDefinition = "uuid")
     protected UUID id;
 
     @Column(name = "e_name")
@@ -32,7 +31,8 @@ public class GroupEntity extends MutableEntity<UUID> {
     @OneToOne(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     protected GroupImagesEntity groupImages;
 
-    protected GroupEntity() {}
+    protected GroupEntity() {
+    }
 
     protected List<MembershipEntity> getMembers() {
         return members;

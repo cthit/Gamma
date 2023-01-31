@@ -9,26 +9,38 @@ public interface UserRepository {
 
     void create(GammaUser user, UnencryptedPassword password)
             throws UserAlreadyExistsException, CidAlreadyInUseException, EmailAlreadyInUseException;
+
     void save(GammaUser user);
+
     void delete(UserId userId) throws UserNotFoundException;
 
     List<GammaUser> getAll();
+
     Optional<GammaUser> get(UserId userId);
+
     Optional<GammaUser> get(Cid cid);
+
     Optional<GammaUser> get(Email email);
 
     boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException;
+
     void setPassword(UserId userId, UnencryptedPassword newPassword) throws UserNotFoundException;
+
     void acceptUserAgreement(UserId userId) throws UserNotFoundException;
 
-    class UserNotFoundException extends RuntimeException { }
+    class UserNotFoundException extends RuntimeException {
+    }
 
     /**
      * A user with the given id already exists. Use save instead.
      */
-    class UserAlreadyExistsException extends RuntimeException { }
+    class UserAlreadyExistsException extends RuntimeException {
+    }
 
-    class CidAlreadyInUseException extends Exception { }
-    class EmailAlreadyInUseException extends Exception { }
+    class CidAlreadyInUseException extends Exception {
+    }
+
+    class EmailAlreadyInUseException extends Exception {
+    }
 
 }

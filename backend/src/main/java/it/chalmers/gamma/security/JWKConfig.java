@@ -17,6 +17,12 @@ import java.util.UUID;
 @Configuration
 public class JWKConfig {
 
+    private static KeyPair generateRsaKey() throws NoSuchAlgorithmException {
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
     @Bean
     public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
         JWKSet jwkSet = new JWKSet(rsaKey);
@@ -32,12 +38,6 @@ public class JWKConfig {
                 .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
-    }
-
-    private static KeyPair generateRsaKey() throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        return keyPairGenerator.generateKeyPair();
     }
 
 }

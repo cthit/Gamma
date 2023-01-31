@@ -17,12 +17,11 @@ const FiveZeroZero = ({ getMe, reset }) => {
         <DigitDesign.Card
             margin={{ left: "auto", right: "auto" }}
             alignSelf="center"
-            size={{ minWidth: "300px", maxWidth: "400px", height: "450px" }}
+            size={{ minWidth: "300px", maxWidth: "400px", height: "250px" }}
         >
             <DigitDesign.CardHeader>
                 <DigitDesign.CardTitle text={text.BackendDownTitle} />
             </DigitDesign.CardHeader>
-            <DigitDesign.CardHeaderImage src="/500.gif" />
             <DigitDesign.CardBody>
                 <DigitText.Text text={text.BackendDown} />
             </DigitDesign.CardBody>

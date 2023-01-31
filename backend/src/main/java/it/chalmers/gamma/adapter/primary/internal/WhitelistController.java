@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.user.UserCreationFacade;
-
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,8 +17,6 @@ public final class WhitelistController {
         this.userCreationFacade = userCreationFacade;
     }
 
-    private record WhitelistCodeRequest(String cid) { }
-
     @PostMapping("/activate_cid")
     public WhitelistedCidActivatedResponse createActivationCode(@RequestBody WhitelistCodeRequest request) {
         this.userCreationFacade.tryToActivateUser(request.cid);
@@ -28,8 +25,12 @@ public final class WhitelistController {
         return new WhitelistedCidActivatedResponse();
     }
 
+    private record WhitelistCodeRequest(String cid) {
+    }
+
     // This will be thrown even if there was an error for security reasons.
-    private static class WhitelistedCidActivatedResponse extends SuccessResponse { }
+    private static class WhitelistedCidActivatedResponse extends SuccessResponse {
+    }
 
 }
 

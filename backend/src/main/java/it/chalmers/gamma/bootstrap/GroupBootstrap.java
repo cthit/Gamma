@@ -1,18 +1,14 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.post.domain.PostRepository;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.common.PrettyName;
-import it.chalmers.gamma.app.group.domain.Group;
-import it.chalmers.gamma.app.group.domain.GroupId;
-import it.chalmers.gamma.app.group.domain.GroupMember;
-import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.group.domain.*;
 import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

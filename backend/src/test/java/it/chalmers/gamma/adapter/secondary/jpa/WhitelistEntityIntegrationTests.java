@@ -10,9 +10,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({WhitelistRepositoryAdapter.class})

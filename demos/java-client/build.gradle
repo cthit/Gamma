@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.5.5'
+	id 'org.springframework.boot' version '3.0.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
@@ -13,9 +13,9 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:2.5.5'
-	implementation 'org.springframework.boot:spring-boot-starter-security:2.5.5'
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.5.5'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools:2.5.5'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.1'
+	implementation 'org.springframework.boot:spring-boot-starter-security:3.0.1'
+	implementation 'org.springframework.boot:spring-boot-starter-web:3.0.1'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools:3.0.1'
 }
 

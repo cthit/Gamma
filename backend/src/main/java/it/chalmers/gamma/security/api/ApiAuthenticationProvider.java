@@ -5,7 +5,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -17,15 +17,10 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
     private final ApiKeyRepository apiKeyRepository;
     private final ClientRepository clientRepository;
 
-    // For example, that all URI:s start with /api
-    private final String contextPath;
-
     public ApiAuthenticationProvider(ApiKeyRepository apiKeyRepository,
-                                     ClientRepository clientRepository,
-                                     String contextPath) {
+                                     ClientRepository clientRepository) {
         this.apiKeyRepository = apiKeyRepository;
         this.clientRepository = clientRepository;
-        this.contextPath = contextPath;
     }
 
     @Override
@@ -35,7 +30,7 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
                 .orElseThrow(ApiAuthenticationException::new);
         final Optional<Client> maybeClient = this.clientRepository.getByApiKey(apiKey.apiKeyToken());
 
-        return ApiAuthenticationToken.fromAuthenticatedApiKey(new ApiAuthenticationDetails() {
+        return ApiAuthenticationToken.fromAuthenticatedApiKey(new ApiAuthentication() {
             @Override
             public ApiKey get() {
                 return apiKey;
@@ -47,16 +42,6 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
             }
         });
     }
-
-    private boolean matchesUri(String requestUri, String allowedUri) {
-        if (!contextPath.equals(requestUri.substring(0, contextPath.length()))) {
-            return false;
-        }
-        requestUri = requestUri.substring(contextPath.length());
-
-        return requestUri.startsWith(allowedUri);
-    }
-
 
     @Override
     public boolean supports(Class<?> authentication) {

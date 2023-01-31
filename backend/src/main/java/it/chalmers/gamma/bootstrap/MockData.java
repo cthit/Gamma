@@ -24,17 +24,21 @@ public record MockData(List<MockUser> users,
                             String name,
                             String prettyName,
                             List<MockMembership> members,
-                            UUID superGroupId) { }
+                            UUID superGroupId) {
+    }
 
     public record MockMembership(UUID userId,
                                  UUID postId,
-                                 String unofficialPostName) { }
+                                 String unofficialPostName) {
+    }
 
 
-    public record MockText(String sv, String en) { }
+    public record MockText(String sv, String en) {
+    }
 
     public record MockPost(UUID id,
-                           MockText postName) { }
+                           MockText postName) {
+    }
 
     public record MockSuperGroup(UUID id,
                                  String name,
@@ -50,13 +54,15 @@ public record MockData(List<MockUser> users,
             String firstName,
             String lastName,
             int acceptanceYear,
-            List<String> authorities) { }
+            List<String> authorities) {
+    }
 
     public record MockPostAuthority(
             String name,
             UUID superGroupId,
             UUID postId
-    ) { }
+    ) {
+    }
 
 }
 

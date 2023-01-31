@@ -4,9 +4,9 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 

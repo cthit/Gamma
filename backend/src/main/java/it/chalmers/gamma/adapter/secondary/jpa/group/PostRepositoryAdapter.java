@@ -1,9 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
-import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 

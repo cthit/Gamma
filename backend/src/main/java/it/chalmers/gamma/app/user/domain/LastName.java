@@ -10,7 +10,6 @@ public record LastName(String value) implements Serializable {
         } else if (value.length() < 1 || value.length() > 50) {
             throw new IllegalArgumentException("Last name length must be between 1 and 50");
         }
-
     }
 
 }

@@ -1,7 +1,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
     <title>Error Occurred</title>
 </head>
 <body style="background-color: rgb(238,238,238)">
@@ -10,7 +10,7 @@
         An error occurred
     </h2>
     <p class="text text--large">
-       This error does not have an internal mapping
+        This error does not have an internal mapping
     </p>
     Status: <span th:text="${error_code}"></span> <br>
     Message: <span th:text="${error_message}"></span> <br>

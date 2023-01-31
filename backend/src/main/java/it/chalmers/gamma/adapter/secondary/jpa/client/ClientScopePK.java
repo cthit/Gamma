@@ -3,13 +3,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.Scope;
-
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Embeddable
 public class ClientScopePK extends PKId<ClientScopePK.ClientScopePKDTO> {
@@ -22,15 +16,13 @@ public class ClientScopePK extends PKId<ClientScopePK.ClientScopePKDTO> {
     @Enumerated(EnumType.STRING)
     private Scope scope;
 
-    protected ClientScopePK() {}
+    protected ClientScopePK() {
+    }
 
     protected ClientScopePK(ClientEntity clientEntity, Scope scope) {
         this.client = clientEntity;
         this.scope = scope;
     }
-
-    protected record ClientScopePKDTO(ClientUid clientUid,
-                                      Scope scope) { }
 
     @Override
     public ClientScopePKDTO getValue() {
@@ -38,6 +30,10 @@ public class ClientScopePK extends PKId<ClientScopePK.ClientScopePKDTO> {
                 new ClientUid(this.client.getId()),
                 this.scope
         );
+    }
+
+    protected record ClientScopePKDTO(ClientUid clientUid,
+                                      Scope scope) {
     }
 
 }

@@ -53,7 +53,7 @@ const GroupsCrud = () => {
     }, []);
 
     if (superGroups.length === 0) {
-        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"}/>;
     }
 
     return (
@@ -84,11 +84,11 @@ const GroupsCrud = () => {
             createRequest={
                 admin
                     ? data =>
-                          addGroup({
-                              name: data[GROUP_NAME],
-                              superGroup: data[GROUP_SUPER_GROUP],
-                              prettyName: data[GROUP_PRETTY_NAME]
-                          })
+                        addGroup({
+                            name: data[GROUP_NAME],
+                            superGroup: data[GROUP_SUPER_GROUP],
+                            prettyName: data[GROUP_PRETTY_NAME]
+                        })
                     : null
             }
             tableProps={{
@@ -185,9 +185,9 @@ const GroupsCrud = () => {
             createTitle={text.CreateGroup}
             detailsTitle={group => group[GROUP_PRETTY_NAME]}
             statusRenders={{
-                403: () => <InsufficientAccess />,
-                404: () => <FourOFour />,
-                500: (error, reset) => <FiveZeroZero reset={reset} />
+                403: () => <InsufficientAccess/>,
+                404: () => <FourOFour/>,
+                500: (error, reset) => <FiveZeroZero reset={reset}/>
             }}
             toastCreateSuccessful={() => text.GroupWasCreated}
             toastCreateFailed={() => text.GroupDeleteFailed}

@@ -1,12 +1,8 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
+import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

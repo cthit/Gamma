@@ -19,42 +19,33 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserId;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Transactional
 @Service
 public class AuthorityLevelRepositoryAdapter implements AuthorityLevelRepository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorityLevelRepositoryAdapter.class);
-
-    private final AuthorityLevelJpaRepository repository;
-
-    private final AuthorityPostJpaRepository authorityPostRepository;
-    private final AuthoritySuperGroupJpaRepository authoritySuperGroupRepository;
-    private final AuthorityUserJpaRepository authorityUserRepository;
-
-    private final MembershipJpaRepository membershipJpaRepository;
-    private final UserJpaRepository userJpaRepository;
-    private final SuperGroupJpaRepository superGroupJpaRepository;
-    private final PostJpaRepository postJpaRepository;
-
-    private final AuthorityLevelEntityConverter authorityLevelEntityConverter;
-    private final SuperGroupEntityConverter superGroupEntityConverter;
-
     private static final PersistenceErrorState notFoundError = new PersistenceErrorState(
             null,
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
+    private final AuthorityLevelJpaRepository repository;
+    private final AuthorityPostJpaRepository authorityPostRepository;
+    private final AuthoritySuperGroupJpaRepository authoritySuperGroupRepository;
+    private final AuthorityUserJpaRepository authorityUserRepository;
+    private final MembershipJpaRepository membershipJpaRepository;
+    private final UserJpaRepository userJpaRepository;
+    private final SuperGroupJpaRepository superGroupJpaRepository;
+    private final PostJpaRepository postJpaRepository;
+    private final AuthorityLevelEntityConverter authorityLevelEntityConverter;
+    private final SuperGroupEntityConverter superGroupEntityConverter;
 
 
     public AuthorityLevelRepositoryAdapter(AuthorityLevelJpaRepository repository,

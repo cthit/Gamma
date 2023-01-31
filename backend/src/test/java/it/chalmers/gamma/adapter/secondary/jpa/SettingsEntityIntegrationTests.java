@@ -40,7 +40,6 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
         SecurityContextHolder.clearContext();
     }
 
-
     @Test
     public void Given_Settings_Expect_setSettings_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
         superGroupTypeRepository.add(committee);
@@ -97,6 +96,32 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
 
         assertThatExceptionOfType(IllegalArgumentException.class)
                 .isThrownBy(() -> settingsRepositoryAdapter.setSettings(settings));
+    }
+
+    @Test
+    public void Given_Settings_Expect_setSettingsWithOnlySuperGroupTypes_To_NotUpdateLastUpdatedUserAgreement() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
+        superGroupTypeRepository.add(committee);
+        superGroupTypeRepository.add(board);
+
+        Settings settings = new Settings(
+                Instant.ofEpochSecond(1674809530),
+                List.of(committee)
+        );
+
+        settingsRepositoryAdapter.setSettings(settings);
+
+        assertThat(settingsRepositoryAdapter.getSettings())
+                .isEqualTo(settings);
+
+        settingsRepositoryAdapter.setSettings(oldSettings -> oldSettings.withInfoSuperGroupTypes(List.of(board, committee)));
+
+        assertThat(settingsJpaRepository.findAll())
+                .hasSize(1);
+
+        assertThat(settingsRepositoryAdapter.getSettings()).isEqualTo(new Settings(
+                Instant.ofEpochSecond(1674809530),
+                List.of(board, committee)
+        ));
     }
 
 }

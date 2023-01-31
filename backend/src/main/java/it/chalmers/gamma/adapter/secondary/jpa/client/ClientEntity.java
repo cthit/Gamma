@@ -3,15 +3,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import jakarta.persistence.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +14,7 @@ import java.util.UUID;
 public class ClientEntity extends ImmutableEntity<UUID> {
 
     @Id
-    @Column(name = "client_uid")
+    @Column(name = "client_uid", columnDefinition = "uuid")
     protected UUID clientUid;
 
     @Column(name = "client_id")
@@ -30,7 +23,7 @@ public class ClientEntity extends ImmutableEntity<UUID> {
     @Column(name = "client_secret")
     protected String clientSecret;
 
-    @Column(name = "web_server_redirect_uri")
+    @Column(name = "redirect_uri")
     protected String webServerRedirectUrl;
 
     @Column(name = "pretty_name")

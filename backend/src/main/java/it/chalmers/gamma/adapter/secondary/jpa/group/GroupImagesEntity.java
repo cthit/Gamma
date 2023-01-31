@@ -2,13 +2,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.group.domain.GroupId;
+import jakarta.persistence.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +11,7 @@ import java.util.UUID;
 public class GroupImagesEntity extends MutableEntity<GroupId> {
 
     @Id
-    @Column(name = "group_id")
+    @Column(name = "group_id", columnDefinition = "uuid")
     protected UUID groupId;
 
     @OneToOne
@@ -29,7 +24,8 @@ public class GroupImagesEntity extends MutableEntity<GroupId> {
     @Column(name = "banner_uri")
     protected String bannerUri;
 
-    protected GroupImagesEntity() { }
+    protected GroupImagesEntity() {
+    }
 
     @Override
     public GroupId getId() {

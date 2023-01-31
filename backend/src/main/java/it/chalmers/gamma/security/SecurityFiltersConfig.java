@@ -6,19 +6,24 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import org.springframework.beans.factory.annotation.Value;
+import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
+import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration
@@ -45,57 +50,68 @@ public class SecurityFiltersConfig {
         userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
         userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
+        RegexRequestMatcher internalRequestMatcher = new RegexRequestMatcher("/internal.+", null);
+        RegexRequestMatcher loginRequestMatcher = new RegexRequestMatcher("/login.*", null);
+        RegexRequestMatcher logoutRequestMatcher = new RegexRequestMatcher("/logout", null);
+
         http
-                //Either /internal/**, /login or /logout
-                .regexMatcher("\\/internal.+|\\/login.*|\\/logout")
+                .securityMatchers(matcher -> matcher.requestMatchers(internalRequestMatcher, loginRequestMatcher, logoutRequestMatcher))
                 .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, authorityLevelRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
-                        authorization
-                                .antMatchers("/login").permitAll()
-                                .anyRequest().authenticated()
+                        {
+                            try {
+                                authorization
+                                        .requestMatchers("/login").permitAll()
+                                        .anyRequest().authenticated()
+                                        .and()
+                                        .formLogin(Customizer.withDefaults())
+                                        .httpBasic().disable()
+                                        .anonymous().disable()
+                                        .logout(new LogoutCustomizer());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
                 )
                 .authenticationProvider(userAuthenticationProvider)
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-                .csrf(csrf -> csrf.csrfTokenRepository(csrfTokenRepository))
-                .cors(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
-                .logout(new LogoutCustomizer())
-                .requestCache(cache -> cache.requestCache(requestCache));
-//                .exceptionHandling()
-//                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-        return http.build();
-    }
-
-    @Bean
-    SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,
-                                                    @Value("${server.servlet.context-path}") String contextPath,
-                                                    ApiKeyRepository apiKeyRepository,
-                                                    ClientRepository clientRepository)
-            throws Exception {
-
-        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/external.+", null );
-
-        http
-                .requestMatcher(regexRequestMatcher)
-                //TODO: A R G H something is wrong here
-//                .addFilterBefore(new ApiAuthenticationFilter(regexRequestMatcher, new ProviderManager(new ApiAuthenticationProvider(apiKeyRepository, clientRepository, contextPath))), BasicAuthenticationFilter.class)
-                .authorizeHttpRequests(authorization -> authorization.anyRequest().permitAll())
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(csrfTokenRepository)
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                 )
-                //Since only backends will call the /external
-                .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
         return http.build();
     }
 
     @Bean
+    SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,
+                                                    ApiKeyRepository apiKeyRepository,
+                                                    ClientRepository clientRepository)
+            throws Exception {
+
+        ApiAuthenticationProvider apiAuthenticationProvider = new ApiAuthenticationProvider(apiKeyRepository, clientRepository);
+
+        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/external.+", null);
+        http
+                .securityMatcher(regexRequestMatcher)
+                .addFilterBefore(new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)), BasicAuthenticationFilter.class)
+                .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                //Since only backends will call the /external
+                .csrf(csrf -> csrf.disable());
+        return http.build();
+    }
+
+    @Bean
     SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-                .regexMatcher("\\/images.+")
+                .securityMatcher("\\/images.+")
                 .authorizeHttpRequests(authorization ->
                         authorization.anyRequest().permitAll()
                 )

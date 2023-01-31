@@ -1,14 +1,18 @@
 package it.chalmers.demo;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @EnableWebSecurity
-public class DemoWebSecurity extends WebSecurityConfigurerAdapter {
+@Configuration
+public class DemoWebSecurity{
 
     private final GammaAuthoritiesMapper gammaAuthoritiesMapper;
 
@@ -16,12 +20,13 @@ public class DemoWebSecurity extends WebSecurityConfigurerAdapter {
         this.gammaAuthoritiesMapper = gammaAuthoritiesMapper;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    SecurityFilterChain defaultSecurityChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests(a -> a
-                        .antMatchers("/", "/error", "/lol").permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authorization ->
+                        authorization
+                                .requestMatchers("/index.html").permitAll()
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
@@ -32,6 +37,14 @@ public class DemoWebSecurity extends WebSecurityConfigurerAdapter {
                 .logout(l -> l
                         .logoutSuccessUrl("/").permitAll()
                 )
-                .oauth2Login();
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/oauth2/authorization/gamma")
+                        .defaultSuccessUrl("/", true)
+                        .failureHandler((request, response, exception) -> {
+                            exception.printStackTrace();
+                        })
+                )
+                .oauth2Client(Customizer.withDefaults());
+        return http.build();
     }
 }

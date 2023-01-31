@@ -5,14 +5,7 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 

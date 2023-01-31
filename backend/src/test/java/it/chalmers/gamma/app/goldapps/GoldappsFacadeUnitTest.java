@@ -18,29 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
-import static it.chalmers.gamma.utils.DomainUtils.alumni;
-import static it.chalmers.gamma.utils.DomainUtils.board;
-import static it.chalmers.gamma.utils.DomainUtils.chair;
-import static it.chalmers.gamma.utils.DomainUtils.committee;
-import static it.chalmers.gamma.utils.DomainUtils.digit18;
-import static it.chalmers.gamma.utils.DomainUtils.digit19;
-import static it.chalmers.gamma.utils.DomainUtils.drawit18;
-import static it.chalmers.gamma.utils.DomainUtils.drawit19;
-import static it.chalmers.gamma.utils.DomainUtils.g;
-import static it.chalmers.gamma.utils.DomainUtils.gm;
-import static it.chalmers.gamma.utils.DomainUtils.member;
-import static it.chalmers.gamma.utils.DomainUtils.prit18;
-import static it.chalmers.gamma.utils.DomainUtils.prit19;
-import static it.chalmers.gamma.utils.DomainUtils.sg;
-import static it.chalmers.gamma.utils.DomainUtils.society;
-import static it.chalmers.gamma.utils.DomainUtils.styrit18;
-import static it.chalmers.gamma.utils.DomainUtils.styrit19;
-import static it.chalmers.gamma.utils.DomainUtils.treasurer;
-import static it.chalmers.gamma.utils.DomainUtils.u;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.inOrder;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
 class GoldappsFacadeUnitTest {
@@ -100,9 +80,6 @@ class GoldappsFacadeUnitTest {
         inOrder.verifyNoMoreInteractions();
     }
 
-    private record ActiveSuperGroupsTestCase(List<Group> groups,
-                                             List<GoldappsFacade.GoldappsSuperGroupDTO> expectedSuperGroups) { }
-
     private ActiveSuperGroupsTestCase getActiveSuperGroupTestCase() {
         return new ActiveSuperGroupsTestCase(
                 List.of(
@@ -118,9 +95,6 @@ class GoldappsFacadeUnitTest {
                 new ArrayList<>()
         );
     }
-
-    private record ActiveUsersTestCase(List<Group> groups,
-                                       List<GammaUser> expectedActive) { }
 
     private ActiveUsersTestCase getActiveUsersTestCase() {
         var digit = sg("digit", committee);
@@ -173,6 +147,13 @@ class GoldappsFacadeUnitTest {
         );
     }
 
+    private record ActiveSuperGroupsTestCase(List<Group> groups,
+                                             List<GoldappsFacade.GoldappsSuperGroupDTO> expectedSuperGroups) {
+    }
+
+    private record ActiveUsersTestCase(List<Group> groups,
+                                       List<GammaUser> expectedActive) {
+    }
 
 
 }

@@ -1,26 +1,15 @@
 version: "3"
 services:
-    db:
-        image: postgres:13
-        restart: always
-        environment:
-            POSTGRES_PASSWORD: example
-        ports:
-            - 5432:5432
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432
 
-    frontend:
-        image: frontend:development
-        build:
-            context: ./frontend/
-            dockerfile: dev.dockerfile
-        ports:
-            - 3000:3000
-        volumes:
-            - ./frontend/src:/usr/src/app/src
-            - ./frontend/public:/usr/src/app/public
-        network_mode: host
-    redis:
-      image: redis:5.0
-      restart: always
-      ports:
-        - 6379:6379
+  redis:
+    image: redis:5.0
+    restart: always
+    ports:
+      - 6379:6379

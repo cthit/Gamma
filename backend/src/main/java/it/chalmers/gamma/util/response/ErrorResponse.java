@@ -1,13 +1,13 @@
 package it.chalmers.gamma.util.response;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import it.chalmers.gamma.util.ClassNameGeneratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ErrorResponse extends ResponseStatusException {
 

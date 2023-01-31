@@ -1,6 +1,7 @@
 package it.chalmers.gamma.security;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.server.CookieSameSiteSupplier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.session.web.http.CookieSerializer;
@@ -28,7 +29,7 @@ public class CookieConfig {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setSameSite("STRICT");
+        serializer.setSameSite("LAX");
         serializer.setUseSecureCookie(this.production);
         serializer.setCookieName("gamma");
         serializer.setDomainName(this.domain);
@@ -46,6 +47,12 @@ public class CookieConfig {
         repo.setSecure(this.production);
         repo.setCookieHttpOnly(false);
         return repo;
+    }
+
+    // Sets the CSRF cookie to use strict, since the above repository doesn't support it.
+    @Bean
+    public CookieSameSiteSupplier applicationCookieSameSiteSupplier() {
+        return CookieSameSiteSupplier.ofStrict().whenHasName("XSRF-TOKEN");
     }
 
 }

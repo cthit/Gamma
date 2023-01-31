@@ -9,6 +9,7 @@ public interface UserPasswordRetriever {
     @Nullable
     Password getPassword(UserId id);
 
-    class UserNotFoundException extends RuntimeException { }
+    class UserNotFoundException extends RuntimeException {
+    }
 
 }

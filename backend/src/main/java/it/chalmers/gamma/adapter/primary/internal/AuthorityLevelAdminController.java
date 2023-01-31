@@ -29,8 +29,6 @@ public final class AuthorityLevelAdminController {
         return new AuthorityLevelCreatedResponse();
     }
 
-    private record CreateAuthorityLevelRequest(String authorityLevel) { }
-
     @GetMapping
     public List<AuthorityLevelFacade.AuthorityLevelDTO> getAllAuthorityLevels() {
         return this.authorityLevelFacade.getAll();
@@ -52,12 +50,19 @@ public final class AuthorityLevelAdminController {
                 .orElseThrow(AuthorityLevelNotFoundResponse::new);
     }
 
-    private static class AuthorityLevelDeletedResponse extends SuccessResponse { }
+    private record CreateAuthorityLevelRequest(String authorityLevel) {
+    }
 
-    private static class AuthorityLevelCreatedResponse extends SuccessResponse { }
+    private static class AuthorityLevelDeletedResponse extends SuccessResponse {
+    }
 
-    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse { }
+    private static class AuthorityLevelCreatedResponse extends SuccessResponse {
+    }
 
-    private static class AuthorityLevelAlreadyExistsResponse extends AlreadyExistsResponse { }
+    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse {
+    }
+
+    private static class AuthorityLevelAlreadyExistsResponse extends AlreadyExistsResponse {
+    }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 public interface SuperGroupTypeRepository {
 
     void add(SuperGroupType superGroupType) throws SuperGroupTypeAlreadyExistsException;
+
     void delete(SuperGroupType superGroupType) throws SuperGroupTypeNotFoundException, SuperGroupTypeHasUsagesException;
 
     List<SuperGroupType> getAll();
@@ -14,7 +15,11 @@ public interface SuperGroupTypeRepository {
             super("Super group type: " + value + " already exists");
         }
     }
-    class SuperGroupTypeNotFoundException extends Exception { }
-    class SuperGroupTypeHasUsagesException extends Exception { }
+
+    class SuperGroupTypeNotFoundException extends Exception {
+    }
+
+    class SuperGroupTypeHasUsagesException extends Exception {
+    }
 
 }

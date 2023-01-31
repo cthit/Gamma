@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.api;
 
-import it.chalmers.gamma.security.principal.ApiAuthenticationDetails;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Transient;
 
@@ -10,17 +10,9 @@ import static org.springframework.security.core.authority.AuthorityUtils.NO_AUTH
 public class ApiAuthenticationToken extends AbstractAuthenticationToken {
 
     private final String apiKeyToken;
-    private final ApiAuthenticationDetails apiPrincipal;
+    private final ApiAuthentication apiPrincipal;
 
-    public static ApiAuthenticationToken fromApiKeyToken(String apiKeyToken) {
-        return new ApiAuthenticationToken(apiKeyToken);
-    }
-
-    public static ApiAuthenticationToken fromAuthenticatedApiKey(ApiAuthenticationDetails apiPrincipal) {
-        return new ApiAuthenticationToken(apiPrincipal);
-    }
-
-    private ApiAuthenticationToken(ApiAuthenticationDetails apiPrincipal) {
+    private ApiAuthenticationToken(ApiAuthentication apiPrincipal) {
         super(NO_AUTHORITIES);
         this.apiKeyToken = null;
         this.apiPrincipal = apiPrincipal;
@@ -34,6 +26,14 @@ public class ApiAuthenticationToken extends AbstractAuthenticationToken {
         super.setAuthenticated(false);
     }
 
+    public static ApiAuthenticationToken fromApiKeyToken(String apiKeyToken) {
+        return new ApiAuthenticationToken(apiKeyToken);
+    }
+
+    public static ApiAuthenticationToken fromAuthenticatedApiKey(ApiAuthentication apiPrincipal) {
+        return new ApiAuthenticationToken(apiPrincipal);
+    }
+
     @Override
     public void setAuthenticated(boolean authenticated) {
         throw new IllegalCallerException("You cannot call set authenticated on an already created ApiAuthenticationToken");
@@ -45,7 +45,7 @@ public class ApiAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public ApiAuthenticationDetails getPrincipal() {
+    public ApiAuthentication getPrincipal() {
         return this.apiPrincipal;
     }
 }

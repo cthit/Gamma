@@ -1,24 +1,23 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.password;
 
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordReset;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.time.Instant;
 import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "password_reset")
 public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", columnDefinition = "uuid")
     private UUID userId;
 
     @Column(name = "created_at")
@@ -27,7 +26,8 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
     @Column(name = "token")
     private String token;
 
-    protected UserPasswordResetEntity() { }
+    protected UserPasswordResetEntity() {
+    }
 
     public UserPasswordResetEntity(UUID userId, Instant createdAt, String token) {
         this.userId = userId;

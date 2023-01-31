@@ -1,12 +1,11 @@
 package it.chalmers.gamma.security;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class GammaRequestCache implements RequestCache {
@@ -19,7 +18,9 @@ public class GammaRequestCache implements RequestCache {
 
     @Override
     public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
-        requestCache.saveRequest(request, response);
+        if(request.getAuthType() == null) {
+            requestCache.saveRequest(request, response);
+        }
     }
 
     @Override

@@ -6,23 +6,12 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
@@ -30,14 +19,12 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 @Service
 public class UserCreationFacade extends Facade {
 
+    private static final String MAIL_POSTFIX = "student.chalmers.se";
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserCreationFacade.class);
     private final MailService mailService;
     private final WhitelistRepository whitelistRepository;
     private final UserActivationRepository userActivationRepository;
     private final UserRepository userRepository;
-
-    private static final String MAIL_POSTFIX = "student.chalmers.se";
-
-    private static Logger LOGGER = LoggerFactory.getLogger(UserCreationFacade.class);
 
     public UserCreationFacade(AccessGuard accessGuard,
                               MailService mailService,
@@ -63,15 +50,6 @@ public class UserCreationFacade extends Facade {
             LOGGER.info("Someone tried to activate the cid: " + cid);
         }
     }
-
-    public record NewUser(String password,
-                                  String nick,
-                                  String firstName,
-                                  String email,
-                                  String lastName,
-                                  int acceptanceYear,
-                                  String cid,
-                                  String language) { }
 
     public void createUser(NewUser newUser) throws SomePropertyNotUniqueException {
         this.accessGuard.require(isAdmin());
@@ -148,6 +126,17 @@ public class UserCreationFacade extends Facade {
         this.mailService.sendMail(to, "Gamma activation code", message);
     }
 
-    public class SomePropertyNotUniqueException extends Exception { }
+    public record NewUser(String password,
+                          String nick,
+                          String firstName,
+                          String email,
+                          String lastName,
+                          int acceptanceYear,
+                          String cid,
+                          String language) {
+    }
+
+    public class SomePropertyNotUniqueException extends Exception {
+    }
 
 }

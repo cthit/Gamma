@@ -1,15 +1,10 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.user.passwordreset.UserResetPasswordFacade;
-
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -22,8 +17,6 @@ public class UserPasswordResetController {
         this.userResetPasswordFacade = userResetPasswordFacade;
     }
 
-    private record ResetPasswordRequest(String cidOrEmail) { }
-
     @PostMapping()
     public PasswordRestLinkSentResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
         try {
@@ -33,10 +26,6 @@ public class UserPasswordResetController {
         }
         return new PasswordRestLinkSentResponse();
     }
-
-    private record ResetPasswordFinishRequest(String password,
-                                              String cidOrEmail,
-                                              String token) { }
 
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@RequestBody ResetPasswordFinishRequest request) {
@@ -48,9 +37,19 @@ public class UserPasswordResetController {
         return new PasswordChangedResponse();
     }
 
-    private static class PasswordRestLinkSentResponse extends SuccessResponse { }
+    private record ResetPasswordRequest(String cidOrEmail) {
+    }
 
-    private static class PasswordChangedResponse extends SuccessResponse { }
+    private record ResetPasswordFinishRequest(String password,
+                                              String cidOrEmail,
+                                              String token) {
+    }
+
+    private static class PasswordRestLinkSentResponse extends SuccessResponse {
+    }
+
+    private static class PasswordChangedResponse extends SuccessResponse {
+    }
 
     private static class PasswordResetProcessErrorResponse extends ErrorResponse {
         private PasswordResetProcessErrorResponse() {

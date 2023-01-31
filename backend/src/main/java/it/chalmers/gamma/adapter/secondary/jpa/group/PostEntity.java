@@ -1,10 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
-import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
+import jakarta.persistence.*;
 
-import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +11,7 @@ import java.util.UUID;
 public class PostEntity extends MutableEntity<UUID> {
 
     @Id
-    @Column(name = "post_id")
+    @Column(name = "post_id", columnDefinition = "uuid")
     protected UUID id;
 
     @JoinColumn(name = "post_name")
@@ -22,7 +21,8 @@ public class PostEntity extends MutableEntity<UUID> {
     @Column(name = "email_prefix")
     protected String emailPrefix;
 
-    protected PostEntity() { }
+    protected PostEntity() {
+    }
 
     protected PostEntity(UUID id) {
         this.id = id;

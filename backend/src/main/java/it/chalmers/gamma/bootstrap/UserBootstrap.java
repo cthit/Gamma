@@ -1,17 +1,7 @@
 package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -71,9 +61,9 @@ public class UserBootstrap {
 
         LOGGER.info("Generated the users: "
                 + this.mockData.users()
-                        .stream()
-                        .map(MockData.MockUser::cid)
-                        .collect(Collectors.joining(", "))
+                .stream()
+                .map(MockData.MockUser::cid)
+                .collect(Collectors.joining(", "))
         );
         LOGGER.info("Use a cid from the row above and use the value: value to sign in");
         LOGGER.info("==========                ==========");

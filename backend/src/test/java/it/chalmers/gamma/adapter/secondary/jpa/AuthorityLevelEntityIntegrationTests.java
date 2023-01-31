@@ -35,46 +35,10 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.Collections;
 import java.util.List;
 
-import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.AUTHORITY;
-import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.GROUP;
-import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.SUPERGROUP;
-import static it.chalmers.gamma.utils.DomainUtils.addAll;
-import static it.chalmers.gamma.utils.DomainUtils.alumni;
-import static it.chalmers.gamma.utils.DomainUtils.asSaved;
-import static it.chalmers.gamma.utils.DomainUtils.board;
-import static it.chalmers.gamma.utils.DomainUtils.chair;
-import static it.chalmers.gamma.utils.DomainUtils.committee;
-import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.utils.DomainUtils.didit;
-import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static it.chalmers.gamma.utils.DomainUtils.digit18;
-import static it.chalmers.gamma.utils.DomainUtils.digit19;
-import static it.chalmers.gamma.utils.DomainUtils.emeritus;
-import static it.chalmers.gamma.utils.DomainUtils.member;
-import static it.chalmers.gamma.utils.DomainUtils.prit;
-import static it.chalmers.gamma.utils.DomainUtils.prit18;
-import static it.chalmers.gamma.utils.DomainUtils.prit19;
-import static it.chalmers.gamma.utils.DomainUtils.sprit;
-import static it.chalmers.gamma.utils.DomainUtils.styrit;
-import static it.chalmers.gamma.utils.DomainUtils.styrit18;
-import static it.chalmers.gamma.utils.DomainUtils.styrit19;
-import static it.chalmers.gamma.utils.DomainUtils.treasurer;
-import static it.chalmers.gamma.utils.DomainUtils.u0;
-import static it.chalmers.gamma.utils.DomainUtils.u1;
-import static it.chalmers.gamma.utils.DomainUtils.u10;
-import static it.chalmers.gamma.utils.DomainUtils.u11;
-import static it.chalmers.gamma.utils.DomainUtils.u2;
-import static it.chalmers.gamma.utils.DomainUtils.u3;
-import static it.chalmers.gamma.utils.DomainUtils.u4;
-import static it.chalmers.gamma.utils.DomainUtils.u5;
-import static it.chalmers.gamma.utils.DomainUtils.u6;
-import static it.chalmers.gamma.utils.DomainUtils.u7;
-import static it.chalmers.gamma.utils.DomainUtils.u8;
-import static it.chalmers.gamma.utils.DomainUtils.u9;
+import static it.chalmers.gamma.app.authoritylevel.domain.AuthorityType.*;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedUser;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({AuthorityLevelRepositoryAdapter.class,
@@ -111,6 +75,10 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
     private UserRepository userRepository;
     @Autowired
     private SettingsRepository settingsRepository;
+
+    private static UserAuthority ua(AuthorityLevelName name, AuthorityType authorityType) {
+        return new UserAuthority(name, authorityType);
+    }
 
     @BeforeEach
     public void setSettings() {
@@ -269,10 +237,6 @@ public class AuthorityLevelEntityIntegrationTests extends AbstractEntityIntegrat
                         ua(styrit, SUPERGROUP),
                         ua(styrit19, GROUP)
                 );
-    }
-
-    private static UserAuthority ua(AuthorityLevelName name, AuthorityType authorityType) {
-        return new UserAuthority(name, authorityType);
     }
 
     @Test

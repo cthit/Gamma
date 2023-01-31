@@ -1,10 +1,6 @@
 package it.chalmers.gamma.app.apikey;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.*;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -25,14 +21,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.fail;
-import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.doThrow;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.inOrder;
-import static org.mockito.BDDMockito.verify;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(SpringExtension.class)
 class ApiKeyFacadeUnitTest {

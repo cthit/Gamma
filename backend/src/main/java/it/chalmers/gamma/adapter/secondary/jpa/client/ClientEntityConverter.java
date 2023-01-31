@@ -4,12 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientId;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
-import it.chalmers.gamma.app.client.domain.Scope;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import org.springframework.stereotype.Service;
@@ -31,6 +26,7 @@ public class ClientEntityConverter {
     }
 
     public Client toDomain(ClientEntity clientEntity) {
+        // TODO: Restrictions get doubled when queried??
         List<AuthorityLevelName> restrictions = clientEntity.restrictions
                 .stream()
                 .map(ClientRestrictionEntity::getAuthorityLevelName)

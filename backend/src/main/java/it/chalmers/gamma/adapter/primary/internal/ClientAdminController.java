@@ -1,17 +1,9 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.ClientFacade;
-
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,15 +16,6 @@ public final class ClientAdminController {
     public ClientAdminController(ClientFacade clientFacade) {
         this.clientFacade = clientFacade;
     }
-
-    private record CreateClientRequest(String webServerRedirectUrl,
-                                       String prettyName,
-                                       String svDescription,
-                                       String enDescription,
-                                       boolean generateApiKey,
-                                       List<String> restrictions,
-                                       boolean emailScope
-    ) { }
 
     @PostMapping()
     public ClientFacade.ClientAndApiKeySecrets addClient(@RequestBody CreateClientRequest request) {
@@ -84,8 +67,20 @@ public final class ClientAdminController {
         }
     }
 
-    private static class ClientDeletedResponse extends SuccessResponse { }
+    private record CreateClientRequest(String webServerRedirectUrl,
+                                       String prettyName,
+                                       String svDescription,
+                                       String enDescription,
+                                       boolean generateApiKey,
+                                       List<String> restrictions,
+                                       boolean emailScope
+    ) {
+    }
 
-    public static class ClientNotFoundResponse extends NotFoundResponse { }
-    
+    private static class ClientDeletedResponse extends SuccessResponse {
+    }
+
+    public static class ClientNotFoundResponse extends NotFoundResponse {
+    }
+
 }

@@ -1,8 +1,8 @@
 # How to write migrations
 
-Create a sql file with a V that is +1 of the last one. 
+Create a sql file with a V that is +1 of the last one.
 
-Here're some examples with an sql file named `V99__website-changes.sql`: 
+Here're some examples with an sql file named `V99__website-changes.sql`:
 
 ```sql
 

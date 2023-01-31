@@ -18,7 +18,6 @@ const InsufficientAccess = () => {
                 <DigitDesign.CardHeader>
                     <DigitDesign.CardTitle text={text.InsufficientAccess} />
                 </DigitDesign.CardHeader>
-                <DigitDesign.CardHeaderImage src="/403.gif" />
                 <DigitDesign.CardBody>
                     <DigitText.Text text={text.YouDontHaveAccess} />
                 </DigitDesign.CardBody>

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.user.whitelist;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.user.domain.Cid;
 import org.springframework.stereotype.Service;

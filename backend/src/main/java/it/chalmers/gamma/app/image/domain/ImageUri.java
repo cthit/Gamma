@@ -15,7 +15,6 @@ public record ImageUri(String value) implements Serializable {
         }
     }
 
-    //TODO: These defaults shouldn't be here
     public static ImageUri defaultGroupBanner() {
         return new ImageUri("default_group_banner.jpg");
     }

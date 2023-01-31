@@ -6,7 +6,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class PostFacadeIntegrationTest {
 
 
-
     @BeforeEach
     public void clearSecurityContext() {
         SecurityContextHolder.clearContext();

@@ -1,5 +1,5 @@
 
-*{
+* {
     --mdc-theme-primary: #2196F3;
     --mdc-theme-secondary: #2196F3;
 }
@@ -32,7 +32,7 @@ body {
     animation-iteration-count: 1;
     animation-timing-function: ease-in-out;
     animation-duration: 0.5s;
-    animation-fill-mode:forwards;
+    animation-fill-mode: forwards;
 
     object-fit: cover;
     object-position: center;
@@ -56,37 +56,37 @@ footer {
     width: 100%;
 }
 
-#it-logo{
-    width:50px;
-    height:50px;
+#it-logo {
+    width: 50px;
+    height: 50px;
 }
 
-.text{
+.text {
     font-size: 16px;
     font-weight: normal;
     margin: 0;
 }
 
-.center-vertical{
-    display:block;
+.center-vertical {
+    display: block;
     margin-top: auto;
     margin-bottom: auto;
 }
 
-.text--large{
+.text--large {
     font-size: 23px;
     font-weight: 900;
 }
 
-.text--small{
+.text--small {
     font-size: 13px !important;
 }
 
-.text--roboto{
+.text--roboto {
     font-family: "Roboto", serif;
 }
 
-.card{
+.card {
     margin: auto;
 
     display: flex;
@@ -100,26 +100,26 @@ footer {
     background-color: white;
 }
 
-.padding{
+.padding {
     display: block;
     width: 16px;
     height: 16px;
 }
 
-.row{
+.row {
     display: flex;
     flex-direction: row;
 }
 
-.row--space-between{
+.row--space-between {
     justify-content: space-between;
 }
 
-.black-color{
+.black-color {
     color: black !important;
 }
 
-hr{
+hr {
     display: block;
     height: 1px;
     border: 0;

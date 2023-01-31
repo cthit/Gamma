@@ -3,8 +3,8 @@ package it.chalmers.gamma.app.post;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
@@ -32,8 +32,6 @@ public class PostFacade extends Facade {
         this.groupRepository = groupRepository;
     }
 
-    public record NewPost(String svText, String enText, String emailPrefix) { }
-
     public void create(NewPost newPost) {
         this.postRepository.save(
                 new Post(
@@ -44,8 +42,6 @@ public class PostFacade extends Facade {
                 )
         );
     }
-
-    public record UpdatePost(UUID postId, int version, String svText, String enText, String emailPrefix) { }
 
     public void update(UpdatePost updatePost) throws PostRepository.PostNotFoundException {
         Post oldPost = this.postRepository.get(new PostId(updatePost.postId))
@@ -64,20 +60,6 @@ public class PostFacade extends Facade {
 
     public void delete(UUID postId) throws PostRepository.PostNotFoundException {
         this.postRepository.delete(new PostId(postId));
-    }
-
-    public record PostDTO(UUID id,
-                          int version,
-                          String svName,
-                          String enName,
-                          String emailPrefix) {
-        public PostDTO(Post post) {
-            this(post.id().value(),
-                    post.version(),
-                    post.name().sv().value(),
-                    post.name().en().value(),
-                    post.emailPrefix().value());
-        }
     }
 
     public Optional<PostDTO> get(UUID postId) {
@@ -102,6 +84,26 @@ public class PostFacade extends Facade {
                 .stream()
                 .map(GroupFacade.GroupWithMembersDTO::new)
                 .toList();
+    }
+
+    public record NewPost(String svText, String enText, String emailPrefix) {
+    }
+
+    public record UpdatePost(UUID postId, int version, String svText, String enText, String emailPrefix) {
+    }
+
+    public record PostDTO(UUID id,
+                          int version,
+                          String svName,
+                          String enName,
+                          String emailPrefix) {
+        public PostDTO(Post post) {
+            this(post.id().value(),
+                    post.version(),
+                    post.name().sv().value(),
+                    post.name().en().value(),
+                    post.emailPrefix().value());
+        }
     }
 
 }

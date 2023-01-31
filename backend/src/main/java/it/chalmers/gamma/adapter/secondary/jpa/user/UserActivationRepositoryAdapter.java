@@ -2,26 +2,24 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
-import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
-import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.activation.domain.UserActivation;
+import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
+import it.chalmers.gamma.app.user.domain.Cid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityExistsException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserActivationRepositoryAdapter implements UserActivationRepository {
 
-    private final UserActivationJpaRepository userActivationJpaRepository;
-
     private static final PersistenceErrorState cidNotWhitelisted = new PersistenceErrorState(
             "user_activation_cid_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
+    private final UserActivationJpaRepository userActivationJpaRepository;
 
     public UserActivationRepositoryAdapter(UserActivationJpaRepository userActivationJpaRepository) {
         this.userActivationJpaRepository = userActivationJpaRepository;

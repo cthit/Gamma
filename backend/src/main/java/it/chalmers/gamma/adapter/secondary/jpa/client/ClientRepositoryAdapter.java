@@ -14,10 +14,10 @@ import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.user.domain.UserId;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,26 +25,23 @@ import java.util.Optional;
 @Transactional
 public class ClientRepositoryAdapter implements ClientRepository {
 
+    private static final PersistenceErrorState authorityLevelNotFound = new PersistenceErrorState(
+            "itclient_authority_level_restriction_authority_level_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
+    );
+    private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
+            "it_user_approval_user_id_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
+    );
+    private static final PersistenceErrorState clientIdAlreadyExists = new PersistenceErrorState(
+            "itclient_client_id_key",
+            PersistenceErrorState.Type.NOT_UNIQUE
+    );
     private final ClientJpaRepository clientJpaRepository;
     private final ClientApiKeyJpaRepository clientApiKeyJpaRepository;
     private final ClientEntityConverter clientEntityConverter;
     private final UserApprovalJpaRepository userApprovalJpaRepository;
     private final UserJpaRepository userJpaRepository;
-
-    private static final PersistenceErrorState authorityLevelNotFound = new PersistenceErrorState(
-            "itclient_authority_level_restriction_authority_level_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
-            "it_user_approval_user_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState clientIdAlreadyExists = new PersistenceErrorState(
-            "itclient_client_id_key",
-            PersistenceErrorState.Type.NOT_UNIQUE
-    );
 
     public ClientRepositoryAdapter(ClientJpaRepository clientJpaRepository,
                                    ClientApiKeyJpaRepository clientApiKeyJpaRepository,
@@ -107,12 +104,31 @@ public class ClientRepositoryAdapter implements ClientRepository {
     }
 
     @Override
+    public void addClientApproval(UserId userId, ClientUid clientUid) {
+        UserApprovalEntity userApprovalEntity = new UserApprovalEntity(
+                this.userJpaRepository.findById(userId.value()).orElseThrow(),
+                this.clientJpaRepository.findById(clientUid.value()).orElseThrow()
+        );
+        this.userApprovalJpaRepository.save(userApprovalEntity);
+    }
+
+    @Override
+    public boolean isApprovedByUser(UserId userId, ClientUid clientUid) {
+        return this.userApprovalJpaRepository.existsById_Client_ClientUidAndId_User_Id(clientUid.value(), userId.value());
+    }
+
+    @Override
     public List<Client> getClientsByUserApproved(UserId id) {
         return this.userApprovalJpaRepository.findAllById_User_Id(id.value())
                 .stream()
                 .map(UserApprovalEntity::getClientEntity)
                 .map(this.clientEntityConverter::toDomain)
                 .toList();
+    }
+
+    @Override
+    public void deleteUserApproval(ClientUid clientUid, UserId userId) {
+        this.userApprovalJpaRepository.deleteById_Client_ClientUidAndId_User_Id(clientUid.value(), userId.value());
     }
 
     @Override

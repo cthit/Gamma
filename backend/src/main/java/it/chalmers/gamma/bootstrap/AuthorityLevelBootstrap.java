@@ -2,14 +2,14 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.app.post.domain.PostRepository;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
@@ -117,7 +117,8 @@ public class AuthorityLevelBootstrap {
                                         .toList()
                         )
                 );
-            } catch (AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException | AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
+            } catch (AuthorityLevelRepository.AuthorityLevelNotFoundRuntimeException |
+                     AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
                 e.printStackTrace();
             }
         });
@@ -125,25 +126,24 @@ public class AuthorityLevelBootstrap {
         LOGGER.info("==========                     ==========");
     }
 
-    public static class Authorities {
+    private void ensureAuthorityLevelNameInMap(Map<AuthorityLevelName, Authorities> authorityLevelMap, AuthorityLevelName authorityLevelName) {
+        if (!authorityLevelMap.containsKey(authorityLevelName)) {
+            authorityLevelMap.put(authorityLevelName, new Authorities());
+        }
+    }
 
-        public record SuperGroupPost(PostId postId, SuperGroupId superGroupId) { }
+    public static class Authorities {
 
         public List<SuperGroupId> superGroups;
         public List<UserId> users;
         public List<SuperGroupPost> posts;
-
         public Authorities() {
             this.superGroups = new ArrayList<>();
             this.users = new ArrayList<>();
             this.posts = new ArrayList<>();
         }
-    }
 
-
-    private void ensureAuthorityLevelNameInMap(Map<AuthorityLevelName, Authorities> authorityLevelMap, AuthorityLevelName authorityLevelName) {
-        if (!authorityLevelMap.containsKey(authorityLevelName)) {
-            authorityLevelMap.put(authorityLevelName, new Authorities());
+        public record SuperGroupPost(PostId postId, SuperGroupId superGroupId) {
         }
     }
 

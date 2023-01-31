@@ -6,11 +6,10 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord> {
@@ -27,7 +26,8 @@ public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord>
     @ManyToOne(fetch = FetchType.EAGER)
     protected AuthorityLevelEntity authorityLevel;
 
-    protected AuthorityPostPK() {}
+    protected AuthorityPostPK() {
+    }
 
     public AuthorityPostPK(SuperGroupEntity superGroupEntity, PostEntity postEntity, AuthorityLevelEntity authorityLevel) {
         this.superGroupEntity = superGroupEntity;
@@ -46,6 +46,7 @@ public class AuthorityPostPK extends PKId<AuthorityPostPK.AuthorityPostPKRecord>
 
     public record AuthorityPostPKRecord(SuperGroupId superGroupId,
                                         PostId postId,
-                                        AuthorityLevelName authorityLevelName) { }
+                                        AuthorityLevelName authorityLevelName) {
+    }
 
 }

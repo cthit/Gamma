@@ -13,17 +13,7 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.utils.PasswordEncoderTestConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,13 +25,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.time.Instant;
 import java.util.Collections;
 
-import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.DEFAULT_USER;
-import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
-import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsNormalUser;
-import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedUser;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.*;
+import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({UserRepositoryAdapter.class,

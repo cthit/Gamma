@@ -11,7 +11,7 @@ import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -36,13 +36,6 @@ public class ImageFacade extends Facade {
         this.imageService = imageService;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
-    }
-
-    public record ImageDetails(byte[] data,
-                               String imageType) {
-        public ImageDetails(ImageService.ImageDetails image) {
-            this(image.data(), image.type());
-        }
     }
 
     public void setGroupBanner(UUID groupId, Image image) throws ImageService.ImageCouldNotBeSavedException {
@@ -87,15 +80,15 @@ public class ImageFacade extends Facade {
         );
     }
 
-    //TODO: Implement admin and users to be able to remove group images and me avatar.
-
     public void setMeAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
-        if (SecurityContextHolder.getContext().getAuthentication() instanceof UserAuthenticationDetails userPrincipal) {
+        if (SecurityContextHolder.getContext().getAuthentication() instanceof UserAuthentication userPrincipal) {
             GammaUser user = userPrincipal.get();
             ImageUri imageUri = this.imageService.saveImage(image);
             this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));
         }
     }
+
+    //TODO: Implement admin and users to be able to remove group images and me avatar.
 
     public ImageDetails getAvatar(UUID userId) {
         GammaUser user = this.userRepository.get(new UserId(userId)).orElseThrow();
@@ -105,6 +98,13 @@ public class ImageFacade extends Facade {
                                 ? ImageUri.defaultUserAvatar()
                                 : user.extended().avatarUri())
         );
+    }
+
+    public record ImageDetails(byte[] data,
+                               String imageType) {
+        public ImageDetails(ImageService.ImageDetails image) {
+            this(image.data(), image.type());
+        }
     }
 
 }

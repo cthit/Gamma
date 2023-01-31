@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.whitelist;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -39,7 +38,7 @@ public class WhitelistRepositoryAdapter implements WhitelistRepository {
 
     @Override
     public void remove(Cid cid) throws NotWhitelistedException {
-        try{
+        try {
             this.whitelistJpaRepository.deleteById(cid.value());
             this.whitelistJpaRepository.flush();
         } catch (EmptyResultDataAccessException e) {

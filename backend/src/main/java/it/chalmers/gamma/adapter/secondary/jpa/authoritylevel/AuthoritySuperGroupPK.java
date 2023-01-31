@@ -4,11 +4,10 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-
-import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
@@ -26,13 +25,10 @@ public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthorityS
     }
 
     protected AuthoritySuperGroupPK(SuperGroupEntity superGroupEntity,
-                                 AuthorityLevelEntity authorityLevelEntity) {
+                                    AuthorityLevelEntity authorityLevelEntity) {
         this.superGroupEntity = superGroupEntity;
         this.authorityLevel = authorityLevelEntity;
     }
-
-    protected record AuthoritySuperGroupPKDTO(SuperGroupId superGroupId,
-                                              AuthorityLevelName authorityLevelName) { }
 
     @Override
     public AuthoritySuperGroupPKDTO getValue() {
@@ -40,5 +36,9 @@ public class AuthoritySuperGroupPK extends PKId<AuthoritySuperGroupPK.AuthorityS
                 new SuperGroupId(this.superGroupEntity.getId()),
                 new AuthorityLevelName(this.authorityLevel.getId())
         );
+    }
+
+    protected record AuthoritySuperGroupPKDTO(SuperGroupId superGroupId,
+                                              AuthorityLevelName authorityLevelName) {
     }
 }

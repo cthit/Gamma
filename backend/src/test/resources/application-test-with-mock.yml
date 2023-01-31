@@ -1,13 +1,13 @@
 spring:
   datasource:
     # Flyway migration settings => FlywayMigrationConfig.java
-    url: jdbc:tc:postgresql:13:///?TC_INITFUNCTION=it.chalmers.gamma.utils.FlywayMigrationConfig::initFlywayFromTC
+    url: jdbc:tc:postgresql:15:///?TC_INITFUNCTION=it.chalmers.gamma.utils.FlywayMigrationConfig::initFlywayFromTC
     hikari:
       # Set since otherwise the tests will fail because of too many tests that are using the testcontainer
       # https://stackoverflow.com/a/63474915/1663265
       minimum-idle: 1
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
         globally_quoted_identifiers: true
@@ -20,7 +20,7 @@ spring:
     store-type: none
 logging:
   level:
-    it.chalmers.gamma: TRACE
+    it.chalmers.gamma: DEBUG
 
 application:
   mocking: true

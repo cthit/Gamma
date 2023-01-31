@@ -6,11 +6,7 @@ import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -47,8 +43,11 @@ public final class EditGroupImagesController {
         return new GroupBannerEdited();
     }
 
-    private static class GroupBannerEdited extends SuccessResponse { }
-    private static class GroupAvatarEdited extends SuccessResponse { }
+    private static class GroupBannerEdited extends SuccessResponse {
+    }
+
+    private static class GroupAvatarEdited extends SuccessResponse {
+    }
 
     private static class FileIssueResponse extends ErrorResponse {
         public FileIssueResponse() {

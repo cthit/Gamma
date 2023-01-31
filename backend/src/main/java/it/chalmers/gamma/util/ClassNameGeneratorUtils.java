@@ -2,7 +2,8 @@ package it.chalmers.gamma.util;
 
 public class ClassNameGeneratorUtils {
 
-    private ClassNameGeneratorUtils() { }
+    private ClassNameGeneratorUtils() {
+    }
 
     public static String classToScreamingSnakeCase(Class<?> c) {
         String className = c.getSimpleName();

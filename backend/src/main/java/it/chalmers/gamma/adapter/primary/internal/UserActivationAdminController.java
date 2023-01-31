@@ -1,14 +1,9 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.user.activation.ActivationCodeFacade;
-
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,8 +34,10 @@ public final class UserActivationAdminController {
         return new UserActivationDeletedResponse();
     }
 
-    private static class UserActivationDeletedResponse extends SuccessResponse { }
+    private static class UserActivationDeletedResponse extends SuccessResponse {
+    }
 
-    private static class UserActivationNotFoundResponse extends NotFoundResponse { }
+    private static class UserActivationNotFoundResponse extends NotFoundResponse {
+    }
 
 }

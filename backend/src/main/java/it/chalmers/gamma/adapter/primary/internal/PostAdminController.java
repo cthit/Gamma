@@ -2,18 +2,10 @@ package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.post.PostFacade;
-
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,17 +20,13 @@ public final class PostAdminController {
         this.postFacade = postFacade;
     }
 
-    private record CreatePostRequest(String svText, String enText, String emailPrefix) { }
-
     @PostMapping()
     public PostCreatedResponse addPost(@RequestBody CreatePostRequest request) {
         this.postFacade.create(
-                new PostFacade.NewPost(request.svText, request.enText, request.emailPrefix())
+                new PostFacade.NewPost(request.svName, request.enName, request.emailPrefix())
         );
         return new PostCreatedResponse();
     }
-
-    private record EditPostRequest(int version, String svText, String enText, String emailPrefix) { }
 
     @PutMapping("/{id}")
     public PostEditedResponse editPost(
@@ -49,8 +37,8 @@ public final class PostAdminController {
                     new PostFacade.UpdatePost(
                             id,
                             request.version,
-                            request.svText,
-                            request.enText,
+                            request.svName,
+                            request.enName,
                             request.emailPrefix
                     )
             );
@@ -75,12 +63,22 @@ public final class PostAdminController {
         return this.postFacade.getPostUsages(id);
     }
 
-    private static class PostEditedResponse extends SuccessResponse { }
+    private record CreatePostRequest(String svName, String enName, String emailPrefix) {
+    }
 
-    private static class PostDeletedResponse extends SuccessResponse { }
+    private record EditPostRequest(int version, String svName, String enName, String emailPrefix) {
+    }
 
-    private static class PostCreatedResponse extends SuccessResponse {}
+    private static class PostEditedResponse extends SuccessResponse {
+    }
 
-    private static class PostNotFoundResponse extends NotFoundResponse { }
+    private static class PostDeletedResponse extends SuccessResponse {
+    }
+
+    private static class PostCreatedResponse extends SuccessResponse {
+    }
+
+    private static class PostNotFoundResponse extends NotFoundResponse {
+    }
 
 }

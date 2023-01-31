@@ -66,5 +66,6 @@
     "SuperGroup": ["Super group", "Supergrupp"],
     "Post": ["Post", "Post"],
     "Search": ["Search", "Sök"],
-    "PostEmail": ["Post email", "Post mail"]
+    "PostEmail": ["Post email", "Post mail"],
+    "Authorities": ["Authorities", "Rättigheter"]
 }

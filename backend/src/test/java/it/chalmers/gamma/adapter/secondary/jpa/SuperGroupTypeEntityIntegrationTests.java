@@ -15,9 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static it.chalmers.gamma.utils.DomainUtils.committee;
 import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({SuperGroupTypeRepositoryAdapter.class,

@@ -2,15 +2,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.user.domain.Language;
+import jakarta.persistence.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -19,7 +12,7 @@ import java.util.UUID;
 public class UserEntity extends MutableEntity<UUID> {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "user_id", columnDefinition = "uuid")
     protected UUID id;
 
     @Column(name = "cid")
@@ -59,7 +52,8 @@ public class UserEntity extends MutableEntity<UUID> {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     protected UserAvatarEntity userAvatar;
 
-    protected UserEntity() { }
+    protected UserEntity() {
+    }
 
     @Override
     public UUID getId() {

@@ -11,12 +11,13 @@ spring:
       enabled: ALWAYS
   jpa:
     show-sql: false
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
         globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.PostgreSQL9Dialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
@@ -59,10 +60,7 @@ server:
 
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:INFO}
-    org.springframework.security: INFO
-    org.springframework.security.access: INFO
-    org.springframework.security.oauth2.server.authorization: INFO
+    root: ${ROOT_DEBUG_LEVEL:DEBUG}
 
 application:
   base-uri: http://gamma:8081

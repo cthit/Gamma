@@ -16,9 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({UserActivationRepositoryAdapter.class,

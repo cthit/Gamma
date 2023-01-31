@@ -35,37 +35,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
-import static it.chalmers.gamma.utils.DomainUtils.board;
-import static it.chalmers.gamma.utils.DomainUtils.chair;
-import static it.chalmers.gamma.utils.DomainUtils.committee;
-import static it.chalmers.gamma.utils.DomainUtils.didit;
-import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static it.chalmers.gamma.utils.DomainUtils.digit18;
-import static it.chalmers.gamma.utils.DomainUtils.digit19;
-import static it.chalmers.gamma.utils.DomainUtils.drawit18;
-import static it.chalmers.gamma.utils.DomainUtils.drawit19;
-import static it.chalmers.gamma.utils.DomainUtils.gm;
-import static it.chalmers.gamma.utils.DomainUtils.member;
-import static it.chalmers.gamma.utils.DomainUtils.prit18;
-import static it.chalmers.gamma.utils.DomainUtils.prit19;
-import static it.chalmers.gamma.utils.DomainUtils.styrit18;
-import static it.chalmers.gamma.utils.DomainUtils.styrit19;
-import static it.chalmers.gamma.utils.DomainUtils.treasurer;
-import static it.chalmers.gamma.utils.DomainUtils.u10;
-import static it.chalmers.gamma.utils.DomainUtils.u11;
-import static it.chalmers.gamma.utils.DomainUtils.u8;
-import static it.chalmers.gamma.utils.DomainUtils.u9;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 public class GroupFacadeUnitTest {

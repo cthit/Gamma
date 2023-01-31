@@ -3,12 +3,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,7 +42,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public void create(GammaUser user, UnencryptedPassword password)
-            throws CidAlreadyInUseException, EmailAlreadyInUseException{
+            throws CidAlreadyInUseException, EmailAlreadyInUseException {
         try {
             this.save(toEntity(user, password.value()));
         } catch (DataIntegrityViolationException e) {

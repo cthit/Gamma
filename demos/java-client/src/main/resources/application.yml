@@ -2,7 +2,7 @@ server:
     port: 3001
 logging:
     level:
-        root: INFO
+        root: DEBUG
 spring:
     security:
         oauth2:
@@ -13,9 +13,10 @@ spring:
                         client-secret: secret
                         client-authentication-method: client_secret_basic
                         authorization-grant-type: authorization_code
-                        scope: openid,profile
+                        scope: openid,profile,email
                         redirect-uri: http://client:3001/login/oauth2/code/gamma
                         provider: gamma
+                        client-name: gamma
                 provider:
                     gamma:
                         token-uri: http://gamma:8081/api/oauth2/token
@@ -23,4 +24,3 @@ spring:
                         jwk-set-uri: http://gamma:8081/api/oauth2/jwks
                         user-info-uri: http://gamma:8081/api/userinfo
                         user-name-attribute: name
-                        client-name: gamma

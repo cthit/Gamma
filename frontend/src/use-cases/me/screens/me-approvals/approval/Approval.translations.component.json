@@ -1,0 +1,18 @@
+{
+    "InformationShared": ["Information shared to ", "Information delad till "],
+    "FirstAndLastName": ["First and last name", "För- och efternamn"],
+    "PreferredLanguage": ["Preferred language", "Önskade språk"],
+    "GroupsThatYouAreApartOf": [
+        "Groups that you're a part of",
+        "Grupper du är med i"
+    ],
+    "RetractApproval": ["Retract approval", "Dra tillbaka godkännandet"],
+    "RetractApprovalDialogDescription": [
+        "Retracting approval might still mean that your user id still exists for this client. If you want to remove further data, please contact digit@chalmers.it with your user id: ",
+        "Att dra tillbaka godkännandet betyder att ditt användarid fortfarande kan finnas för klienten. Om du vill ta bort mer information, kontakta gärna digit@chalmers.it med ditt användarid: "
+    ],
+    "AreYouSureRetractApproval": [
+        "Are you sure you want to retract your approval?",
+        "Är du säker att du vill ta bort ditt godkännande?"
+    ]
+}

@@ -11,22 +11,12 @@ import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapte
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.*;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientId;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
-import it.chalmers.gamma.app.client.domain.Scope;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
@@ -44,13 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.utils.DomainUtils.addAll;
-import static it.chalmers.gamma.utils.DomainUtils.asSaved;
-import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.utils.DomainUtils.removeUserExtended;
-import static it.chalmers.gamma.utils.DomainUtils.u1;
-import static it.chalmers.gamma.utils.DomainUtils.u2;
-import static it.chalmers.gamma.utils.DomainUtils.u4;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsClientWithApi;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -243,7 +227,13 @@ public class ClientEntityIntegrationTests extends AbstractEntityIntegrationTests
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                Optional.empty()
+                Optional.of(new ApiKey(
+                        ApiKeyId.generate(),
+                        new PrettyName("Api Key"),
+                        new Text(),
+                        ApiKeyType.CLIENT,
+                        ApiKeyToken.generate()
+                ))
         );
 
         this.clientRepositoryAdapter.save(newClient);
@@ -271,7 +261,7 @@ public class ClientEntityIntegrationTests extends AbstractEntityIntegrationTests
 
         //No u2 since they are locked
         assertThat(savedClient2)
-                .isEqualTo(newClient2.withApprovedUsers(List.of(u1, u4)));
+                .isEqualTo(removeUserExtended(newClient2.withApprovedUsers(List.of(u1, u4))));
     }
 
     @Test

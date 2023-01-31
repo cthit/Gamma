@@ -1,11 +1,7 @@
 package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserIdentifier;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,7 +19,6 @@ public class FindUserByIdentifier {
     }
 
     /**
-     *
      * @param possibleIdentifier Can be a id, email or cid. Checks in that order.
      * @return A user if it can be found with the first valid object.
      */

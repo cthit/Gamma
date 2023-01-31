@@ -3,16 +3,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import jakarta.persistence.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +12,7 @@ import java.util.UUID;
 public class ApiKeyEntity extends MutableEntity<UUID> {
 
     @Id
-    @Column(name = "api_key_id")
+    @Column(name = "api_key_id", columnDefinition = "uuid")
     protected UUID id;
 
     @Column(name = "token")

@@ -23,12 +23,4 @@ public record GammaUser(UserId id,
         Objects.requireNonNull(acceptanceYear);
     }
 
-    public UserExtended extended() {
-        if (this.extended == null) {
-            throw new IllegalStateException("Extended is null, you should not try to access it, you've probably done something wrong");
-        }
-
-        return this.extended;
-    }
-
 }

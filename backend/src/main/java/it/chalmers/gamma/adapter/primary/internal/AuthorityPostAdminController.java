@@ -1,8 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
-
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -19,8 +17,6 @@ public final class AuthorityPostAdminController {
     public AuthorityPostAdminController(AuthorityLevelFacade authorityLevelFacade) {
         this.authorityLevelFacade = authorityLevelFacade;
     }
-
-    private record CreateAuthorityPostRequest(UUID postId, UUID superGroupId, String authorityLevelName) { }
 
     @PostMapping
     public AuthorityPostCreatedResponse addAuthority(@RequestBody CreateAuthorityPostRequest request) {
@@ -50,15 +46,23 @@ public final class AuthorityPostAdminController {
         return new AuthorityPostRemovedResponse();
     }
 
-    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse { }
+    private record CreateAuthorityPostRequest(UUID postId, UUID superGroupId, String authorityLevelName) {
+    }
 
-    private static class AuthorityPostRemovedResponse extends SuccessResponse { }
+    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse {
+    }
 
-    private static class AuthorityPostCreatedResponse extends SuccessResponse { }
+    private static class AuthorityPostRemovedResponse extends SuccessResponse {
+    }
 
-    private static class AuthorityPostNotFoundResponse extends NotFoundResponse { }
+    private static class AuthorityPostCreatedResponse extends SuccessResponse {
+    }
 
-    private static class AuthorityPostAlreadyExistsResponse extends AlreadyExistsResponse { }
+    private static class AuthorityPostNotFoundResponse extends NotFoundResponse {
+    }
+
+    private static class AuthorityPostAlreadyExistsResponse extends AlreadyExistsResponse {
+    }
 
 }
 

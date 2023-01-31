@@ -5,8 +5,6 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.user.UserPasswordRetriever;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
-
 @Service
 public class UserPasswordRetrieverAdapter implements UserPasswordRetriever {
 

@@ -5,10 +5,9 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.group.domain.GroupId;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.user.domain.UserId;
-
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
@@ -49,8 +48,6 @@ public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
         return user;
     }
 
-    public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) { }
-
     @Override
     public MembershipPK.MembershipPKDTO getValue() {
         return new MembershipPKDTO(
@@ -58,5 +55,8 @@ public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
                 new GroupId(this.group.getId()),
                 new UserId(this.user.getId())
         );
+    }
+
+    public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) {
     }
 }

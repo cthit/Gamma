@@ -7,14 +7,10 @@ import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/users/me")
@@ -33,12 +29,6 @@ public final class MeController {
         return this.meFacade.getMe();
     }
 
-    public record EditMeRequest (String nick,
-                                 String firstName,
-                                 String lastName,
-                                 String email,
-                                 String language) { }
-
     @PutMapping()
     public UserEditedResponse editMe(@RequestBody EditMeRequest request) {
         this.meFacade.updateMe(
@@ -53,8 +43,6 @@ public final class MeController {
         return new UserEditedResponse();
     }
 
-    record ChangeUserPassword(String oldPassword, String password) { }
-
     @PutMapping("/change_password")
     public PasswordChangedResponse changePassword(@RequestBody ChangeUserPassword request) {
         this.meFacade.updatePassword(
@@ -65,8 +53,6 @@ public final class MeController {
         );
         return new PasswordChangedResponse();
     }
-
-    record DeleteMeRequest (String password) { }
 
     @DeleteMapping()
     public UserDeletedResponse deleteMe(@RequestBody DeleteMeRequest request) {
@@ -85,15 +71,42 @@ public final class MeController {
         return this.meFacade.getSignedInUserApprovals();
     }
 
-    private static class UserAgreementAccepted extends SuccessResponse { }
+    @DeleteMapping("/approval/{clientUid}")
+    public ClientApprovalDeletedResponse deleteClientApproval(@PathVariable("clientUid") UUID clientUid) {
+        this.meFacade.deleteUserApproval(clientUid);
+        return new ClientApprovalDeletedResponse();
+    }
 
-    private static class UserEditedResponse extends SuccessResponse { }
+    public record EditMeRequest(String nick,
+                                String firstName,
+                                String lastName,
+                                String email,
+                                String language) {
+    }
 
-    private static class PasswordChangedResponse extends SuccessResponse { }
+    record ChangeUserPassword(String oldPassword, String password) {
+    }
 
-    private static class UserDeletedResponse extends SuccessResponse { }
+    record DeleteMeRequest(String password) {
+    }
 
-    private static class UserNotFoundResponse extends NotFoundResponse { }
+    private static class UserAgreementAccepted extends SuccessResponse {
+    }
+
+    private static class UserEditedResponse extends SuccessResponse {
+    }
+
+    private static class PasswordChangedResponse extends SuccessResponse {
+    }
+
+    private static class UserDeletedResponse extends SuccessResponse {
+    }
+
+    private static class UserNotFoundResponse extends NotFoundResponse {
+    }
+
+    private static class ClientApprovalDeletedResponse extends SuccessResponse {
+    }
 
     private static class IncorrectCidOrPasswordResponse extends ErrorResponse {
         public IncorrectCidOrPasswordResponse() {

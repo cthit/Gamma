@@ -13,11 +13,11 @@ import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +26,22 @@ import java.util.Optional;
 @Transactional
 public class GroupRepositoryAdapter implements GroupRepository {
 
+    private static final PersistenceErrorState SUPER_GROUP_NOT_FOUND = new PersistenceErrorState(
+            "fkit_group_super_group_id_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
+    );
+    private static final PersistenceErrorState GROUP_NAME_ALREADY_EXISTS = new PersistenceErrorState(
+            "fkit_group_e_name_key",
+            PersistenceErrorState.Type.NOT_UNIQUE
+    );
+    private static final PersistenceErrorState USER_NOT_FOUND = new PersistenceErrorState(
+            "membership_user_id_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
+    );
+    private static final PersistenceErrorState POST_NOT_FOUND = new PersistenceErrorState(
+            "membership_post_id_fkey",
+            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
+    );
     private final GroupJpaRepository groupJpaRepository;
     private final GroupEntityConverter groupEntityConverter;
     private final MembershipJpaRepository membershipJpaRepository;
@@ -33,26 +49,6 @@ public class GroupRepositoryAdapter implements GroupRepository {
     private final SuperGroupJpaRepository superGroupJpaRepository;
     private final PostJpaRepository postJpaRepository;
     private final UserJpaRepository userJpaRepository;
-
-    private static final PersistenceErrorState SUPER_GROUP_NOT_FOUND = new PersistenceErrorState(
-            "fkit_group_super_group_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState GROUP_NAME_ALREADY_EXISTS = new PersistenceErrorState(
-            "fkit_group_e_name_key",
-            PersistenceErrorState.Type.NOT_UNIQUE
-    );
-
-    private static final PersistenceErrorState USER_NOT_FOUND = new PersistenceErrorState(
-            "membership_user_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
-
-    private static final PersistenceErrorState POST_NOT_FOUND = new PersistenceErrorState(
-            "membership_post_id_fkey",
-            PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
-    );
 
     public GroupRepositoryAdapter(GroupJpaRepository groupJpaRepository,
                                   GroupEntityConverter groupEntityConverter,

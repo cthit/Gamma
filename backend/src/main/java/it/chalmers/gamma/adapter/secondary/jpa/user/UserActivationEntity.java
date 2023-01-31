@@ -1,13 +1,15 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import java.time.Instant;
-
-import javax.persistence.*;
-
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.user.activation.domain.UserActivation;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "user_activation")
@@ -23,7 +25,8 @@ public class UserActivationEntity extends ImmutableEntity<String> {
     @Column(name = "created_at")
     private Instant createdAt;
 
-    protected UserActivationEntity() { }
+    protected UserActivationEntity() {
+    }
 
     protected UserActivationEntity(Cid cid) {
         this.createdAt = Instant.now();

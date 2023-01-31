@@ -27,5 +27,6 @@ public record AuthorityLevel(AuthorityLevelName name,
         return new AuthorityLevel(name, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
-    public record SuperGroupPost(SuperGroup superGroup, Post post) { }
+    public record SuperGroupPost(SuperGroup superGroup, Post post) {
+    }
 }

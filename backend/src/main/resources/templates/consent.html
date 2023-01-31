@@ -1,20 +1,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta
-            name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
     />
 
-    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
 
-    <link rel="stylesheet" type="text/css"
-          href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.css"/>
-    <script type="text/javascript"
-            src="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.js"></script>
+    <link href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.css" rel="stylesheet"
+          type="text/css"/>
+    <script src="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.js"
+            type="text/javascript"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,900" rel="stylesheet">
 
-    <link rel="icon" type="image/png" th:href="@{/img/favicon.ico}">
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/png">
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -51,7 +51,8 @@
         <div class="padding"></div>
 
         <div class="row">
-            <h2 th:text="'Do you want to authorize ' + ${clientName} + ' to access:'" class="text text--roboto center-vertical"></h2>
+            <h2 class="text text--roboto center-vertical"
+                th:text="'Do you want to authorize ' + ${clientName} + ' to access:'"></h2>
         </div>
 
         <div class="row">
@@ -68,28 +69,30 @@
 
         <div class="padding"></div>
 
-        <form id="confirmationForm" name="confirmationForm" action="/api/oauth2/authorize" method="post">
-            <input type="hidden" name="client_id" th:value="${clientId}">
-            <input type="hidden" name="state" th:value="${state}">
+        <form action="/api/oauth2/authorize" id="confirmationForm" method="post" name="confirmationForm">
+            <input name="client_id" th:value="${clientId}" type="hidden">
+            <input name="state" th:value="${state}" type="hidden">
 
-            <div th:each="scope: ${scopes}" style="display: none;">
-                <input class="form-check-input"
-                       type="checkbox"
+            <div style="display: none;" th:each="scope: ${scopes}">
+                <input checked
+                       class="form-check-input"
                        name="scope"
-                       checked
+                       th:id="${scope}"
                        th:value="${scope}"
-                       th:id="${scope}">
+                       type="checkbox">
             </div>
-            <label><input id="confirmButton" name="authorize" value="Authorize" type="submit" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
+            <label><input class="foo-button mdc-button mdc-button--outlined" id="confirmButton" name="authorize" style="width:100%;" type="submit"
+                          value="Authorize"></label>
             <div class="padding"></div>
-            <label><input id="denialButton" name="deny" value="Deny" type="button" onclick="cancelConsent()" style="width:100%;" class="foo-button mdc-button mdc-button--outlined"></label>
+            <label><input class="foo-button mdc-button mdc-button--outlined" id="denialButton" name="deny" onclick="cancelConsent()" style="width:100%;"
+                          type="button" value="Deny"></label>
         </form>
     </div>
 </div>
 
 
 <footer class="text text--roboto">
-    Made by digIT '18
+    Made by Portals. <a class="text-link" target="_blank" href="https://github.com/cthit/gamma">Github</a>
 </footer>
 
 </body>

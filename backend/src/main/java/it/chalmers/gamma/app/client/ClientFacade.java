@@ -7,24 +7,14 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientId;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
-import it.chalmers.gamma.app.client.domain.Scope;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.user.UserFacade;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 
@@ -38,21 +28,6 @@ public class ClientFacade extends Facade {
         super(accessGuard);
         this.clientRepository = clientRepository;
     }
-
-    public record NewClient(String webServerRedirectUrl,
-                            String prettyName,
-                            String svDescription,
-                            String enDescription,
-                            boolean generateApiKey,
-                            List<String> restrictions,
-                            boolean emailScope) { }
-
-    public record ClientAndApiKeySecrets(
-            UUID clientUid,
-            String clientId,
-            String clientSecret,
-            String apiKeyToken
-    ) { }
 
     /**
      * @return The client secret for the client
@@ -125,6 +100,51 @@ public class ClientFacade extends Facade {
             throw new ClientFacade.ClientNotFoundException();
         }
     }
+
+    public Optional<ClientDTO> get(String clientId) {
+        return this.clientRepository.get(new ClientId(clientId)).map(ClientDTO::new);
+    }
+
+    public List<ClientDTO> getAll() {
+        this.accessGuard.require(isAdmin());
+
+        return this.clientRepository.getAll()
+                .stream()
+                .map(ClientDTO::new)
+                .toList();
+    }
+
+    public String resetClientSecret(String clientUid) throws ClientNotFoundException {
+        this.accessGuard.require(isAdmin());
+
+        Client client = this.clientRepository.get(ClientUid.valueOf(clientUid))
+                .orElseThrow(ClientNotFoundException::new);
+        ClientSecret newSecret = ClientSecret.generate();
+
+        Client newClient = client.withClientSecret(newSecret);
+
+        this.clientRepository.save(newClient);
+
+        return newSecret.value();
+    }
+
+    public record NewClient(String webServerRedirectUrl,
+                            String prettyName,
+                            String svDescription,
+                            String enDescription,
+                            boolean generateApiKey,
+                            List<String> restrictions,
+                            boolean emailScope) {
+    }
+
+    public record ClientAndApiKeySecrets(
+            UUID clientUid,
+            String clientId,
+            String clientSecret,
+            String apiKeyToken
+    ) {
+    }
+
     public record ClientDTO(UUID clientUid,
                             String clientId,
                             String webServerRedirectUrl,
@@ -155,33 +175,7 @@ public class ClientFacade extends Facade {
         }
     }
 
-    public Optional<ClientDTO> get(String clientId) {
-        return this.clientRepository.get(new ClientId(clientId)).map(ClientDTO::new);
+    public static class ClientNotFoundException extends Exception {
     }
-
-    public List<ClientDTO> getAll() {
-        this.accessGuard.require(isAdmin());
-
-        return this.clientRepository.getAll()
-                .stream()
-                .map(ClientDTO::new)
-                .toList();
-    }
-
-    public String resetClientSecret(String clientUid) throws ClientNotFoundException {
-        this.accessGuard.require(isAdmin());
-
-        Client client = this.clientRepository.get(ClientUid.valueOf(clientUid))
-                .orElseThrow(ClientNotFoundException::new);
-        ClientSecret newSecret = ClientSecret.generate();
-
-        Client newClient = client.withClientSecret(newSecret);
-
-        this.clientRepository.save(newClient);
-
-        return newSecret.value();
-    }
-
-    public static class ClientNotFoundException extends Exception { }
 
 }

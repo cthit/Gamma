@@ -2,21 +2,13 @@ package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-
-import java.util.UUID;
-
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/admin/users")
@@ -31,8 +23,6 @@ public final class UserAdminController {
         this.userFacade = userFacade;
         this.userCreationFacade = userCreationFacade;
     }
-
-    record AdminChangePasswordRequest(String password) {}
 
     @PutMapping("/{id}/change_password")
     public PasswordChangedResponse changePassword(
@@ -54,42 +44,26 @@ public final class UserAdminController {
                 .orElseThrow();
     }
 
-    record AdminViewCreateUserRequest(String cid,
-                                         String password,
-                                         String nick,
-                                         String firstName,
-                                         String lastName,
-                                         String email,
-                                         int acceptanceYear,
-                                         String language) { }
-
     @PostMapping()
     public UserCreatedResponse addUser(@RequestBody AdminViewCreateUserRequest request) {
         try {
             this.userCreationFacade.createUser(
-                new UserCreationFacade.NewUser(
-                        request.password,
-                        request.nick,
-                        request.firstName,
-                        request.email,
-                        request.lastName,
-                        request.acceptanceYear,
-                        request.cid,
-                        request.language
-                )
+                    new UserCreationFacade.NewUser(
+                            request.password,
+                            request.nick,
+                            request.firstName,
+                            request.email,
+                            request.lastName,
+                            request.acceptanceYear,
+                            request.cid,
+                            request.language
+                    )
             );
         } catch (UserCreationFacade.SomePropertyNotUniqueException e) {
             e.printStackTrace();
         }
         return new UserCreatedResponse();
     }
-
-    record EditUserRequest (String nick,
-                            String firstName,
-                            String lastName,
-                            String email,
-                            String language,
-                            int acceptanceYear) { }
 
     @PutMapping("/{id}")
     public UserEditedResponse editUser(@PathVariable("id") UUID id,
@@ -107,14 +81,40 @@ public final class UserAdminController {
         return new UserEditedResponse();
     }
 
-    private static class PasswordChangedResponse extends SuccessResponse { }
+    record AdminChangePasswordRequest(String password) {
+    }
 
-    private static class UserDeletedResponse extends SuccessResponse { }
+    record AdminViewCreateUserRequest(String cid,
+                                      String password,
+                                      String nick,
+                                      String firstName,
+                                      String lastName,
+                                      String email,
+                                      int acceptanceYear,
+                                      String language) {
+    }
 
-    private static class UserCreatedResponse extends SuccessResponse { }
+    record EditUserRequest(String nick,
+                           String firstName,
+                           String lastName,
+                           String email,
+                           String language,
+                           int acceptanceYear) {
+    }
 
-    private static class UserEditedResponse extends SuccessResponse { }
+    private static class PasswordChangedResponse extends SuccessResponse {
+    }
 
-    private static class UserNotFoundResponse extends NotFoundResponse { }
+    private static class UserDeletedResponse extends SuccessResponse {
+    }
+
+    private static class UserCreatedResponse extends SuccessResponse {
+    }
+
+    private static class UserEditedResponse extends SuccessResponse {
+    }
+
+    private static class UserNotFoundResponse extends NotFoundResponse {
+    }
 
 }

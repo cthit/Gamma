@@ -9,5 +9,6 @@ import java.util.UUID;
 @Repository
 public interface UserPasswordResetJpaRepository extends JpaRepository<UserPasswordResetEntity, UUID> {
     Optional<UserPasswordResetEntity> findByUserId(UUID userId);
+
     void deleteByToken(String token);
 }

@@ -4,13 +4,7 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -23,10 +17,6 @@ public final class GroupAdminController {
     public GroupAdminController(GroupFacade groupFacade) {
         this.groupFacade = groupFacade;
     }
-
-    private record CreateGroupRequest(String name,
-                                      String prettyName,
-                                      UUID superGroup) { }
 
     @PostMapping()
     public GroupCreatedResponse addNewGroup(@RequestBody CreateGroupRequest request) {
@@ -43,12 +33,6 @@ public final class GroupAdminController {
         }
         return new GroupCreatedResponse();
     }
-
-    private record EditGroupRequest(int version,
-                                    String name,
-                                    String prettyName,
-                                    UUID superGroup) { }
-
 
     @PutMapping("/{id}")
     public GroupUpdatedResponse editGroup(@RequestBody EditGroupRequest request,
@@ -79,16 +63,33 @@ public final class GroupAdminController {
         }
     }
 
-    private static class GroupCreatedResponse extends SuccessResponse { }
+    private record CreateGroupRequest(String name,
+                                      String prettyName,
+                                      UUID superGroup) {
+    }
 
-    private static class GroupDeletedResponse extends SuccessResponse { }
+    private record EditGroupRequest(int version,
+                                    String name,
+                                    String prettyName,
+                                    UUID superGroup) {
+    }
 
-    private static class GroupUpdatedResponse extends SuccessResponse { }
+    private static class GroupCreatedResponse extends SuccessResponse {
+    }
 
-    private static class GroupNotFoundResponse extends NotFoundResponse { }
+    private static class GroupDeletedResponse extends SuccessResponse {
+    }
 
-    private static class SuperGroupNotFoundResponse extends NotFoundResponse { }
+    private static class GroupUpdatedResponse extends SuccessResponse {
+    }
 
-    private static class GroupAlreadyExistsResponse extends AlreadyExistsResponse { }
+    private static class GroupNotFoundResponse extends NotFoundResponse {
+    }
+
+    private static class SuperGroupNotFoundResponse extends NotFoundResponse {
+    }
+
+    private static class GroupAlreadyExistsResponse extends AlreadyExistsResponse {
+    }
 
 }

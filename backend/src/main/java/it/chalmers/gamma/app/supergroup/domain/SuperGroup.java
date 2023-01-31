@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.supergroup.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.user.domain.Name;

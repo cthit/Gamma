@@ -3,39 +3,32 @@ package it.chalmers.gamma.app.group;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.UnexpectedRuntimeException;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.group.domain.Group;
-import it.chalmers.gamma.app.group.domain.GroupId;
-import it.chalmers.gamma.app.group.domain.GroupMember;
-import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.common.PrettyName;
+import it.chalmers.gamma.app.group.domain.*;
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.post.domain.PostId;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.Name;
-import it.chalmers.gamma.app.common.PrettyName;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isClientApi;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 @Service
 public class GroupFacade extends Facade {
@@ -61,10 +54,6 @@ public class GroupFacade extends Facade {
         this.settingsRepository = settingsRepository;
     }
 
-    public record NewGroup(String name,
-                           String prettyName,
-                           UUID superGroup) { }
-
     @Transactional
     public void create(NewGroup newGroup) throws GroupAlreadyExistsException {
         accessGuard.require(isAdmin());
@@ -88,12 +77,6 @@ public class GroupFacade extends Facade {
         }
     }
 
-    public record UpdateGroup(UUID id,
-                              int version,
-                              String name,
-                              String prettyName,
-                              UUID superGroup) { }
-
     @Transactional
     public void update(UpdateGroup updateGroup) throws GroupAlreadyExistsException {
         accessGuard.require(isAdmin());
@@ -115,8 +98,6 @@ public class GroupFacade extends Facade {
             throw new GroupAlreadyExistsException();
         }
     }
-
-    public record ShallowMember(UUID userId, UUID postId, String unofficialPostName) { }
 
     @Transactional
     public void setMembers(UUID groupId, List<ShallowMember> newMembers) throws GroupNotFoundRuntimeException {
@@ -158,34 +139,6 @@ public class GroupFacade extends Facade {
         }
     }
 
-    public record GroupMemberDTO(UserFacade.UserDTO user, PostFacade.PostDTO post, String unofficialPostName) {
-        public GroupMemberDTO(GroupMember groupMember) {
-            this(new UserFacade.UserDTO(groupMember.user()), new PostFacade.PostDTO(groupMember.post()), groupMember.unofficialPostName().value());
-        }
-    }
-
-    public record GroupDTO(UUID id, String name, String prettyName, SuperGroupFacade.SuperGroupDTO superGroup) {
-        public GroupDTO(Group group) {
-            this(group.id().value(),
-                    group.name().value(),
-                    group.prettyName().value(),
-                    new SuperGroupFacade.SuperGroupDTO(group.superGroup())
-            );
-        }
-    }
-
-    public record GroupWithMembersDTO(UUID id, int version, String name, String prettyName, List<GroupMemberDTO> groupMembers, SuperGroupFacade.SuperGroupDTO superGroup) {
-        public GroupWithMembersDTO(Group group) {
-            this(group.id().value(),
-                    group.version(),
-                    group.name().value(),
-                    group.prettyName().value(),
-                    group.groupMembers().stream().map(GroupMemberDTO::new).toList(),
-                    new SuperGroupFacade.SuperGroupDTO(group.superGroup())
-            );
-        }
-    }
-
     public Optional<GroupWithMembersDTO> getWithMembers(UUID groupId) {
         accessGuard.require(isSignedIn());
 
@@ -219,11 +172,63 @@ public class GroupFacade extends Facade {
                 .toList();
     }
 
-    public static class GroupAlreadyExistsException extends Exception { }
+    public record NewGroup(String name,
+                           String prettyName,
+                           UUID superGroup) {
+    }
 
-    public static class UserNotFoundRuntimeException extends RuntimeException { }
-    public static class PostNotFoundRuntimeException extends RuntimeException { }
-    public static class GroupNotFoundRuntimeException extends RuntimeException { }
-    public static class SuperGroupNotFoundRuntimeException extends RuntimeException { }
+    public record UpdateGroup(UUID id,
+                              int version,
+                              String name,
+                              String prettyName,
+                              UUID superGroup) {
+    }
+
+    public record ShallowMember(UUID userId, UUID postId, String unofficialPostName) {
+    }
+
+    public record GroupMemberDTO(UserFacade.UserDTO user, PostFacade.PostDTO post, String unofficialPostName) {
+        public GroupMemberDTO(GroupMember groupMember) {
+            this(new UserFacade.UserDTO(groupMember.user()), new PostFacade.PostDTO(groupMember.post()), groupMember.unofficialPostName().value());
+        }
+    }
+
+    public record GroupDTO(UUID id, String name, String prettyName, SuperGroupFacade.SuperGroupDTO superGroup) {
+        public GroupDTO(Group group) {
+            this(group.id().value(),
+                    group.name().value(),
+                    group.prettyName().value(),
+                    new SuperGroupFacade.SuperGroupDTO(group.superGroup())
+            );
+        }
+    }
+
+    public record GroupWithMembersDTO(UUID id, int version, String name, String prettyName,
+                                      List<GroupMemberDTO> groupMembers, SuperGroupFacade.SuperGroupDTO superGroup) {
+        public GroupWithMembersDTO(Group group) {
+            this(group.id().value(),
+                    group.version(),
+                    group.name().value(),
+                    group.prettyName().value(),
+                    group.groupMembers().stream().map(GroupMemberDTO::new).toList(),
+                    new SuperGroupFacade.SuperGroupDTO(group.superGroup())
+            );
+        }
+    }
+
+    public static class GroupAlreadyExistsException extends Exception {
+    }
+
+    public static class UserNotFoundRuntimeException extends RuntimeException {
+    }
+
+    public static class PostNotFoundRuntimeException extends RuntimeException {
+    }
+
+    public static class GroupNotFoundRuntimeException extends RuntimeException {
+    }
+
+    public static class SuperGroupNotFoundRuntimeException extends RuntimeException {
+    }
 
 }

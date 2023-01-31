@@ -82,7 +82,7 @@ const EditAuthority = () => {
                 const postMap = {};
                 for (let i = 0; i < posts.length; i++) {
                     postMap[posts[i][POST_ID]] =
-                        posts[i][activeLanguage + "Text"];
+                        posts[i][activeLanguage + "Name"];
                 }
 
                 setPosts(postMap);
@@ -93,9 +93,9 @@ const EditAuthority = () => {
                         value: user.id,
                         text:
                             user.firstName +
-                            ' "' +
+                            " \"" +
                             user.nick +
-                            '" ' +
+                            "\" " +
                             user.lastName
                     }))
                 );
@@ -106,11 +106,11 @@ const EditAuthority = () => {
     }, [authorityLevel, activeLanguage]);
 
     if (error != null && error.response.status === 500) {
-        return <FiveZeroZero reset={() => setError(null)} />;
+        return <FiveZeroZero reset={() => setError(null)}/>;
     }
 
     if (error != null && error.response.status === 404) {
-        return <FourOFour />;
+        return <FourOFour/>;
     }
 
     if (
@@ -119,7 +119,7 @@ const EditAuthority = () => {
         postMap == null ||
         userOptions == null
     ) {
-        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"}/>;
     }
 
     const { users, superGroups, posts, authorityLevelName } = authorityLevel;
@@ -149,24 +149,24 @@ const EditAuthority = () => {
                                 confirmButtonText: text.Delete,
                                 onConfirm: () => {
                                     (type === "user"
-                                        ? deleteUserAuthority(
-                                              authorityLevelName,
-                                              item.id
-                                          )
-                                        : type === "superGroup"
-                                        ? deleteSuperGroupAuthority(
-                                              authorityLevelName,
-                                              item.id
-                                          )
-                                        : type === "post"
-                                        ? deletePostAuthority(
-                                              authorityLevelName,
-                                              item.superGroup.id,
-                                              item.post.id
-                                          )
-                                        : new Promise((resolve, reject) =>
-                                              reject()
-                                          )
+                                            ? deleteUserAuthority(
+                                                authorityLevelName,
+                                                item.id
+                                            )
+                                            : type === "superGroup"
+                                                ? deleteSuperGroupAuthority(
+                                                    authorityLevelName,
+                                                    item.id
+                                                )
+                                                : type === "post"
+                                                    ? deletePostAuthority(
+                                                        authorityLevelName,
+                                                        item.superGroup.id,
+                                                        item.post.id
+                                                    )
+                                                    : new Promise((resolve, reject) =>
+                                                        reject()
+                                                    )
                                     )
                                         .then(() => {
                                             setRead(true);
@@ -177,7 +177,7 @@ const EditAuthority = () => {
                                         .catch(() => {
                                             queueToast({
                                                 text:
-                                                    text.FailedAuthorityDeleted
+                                                text.FailedAuthorityDeleted
                                             });
                                         });
                                 }
@@ -197,7 +197,7 @@ const EditAuthority = () => {
                             openDialog({
                                 title: text.AreYouSure,
                                 description:
-                                    text.AreYouSureDeleteAuthorityLevel,
+                                text.AreYouSureDeleteAuthorityLevel,
                                 confirmButtonText: text.ImSure,
                                 cancelButtonText: text.Cancel,
                                 onConfirm: () => {
@@ -225,7 +225,7 @@ const EditAuthority = () => {
                 margin={{ bottom: "16px" }}
             >
                 <DigitDesign.CardHeader>
-                    <DigitDesign.CardTitle text={text.TypeOfAuthority} />
+                    <DigitDesign.CardTitle text={text.TypeOfAuthority}/>
                 </DigitDesign.CardHeader>
                 <DigitDesign.CardBody>
                     <DigitRadioButtonGroup

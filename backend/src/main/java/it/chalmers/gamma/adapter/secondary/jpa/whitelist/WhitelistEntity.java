@@ -2,11 +2,11 @@ package it.chalmers.gamma.adapter.secondary.jpa.whitelist;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.AbstractEntity;
 import it.chalmers.gamma.app.user.domain.Cid;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "whitelist_cid")
@@ -16,7 +16,8 @@ public class WhitelistEntity extends AbstractEntity<Cid> {
     @Column(name = "cid")
     private String cid;
 
-    protected WhitelistEntity() {}
+    protected WhitelistEntity() {
+    }
 
     protected WhitelistEntity(String cid) {
         this.cid = cid;

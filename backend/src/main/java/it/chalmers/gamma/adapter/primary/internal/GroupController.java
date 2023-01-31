@@ -1,15 +1,14 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.group.GroupFacade;
-
-import java.util.List;
-import java.util.UUID;
-
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/groups")
@@ -31,6 +30,7 @@ public final class GroupController {
         return this.groupFacade.getWithMembers(id).orElseThrow(GroupNotFoundResponse::new);
     }
 
-    private static class GroupNotFoundResponse extends NotFoundResponse { }
+    private static class GroupNotFoundResponse extends NotFoundResponse {
+    }
 
 }

@@ -2,10 +2,9 @@ package it.chalmers.gamma.adapter.secondary.jpa.authoritylevel;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "authority_super_group")
@@ -14,7 +13,8 @@ public class AuthoritySuperGroupEntity extends ImmutableEntity<AuthoritySuperGro
     @EmbeddedId
     protected AuthoritySuperGroupPK id;
 
-    protected AuthoritySuperGroupEntity() { }
+    protected AuthoritySuperGroupEntity() {
+    }
 
     public AuthoritySuperGroupEntity(SuperGroupEntity superGroup, AuthorityLevelEntity authorityLevel) {
         this.id = new AuthoritySuperGroupPK(superGroup, authorityLevel);

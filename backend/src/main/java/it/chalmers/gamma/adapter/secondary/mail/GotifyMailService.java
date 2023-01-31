@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class GotifyMailService implements MailService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GotifyMailService.class);
     private final String gotifyApiKey;
     private final String gotifyURL;
     private final boolean production;
@@ -26,8 +27,6 @@ public class GotifyMailService implements MailService {
         this.gotifyURL = gotifyURL;
         this.production = production;
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GotifyMailService.class);
 
     public void sendMail(String email, String subject, String body) {
         if (this.production) {
@@ -45,7 +44,7 @@ public class GotifyMailService implements MailService {
      *
      * @return true if message was successfully sent false if not
      */
-    private void sendMailViaGotify(String email,  String subject, String body) {
+    private void sendMailViaGotify(String email, String subject, String body) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);

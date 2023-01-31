@@ -4,12 +4,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupBuilder;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
+import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.Name;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 
 @Service
 public class SuperGroupFacade extends Facade {
@@ -46,20 +42,13 @@ public class SuperGroupFacade extends Facade {
     }
 
     public List<String> getAllTypes() {
-        accessGuard.require(isAdmin());
+        accessGuard.requireEither(isAdmin(), isSignedIn());
 
         return this.superGroupTypeRepository.getAll()
                 .stream()
                 .map(SuperGroupType::value)
                 .toList();
     }
-
-    public record NewSuperGroup(String name,
-                                String prettyName,
-                                String superGroupType,
-                                String email,
-                                String svDescription,
-                                String enDescription) { }
 
     public void createSuperGroup(NewSuperGroup newSuperGroup) throws SuperGroupRepository.SuperGroupAlreadyExistsException {
         accessGuard.require(isAdmin());
@@ -79,17 +68,11 @@ public class SuperGroupFacade extends Facade {
         );
     }
 
-    public record UpdateSuperGroup(UUID id,
-                                   int version,
-                                   String name,
-                                   String prettyName,
-                                   String type,
-                                   String email,
-                                   String svDescription,
-                                   String enDescription) { }
-
     public void updateSuperGroup(UpdateSuperGroup updateSuperGroup) throws SuperGroupRepository.SuperGroupNotFoundException {
         accessGuard.require(isAdmin());
+
+
+        System.out.println(updateSuperGroup);
 
         SuperGroup oldSuperGroup = this.superGroupRepository.get(new SuperGroupId(updateSuperGroup.id)).orElseThrow();
         SuperGroup newSuperGroup = SuperGroupBuilder
@@ -119,27 +102,8 @@ public class SuperGroupFacade extends Facade {
         }
     }
 
-    public record SuperGroupDTO(UUID id,
-                                int version,
-                                String name,
-                                String prettyName,
-                                String type,
-                                String svDescription,
-                                String enDescription) {
-        public SuperGroupDTO(SuperGroup superGroup) {
-            this(superGroup.id().value(),
-                    superGroup.version(),
-                    superGroup.name().value(),
-                    superGroup.prettyName().value(),
-                    superGroup.type().value(),
-                    superGroup.description().sv().value(),
-                    superGroup.description().en().value()
-            );
-        }
-    }
-
     public List<SuperGroupDTO> getAllSuperGroups() {
-        accessGuard.require(isAdmin());
+        accessGuard.requireEither(isAdmin(), isSignedIn());
 
         return this.superGroupRepository.getAll()
                 .stream()
@@ -160,7 +124,45 @@ public class SuperGroupFacade extends Facade {
         return this.superGroupRepository.get(new SuperGroupId(superGroupId)).map(SuperGroupDTO::new);
     }
 
-    public static class SuperGroupNotFoundException extends Exception { }
-    public static class SuperGroupIsUsedException extends Exception { }
+    public record NewSuperGroup(String name,
+                                String prettyName,
+                                String superGroupType,
+                                String svDescription,
+                                String enDescription) {
+    }
+
+    public record UpdateSuperGroup(UUID id,
+                                   int version,
+                                   String name,
+                                   String prettyName,
+                                   String type,
+                                   String svDescription,
+                                   String enDescription) {
+    }
+
+    public record SuperGroupDTO(UUID id,
+                                int version,
+                                String name,
+                                String prettyName,
+                                String type,
+                                String svDescription,
+                                String enDescription) {
+        public SuperGroupDTO(SuperGroup superGroup) {
+            this(superGroup.id().value(),
+                    superGroup.version(),
+                    superGroup.name().value(),
+                    superGroup.prettyName().value(),
+                    superGroup.type().value(),
+                    superGroup.description().sv().value(),
+                    superGroup.description().en().value()
+            );
+        }
+    }
+
+    public static class SuperGroupNotFoundException extends Exception {
+    }
+
+    public static class SuperGroupIsUsedException extends Exception {
+    }
 
 }

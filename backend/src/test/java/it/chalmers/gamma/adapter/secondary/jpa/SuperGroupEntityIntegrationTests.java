@@ -25,19 +25,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
-import static it.chalmers.gamma.utils.DomainUtils.addGroup;
-import static it.chalmers.gamma.utils.DomainUtils.alumni;
-import static it.chalmers.gamma.utils.DomainUtils.board;
-import static it.chalmers.gamma.utils.DomainUtils.committee;
-import static it.chalmers.gamma.utils.DomainUtils.didit;
-import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static it.chalmers.gamma.utils.DomainUtils.digit19;
-import static it.chalmers.gamma.utils.DomainUtils.dragit;
-import static it.chalmers.gamma.utils.DomainUtils.drawit;
-import static it.chalmers.gamma.utils.DomainUtils.emeritus;
-import static it.chalmers.gamma.utils.DomainUtils.society;
-import static it.chalmers.gamma.utils.DomainUtils.sprit;
-import static it.chalmers.gamma.utils.DomainUtils.styrit;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 

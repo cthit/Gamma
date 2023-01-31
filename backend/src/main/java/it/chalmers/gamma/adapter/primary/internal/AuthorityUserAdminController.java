@@ -1,16 +1,10 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -23,8 +17,6 @@ public final class AuthorityUserAdminController {
     public AuthorityUserAdminController(AuthorityLevelFacade authorityLevelFacade) {
         this.authorityLevelFacade = authorityLevelFacade;
     }
-
-    private record CreateAuthorityUserRequest(UUID userId, String authorityLevelName) { }
 
     @PostMapping
     public AuthorityUserCreatedResponse addAuthority(@RequestBody CreateAuthorityUserRequest request) {
@@ -55,14 +47,22 @@ public final class AuthorityUserAdminController {
         return new AuthorityUserRemovedResponse();
     }
 
-    private static class AuthorityUserRemovedResponse extends SuccessResponse { }
+    private record CreateAuthorityUserRequest(UUID userId, String authorityLevelName) {
+    }
 
-    private static class AuthorityUserCreatedResponse extends SuccessResponse { }
+    private static class AuthorityUserRemovedResponse extends SuccessResponse {
+    }
 
-    private static class AuthorityUserNotFoundResponse extends NotFoundResponse { }
+    private static class AuthorityUserCreatedResponse extends SuccessResponse {
+    }
 
-    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse { }
+    private static class AuthorityUserNotFoundResponse extends NotFoundResponse {
+    }
 
-    private static class AuthorityUserAlreadyExistsResponse extends AlreadyExistsResponse { }
+    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse {
+    }
+
+    private static class AuthorityUserAlreadyExistsResponse extends AlreadyExistsResponse {
+    }
 
 }

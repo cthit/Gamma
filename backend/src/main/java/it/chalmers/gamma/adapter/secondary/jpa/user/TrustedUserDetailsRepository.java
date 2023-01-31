@@ -4,14 +4,7 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TrustedUserDetailsRepository implements UserDetailsService {
@@ -61,7 +55,8 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userIdentifier) throws UsernameNotFoundException {
-        UserEntity userEntity = this.userJpaRepository.findByCid(userIdentifier).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserEntity userEntity = getUserByUsernameOrEmail(userIdentifier)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new User(
                 userEntity.id.toString(),
@@ -73,6 +68,15 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
                 // Authorities will be loaded by UpdateUserPrincipalFilter
                 Collections.emptyList()
         );
+    }
+
+    private Optional<UserEntity> getUserByUsernameOrEmail(String userIdentifier) {
+        Optional<UserEntity> userEntity = this.userJpaRepository.findByCid(userIdentifier);
+        if (userEntity.isEmpty()) {
+            userEntity = this.userJpaRepository.findByEmail(userIdentifier);
+        }
+
+        return userEntity;
     }
 
     private boolean hasAcceptedLatestUserAgreement(Instant acceptedUserAgreement, Settings settings) {

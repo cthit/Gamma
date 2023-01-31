@@ -16,11 +16,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.common.PrettyName;
-import it.chalmers.gamma.app.group.domain.Group;
-import it.chalmers.gamma.app.group.domain.GroupId;
-import it.chalmers.gamma.app.group.domain.GroupMember;
-import it.chalmers.gamma.app.group.domain.GroupRepository;
-import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.group.domain.*;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
@@ -40,32 +36,9 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.Optional;
 
-import static it.chalmers.gamma.utils.DomainUtils.addAll;
-import static it.chalmers.gamma.utils.DomainUtils.asSaved;
-import static it.chalmers.gamma.utils.DomainUtils.chair;
-import static it.chalmers.gamma.utils.DomainUtils.defaultSettings;
-import static it.chalmers.gamma.utils.DomainUtils.didit;
-import static it.chalmers.gamma.utils.DomainUtils.digit;
-import static it.chalmers.gamma.utils.DomainUtils.digit17;
-import static it.chalmers.gamma.utils.DomainUtils.digit18;
-import static it.chalmers.gamma.utils.DomainUtils.digit19;
-import static it.chalmers.gamma.utils.DomainUtils.drawit;
-import static it.chalmers.gamma.utils.DomainUtils.drawit18;
-import static it.chalmers.gamma.utils.DomainUtils.drawit19;
-import static it.chalmers.gamma.utils.DomainUtils.gm;
-import static it.chalmers.gamma.utils.DomainUtils.member;
-import static it.chalmers.gamma.utils.DomainUtils.prit18;
-import static it.chalmers.gamma.utils.DomainUtils.prit19;
-import static it.chalmers.gamma.utils.DomainUtils.styrit18;
-import static it.chalmers.gamma.utils.DomainUtils.styrit19;
-import static it.chalmers.gamma.utils.DomainUtils.treasurer;
-import static it.chalmers.gamma.utils.DomainUtils.u0;
-import static it.chalmers.gamma.utils.DomainUtils.u1;
-import static it.chalmers.gamma.utils.DomainUtils.u3;
+import static it.chalmers.gamma.utils.DomainUtils.*;
 import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({GroupRepositoryAdapter.class,

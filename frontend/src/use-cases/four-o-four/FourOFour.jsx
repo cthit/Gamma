@@ -16,14 +16,13 @@ const FourOFour = () => {
 
     return (
         <DigitDesign.Card
-            size={{ width: "300px", height: "450px" }}
+            size={{ width: "300px", height: "250px" }}
             margin={{ left: "auto", right: "auto" }}
             alignSelf={"center"}
         >
             <DigitDesign.CardHeader>
                 <DigitDesign.CardTitle text={text.PageNotFound} />
             </DigitDesign.CardHeader>
-            <DigitDesign.CardHeaderImage src="/404.jpg" />
             <DigitDesign.CardBody>
                 <DigitText.Text
                     text={

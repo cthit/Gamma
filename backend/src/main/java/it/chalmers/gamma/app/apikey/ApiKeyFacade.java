@@ -1,11 +1,7 @@
 package it.chalmers.gamma.app.apikey;
 
 import it.chalmers.gamma.app.Facade;
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.*;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -36,13 +32,6 @@ public class ApiKeyFacade extends Facade {
         return s;
     }
 
-    public record NewApiKey(
-            String prettyName,
-            String svDescription,
-            String enDescription,
-            String keyType) {
-    }
-
     public String create(NewApiKey newApiKey) {
         this.accessGuard.require(isAdmin());
 
@@ -66,21 +55,6 @@ public class ApiKeyFacade extends Facade {
             apiKeyRepository.delete(new ApiKeyId(apiKeyId));
         } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
             throw new ApiKeyNotFoundException();
-        }
-    }
-
-    public record ApiKeyDTO(UUID id,
-                            String prettyName,
-                            String svDescription,
-                            String enDescription,
-                            String keyType) {
-        public ApiKeyDTO(ApiKey apiKey) {
-            this(apiKey.id().value(),
-                    apiKey.prettyName().value(),
-                    apiKey.description().sv().value(),
-                    apiKey.description().en().value(),
-                    apiKey.keyType().name()
-            );
         }
     }
 
@@ -111,6 +85,29 @@ public class ApiKeyFacade extends Facade {
         return token.value();
     }
 
-    public static class ApiKeyNotFoundException extends Exception { }
+    public record NewApiKey(
+            String prettyName,
+            String svDescription,
+            String enDescription,
+            String keyType) {
+    }
+
+    public record ApiKeyDTO(UUID id,
+                            String prettyName,
+                            String svDescription,
+                            String enDescription,
+                            String keyType) {
+        public ApiKeyDTO(ApiKey apiKey) {
+            this(apiKey.id().value(),
+                    apiKey.prettyName().value(),
+                    apiKey.description().sv().value(),
+                    apiKey.description().en().value(),
+                    apiKey.keyType().name()
+            );
+        }
+    }
+
+    public static class ApiKeyNotFoundException extends Exception {
+    }
 
 }

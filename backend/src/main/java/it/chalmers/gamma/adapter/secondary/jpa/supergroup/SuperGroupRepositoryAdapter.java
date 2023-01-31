@@ -17,24 +17,21 @@ import java.util.Optional;
 @Service
 public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
-    private final SuperGroupJpaRepository repository;
-    private final SuperGroupTypeJpaRepository superGroupTypeJpaRepository;
-    private final SuperGroupEntityConverter superGroupEntityConverter;
-
     private static final PersistenceErrorState typeNotFound = new PersistenceErrorState(
             "fkit_super_group_super_group_type_name_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
-
     private static final PersistenceErrorState nameAlreadyExists = new PersistenceErrorState(
             "fkit_super_group_e_name_key",
             PersistenceErrorState.Type.NOT_UNIQUE
     );
-
     private static final PersistenceErrorState superGroupIsUsed = new PersistenceErrorState(
             "fkit_group_super_group_id_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
+    private final SuperGroupJpaRepository repository;
+    private final SuperGroupTypeJpaRepository superGroupTypeJpaRepository;
+    private final SuperGroupEntityConverter superGroupEntityConverter;
 
     public SuperGroupRepositoryAdapter(SuperGroupJpaRepository repository,
                                        SuperGroupTypeJpaRepository superGroupTypeJpaRepository,

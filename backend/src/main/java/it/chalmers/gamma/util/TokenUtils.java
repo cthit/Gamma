@@ -6,6 +6,21 @@ import java.util.stream.Collectors;
 
 public final class TokenUtils {
 
+    private TokenUtils() {
+    }
+
+    public static String generateToken(int length, CharacterTypes... types) {
+        String characters = Arrays.stream(types)
+                .map(CharacterTypes::getCharacters)
+                .collect(Collectors.joining());
+        Random rand = new Random();
+        StringBuilder code = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            code.append(characters.charAt(rand.nextInt(characters.length() - 1)));
+        }
+        return code.toString();
+    }
+
     public enum CharacterTypes {
         UPPERCASE("ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
         LOWERCASE("abcdefghijklmnopqrstuvwxyz"),
@@ -21,20 +36,6 @@ public final class TokenUtils {
             return this.characters;
         }
 
-    }
-
-    private TokenUtils() { }
-
-    public static String generateToken(int length, CharacterTypes...types) {
-        String characters = Arrays.stream(types)
-                .map(CharacterTypes::getCharacters)
-                .collect(Collectors.joining());
-        Random rand = new Random();
-        StringBuilder code = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            code.append(characters.charAt(rand.nextInt(characters.length() - 1)));
-        }
-        return code.toString();
     }
 
 }

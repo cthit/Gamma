@@ -25,7 +25,7 @@ public record UserId(UUID value) implements Id<UUID>, UserIdentifier {
     public static boolean validUserId(String possibleUserId) {
         return possibleUserId != null
                 && possibleUserId
-                        .matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/");
+                .matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/");
     }
 
     @Override

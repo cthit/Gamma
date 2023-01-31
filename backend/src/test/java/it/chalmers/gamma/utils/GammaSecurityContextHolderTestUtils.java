@@ -8,29 +8,15 @@ import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
-import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.client.domain.ClientId;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.client.domain.ClientSecret;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.RedirectUrl;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.user.domain.AcceptanceYear;
-import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.domain.FirstName;
-import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.Language;
-import it.chalmers.gamma.app.user.domain.LastName;
-import it.chalmers.gamma.app.user.domain.Nick;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
-import it.chalmers.gamma.app.user.domain.UserAuthority;
-import it.chalmers.gamma.app.user.domain.UserExtended;
-import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.principal.UserAuthenticationDetails;
+import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.security.api.ApiAuthenticationToken;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -152,7 +138,8 @@ public class GammaSecurityContextHolderTestUtils {
         context.setAuthentication(auth);
         SecurityContextHolder.setContext(context);
 
-        auth.setDetails(new UserAuthenticationDetails() {
+
+        auth.setDetails(new UserAuthentication() {
             @Override
             public GammaUser get() {
                 return gammaUser;
@@ -164,8 +151,6 @@ public class GammaSecurityContextHolderTestUtils {
             }
         });
     }
-
-    public record ClientWithApiKey(Client client, ApiKey apiKey) { }
 
     /**
      * Will have no approved users
@@ -181,7 +166,26 @@ public class GammaSecurityContextHolderTestUtils {
     public static void setAuthenticatedAsClientWithApi(Client client) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        throw new UnsupportedOperationException("Not done with refactoring of Api Keys yet");
+        if (client.clientApiKey().isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        context.setAuthentication(ApiAuthenticationToken.fromAuthenticatedApiKey(new ApiAuthentication() {
+            @Override
+            public ApiKey get() {
+                return client.clientApiKey().get();
+            }
+
+            @Override
+            public Optional<Client> getClient() {
+                return Optional.of(client);
+            }
+        }));
+
+        SecurityContextHolder.setContext(context);
+    }
+
+    public record ClientWithApiKey(Client client, ApiKey apiKey) {
     }
 
 }

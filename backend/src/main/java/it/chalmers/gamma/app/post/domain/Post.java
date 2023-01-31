@@ -1,8 +1,8 @@
 package it.chalmers.gamma.app.post.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
-import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.group.domain.EmailPrefix;
 
 import java.util.Objects;
 

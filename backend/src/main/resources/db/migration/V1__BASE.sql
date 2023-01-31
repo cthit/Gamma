@@ -118,12 +118,12 @@ CREATE TABLE user_activation
 
 CREATE TABLE itclient
 (
-    client_uid              UUID PRIMARY KEY,
-    client_id               VARCHAR(100) UNIQUE,
-    client_secret           VARCHAR(100) NOT NULL,
-    web_server_redirect_uri VARCHAR(256) NOT NULL,
-    pretty_name             VARCHAR(30)  NOT NULL,
-    description             UUID REFERENCES internal_text ON DELETE CASCADE
+    client_uid    UUID PRIMARY KEY,
+    client_id     VARCHAR(100) UNIQUE,
+    client_secret VARCHAR(100) NOT NULL,
+    redirect_uri  VARCHAR(256) NOT NULL,
+    pretty_name   VARCHAR(30)  NOT NULL,
+    description   UUID REFERENCES internal_text ON DELETE CASCADE
 );
 
 CREATE TABLE itclient_scope
@@ -186,4 +186,5 @@ CREATE TABLE settings_info_api_super_group_types
     super_group_type_name VARCHAR(30) REFERENCES super_group_type,
     PRIMARY KEY (settings_id, super_group_type_name)
 );
+
 
