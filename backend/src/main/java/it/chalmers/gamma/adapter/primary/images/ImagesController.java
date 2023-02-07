@@ -35,7 +35,7 @@ public class ImagesController {
     }
 
     @GetMapping("/group/avatar/{id}")
-    public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") UUID id) throws IOException {
+    public ResponseEntity<byte[]> getGroupAvatar(@PathVariable("id") UUID id) {
         ImageFacade.ImageDetails imageDetails = this.imageFacade.getGroupAvatar(id);
         String type = imageDetails.imageType();
         return ResponseEntity
@@ -48,7 +48,7 @@ public class ImagesController {
     }
 
     @GetMapping("/group/banner/{id}")
-    public ResponseEntity<byte[]> getGroupBanner(@PathVariable("id") UUID id) throws IOException {
+    public ResponseEntity<byte[]> getGroupBanner(@PathVariable("id") UUID id) {
         ImageFacade.ImageDetails imageDetails = this.imageFacade.getGroupBanner(id);
         String type = imageDetails.imageType();
         return ResponseEntity

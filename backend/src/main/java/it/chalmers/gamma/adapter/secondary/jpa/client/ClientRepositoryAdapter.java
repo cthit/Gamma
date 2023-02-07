@@ -162,7 +162,7 @@ public class ClientRepositoryAdapter implements ClientRepository {
                         .stream()
                         .map(authorityLevelName -> new ClientRestrictionEntity(
                                 clientEntity,
-                                new AuthorityLevelEntity(authorityLevelName.value())
+                                authorityLevelName
                         ))
                         .toList()
         );

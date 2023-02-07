@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,10 +25,10 @@ public class ApiKeyFacade extends Facade {
     }
 
     public String[] getApiKeyTypes() {
-        ApiKeyType[] types = ApiKeyType.values();
-        String[] s = new String[types.length];
+        List<ApiKeyType> types = Arrays.stream(ApiKeyType.values()).filter(apiKeyType -> apiKeyType != ApiKeyType.CLIENT).toList();
+        String[] s = new String[types.size()];
         for (int i = 0; i < s.length; i++) {
-            s[i] = types[i].name();
+            s[i] = types.get(i).name();
         }
         return s;
     }
@@ -35,13 +36,19 @@ public class ApiKeyFacade extends Facade {
     public String create(NewApiKey newApiKey) {
         this.accessGuard.require(isAdmin());
 
+        ApiKeyType type = ApiKeyType.valueOf(newApiKey.keyType);
+
+        if(type == ApiKeyType.CLIENT) {
+            throw new IllegalArgumentException("Cannot create api key with type client without creating a client at the same time");
+        }
+
         ApiKeyToken apiKeyToken = ApiKeyToken.generate();
         apiKeyRepository.create(
                 new ApiKey(
                         ApiKeyId.generate(),
                         new PrettyName(newApiKey.prettyName),
                         new Text(newApiKey.svDescription, newApiKey.enDescription),
-                        ApiKeyType.valueOf(newApiKey.keyType),
+                        type,
                         apiKeyToken
                 )
         );

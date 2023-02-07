@@ -20,7 +20,7 @@ public class UserPasswordResetController {
     @PostMapping()
     public PasswordRestLinkSentResponse resetPasswordRequest(@RequestBody ResetPasswordRequest request) {
         try {
-            this.userResetPasswordFacade.startResetPasswordProcess(request.cidOrEmail);
+            this.userResetPasswordFacade.startResetPasswordProcess(request.email);
         } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
             throw new PasswordResetProcessErrorResponse();
         }
@@ -30,18 +30,18 @@ public class UserPasswordResetController {
     @PutMapping("/finish")
     public PasswordChangedResponse resetPassword(@RequestBody ResetPasswordFinishRequest request) {
         try {
-            this.userResetPasswordFacade.finishResetPasswordProcess(request.cidOrEmail, request.token, request.password);
+            this.userResetPasswordFacade.finishResetPasswordProcess(request.email, request.token, request.password);
         } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
             throw new PasswordResetProcessErrorResponse();
         }
         return new PasswordChangedResponse();
     }
 
-    private record ResetPasswordRequest(String cidOrEmail) {
+    private record ResetPasswordRequest(String email) {
     }
 
     private record ResetPasswordFinishRequest(String password,
-                                              String cidOrEmail,
+                                              String email,
                                               String token) {
     }
 

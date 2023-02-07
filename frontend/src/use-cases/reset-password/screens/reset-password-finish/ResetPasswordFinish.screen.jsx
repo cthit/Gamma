@@ -51,9 +51,7 @@ const ResetPasswordFinish = () => {
                 size={{ width: "300px" }}
                 centerFields
                 validationSchema={yup.object().shape({
-                    cidOrEmail: yup
-                        .string()
-                        .required(text.Cid + text.IsRequired),
+                    email: yup.string().required(text.Email + text.IsRequired),
                     token: yup.string().required(text.Code + text.IsRequired),
                     password: yup
                         .string()
@@ -68,7 +66,7 @@ const ResetPasswordFinish = () => {
                         .required(text.PasswordConfirmation + text.IsRequired)
                 })}
                 initialValues={{
-                    cidOrEmail: "",
+                    email: "",
                     code: "",
                     password: "",
                     passwordConfirmation: ""
@@ -110,19 +108,19 @@ const ResetPasswordFinish = () => {
                         });
                 }}
                 keysOrder={[
-                    "cidOrEmail",
+                    "email",
                     "token",
                     "password",
                     "passwordConfirmation"
                 ]}
                 keysComponentData={{
-                    cidOrEmail: {
+                    email: {
                         component: DigitTextField,
                         componentProps: {
-                            upperLabel: text.Cid,
+                            upperLabel: text.Email,
                             filled: false,
                             outlined: true,
-                            maxLength: 15
+                            maxLength: 100
                         }
                     },
                     token: {

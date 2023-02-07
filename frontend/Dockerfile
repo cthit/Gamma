@@ -1,7 +1,7 @@
 FROM node:14 as build
 WORKDIR /usr/src/app
 COPY package.json yarn.lock jsconfig.json .eslintrc ./
-RUN yarn --production --frozen-lockfile --network-timeout 10000000
+RUN yarn install --production --frozen-lockfile --network-timeout 10000000
 COPY src src
 COPY public public
 ARG REACT_APP_BACKEND_URL=https://gamma.chalmers.it/api

@@ -1,15 +1,19 @@
 package it.chalmers.gamma.app.user.passwordreset.domain;
 
+import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserIdentifier;
 
 import java.util.Optional;
 
 public interface PasswordResetRepository {
 
-    PasswordResetToken createNewToken(GammaUser user);
+    PasswordResetToken createNewToken(Email email) throws UserNotFoundException;
 
     Optional<PasswordResetToken> getToken(UserId id);
 
     void removeToken(PasswordResetToken token);
+
+    class UserNotFoundException extends Exception {}
 }

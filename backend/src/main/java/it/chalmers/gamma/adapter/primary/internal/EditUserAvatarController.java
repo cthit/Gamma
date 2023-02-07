@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/internal/users/avatar")
 public class EditUserAvatarController {
 
-    //TODO: I think here that UserAvatarService would be nice
     private final UserFacade userFacade;
     private final ImageFacade imageFacade;
 

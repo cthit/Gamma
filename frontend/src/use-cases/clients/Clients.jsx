@@ -11,13 +11,14 @@ import {
     useDigitDialog
 } from "@cthit/react-digit-components";
 
+import { getAuthorityLevels } from "../../api/authorities/get.authorities";
 import { deleteClient } from "api/clients/delete.clients.api";
 import { getClient, getClients } from "api/clients/get.clients.api";
 import { addClient, resetClientSecret } from "api/clients/post.clients.api";
 import {
     CLIENT_NAME,
     CLIENT_SECRET,
-    CLIENT_ID
+    CLIENT_UID
 } from "api/clients/props.clients.api";
 
 import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
@@ -35,9 +36,8 @@ import {
     validationSchema
 } from "./Clients.options";
 import translations from "./Clients.translations";
-import UserClientApprovals from "./views/user-client-approvals";
-import { getAuthorityLevels } from "../../api/authorities/get.authorities";
 import ClientRestrictions from "./client-restrictions";
+import UserClientApprovals from "./views/user-client-approvals";
 
 const Clients = () => {
     const [text] = useDigitTranslations(translations);
@@ -132,7 +132,7 @@ const Clients = () => {
                 padding: "0px",
                 searchText: text.Search
             }}
-            idProp={CLIENT_ID}
+            idProp={CLIENT_UID}
             createTitle={text.CreateClient}
             createButtonText={text.CreateClient}
             detailsTitle={data => data[CLIENT_NAME]}
@@ -176,7 +176,7 @@ const Clients = () => {
                             confirmButtonText: text.UpdateClientSecret,
                             cancelButtonText: text.Cancel,
                             onConfirm: () =>
-                                resetClientSecret(client.clientId).then(
+                                resetClientSecret(client.clientUid).then(
                                     response =>
                                         openCustomDialog({
                                             title: text.YourClientSecret,

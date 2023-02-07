@@ -18,7 +18,7 @@ public class ErrorHandlingControllerAdvice {
     })
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public Error no() {
+    public Error accessDenied() {
         return new Error(
                 "ACCESS_DENIED",
                 "ACCESS_DENIED"

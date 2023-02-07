@@ -20,6 +20,7 @@ import {
     USER_PASSWORD
 } from "api/users/props.users.api";
 
+import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 import GammaUserContext from "common/context/GammaUser.context";
 import {
     generateUserCustomDetailsRenders,
@@ -37,19 +38,18 @@ import {
     updateKeysOrder
 } from "../../Me.options";
 import translations from "./MeCRUD.screen.translations";
-import { getBackendUrl } from "../../../../common/utils/configs/envVariablesLoader";
 
 const NoStyleLink = styled(Link)`
-  color: inherit;
-  text-decoration: none;
-  display: flex;
-  justify-content: center;
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
 `;
 
 const UserImage = styled.img`
-  width: 250px;
-  max-height: 500px;
-  margin: auto;
+    width: 250px;
+    max-height: 500px;
+    margin: auto;
 `;
 
 const MeCRUD = () => {
@@ -110,20 +110,20 @@ const MeCRUD = () => {
                         alt={"Profile picture"}
                     />
                     <NoStyleLink to={"/me/avatar"}>
-                        <DigitButton outlined text={text.ChangeAvatar}/>
+                        <DigitButton outlined text={text.ChangeAvatar} />
                     </NoStyleLink>
                     <DigitLayout.Row
                         justifyContent={"center"}
                         flexWrap={"wrap"}
                     >
                         <NoStyleLink to={"/me/change-password"}>
-                            <DigitButton outlined text={text.ChangePassword}/>
+                            <DigitButton outlined text={text.ChangePassword} />
                         </NoStyleLink>
                         <NoStyleLink to={"/me/groups"}>
-                            <DigitButton outlined text={text.YourGroups}/>
+                            <DigitButton outlined text={text.YourGroups} />
                         </NoStyleLink>
                         <NoStyleLink to={"/me/approvals"}>
-                            <DigitButton outlined text={text.YourApprovals}/>
+                            <DigitButton outlined text={text.YourApprovals} />
                         </NoStyleLink>
                     </DigitLayout.Row>
                 </>
@@ -164,9 +164,9 @@ const MeCRUD = () => {
                 }
             }}
             statusRenders={{
-                403: () => <InsufficientAccess/>,
-                404: () => <FourOFour/>,
-                500: (error, reset) => <FiveZeroZero reset={reset}/>
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             backButtonText={text.Back}
             deleteButtonText={() => text.DeleteMe}

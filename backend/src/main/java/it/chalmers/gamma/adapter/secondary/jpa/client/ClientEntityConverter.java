@@ -26,7 +26,6 @@ public class ClientEntityConverter {
     }
 
     public Client toDomain(ClientEntity clientEntity) {
-        // TODO: Restrictions get doubled when queried??
         List<AuthorityLevelName> restrictions = clientEntity.restrictions
                 .stream()
                 .map(ClientRestrictionEntity::getAuthorityLevelName)

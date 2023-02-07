@@ -148,6 +148,10 @@ public class AccessGuard {
     }
 
     public static class AccessDeniedException extends RuntimeException {
+        public AccessDeniedException() {
+            //TODO: Show more error messages.
+            LOGGER.error("Access was denied.");
+        }
     }
 
 }

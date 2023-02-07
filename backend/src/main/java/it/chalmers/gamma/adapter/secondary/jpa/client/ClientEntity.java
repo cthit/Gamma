@@ -34,10 +34,10 @@ public class ClientEntity extends ImmutableEntity<UUID> {
     protected TextEntity description;
 
     @OneToMany(mappedBy = "id.client", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<ClientRestrictionEntity> restrictions;
+    protected List<ClientScopeEntity> scopes;
 
     @OneToMany(mappedBy = "id.client", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<ClientScopeEntity> scopes;
+    protected List<ClientRestrictionEntity> restrictions;
 
     @OneToMany(mappedBy = "id.client", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<UserApprovalEntity> approvals;

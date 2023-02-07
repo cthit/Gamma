@@ -75,7 +75,8 @@ public final class UserAdminController {
                         request.firstName,
                         request.lastName,
                         request.email,
-                        request.language
+                        request.language,
+                        request.acceptanceYear
                 )
         );
         return new UserEditedResponse();

@@ -10,7 +10,6 @@ spring:
     ansi:
       enabled: ALWAYS
   jpa:
-    show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties:
       hibernate:
@@ -21,15 +20,17 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
-
   servlet:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
   data:
     redis:
+      host: ${REDIS_HOST:0.0.0.0}
+      password: ${REDIS_PASSWORD:}
+      port: ${REDIS_PORT:6379}
       repositories:
-        enabled: false
+        enabled: true
   thymeleaf:
     cache: false
     check-template: true
@@ -42,19 +43,12 @@ spring:
     servlet:
       content-type: text/html
 
-  session:
-    store-type: redis
-
-  redis:
-    host: ${REDIS_HOST:0.0.0.0}
-    password: ${REDIS_PASSWORD:}
-    port: ${REDIS_PORT:6379}
-
 server:
   port: ${SERVER_PORT:8081}
   error:
     whitelabel:
-      enabled: false
+      enabled: true
+    path: /error
   servlet:
     context-path: /api
 
@@ -71,24 +65,18 @@ application:
     domain: ${COOKIE_DOMAIN:gamma}
     path: ${COOKIE_PATH:/}
     validity-time: 31536000
-  pre-populate-database: true
-  frontend-client-details:
-    successful-login-uri: ${SUCCESSFUL_LOGIN:http://gamma:3000}
-  standard-admin-account:
-    password: ${ADMIN_PASSWORD:password}
   mocking: ${IS_MOCKING:true}
   admin-setup: ${ADMIN_SETUP:true}
   default-oauth2-client:
-    client-name: ${DEFAULT_CLIENT_NAME:type}
-    client-id: ${DEFAULT_CLIENT_ID:id}
+    client-name: ${DEFAULT_CLIENT_NAME:test-client}
+    client-id: ${DEFAULT_CLIENT_ID:test}
     client-secret: ${DEFAULT_CLIENT_SECRET:secret}
     redirect-url: ${DEFAULT_REDIRECT_URL:http://client:3001/login/oauth2/code/gamma}
-    api-key: ${DEFAULT_API_KEY:key}
+    api-key: ${DEFAULT_API_KEY:test-api-key-secret-code}
+    scopes: ${DEFAULT_SCOPES:profile,email}
+  frontend-client-details:
+    successful-login-uri: ${SUCCESSFUL_LOGIN:http://gamma:3000}
   gotify:
-    key: "key"                  # This is not needed, but application crashes since it looks for these values.
-    url: "https://gotify.chalmers.it"
+    key: "123abc"                  # This is not needed, but application crashes since it looks for these values.
+    url: "localhost:7000"
   allowed-origin: ${CORS_ALLOWED_ORIGIN:http://gamma:3000}
-  auth:
-    accessTokenValidityTime: 3600
-    refreshTokenValidityTime: 500000000
-

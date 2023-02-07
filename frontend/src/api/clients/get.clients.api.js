@@ -9,8 +9,8 @@ export function getClients() {
     );
 }
 
-export function getClient(clientId) {
-    return getRequest(ADMIN_CLIENTS_ENDPOINT + clientId, input => ({
+export function getClient(clientUid) {
+    return getRequest(ADMIN_CLIENTS_ENDPOINT + clientUid, input => ({
         data: {
             ...input.data
         }

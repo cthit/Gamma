@@ -32,13 +32,12 @@ public final class ClientAdminController {
         );
     }
 
-    //TODO: Reflect that clientUid is used and not clientId in the frontend
-    @PostMapping("/{clientId}/reset")
-    public String resetClientCredentials(@PathVariable("clientId") String clientId) {
+    @PostMapping("/{clientUid}/reset")
+    public String resetClientCredentials(@PathVariable("clientUid") String clientUid) {
         String clientSecret;
 
         try {
-            clientSecret = this.clientFacade.resetClientSecret(clientId);
+            clientSecret = this.clientFacade.resetClientSecret(clientUid);
         } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();
         }
@@ -51,16 +50,15 @@ public final class ClientAdminController {
         return this.clientFacade.getAll();
     }
 
-    @GetMapping("/{clientId}")
-    public ClientFacade.ClientDTO getClient(@PathVariable("clientId") String id) {
-        return this.clientFacade.get(id).orElseThrow(ClientNotFoundResponse::new);
+    @GetMapping("/{clientUid}")
+    public ClientFacade.ClientDTO getClient(@PathVariable("clientUid") String clientUid) {
+        return this.clientFacade.get(clientUid).orElseThrow(ClientNotFoundResponse::new);
     }
 
-    //TODO: Reflect that clientUid is used and not clientId in the frontend
     @DeleteMapping("/{clientUid}")
-    public ClientDeletedResponse deleteClient(@PathVariable("clientUid") String id) {
+    public ClientDeletedResponse deleteClient(@PathVariable("clientUid") String clientUid) {
         try {
-            this.clientFacade.delete(id);
+            this.clientFacade.delete(clientUid);
             return new ClientDeletedResponse();
         } catch (ClientFacade.ClientNotFoundException e) {
             throw new ClientNotFoundResponse();

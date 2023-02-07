@@ -1,7 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.password;
 
-import it.chalmers.gamma.app.user.domain.GammaUser;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserIdentifier;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordReset;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import jakarta.transaction.Transactional;
@@ -14,20 +19,34 @@ import java.util.Optional;
 @Transactional
 public class UserPasswordResetRepositoryAdapter implements PasswordResetRepository {
 
+    private final UserJpaRepository userJpaRepository;
     private final UserPasswordResetJpaRepository userPasswordResetJpaRepository;
 
-    public UserPasswordResetRepositoryAdapter(UserPasswordResetJpaRepository userPasswordResetJpaRepository) {
+    public UserPasswordResetRepositoryAdapter(UserJpaRepository userJpaRepository,
+                                              UserPasswordResetJpaRepository userPasswordResetJpaRepository) {
+        this.userJpaRepository = userJpaRepository;
         this.userPasswordResetJpaRepository = userPasswordResetJpaRepository;
     }
 
     @Override
-    public PasswordResetToken createNewToken(GammaUser user) {
+    public PasswordResetToken createNewToken(Email email) throws UserNotFoundException {
+        Optional<UserEntity> maybeUserEntity = this.userJpaRepository.findByEmail(email.value());
+
+        if(maybeUserEntity.isEmpty()) {
+            throw new UserNotFoundException();
+        }
+
+        UserEntity userEntity = maybeUserEntity.get();
         PasswordResetToken token = PasswordResetToken.generate();
-        userPasswordResetJpaRepository.saveAndFlush(new UserPasswordResetEntity(
-                user.id().value(),
-                Instant.now(),
-                token.value())
+
+        this.userPasswordResetJpaRepository.save(
+                new UserPasswordResetEntity(
+                        userEntity.getId(),
+                        Instant.now(),
+                        token.value()
+                )
         );
+
         return token;
     }
 

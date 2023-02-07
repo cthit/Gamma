@@ -1,3 +1,4 @@
+import some from "lodash/some";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -22,6 +23,8 @@ import {
 import { editGroup } from "api/groups/put.groups.api";
 import { getSuperGroups } from "api/super-groups/get.super-groups.api";
 
+import useGammaHasAuthority from "../../../common/hooks/use-gamma-has-authority/use-gamma-has-authority";
+import useGammaUser from "../../../common/hooks/use-gamma-user/useGammaUser";
 import DisplayMembersTable from "common/elements/display-members-table";
 import useGammaIsAdmin from "common/hooks/use-gamma-is-admin/useGammaIsAdmin";
 import InsufficientAccess from "common/views/insufficient-access";
@@ -43,6 +46,7 @@ import translations from "./GroupsCrud.screen.translations";
 const GroupsCrud = () => {
     const [text] = useDigitTranslations(translations);
     const admin = useGammaIsAdmin();
+    const me = useGammaUser();
     const [superGroups, setSuperGroups] = useState([]);
     const history = useHistory();
 
@@ -53,7 +57,7 @@ const GroupsCrud = () => {
     }, []);
 
     if (superGroups.length === 0) {
-        return <DigitLoading loading alignSelf={"center"} margin={"auto"}/>;
+        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (
@@ -84,11 +88,11 @@ const GroupsCrud = () => {
             createRequest={
                 admin
                     ? data =>
-                        addGroup({
-                            name: data[GROUP_NAME],
-                            superGroup: data[GROUP_SUPER_GROUP],
-                            prettyName: data[GROUP_PRETTY_NAME]
-                        })
+                          addGroup({
+                              name: data[GROUP_NAME],
+                              superGroup: data[GROUP_SUPER_GROUP],
+                              prettyName: data[GROUP_PRETTY_NAME]
+                          })
                     : null
             }
             tableProps={{
@@ -127,43 +131,58 @@ const GroupsCrud = () => {
                     />
                 </DigitLayout.Row>
             )}
-            detailsRenderCardEnd={data =>
-                admin ? (
+            detailsRenderCardEnd={data => {
+                const isPartOfGroupOrAdmin =
+                    some(me.groups, ["group.id", data.id]) || admin;
+
+                return (
                     <DigitLayout.Row
                         flexWrap={"wrap"}
                         justifyContent={"center"}
                     >
-                        <DigitButton
-                            alignSelf={"center"}
-                            size={{ width: "max-content" }}
-                            margin={"8px"}
-                            outlined
-                            text={text.EditMembers}
-                            onClick={() => history.push("/members/" + data.id)}
-                        />
-                        <DigitButton
-                            alignSelf={"center"}
-                            size={{ width: "max-content" }}
-                            margin={"8px"}
-                            outlined
-                            text={text.EditBanner}
-                            onClick={() =>
-                                history.push("/groups/" + data.id + "/banner")
-                            }
-                        />
-                        <DigitButton
-                            alignSelf={"center"}
-                            size={{ width: "auto" }}
-                            margin={"8px"}
-                            outlined
-                            text={text.EditAvatar}
-                            onClick={() =>
-                                history.push("/groups/" + data.id + "/avatar")
-                            }
-                        />
+                        {admin && (
+                            <DigitButton
+                                alignSelf={"center"}
+                                size={{ width: "max-content" }}
+                                margin={"8px"}
+                                outlined
+                                text={text.EditMembers}
+                                onClick={() =>
+                                    history.push("/members/" + data.id)
+                                }
+                            />
+                        )}
+                        {isPartOfGroupOrAdmin && (
+                            <DigitButton
+                                alignSelf={"center"}
+                                size={{ width: "max-content" }}
+                                margin={"8px"}
+                                outlined
+                                text={text.EditBanner}
+                                onClick={() =>
+                                    history.push(
+                                        "/groups/" + data.id + "/banner"
+                                    )
+                                }
+                            />
+                        )}
+                        {isPartOfGroupOrAdmin && (
+                            <DigitButton
+                                alignSelf={"center"}
+                                size={{ width: "auto" }}
+                                margin={"8px"}
+                                outlined
+                                text={text.EditAvatar}
+                                onClick={() =>
+                                    history.push(
+                                        "/groups/" + data.id + "/avatar"
+                                    )
+                                }
+                            />
+                        )}
                     </DigitLayout.Row>
-                ) : null
-            }
+                );
+            }}
             detailsRenderEnd={data => (
                 <DigitLayout.Row flexWrap={"wrap"} justifyContent={"center"}>
                     <DisplayMembersTable
@@ -185,9 +204,9 @@ const GroupsCrud = () => {
             createTitle={text.CreateGroup}
             detailsTitle={group => group[GROUP_PRETTY_NAME]}
             statusRenders={{
-                403: () => <InsufficientAccess/>,
-                404: () => <FourOFour/>,
-                500: (error, reset) => <FiveZeroZero reset={reset}/>
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             toastCreateSuccessful={() => text.GroupWasCreated}
             toastCreateFailed={() => text.GroupDeleteFailed}

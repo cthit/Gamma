@@ -4,9 +4,12 @@ import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,13 +22,17 @@ public final class MeController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeController.class);
 
     private final MeFacade meFacade;
+    private final CsrfTokenRepository csrfTokenRepository;
 
-    public MeController(MeFacade meFacade) {
+    public MeController(MeFacade meFacade, CsrfTokenRepository csrfTokenRepository) {
         this.meFacade = meFacade;
+        this.csrfTokenRepository = csrfTokenRepository;
     }
 
     @GetMapping()
-    public MeFacade.MeDTO getMe() {
+    public MeFacade.MeDTO getMe(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        csrfTokenRepository.saveToken(csrfTokenRepository.generateToken(httpRequest), httpRequest, httpResponse);
+
         return this.meFacade.getMe();
     }
 

@@ -15,7 +15,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -24,7 +23,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @Configuration
 public class SecurityFiltersConfig {
@@ -54,25 +59,26 @@ public class SecurityFiltersConfig {
         RegexRequestMatcher loginRequestMatcher = new RegexRequestMatcher("/login.*", null);
         RegexRequestMatcher logoutRequestMatcher = new RegexRequestMatcher("/logout", null);
 
+
+        AntPathRequestMatcher[] permittedRequests = Stream.of(
+                "/login",
+                "/internal/users/create",
+                "/internal/whitelist/activate_cid",
+                "/internal/users/reset_password",
+                "/internal/users/reset_password/finish"
+        ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);
+
         http
                 .securityMatchers(matcher -> matcher.requestMatchers(internalRequestMatcher, loginRequestMatcher, logoutRequestMatcher))
                 .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, authorityLevelRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
-                        {
-                            try {
-                                authorization
-                                        .requestMatchers("/login").permitAll()
-                                        .anyRequest().authenticated()
-                                        .and()
-                                        .formLogin(Customizer.withDefaults())
-                                        .httpBasic().disable()
-                                        .anonymous().disable()
-                                        .logout(new LogoutCustomizer());
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
+                        authorization
+                                .requestMatchers(new OrRequestMatcher(permittedRequests)).hasRole("ANONYMOUS")
+                                .anyRequest().authenticated()
                 )
+                .httpBasic().disable()
+                .formLogin(new LoginCustomizer())
+                .logout(new LogoutCustomizer())
                 .authenticationProvider(userAuthenticationProvider)
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

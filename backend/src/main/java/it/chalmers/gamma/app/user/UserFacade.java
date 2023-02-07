@@ -133,6 +133,7 @@ public class UserFacade extends Facade {
                         .firstName(new FirstName(updateUser.firstName))
                         .lastName(new LastName(updateUser.lastName))
                         .language(Language.valueOf(updateUser.language))
+                        .acceptanceYear(new AcceptanceYear(updateUser.acceptanceYear))
                         .extended(oldUser.extended().with()
                                 .email(new Email(updateUser.email))
                                 .build()
@@ -208,7 +209,8 @@ public class UserFacade extends Facade {
                              String firstName,
                              String lastName,
                              String email,
-                             String language) {
+                             String language,
+                             int acceptanceYear) {
     }
 
 }

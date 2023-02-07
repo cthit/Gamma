@@ -1,9 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "application.frontend-client-details.successful-login-uri",
-      "type": "java.lang.String",
-      "description": "Description for application.frontend-client-details.successful-login-uri."
-    }
-  ]
-}

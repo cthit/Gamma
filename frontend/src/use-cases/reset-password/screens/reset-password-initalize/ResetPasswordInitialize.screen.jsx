@@ -29,7 +29,7 @@ const ResetPasswordInitialize = () => {
             <DigitEditDataCard
                 centerFields
                 validationSchema={yup.object().shape({
-                    cidOrEmail: yup.string().required(text.FieldRequired)
+                    email: yup.string().required(text.FieldRequired)
                 })}
                 initialValues={{ cidOrEmail: "" }}
                 onSubmit={(values, actions) => {
@@ -39,15 +39,8 @@ const ResetPasswordInitialize = () => {
                             actions.setSubmitting(false);
                             history.push("/reset-password/finish");
                         })
-                        .catch(error => {
-                            const code = statusCode(error);
-                            const message = statusMessage(error);
+                        .catch(() => {
                             let errorMessage = text.SomethingWentWrong;
-                            if (code === 422) {
-                                if (message === "NO_USER_FOUND") {
-                                    errorMessage = text.CredentialsDoNotMatch;
-                                }
-                            }
                             queueToast({
                                 text: errorMessage,
                                 duration: 5000
@@ -59,15 +52,15 @@ const ResetPasswordInitialize = () => {
                 submitText={text.ResetPassword}
                 size={{ width: "300px", height: "300px" }}
                 keysComponentData={{
-                    cidOrEmail: {
+                    email: {
                         component: DigitTextField,
                         componentProps: {
-                            upperLabel: text.Cid,
+                            upperLabel: text.Email,
                             outlined: true
                         }
                     }
                 }}
-                keysOrder={["cidOrEmail"]}
+                keysOrder={["email"]}
             />
         </DigitLayout.Center>
     );

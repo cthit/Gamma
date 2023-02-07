@@ -31,7 +31,7 @@ public class WhitelistV1ApiController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request) {
+    public ResponseEntity<?> addWhitelistedUsers(@RequestBody AddListOfWhitelistedRequest request)  {
         List<String> failedToAdd = new ArrayList<>();
 
         for (String cid : request.cids) {

@@ -10,9 +10,12 @@ import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.property.DefaultOAuth2Client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -24,20 +27,16 @@ import java.util.Optional;
 public class ClientBootstrap {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientBootstrap.class);
-
     private final BootstrapSettings bootstrapSettings;
-    private final String redirectUrl;
-    private final UserRepository userRepository;
+    private final DefaultOAuth2Client defaultOAuth2Client;
     private final ClientRepository clientRepository;
 
 
     public ClientBootstrap(BootstrapSettings bootstrapSettings,
-                           @Value("${application.default-oauth2-client.redirect-url}") String redirectUrl,
-                           UserRepository userRepository,
+                           DefaultOAuth2Client defaultOAuth2Client,
                            ClientRepository clientRepository) {
         this.bootstrapSettings = bootstrapSettings;
-        this.redirectUrl = redirectUrl;
-        this.userRepository = userRepository;
+        this.defaultOAuth2Client = defaultOAuth2Client;
         this.clientRepository = clientRepository;
     }
 
@@ -49,24 +48,22 @@ public class ClientBootstrap {
         LOGGER.info("Creating test client...");
 
         ClientUid clientUid = ClientUid.generate();
-        ClientId clientId = new ClientId("test");
-        ClientSecret clientSecret = new ClientSecret("{noop}secret");
-        ApiKeyToken apiKeyToken = new ApiKeyToken("test-api-key-secret-code");
-        PrettyName prettyName = new PrettyName("test-client");
-
-        List<GammaUser> allUsers = this.userRepository.getAll();
+        ClientId clientId = new ClientId(defaultOAuth2Client.clientId());
+        ClientSecret clientSecret = new ClientSecret("{noop}" + defaultOAuth2Client.clientSecret());
+        ApiKeyToken apiKeyToken = new ApiKeyToken(defaultOAuth2Client.apiKey());
+        PrettyName prettyName = new PrettyName(defaultOAuth2Client.clientName());
+        RedirectUrl redirectUrl = new RedirectUrl(defaultOAuth2Client.redirectUrl());
 
         this.clientRepository.save(
                 new Client(
                         clientUid,
                         clientId,
                         clientSecret,
-                        new RedirectUrl(redirectUrl),
+                        redirectUrl,
                         prettyName,
                         new Text(),
-                        List.of(new AuthorityLevelName("admin")),
-                        Arrays.asList(Scope.values()),
-//                        allUsers,
+                        new ArrayList<>(),
+                        Arrays.stream(defaultOAuth2Client.scopes().split(",")).map(String::toUpperCase).map(Scope::valueOf).toList(),
                         new ArrayList<>(),
                         Optional.of(
                                 new ApiKey(
@@ -83,7 +80,7 @@ public class ClientBootstrap {
         LOGGER.info("Client generated with information:");
         LOGGER.info("ClientId: " + clientId.value());
         LOGGER.info("ClientSecret: " + clientSecret.value().substring("{noop}".length()));
-        LOGGER.info("Client redirect uri: " + this.redirectUrl);
+        LOGGER.info("Client redirect uri: " + redirectUrl.value());
         LOGGER.info("An API key was also generated with the client, it has the code: " + apiKeyToken.value());
         LOGGER.info("==========                  ==========");
     }

@@ -28,12 +28,9 @@ public class LocalImageService implements ImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LocalImageService.class);
 
     private final String relativePath;
-    private final String absoluteBasePath;
 
-    public LocalImageService(@Value("${application.files.path}") String relativePath,
-                             @Value("${application.base-uri}") String absoluteBasePath) {
+    public LocalImageService(@Value("${application.files.path}") String relativePath) {
         this.relativePath = relativePath;
-        this.absoluteBasePath = absoluteBasePath;
     }
 
     public ImageUri saveImage(Image image) throws ImageCouldNotBeSavedException {
@@ -67,6 +64,8 @@ public class LocalImageService implements ImageService {
             } catch (IOException e) {
                 throw new ImageCouldNotBeSavedException("(2) File could not be created", e);
             }
+
+            LOGGER.info("Image " + file.getOriginalFilename() + " was uploaded.");
 
             return new ImageUri(filePathString);
         }

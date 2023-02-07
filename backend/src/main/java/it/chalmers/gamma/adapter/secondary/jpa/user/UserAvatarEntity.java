@@ -25,7 +25,7 @@ public class UserAvatarEntity extends MutableEntity<UUID> {
 
     @Override
     public UUID getId() {
-        return this.user.getId();
+        return this.userId;
     }
 
 }

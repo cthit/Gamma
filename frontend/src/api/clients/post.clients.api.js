@@ -5,5 +5,5 @@ export function addClient(client) {
     return postRequest(ADMIN_CLIENTS_ENDPOINT, client);
 }
 
-export const resetClientSecret = clientId =>
-    postRequest(ADMIN_CLIENTS_ENDPOINT + clientId + "/reset", null);
+export const resetClientSecret = clientUid =>
+    postRequest(ADMIN_CLIENTS_ENDPOINT + clientUid + "/reset", null);

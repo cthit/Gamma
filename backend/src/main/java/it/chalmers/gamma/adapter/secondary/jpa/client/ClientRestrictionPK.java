@@ -4,10 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEnti
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
 import it.chalmers.gamma.app.client.domain.ClientUid;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Embeddable
 public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrictionPKDTO> {
@@ -16,23 +13,22 @@ public class ClientRestrictionPK extends PKId<ClientRestrictionPK.ClientRestrict
     @JoinColumn(name = "client_uid")
     private ClientEntity client;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "authority_level")
-    private AuthorityLevelEntity authorityLevel;
+    @Column(name = "authority_level")
+    private String authorityLevel;
 
     protected ClientRestrictionPK() {
     }
 
-    protected ClientRestrictionPK(ClientEntity clientEntity, AuthorityLevelEntity authorityLevelEntity) {
+    protected ClientRestrictionPK(ClientEntity clientEntity, AuthorityLevelName authorityLevelName) {
         this.client = clientEntity;
-        this.authorityLevel = authorityLevelEntity;
+        this.authorityLevel = authorityLevelName.value();
     }
 
     @Override
     public ClientRestrictionPKDTO getValue() {
         return new ClientRestrictionPKDTO(
                 new ClientUid(this.client.getId()),
-                AuthorityLevelName.valueOf(this.authorityLevel.getAuthorityLevel())
+                new AuthorityLevelName(this.authorityLevel)
         );
     }
 

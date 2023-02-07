@@ -6,4 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/internal/admin/users/avatar")
 public class UserAvatarAdminController {
+
+    //TODO: Remove pictures
+
 }

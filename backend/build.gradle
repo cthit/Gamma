@@ -29,7 +29,8 @@ repositories {
 
 dependencies {
     annotationProcessor(
-            "io.soabase.record-builder:record-builder-processor:32"
+            "io.soabase.record-builder:record-builder-processor:32",
+            "org.springframework.boot:spring-boot-configuration-processor:3.0.2"
     )
 
      implementation(

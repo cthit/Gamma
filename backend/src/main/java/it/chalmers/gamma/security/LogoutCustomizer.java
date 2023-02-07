@@ -11,7 +11,8 @@ public class LogoutCustomizer implements Customizer<LogoutConfigurer<HttpSecurit
     public void customize(LogoutConfigurer<HttpSecurity> logout) {
         logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                .deleteCookies("gamma");
     }
 
 }

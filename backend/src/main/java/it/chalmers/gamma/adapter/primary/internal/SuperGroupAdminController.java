@@ -29,8 +29,8 @@ public class SuperGroupAdminController {
                             request.name,
                             request.prettyName,
                             request.type,
-                            request.svText,
-                            request.enText
+                            request.svDescription,
+                            request.enDescription
                     )
             );
         } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
@@ -75,8 +75,8 @@ public class SuperGroupAdminController {
     private record CreateSuperGroupRequest(String name,
                                            String prettyName,
                                            String type,
-                                           String svText,
-                                           String enText) {
+                                           String svDescription,
+                                           String enDescription) {
     }
 
     private record EditSuperGroupRequest(int version,

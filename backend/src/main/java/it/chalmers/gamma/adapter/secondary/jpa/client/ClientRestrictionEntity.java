@@ -17,8 +17,8 @@ public class ClientRestrictionEntity extends ImmutableEntity<ClientRestrictionPK
     protected ClientRestrictionEntity() {
     }
 
-    protected ClientRestrictionEntity(ClientEntity clientEntity, AuthorityLevelEntity authorityLevelEntity) {
-        this.id = new ClientRestrictionPK(clientEntity, authorityLevelEntity);
+    protected ClientRestrictionEntity(ClientEntity clientEntity, AuthorityLevelName authorityLevelName) {
+        this.id = new ClientRestrictionPK(clientEntity, authorityLevelName);
     }
 
     public ClientRestrictionPK getId() {

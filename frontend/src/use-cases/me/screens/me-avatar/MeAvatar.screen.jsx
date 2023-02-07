@@ -4,10 +4,10 @@ import { useDigitTranslations } from "@cthit/react-digit-components";
 
 import { uploadUserAvatar } from "api/image/put.image.api";
 
+import PutImage from "../../../../common/elements/put-image";
 import GammaUserContext from "common/context/GammaUser.context";
 
 import translations from "./MeAvatar.screen.translations";
-import PutImage from "../../../../common/elements/put-image";
 
 const MeAvatar = () => {
     const [text] = useDigitTranslations(translations);
