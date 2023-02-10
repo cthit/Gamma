@@ -68,6 +68,20 @@ public class ImageFacade extends Facade {
         );
     }
 
+    public void removeGroupBanner(UUID groupId) {
+        Group group = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
+        accessGuard.requireEither(isAdmin(), isSignedInUserMemberOfGroup(group));
+
+        ImageUri imageUri = group.bannerUri().orElseThrow();
+
+        try {
+            this.groupRepository.save(group.withBannerUri(Optional.empty()));
+            this.imageService.removeImage(imageUri);
+        } catch (ImageService.ImageCouldNotBeRemovedException | GroupRepository.GroupNameAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void setGroupAvatar(UUID groupId, Image image) throws ImageService.ImageCouldNotBeSavedException {
         Group group = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
         accessGuard.requireEither(isAdmin(), isSignedInUserMemberOfGroup(group));
@@ -89,25 +103,37 @@ public class ImageFacade extends Facade {
         );
     }
 
-    public void setMeAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
-        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
-        if (authenticated instanceof UserAuthentication userAuthentication) {
-            GammaUser user = userAuthentication.get();
-            LOGGER.info("Image has been attempted to be uploaded by the user " + user.id().value());
-            ImageUri imageUri = this.imageService.saveImage(image);
-            this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));
-            LOGGER.info("Image was successfully uploaded with the id: " + imageUri.value());
-        } else {
-            throw new ImageService.ImageCouldNotBeSavedException("Could not find the authenticated user to upload the image");
+    public void removeGroupAvatar(UUID groupId) {
+        Group group = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
+        accessGuard.requireEither(isAdmin(), isSignedInUserMemberOfGroup(group));
+
+        ImageUri imageUri = group.avatarUri().orElseThrow();
+
+        try {
+            this.groupRepository.save(group.withAvatarUri(Optional.empty()));
+            this.imageService.removeImage(imageUri);
+        } catch (ImageService.ImageCouldNotBeRemovedException | GroupRepository.GroupNameAlreadyExistsException e) {
+            throw new RuntimeException(e);
         }
     }
-
-    //TODO: Implement admin and users to be able to remove group images and me avatar.
 
     public ImageDetails getAvatar(UUID userId) {
         ImageUri avatarUri = this.userAvatarRepository.getAvatarUri(new UserId(userId))
                 .orElse(ImageUri.defaultUserAvatar());
         return new ImageDetails(this.imageService.getImage(avatarUri));
+    }
+
+    public void removeUserAvatar(UUID userId) {
+        this.accessGuard.require(isAdmin());
+        ImageUri avatarUri = this.userAvatarRepository.getAvatarUri(new UserId(userId))
+                .orElseThrow();
+
+        try {
+            this.userAvatarRepository.removeAvatarUri(userId);
+            this.imageService.removeImage(avatarUri);
+        } catch (ImageService.ImageCouldNotBeRemovedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public record ImageDetails(byte[] data,

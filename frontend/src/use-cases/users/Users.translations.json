@@ -2,6 +2,7 @@
     "CreateUser": ["Create user", "Skapa användare"],
     "EditUser": ["Edit user", "Redigera användare"],
     "SaveUser": ["Save user", "Spara användare"],
+    "DeleteAvatar": ["Delete avatar image", "Radera profilbild"],
     "UserUpdated": ["Updated user ", "Uppdaterade användare "],
     "FirstName": ["First name", "Förnamn"],
     "LastName": ["Last name", "Efternamn"],
@@ -52,5 +53,9 @@
         "Cid must be atleast 4 characters",
         "Cid måste vara minst 4 karaktärer"
     ],
-    "EditPassword": ["Edit password", "Redigera lösenord"]
+    "EditPassword": ["Edit password", "Redigera lösenord"],
+    "DeletingTheImageDescription": [
+        "Deleting the image will immediately remove the image from Gamma.",
+        "Bilden kommer att raderas från Gamma direkt."
+    ]
 }

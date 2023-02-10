@@ -111,16 +111,11 @@ public class UserFacade extends Facade {
         UserId userId = new UserId(id);
 
         Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
-        if (maybeUser.isEmpty()) {
-            return Optional.empty();
-        }
+        return maybeUser.map(userExtendedDTO -> new UserExtendedWithGroupsDTO(
+                userExtendedDTO,
+                getUserGroups(userId)
+        ));
 
-        return Optional.of(
-                new UserExtendedWithGroupsDTO(
-                        maybeUser.get(),
-                        getUserGroups(userId)
-                )
-        );
     }
 
     public void updateUser(UpdateUser updateUser) {

@@ -11,6 +11,7 @@ import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.app.user.domain.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -68,7 +69,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
                 }
 
                 if(!found) {
-                    throw new IllegalStateException();
+                    throw new AccessDeniedException("User does not have the necessary authority level");
                 }
             }
         }
@@ -80,6 +81,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
         return authorization.getToken(OAuth2AuthorizationCode.class) == null && authorization.getToken(OAuth2AccessToken.class) == null && authorization.getToken(OidcIdToken.class) == null;
     }
 
+    //TODO: Tokens are not removed?
     @Override
     public void remove(OAuth2Authorization authorization) {
         LOGGER.info("Remove: " + authorization.toString());
@@ -97,5 +99,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
         return gammaAuthorizationRepository.findByToken(GammaAuthorizationToken.valueOf(token, tokenType)).orElseThrow();
     }
+
+    public static class UserIsNotAuthorizedException extends RuntimeException {}
 
 }

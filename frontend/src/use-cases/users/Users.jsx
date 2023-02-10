@@ -6,9 +6,11 @@ import {
     DigitButton,
     DigitCRUD,
     DigitLayout,
+    useDigitDialog,
     useDigitTranslations
 } from "@cthit/react-digit-components";
 
+import { deleteUserAvatar } from "../../api/image/delete.image.api";
 import { GROUP_PRETTY_NAME } from "api/groups/props.groups.api";
 import { deleteUser } from "api/users/delete.users.api";
 import {
@@ -50,13 +52,14 @@ import translations from "./Users.translations";
 import UserGroupsTable from "./usergroupstable";
 
 const UserImage = styled.img`
-  width: 250px;
-  max-height: 500px;
-  margin: auto;
+    width: 250px;
+    max-height: 500px;
+    margin: auto;
 `;
 
 const Users = () => {
     const admin = useGammaIsAdmin();
+    const [openDialog] = useDigitDialog();
     const [text] = useDigitTranslations(translations);
     const history = useHistory();
 
@@ -155,8 +158,8 @@ const Users = () => {
             detailsRenderCardEnd={data =>
                 admin ? (
                     <>
-                        <div style={{ marginTop: "8px" }}/>
-                        <DigitLayout.Center>
+                        <div style={{ marginTop: "8px" }} />
+                        <DigitLayout.Row>
                             <DigitButton
                                 outlined
                                 text={text.EditPassword}
@@ -166,14 +169,30 @@ const Users = () => {
                                     )
                                 }
                             />
-                        </DigitLayout.Center>
+                            <DigitButton
+                                outlined
+                                text={text.DeleteAvatar}
+                                onClick={() =>
+                                    openDialog({
+                                        title: text.AreYouSure,
+                                        description:
+                                            text.DeletingTheImageDescription,
+                                        onConfirm: () => {
+                                            deleteUserAvatar(data.id);
+                                        },
+                                        confirmButtonText: text.Delete,
+                                        cancelButtonText: text.Cancel
+                                    })
+                                }
+                            />
+                        </DigitLayout.Row>
                     </>
                 ) : null
             }
             statusRenders={{
-                403: () => <InsufficientAccess/>,
-                404: () => <FourOFour/>,
-                500: (error, reset) => <FiveZeroZero reset={reset}/>
+                403: () => <InsufficientAccess />,
+                404: () => <FourOFour />,
+                500: (error, reset) => <FiveZeroZero reset={reset} />
             }}
             useHistoryGoBackOnBack
         />

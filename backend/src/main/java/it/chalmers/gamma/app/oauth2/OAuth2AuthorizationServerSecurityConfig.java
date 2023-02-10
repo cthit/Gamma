@@ -31,11 +31,11 @@ public class OAuth2AuthorizationServerSecurityConfig {
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
                 .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-                        .consentPage("/oauth2/consent"))
+                        .consentPage("/oauth2/consent")
+                )
                 .oidc(oidcConfigurer -> oidcConfigurer
                         .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))
                 );
-
         http
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(

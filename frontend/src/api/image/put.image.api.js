@@ -4,7 +4,7 @@ import { GROUPS_ENDPOINT, USERS_ENDPOINT } from "../utils/endpoints";
 export function uploadUserAvatar(file) {
     const data = new FormData();
     data.append("file", file);
-    return putRequest(USERS_ENDPOINT + "avatar", data);
+    return putRequest(USERS_ENDPOINT + "me/avatar", data);
 }
 
 export function uploadGroupAvatar(file, groupId) {

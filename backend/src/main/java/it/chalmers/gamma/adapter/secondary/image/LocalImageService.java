@@ -73,8 +73,9 @@ public class LocalImageService implements ImageService {
     }
 
     public void removeImage(ImageUri imageUri) throws ImageCouldNotBeRemovedException {
-        File f = new File(relativePath + imageUri);
+        File f = new File(relativePath + imageUri.value());
         if (!f.delete()) {
+            LOGGER.error("Could not delete the file: " + imageUri);
             throw new ImageCouldNotBeRemovedException();
         }
     }

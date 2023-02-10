@@ -18,19 +18,10 @@ public class SuccessResponse extends ResponseEntity<SuccessResponse.SuccessRespo
     public SuccessResponseData getBody() {
         return new SuccessResponseData(
                 ClassNameGeneratorUtils.classToScreamingSnakeCase(this.getClass()),
-                this.getStatusCodeValue()
+                this.getStatusCode().value()
         );
     }
 
-    public static class SuccessResponseData {
-
-        public final String name;
-        public final int code;
-
-        public SuccessResponseData(String name, int code) {
-            this.name = name;
-            this.code = code;
-        }
-    }
+    public record SuccessResponseData(String name, int code) { }
 
 }

@@ -1,41 +1,45 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
-import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
-import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/internal/users/avatar")
-public class EditUserAvatarController {
+@RequestMapping("/internal/users/me/avatar")
+public class MeAvatarController {
 
-    private final UserFacade userFacade;
-    private final ImageFacade imageFacade;
+    private final MeFacade meFacade;
 
-    public EditUserAvatarController(UserFacade userFacade,
-                                    ImageFacade imageFacade) {
-        this.userFacade = userFacade;
-        this.imageFacade = imageFacade;
+    public MeAvatarController(MeFacade meFacade) {
+        this.meFacade = meFacade;
     }
-
-    //TODO: Force aspect ratio of avatar
 
     @PutMapping
     public EditedProfilePictureResponse editProfileImage(@RequestParam MultipartFile file) {
         try {
-            this.imageFacade.setMeAvatar(new ImageFile(file));
+            this.meFacade.setAvatar(new ImageFile(file));
         } catch (ImageService.ImageCouldNotBeSavedException e) {
             throw new FileIssueResponse();
         }
         return new EditedProfilePictureResponse();
+    }
+
+    @DeleteMapping
+    public DeletedProfilePictureResponse deleteProfileImage() {
+        try {
+            this.meFacade.deleteAvatar();
+        } catch (ImageService.ImageCouldNotBeRemovedException e) {
+            throw new RuntimeException(e);
+        }
+        return new DeletedProfilePictureResponse();
+    }
+
+    private static class DeletedProfilePictureResponse extends SuccessResponse {
     }
 
     private static class EditedProfilePictureResponse extends SuccessResponse {

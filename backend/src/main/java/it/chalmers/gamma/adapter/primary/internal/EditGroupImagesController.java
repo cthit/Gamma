@@ -21,8 +21,6 @@ public final class EditGroupImagesController {
         this.imageFacade = imageFacade;
     }
 
-    //TODO: Force aspect ratio of avatar and banner
-
     @PutMapping("/avatar/{id}")
     public GroupAvatarEdited editGroupAvatar(@RequestParam MultipartFile file, @PathVariable("id") UUID id) {
         try {
@@ -41,6 +39,25 @@ public final class EditGroupImagesController {
             throw new FileIssueResponse();
         }
         return new GroupBannerEdited();
+    }
+
+    @DeleteMapping("/avatar/{id}")
+    public DeletedGroupAvatarResponse deleteGroupAvatar(@PathVariable("id") UUID id) {
+        this.imageFacade.removeGroupAvatar(id);
+        return new DeletedGroupAvatarResponse();
+    }
+
+
+    @DeleteMapping("/banner/{id}")
+    public DeletedGroupBannerResponse deleteGroupBanner(@PathVariable("id") UUID id) {
+        this.imageFacade.removeGroupBanner(id);
+        return new DeletedGroupBannerResponse();
+    }
+
+    private static class DeletedGroupBannerResponse extends SuccessResponse {
+    }
+
+    private static class DeletedGroupAvatarResponse extends SuccessResponse {
     }
 
     private static class GroupBannerEdited extends SuccessResponse {

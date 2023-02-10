@@ -8,11 +8,16 @@ import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
+import it.chalmers.gamma.app.image.domain.Image;
+import it.chalmers.gamma.app.image.domain.ImageService;
+import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.GammaAuthentication;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,18 +29,23 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 @Service
 public class MeFacade extends Facade {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeFacade.class);
+
     private final UserRepository userRepository;
     private final ClientRepository clientRepository;
     private final GroupRepository groupRepository;
+    private final ImageService imageService;
 
     public MeFacade(AccessGuard accessGuard,
                     UserRepository userRepository,
                     ClientRepository clientRepository,
-                    GroupRepository groupRepository) {
+                    GroupRepository groupRepository,
+                    ImageService imageService) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.clientRepository = clientRepository;
         this.groupRepository = groupRepository;
+        this.imageService = imageService;
     }
 
     public List<UserApprovedClientDTO> getSignedInUserApprovals() {
@@ -134,6 +144,28 @@ public class MeFacade extends Facade {
             } catch (UserRepository.UserNotFoundException e) {
                 throw new IllegalStateException();
             }
+        }
+    }
+
+    public void setAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        if (authenticated instanceof UserAuthentication userAuthentication) {
+            GammaUser user = userAuthentication.get();
+            LOGGER.info("Image has been attempted to be uploaded by the user " + user.id().value());
+            ImageUri imageUri = this.imageService.saveImage(image);
+            this.userRepository.save(user.withExtended(user.extended().withAvatarUri(imageUri)));
+            LOGGER.info("Image was successfully uploaded with the id: " + imageUri.value());
+        } else {
+            throw new ImageService.ImageCouldNotBeSavedException("Could not find the authenticated user to upload the image");
+        }
+    }
+
+    public void deleteAvatar() throws ImageService.ImageCouldNotBeRemovedException {
+        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
+        if (authenticated instanceof UserAuthentication userAuthentication) {
+            GammaUser user = userAuthentication.get();
+            this.userRepository.save(user.withExtended(user.extended().withAvatarUri(null)));
+            this.imageService.removeImage(user.extended().avatarUri());
         }
     }
 
