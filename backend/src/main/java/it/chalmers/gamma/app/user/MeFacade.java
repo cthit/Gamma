@@ -215,7 +215,7 @@ public class MeFacade extends Facade {
                     user.extended().gdprTrained(),
                     user.extended().acceptedUserAgreement(),
                     groups,
-                    authorities.stream().map(a -> new MyAuthority(a.authorityLevelName().value(), a.authorityType().name())).toList(),
+                    authorities.stream().map(a -> new MyAuthority(a.authorityLevelName().value(), a.authorityType().name().toLowerCase())).toList(),
                     user.language().name()
             );
         }

@@ -1,4 +1,4 @@
-FROM gradle:6.3.0-jdk11
+FROM gradle:7.6.0-jdk19-alpine
 #Gradle docker has gradle user as default
 USER root
 
@@ -19,5 +19,5 @@ USER gradle
 
 RUN gradle :build -x test -x pmdMain -x checkstyleMain -x pmdTest
 # This probably should not have a static path, but instead build in a custom path.
-CMD sleep 5 && java -jar -Dspring.profiles.active=production build/libs/gamma-0.9.0-SNAPSHOT.jar
+CMD sleep 5 && java -jar -Dspring.profiles.active=production build/libs/gamma-1.0.0-SNAPSHOT.jar
 

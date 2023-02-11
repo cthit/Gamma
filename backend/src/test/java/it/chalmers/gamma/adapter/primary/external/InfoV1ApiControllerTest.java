@@ -23,10 +23,48 @@ class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
     @Autowired
     private ApiKeyRepository apiKeyRepository;
 
+
+    private static final String expected = """
+    {
+      "groups": [
+        {
+          "id": "2abe2264-fd61-4899-ba46-851279d85229",
+          "version": 1,
+          "name": "digit2023",
+          "prettyName": "digIT2023",
+          "groupMembers": [],
+          "superGroup": {
+            "id": "aed27030-ad90-4526-855c-1e909b1dcecb",
+            "version": 1,
+            "name": "digit",
+            "prettyName": "digIT",
+            "type": "committee",
+            "svDescription": "",
+            "enDescription": ""
+          }
+        },
+        {
+          "id": "1ed91274-13c8-4d6d-ab75-37c9d732b51b",
+          "version": 1,
+          "name": "prit2023",
+          "prettyName": "P.R.I.T.2023",
+          "groupMembers": [],
+          "superGroup": {
+            "id": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
+            "version": 1,
+            "name": "prit",
+            "prettyName": "P.R.I.T.",
+            "type": "committee",
+            "svDescription": "",
+            "enDescription": ""
+          }
+        }
+      ]
+    }
+    """;
+
     @Test
     public void groups() {
-        var expected = "{\"groups\":[{\"id\":\"2abe2264-fd61-4899-ba46-851279d85229\",\"version\":1,\"name\":\"digit2023\",\"prettyName\":\"digIT2023\",\"groupMembers\":[],\"superGroup\":{\"id\":\"aed27030-ad90-4526-855c-1e909b1dcecb\",\"version\":1,\"name\":\"digit\",\"prettyName\":\"digIT\",\"type\":\"committee\",\"svDescription\":\"\",\"enDescription\":\"\"}},{\"id\":\"1ed91274-13c8-4d6d-ab75-37c9d732b51b\",\"version\":1,\"name\":\"prit2023\",\"prettyName\":\"P.R.I.T.2023\",\"groupMembers\":[],\"superGroup\":{\"id\":\"b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1\",\"version\":1,\"name\":\"prit\",\"prettyName\":\"P.R.I.T.\",\"type\":\"committee\",\"svDescription\":\"\",\"enDescription\":\"\"}}]}";
-
         System.out.println(apiKeyRepository.getAll());
 
         settingsRepository.setSettings(
@@ -40,7 +78,7 @@ class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
                 .get("/api/external/info/v1/groups")
                 .andReturn();
 
-        assertThat(response.print()).isEqualTo(expected);
+        assertThat(response.print()).isEqualTo(expected.replaceAll("\\s+",""));
 
         given()
                 .filter(apiAuthFilter("bad-key"))

@@ -72,7 +72,7 @@ application:
     successful-login-uri: ${SUCCESSFUL_LOGIN:http://gamma:8080}
   mocking: ${IS_MOCKING:false}
   gotify:
-    key: ${GOTIFY_KEY:123abc}
-    url: ${GOTIFY_URL:https://gotify.chalmers.it}
+    key: ${GOTIFY_KEY:""}
+    url: ${GOTIFY_URL:""}
   allowed-origin: ${CORS_ALLOWED_ORIGIN:https://gamma.chalmers.it}
 

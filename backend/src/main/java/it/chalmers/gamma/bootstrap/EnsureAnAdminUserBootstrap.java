@@ -9,6 +9,7 @@ import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -22,15 +23,19 @@ public class EnsureAnAdminUserBootstrap {
     private final AuthorityLevelFacade authorityLevelFacade;
     private final AuthorityLevelRepository authorityLevelRepository;
     private final BootstrapSettings bootstrapSettings;
+    private final boolean production;
 
     public EnsureAnAdminUserBootstrap(AuthorityLevelFacade authorityLevelFacade,
                                       UserRepository userRepository,
                                       AuthorityLevelRepository authorityLevelRepository,
-                                      BootstrapSettings bootstrapSettings) {
+                                      BootstrapSettings bootstrapSettings,
+                                      @Value("${application.production}")
+                                      boolean production) {
         this.authorityLevelFacade = authorityLevelFacade;
         this.authorityLevelRepository = authorityLevelRepository;
         this.userRepository = userRepository;
         this.bootstrapSettings = bootstrapSettings;
+        this.production = production;
     }
 
     public void ensureAnAdminUser() {
@@ -50,12 +55,17 @@ public class EnsureAnAdminUserBootstrap {
                 return;
             }
 
-            String password = TokenUtils.generateToken(
-                    75,
-                    TokenUtils.CharacterTypes.LOWERCASE,
-                    TokenUtils.CharacterTypes.UPPERCASE,
-                    TokenUtils.CharacterTypes.NUMBERS
-            );
+            String password;
+            if(!production) {
+                password = "password";
+            } else {
+                password = TokenUtils.generateToken(
+                        75,
+                        TokenUtils.CharacterTypes.LOWERCASE,
+                        TokenUtils.CharacterTypes.UPPERCASE,
+                        TokenUtils.CharacterTypes.NUMBERS
+                );
+            }
 
             UserId adminId = UserId.generate();
             String name = "admin";
@@ -89,7 +99,7 @@ public class EnsureAnAdminUserBootstrap {
 
             LOGGER.info("Admin user created!");
             LOGGER.info("cid: " + name);
-            LOGGER.info("value: " + password);
+            LOGGER.info("password: " + password);
 
             try {
                 this.authorityLevelFacade.addUserToAuthorityLevel(

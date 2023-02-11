@@ -47,7 +47,7 @@ const GroupsCrud = () => {
     const [text] = useDigitTranslations(translations);
     const admin = useGammaIsAdmin();
     const me = useGammaUser();
-    const [superGroups, setSuperGroups] = useState([]);
+    const [superGroups, setSuperGroups] = useState(undefined);
     const history = useHistory();
 
     useEffect(() => {
@@ -56,7 +56,7 @@ const GroupsCrud = () => {
         });
     }, []);
 
-    if (superGroups.length === 0) {
+    if (superGroups?.length === undefined) {
         return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
