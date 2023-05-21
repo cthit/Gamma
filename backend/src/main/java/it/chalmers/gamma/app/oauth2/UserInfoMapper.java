@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.oauth2;
 
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -20,15 +20,15 @@ import java.util.function.Function;
 @Component
 public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
-    private final AuthorityLevelRepository authorityLevelRepository;
+    private final ClientAuthorityRepository clientAuthorityRepository;
     private final UserRepository userRepository;
     private final String baseUrl;
     private final String contextPath;
 
-    public UserInfoMapper(AuthorityLevelRepository authorityLevelRepository, UserRepository userRepository,
+    public UserInfoMapper(ClientAuthorityRepository clientAuthorityRepository, UserRepository userRepository,
                           @Value("${application.base-uri}") String baseUrl,
                           @Value("${server.servlet.context-path}") String contextPath) {
-        this.authorityLevelRepository = authorityLevelRepository;
+        this.clientAuthorityRepository = clientAuthorityRepository;
         this.userRepository = userRepository;
         this.baseUrl = baseUrl;
         this.contextPath = contextPath;
@@ -73,13 +73,13 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
 
                 }
 
-                claims.put(
-                        "authorities",
-                        this.authorityLevelRepository.getByUser(me.id())
-                                .stream()
-                                .map(userAuthority -> new UserInfoAuthority(userAuthority.authorityLevelName().value(), userAuthority.authorityType().name()))
-                                .toList()
-                );
+//                claims.put(
+//                        "authorities",
+//                        this.clientAuthorityRepository.getByUser(me.id())
+//                                .stream()
+//                                .map(userAuthority -> new UserInfoAuthority(userAuthority.authorityName().value(), userAuthority.authorityType().name()))
+//                                .toList()
+//                );
             } else if (scope.getAuthority().equals(EMAIL_SCOPE)) {
                 claims.put("email", me.extended().email().value());
             }

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
@@ -10,16 +10,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateUserPrincipalFilter implements Filter {
 
     private final TrustedUserDetailsRepository userDetailsRepository;
-    private final AuthorityLevelRepository authorityLevelRepository;
+    private final ClientAuthorityRepository clientAuthorityRepository;
 
-    public UpdateUserPrincipalFilter(TrustedUserDetailsRepository userDetailsRepository, AuthorityLevelRepository authorityLevelRepository) {
+    public UpdateUserPrincipalFilter(TrustedUserDetailsRepository userDetailsRepository, ClientAuthorityRepository clientAuthorityRepository) {
         this.userDetailsRepository = userDetailsRepository;
-        this.authorityLevelRepository = authorityLevelRepository;
+        this.clientAuthorityRepository = clientAuthorityRepository;
     }
 
     @Override
@@ -30,7 +31,8 @@ public class UpdateUserPrincipalFilter implements Filter {
             }
 
             final GammaUser gammaUser = userDetailsRepository.getGammaUserByUser();
-            final List<UserAuthority> authorities = this.authorityLevelRepository.getByUser(gammaUser.id());
+            //TODO:
+            final List<UserAuthority> authorities = new ArrayList<>();//this.clientAuthorityRepository.getByUser(gammaUser.id());
 
             UserAuthentication userPrincipal = new UserAuthentication() {
                 @Override

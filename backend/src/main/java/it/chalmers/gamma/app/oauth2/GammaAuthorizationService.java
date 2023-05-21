@@ -1,22 +1,16 @@
 package it.chalmers.gamma.app.oauth2;
 
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationToken;
-import it.chalmers.gamma.app.user.domain.UserAuthority;
-import it.chalmers.gamma.app.user.domain.UserId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponseType;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationCode;
@@ -24,22 +18,20 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationService.class);
     private final GammaAuthorizationRepository gammaAuthorizationRepository;
     private final ClientRepository clientRepository;
-    private final AuthorityLevelRepository authorityLevelRepository;
+    private final ClientAuthorityRepository clientAuthorityRepository;
 
 
     public GammaAuthorizationService(GammaAuthorizationRepository gammaAuthorizationRepository,
-                                     ClientRepository clientRepository, AuthorityLevelRepository authorityLevelRepository) {
+                                     ClientRepository clientRepository, ClientAuthorityRepository clientAuthorityRepository) {
         this.gammaAuthorizationRepository = gammaAuthorizationRepository;
         this.clientRepository = clientRepository;
-        this.authorityLevelRepository = authorityLevelRepository;
+        this.clientAuthorityRepository = clientAuthorityRepository;
     }
 
     @Override
@@ -54,24 +46,25 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
                     .orElseThrow();
 
             // If the client has no restrictions, then any user can sign in.
-            if(!client.restrictions().isEmpty()) {
-                UserId userId = UserId.valueOf(user.getUsername());
-                List<AuthorityLevelName> authorities = this.authorityLevelRepository.getByUser(userId).stream().map(UserAuthority::authorityLevelName).toList();
-
-                List<AuthorityLevelName> restrictions = client.restrictions();
-
-                boolean found = false;
-                for (AuthorityLevelName authority : authorities) {
-                    if (restrictions.contains(authority)) {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if(!found) {
-                    throw new AccessDeniedException("User does not have the necessary authority level");
-                }
-            }
+            // TODO: Update the following
+//            if(!client.restrictions().isEmpty()) {
+//                UserId userId = UserId.valueOf(user.getUsername());
+//                List<AuthorityName> authorities = this.authorityRepository.getByUser(userId).stream().map(UserAuthority::authorityName).toList();
+//
+//                List<AuthorityName> restrictions = client.restrictions();
+//
+//                boolean found = false;
+//                for (AuthorityName authority : authorities) {
+//                    if (restrictions.contains(authority)) {
+//                        found = true;
+//                        break;
+//                    }
+//                }
+//
+//                if(!found) {
+//                    throw new AccessDeniedException("User does not have the necessary authority level");
+//                }
+//            }
         }
 
         gammaAuthorizationRepository.save(authorization);

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authority.ClientAuthorityFacade;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -12,54 +12,58 @@ import java.util.UUID;
 @RequestMapping("/internal/admin/authority/user")
 public final class AuthorityUserAdminController {
 
-    private final AuthorityLevelFacade authorityLevelFacade;
+    private final ClientAuthorityFacade clientAuthorityFacade;
 
-    public AuthorityUserAdminController(AuthorityLevelFacade authorityLevelFacade) {
-        this.authorityLevelFacade = authorityLevelFacade;
+    public AuthorityUserAdminController(ClientAuthorityFacade clientAuthorityFacade) {
+        this.clientAuthorityFacade = clientAuthorityFacade;
     }
 
     @PostMapping
-    public AuthorityUserCreatedResponse addAuthority(@RequestBody CreateAuthorityUserRequest request) {
+    public ClientAuthorityUserCreatedResponse addAuthority(@RequestBody CreateClientAuthorityUserRequest request) {
         try {
-            this.authorityLevelFacade.addUserToAuthorityLevel(
-                    request.authorityLevelName,
+            this.clientAuthorityFacade.addUserToClientAuthority(
+                    request.clientUid,
+                    request.authorityName,
                     request.userId
             );
-        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
-            throw new AuthorityLevelNotFoundResponse();
-        } catch (AuthorityLevelFacade.UserNotFoundException e) {
-            throw new AuthorityUserNotFoundResponse();
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+            throw new ClientAuthorityNotFoundResponse();
+        } catch (ClientAuthorityFacade.UserNotFoundException e) {
+            throw new ClientAuthorityUserNotFoundResponse();
         }
-        return new AuthorityUserCreatedResponse();
+        return new ClientAuthorityUserCreatedResponse();
     }
 
     @DeleteMapping
-    public AuthorityUserRemovedResponse removeAuthority(@RequestParam("userId") UUID userId,
-                                                        @RequestParam("authorityLevelName") String authorityLevelName) {
+    public ClientAuthorityUserRemovedResponse removeAuthority(
+            @RequestParam("clientUid") UUID clientUid,
+            @RequestParam("userId") UUID userId,
+            @RequestParam("authorityName") String authorityName) {
         try {
-            this.authorityLevelFacade.removeUserFromAuthorityLevel(
-                    authorityLevelName,
+            this.clientAuthorityFacade.removeUserFromClientAuthority(
+                    clientUid,
+                    authorityName,
                     userId
             );
-        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
-            throw new AuthorityUserNotFoundResponse();
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+            throw new ClientAuthorityUserNotFoundResponse();
         }
-        return new AuthorityUserRemovedResponse();
+        return new ClientAuthorityUserRemovedResponse();
     }
 
-    private record CreateAuthorityUserRequest(UUID userId, String authorityLevelName) {
+    private record CreateClientAuthorityUserRequest(UUID clientUid, UUID userId, String authorityName) {
     }
 
-    private static class AuthorityUserRemovedResponse extends SuccessResponse {
+    private static class ClientAuthorityUserRemovedResponse extends SuccessResponse {
     }
 
-    private static class AuthorityUserCreatedResponse extends SuccessResponse {
+    private static class ClientAuthorityUserCreatedResponse extends SuccessResponse {
     }
 
-    private static class AuthorityUserNotFoundResponse extends NotFoundResponse {
+    private static class ClientAuthorityUserNotFoundResponse extends NotFoundResponse {
     }
 
-    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse {
+    private static class ClientAuthorityNotFoundResponse extends NotFoundResponse {
     }
 
     private static class AuthorityUserAlreadyExistsResponse extends AlreadyExistsResponse {

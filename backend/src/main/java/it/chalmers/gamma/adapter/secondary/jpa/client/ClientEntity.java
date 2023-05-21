@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
+import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionUserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import jakarta.persistence.*;
 
@@ -37,16 +37,12 @@ public class ClientEntity extends ImmutableEntity<UUID> {
     protected List<ClientScopeEntity> scopes;
 
     @OneToMany(mappedBy = "id.client", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<ClientRestrictionEntity> restrictions;
-
-    @OneToMany(mappedBy = "id.client", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<UserApprovalEntity> approvals;
+    protected List<ClientRestrictionUserEntity> restrictions;
 
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     protected ClientApiKeyEntity clientsApiKey;
 
     protected ClientEntity() {
-        this.approvals = new ArrayList<>();
         this.restrictions = new ArrayList<>();
         this.scopes = new ArrayList<>();
     }

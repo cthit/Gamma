@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ClientRepository {
 
     void save(Client client)
-            throws AuthorityLevelNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
+            throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
 
     void delete(ClientUid clientId) throws ClientNotFoundException;
 
@@ -35,7 +35,7 @@ public interface ClientRepository {
     class ClientIdAlreadyExistsRuntimeException extends RuntimeException {
     }
 
-    class AuthorityLevelNotFoundRuntimeException extends RuntimeException {
+    class AuthorityNotFoundRuntimeException extends RuntimeException {
     }
 
     class UserNotFoundRuntimeException extends RuntimeException {

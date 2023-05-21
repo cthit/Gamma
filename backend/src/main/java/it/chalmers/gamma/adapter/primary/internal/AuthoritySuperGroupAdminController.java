@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.authoritylevel.AuthorityLevelFacade;
+import it.chalmers.gamma.app.authority.ClientAuthorityFacade;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
@@ -12,42 +12,46 @@ import java.util.UUID;
 @RequestMapping("/internal/admin/authority/supergroup")
 public final class AuthoritySuperGroupAdminController {
 
-    private final AuthorityLevelFacade authorityLevelFacade;
+    private final ClientAuthorityFacade clientAuthorityFacade;
 
-    public AuthoritySuperGroupAdminController(AuthorityLevelFacade authorityLevelFacade) {
-        this.authorityLevelFacade = authorityLevelFacade;
+    public AuthoritySuperGroupAdminController(ClientAuthorityFacade clientAuthorityFacade) {
+        this.clientAuthorityFacade = clientAuthorityFacade;
     }
 
     @PostMapping
     public AuthoritySuperGroupCreatedResponse addAuthority(@RequestBody CreateAuthoritySuperGroupRequest request) {
         try {
-            this.authorityLevelFacade.addSuperGroupToAuthorityLevel(
-                    request.authorityLevelName,
+            this.clientAuthorityFacade.addSuperGroupToClientAuthority(
+                    request.clientUid,
+                    request.authorityName,
                     request.superGroupId
             );
-        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
-            throw new AuthorityLevelNotFoundResponse();
-        } catch (AuthorityLevelFacade.SuperGroupNotFoundException e) {
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+            throw new ClientAuthorityNotFoundResponse();
+        } catch (ClientAuthorityFacade.SuperGroupNotFoundException e) {
             e.printStackTrace();
         }
         return new AuthoritySuperGroupCreatedResponse();
     }
 
     @DeleteMapping
-    public AuthoritySuperGroupRemovedResponse removeAuthority(@RequestParam("superGroupId") UUID superGroupId,
-                                                              @RequestParam("authorityLevelName") String authorityLevelName) {
+    public AuthoritySuperGroupRemovedResponse removeAuthority(
+            @RequestParam("clientUid") UUID clientUid,
+            @RequestParam("superGroupId") UUID superGroupId,
+            @RequestParam("authorityName") String authorityName) {
         try {
-            this.authorityLevelFacade.removeSuperGroupFromAuthorityLevel(
-                    authorityLevelName,
+            this.clientAuthorityFacade.removeSuperGroupFromClientAuthority(
+                    clientUid,
+                    authorityName,
                     superGroupId
             );
-        } catch (AuthorityLevelFacade.AuthorityLevelNotFoundException e) {
-            throw new AuthorityLevelNotFoundResponse();
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+            throw new ClientAuthorityNotFoundResponse();
         }
         return new AuthoritySuperGroupRemovedResponse();
     }
 
-    private record CreateAuthoritySuperGroupRequest(UUID superGroupId, String authorityLevelName) {
+    private record CreateAuthoritySuperGroupRequest(UUID clientUid, UUID superGroupId, String authorityName) {
     }
 
     private static class AuthoritySuperGroupRemovedResponse extends SuccessResponse {
@@ -56,7 +60,7 @@ public final class AuthoritySuperGroupAdminController {
     private static class AuthoritySuperGroupCreatedResponse extends SuccessResponse {
     }
 
-    private static class AuthorityLevelNotFoundResponse extends NotFoundResponse {
+    private static class ClientAuthorityNotFoundResponse extends NotFoundResponse {
     }
 
     private static class AuthoritySuperGroupNotFoundResponse extends NotFoundResponse {

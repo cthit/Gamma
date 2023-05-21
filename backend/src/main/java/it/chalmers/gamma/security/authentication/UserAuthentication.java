@@ -1,7 +1,7 @@
 package it.chalmers.gamma.security.authentication;
 
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
+import it.chalmers.gamma.app.authority.domain.AuthorityName;
+import it.chalmers.gamma.app.authority.domain.AuthorityType;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserAuthority;
 
@@ -14,7 +14,7 @@ public non-sealed interface UserAuthentication extends GammaAuthentication {
     List<UserAuthority> getAuthorities();
 
     default boolean isAdmin() {
-        return getAuthorities().contains(new UserAuthority(new AuthorityLevelName("admin"), AuthorityType.AUTHORITY));
+        return getAuthorities().contains(new UserAuthority(new AuthorityName("admin"), AuthorityType.AUTHORITY));
     }
 
 }

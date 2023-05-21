@@ -102,7 +102,7 @@ public class SuperGroupFacade extends Facade {
         }
     }
 
-    public List<SuperGroupDTO> getAllSuperGroups() {
+    public List<SuperGroupDTO> getAll() {
         accessGuard.requireEither(isAdmin(), isSignedIn());
 
         return this.superGroupRepository.getAll()

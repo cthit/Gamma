@@ -18,7 +18,9 @@ CREATE TABLE ituser
     user_agreement_accepted TIMESTAMP    NOT NULL DEFAULT NOW(),
     acceptance_year         INTEGER,
     version                 INT,
+    -- TODO: Maybe move to its own table?
     gdpr_training           BOOLEAN               DEFAULT FALSE,
+    -- TODO: Maybe move to its own table? Along with a reason why it is locked
     locked                  BOOLEAN               DEFAULT FALSE
 );
 
@@ -68,31 +70,9 @@ CREATE TABLE post
     version      INT
 );
 
-CREATE TABLE authority_level
+CREATE TABLE admin_user
 (
-    authority_level VARCHAR(30) PRIMARY KEY
-);
-
-CREATE TABLE authority_post
-(
-    super_group_id  UUID REFERENCES fkit_super_group,
-    post_id         UUID REFERENCES post,
-    authority_level VARCHAR(30) REFERENCES authority_level,
-    PRIMARY KEY (post_id, super_group_id, authority_level)
-);
-
-CREATE TABLE authority_super_group
-(
-    super_group_id  UUID REFERENCES fkit_super_group,
-    authority_level VARCHAR(30) REFERENCES authority_level,
-    PRIMARY KEY (super_group_id, authority_level)
-);
-
-CREATE TABLE authority_user
-(
-    user_id         UUID REFERENCES ituser ON DELETE CASCADE,
-    authority_level VARCHAR(30) REFERENCES authority_level,
-    PRIMARY KEY (user_id, authority_level)
+    user_id     UUID PRIMARY KEY REFERENCES ituser(user_id) ON DELETE CASCADE
 );
 
 CREATE TABLE membership
@@ -126,18 +106,18 @@ CREATE TABLE itclient
     description   UUID REFERENCES internal_text ON DELETE CASCADE
 );
 
+CREATE TABLE itclient_owner
+(
+    user_id UUID REFERENCES ituser(user_id),
+    client_uid UUID REFERENCES itclient(client_uid),
+    PRIMARY KEY (user_id, client_uid)
+);
+
 CREATE TABLE itclient_scope
 (
     client_uid UUID REFERENCES itclient,
     scope      VARCHAR(30) NOT NULL,
     PRIMARY KEY (client_uid, scope)
-);
-
-CREATE TABLE itclient_authority_level_restriction
-(
-    client_uid      UUID REFERENCES itclient,
-    authority_level VARCHAR(30) REFERENCES authority_level,
-    PRIMARY KEY (client_uid, authority_level)
 );
 
 CREATE TABLE apikey
@@ -187,4 +167,66 @@ CREATE TABLE settings_info_api_super_group_types
     PRIMARY KEY (settings_id, super_group_type_name)
 );
 
+CREATE TABLE client_authority
+(
+    client_uid      UUID REFERENCES itclient(client_uid) ON DELETE CASCADE,
+    authority_name VARCHAR(30),
+    PRIMARY KEY (client_uid, authority_name)
+);
 
+CREATE TABLE client_authority_post
+(
+    super_group_id  UUID REFERENCES fkit_super_group,
+    post_id         UUID REFERENCES post,
+    client_uid      UUID,
+    authority_name VARCHAR(30),
+    PRIMARY KEY (post_id, super_group_id, client_uid, authority_name),
+    FOREIGN KEY (client_uid, authority_name)
+        REFERENCES client_authority(client_uid, authority_name)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE client_authority_super_group
+(
+    super_group_id  UUID REFERENCES fkit_super_group,
+    client_uid      UUID,
+    authority_name VARCHAR(30),
+    PRIMARY KEY (super_group_id, client_uid, authority_name),
+    FOREIGN KEY (client_uid, authority_name)
+        REFERENCES client_authority(client_uid, authority_name)
+        ON DELETE CASCADE
+);
+
+CREATE TABLE client_authority_user
+(
+    user_id         UUID REFERENCES ituser ON DELETE CASCADE,
+    client_uid      UUID,
+    authority_name VARCHAR(30),
+    PRIMARY KEY (user_id, client_uid, authority_name),
+    FOREIGN KEY (client_uid, authority_name)
+        REFERENCES client_authority(client_uid, authority_name)
+        ON DELETE CASCADE
+);
+
+
+CREATE TABLE client_restriction_post
+(
+    super_group_id  UUID REFERENCES fkit_super_group,
+    post_id         UUID REFERENCES post,
+    client_uid      UUID REFERENCES itclient ON DELETE CASCADE,
+    PRIMARY KEY (post_id, super_group_id, client_uid)
+);
+
+CREATE TABLE client_restriction_super_group
+(
+    super_group_id  UUID REFERENCES fkit_super_group,
+    client_uid      UUID REFERENCES itclient ON DELETE CASCADE,
+    PRIMARY KEY (super_group_id, client_uid)
+);
+
+CREATE TABLE client_restriction_user
+(
+    user_id         UUID REFERENCES ituser ON DELETE CASCADE,
+    client_uid      UUID REFERENCES itclient ON DELETE CASCADE,
+    PRIMARY KEY (user_id, client_uid)
+);

@@ -110,9 +110,10 @@ public class UserAccessGuard {
                     );
                 }
 
-                return apiAuthenticationPrincipal.getClient().get().approvedUsers()
-                        .stream()
-                        .anyMatch(gammaUser -> gammaUser.id().equals(userId));
+                throw new UnsupportedOperationException();
+//                return apiAuthenticationPrincipal.getClient().get().approvedUsers()
+//                        .stream()
+//                        .anyMatch(gammaUser -> gammaUser.id().equals(userId));
             }
         }
 

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.group;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.client.authority.ClientAuthorityEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.client.authority.ClientAuthorityRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
@@ -12,9 +12,9 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAd
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupTypeRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
-import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupMember;
@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
@@ -67,13 +66,11 @@ import static org.assertj.core.api.Assertions.assertThat;
         SuperGroupTypeRepositoryAdapter.class,
         SuperGroupEntityConverter.class,
         SettingsRepositoryAdapter.class,
-        AuthorityLevelRepositoryAdapter.class,
-        AuthorityLevelEntityConverter.class
+        ClientAuthorityRepositoryAdapter.class,
+        ClientAuthorityEntityConverter.class
 })
 public class GroupFacadeIntegrationTest {
 
-    @MockBean
-    private AccessGuard accessGuard;
     @Autowired
     private GroupFacade groupFacade;
     @Autowired
@@ -89,7 +86,9 @@ public class GroupFacadeIntegrationTest {
     @Autowired
     private SettingsRepository settingsRepository;
     @Autowired
-    private AuthorityLevelRepository authorityLevelRepository;
+    private ClientAuthorityRepository clientAuthorityRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     @BeforeEach
     public void clearSecurityContext() {
@@ -135,7 +134,7 @@ public class GroupFacadeIntegrationTest {
 
     @Test
     public void Given_Group_Expect_update_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException, GroupFacade.GroupAlreadyExistsException {
-        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+        setAuthenticatedAsAdminUser(userRepository, adminRepository);
 
         Group group = digit18;
         SuperGroup newSuperGroup = digit;
@@ -180,7 +179,7 @@ public class GroupFacadeIntegrationTest {
 
     @Test
     public void Given_GroupWithNewMembers_Expect_setMembers_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException, GroupRepository.GroupNameAlreadyExistsException {
-        setAuthenticatedAsAdminUser(userRepository, authorityLevelRepository);
+        setAuthenticatedAsAdminUser(userRepository, adminRepository);
         postRepository.save(member);
         addAll(userRepository, u3, u4);
         addGroup(digit18);

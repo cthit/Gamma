@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/internal/admin/clients")
+@RequestMapping("/internal/admin/client")
 public final class ClientAdminController {
 
     private final ClientFacade clientFacade;
@@ -26,7 +26,6 @@ public final class ClientAdminController {
                         request.svDescription,
                         request.enDescription,
                         request.generateApiKey,
-                        request.restrictions,
                         request.emailScope
                 )
         );

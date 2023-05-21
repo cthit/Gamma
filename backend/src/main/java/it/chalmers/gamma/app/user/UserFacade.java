@@ -80,11 +80,12 @@ public class UserFacade extends Facade {
 
         if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiAuthentication) {
             Client client = apiAuthentication.getClient().orElseThrow();
-            return client.approvedUsers()
-                    .stream()
-                    .filter(user -> user.extended().acceptedUserAgreement())
-                    .map(UserDTO::new)
-                    .toList();
+            throw new UnsupportedOperationException();
+//            return client.approvedUsers()
+//                    .stream()
+//                    .filter(user -> user.extended().acceptedUserAgreement())
+//                    .map(UserDTO::new)
+//                    .toList();
         }
 
         return Collections.emptyList();

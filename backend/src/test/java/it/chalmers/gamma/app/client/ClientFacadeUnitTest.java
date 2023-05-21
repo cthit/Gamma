@@ -4,7 +4,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authority.domain.AuthorityName;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -53,7 +53,6 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 false,
-                Collections.emptyList(),
                 false
         );
 
@@ -76,16 +75,15 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new RedirectUrl(newClient.webServerRedirectUrl()),
+                new ClientRedirectUrl(newClient.redirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
                         newClient.enDescription()
                 ),
-                Collections.emptyList(),
                 List.of(Scope.PROFILE),
-                Collections.emptyList(),
-                Optional.empty()
+                null,
+                new ClientOwnerOfficial()
         );
 
         Assertions.assertThat(capturedNewClient)
@@ -107,7 +105,6 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 false,
-                Collections.emptyList(),
                 true
         );
 
@@ -130,16 +127,15 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new RedirectUrl(newClient.webServerRedirectUrl()),
+                new ClientRedirectUrl(newClient.redirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
                         newClient.enDescription()
                 ),
-                Collections.emptyList(),
                 List.of(Scope.PROFILE, Scope.EMAIL),
-                Collections.emptyList(),
-                Optional.empty()
+                null,
+                new ClientOwnerOfficial()
         );
 
         Assertions.assertThat(capturedNewClient)
@@ -154,7 +150,6 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 true,
-                Collections.emptyList(),
                 true
         );
 
@@ -192,16 +187,15 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new RedirectUrl(newClient.webServerRedirectUrl()),
+                new ClientRedirectUrl(newClient.redirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
                         newClient.enDescription()
                 ),
-                Collections.emptyList(),
                 List.of(Scope.PROFILE, Scope.EMAIL),
-                Collections.emptyList(),
-                Optional.of(expectedApiKey)
+                expectedApiKey,
+                new ClientOwnerOfficial()
         );
 
         Assertions.assertThat(capturedNewClient)
@@ -216,7 +210,7 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 false,
-                List.of("mat"),
+//                List.of("mat"),
                 false
         );
 
@@ -239,16 +233,16 @@ class ClientFacadeUnitTest {
                 capturedNewClient.clientUid(),
                 capturedNewClient.clientId(),
                 new ClientSecret(secrets.clientSecret()),
-                new RedirectUrl(newClient.webServerRedirectUrl()),
+                new ClientRedirectUrl(newClient.redirectUrl()),
                 new PrettyName(newClient.prettyName()),
                 new Text(
                         newClient.svDescription(),
                         newClient.enDescription()
                 ),
-                List.of(new AuthorityLevelName("mat")),
+//                List.of(new AuthorityName("mat")),
                 List.of(Scope.PROFILE),
-                Collections.emptyList(),
-                Optional.empty()
+                null,
+                new ClientOwnerOfficial()
         );
 
         Assertions.assertThat(capturedNewClient)

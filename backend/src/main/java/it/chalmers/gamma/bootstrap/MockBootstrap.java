@@ -35,6 +35,7 @@ public class MockBootstrap {
             return MockData.empty();
         }
 
+        //TODO: Find a way
         Resource resource = this.resourceLoader.getResource("classpath:/mock/mock.json");
         ObjectMapper objectMapper = new ObjectMapper();
         try {

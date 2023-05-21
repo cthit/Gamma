@@ -3,7 +3,7 @@ package it.chalmers.gamma.security;
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
+import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
@@ -26,9 +26,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
@@ -44,7 +42,7 @@ public class SecurityFiltersConfig {
                                                     PasswordEncoder passwordEncoder,
                                                     UserJpaRepository userJpaRepository,
                                                     SettingsRepository settingsRepository,
-                                                    AuthorityLevelRepository authorityLevelRepository) throws Exception {
+                                                    ClientAuthorityRepository clientAuthorityRepository) throws Exception {
 
         TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
                 userJpaRepository,
@@ -70,7 +68,7 @@ public class SecurityFiltersConfig {
 
         http
                 .securityMatchers(matcher -> matcher.requestMatchers(internalRequestMatcher, loginRequestMatcher, logoutRequestMatcher))
-                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, authorityLevelRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, clientAuthorityRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
                         authorization
                                 .requestMatchers(new OrRequestMatcher(permittedRequests)).hasRole("ANONYMOUS")

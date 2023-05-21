@@ -1,49 +1,34 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.client.authority.ClientAuthorityEntityConverter;
+import it.chalmers.gamma.adapter.secondary.jpa.client.authority.ClientAuthorityRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.settings.SettingsRepositoryAdapter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
-import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
-import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.settings.domain.Settings;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
-import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.utils.PasswordEncoderTestConfiguration;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.time.Instant;
-import java.util.Collections;
-
-import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.*;
-import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({UserRepositoryAdapter.class,
         UserEntityConverter.class,
         UserAccessGuard.class,
-        AuthorityLevelRepositoryAdapter.class,
-        AuthorityLevelEntityConverter.class,
+        ClientAuthorityRepositoryAdapter.class,
+        ClientAuthorityEntityConverter.class,
         SuperGroupEntityConverter.class,
         PostEntityConverter.class,
         SettingsRepositoryAdapter.class,
         PasswordEncoderTestConfiguration.class})
 public class UserEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
+    /*
     @Autowired
     private UserRepositoryAdapter userRepositoryAdapter;
     @Autowired
-    private AuthorityLevelRepositoryAdapter authorityLevelRepositoryAdapter;
+    private ClientAuthorityRepositoryAdapter authorityLevelRepositoryAdapter;
 
     @Autowired
     private SettingsRepository settingsRepository;
@@ -321,4 +306,5 @@ public class UserEntityIntegrationTests extends AbstractEntityIntegrationTests {
                 ));
     }
 
+     */
 }

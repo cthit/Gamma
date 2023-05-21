@@ -3,8 +3,6 @@ package it.chalmers.gamma.adapter.secondary.image;
 import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,11 +37,7 @@ public class LocalImageService implements ImageService {
 
             this.checkIfValidImageContent(file);
 
-            String filePathString = UUID.randomUUID()
-                    + "/"
-                    + file.getName()
-                    + "."
-                    + FilenameUtils.getExtension(file.getOriginalFilename());
+            String filePathString = UUID.randomUUID() + "/" + file.getName() + "." + getExtension(file.getOriginalFilename());
 
             File filePath = new File(this.relativePath + filePathString);
 
@@ -83,14 +77,19 @@ public class LocalImageService implements ImageService {
     @Override
     public ImageDetails getImage(ImageUri imageUri) {
         try {
-            return new ImageDetails(
-                    StreamUtils.copyToByteArray(Files.newInputStream(Paths.get(this.relativePath + imageUri.value()))),
-                    getType(imageUri)
-            );
+            return new ImageDetails(StreamUtils.copyToByteArray(Files.newInputStream(Paths.get(this.relativePath + imageUri.value()))), getType(imageUri));
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getExtension(String fileName) {
+        if (fileName == null) {
+            throw new IllegalArgumentException();
+        }
+
+        return fileName.substring(fileName.lastIndexOf('.') + 1);
     }
 
     private String getType(ImageUri imageUri) {
@@ -100,11 +99,7 @@ public class LocalImageService implements ImageService {
 
     private void checkIfValidImageContent(MultipartFile file) throws ImageCouldNotBeSavedException {
         String contentType = file.getContentType();
-        if (!List.of(
-                ContentType.IMAGE_GIF.toString(),
-                ContentType.IMAGE_PNG.toString(),
-                ContentType.IMAGE_JPEG.toString()
-        ).contains(contentType)) {
+        if (!List.of("image/jpeg", "image/png", "image/gif").contains(contentType)) {
             throw new ImageCouldNotBeSavedException("Image content not valid");
         }
     }

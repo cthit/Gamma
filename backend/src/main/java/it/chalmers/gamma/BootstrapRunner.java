@@ -12,9 +12,7 @@ import org.springframework.stereotype.Component;
 public class BootstrapRunner {
 
     @Bean
-    public CommandLineRunner runBootStrap(AdminAuthorityLevelBootstrap adminAuthorityLevelBootstrap,
-                                          ApiKeyBootstrap apiKeyBootstrap,
-                                          AuthorityLevelBootstrap authorityLevelBootstrap,
+    public CommandLineRunner runBootStrap(ApiKeyBootstrap apiKeyBootstrap,
                                           ClientBootstrap clientBootstrap,
                                           EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
                                           EnsureSettingsBootstrap ensureSettingsBootstrap,
@@ -22,8 +20,7 @@ public class BootstrapRunner {
                                           MiscBootstrap miscBootstrap,
                                           PostBootstrap postBootstrap,
                                           SuperGroupBootstrap superGroupBootstrap,
-                                          UserBootstrap userBootstrap,
-                                          AuthorizationRedisRepository gammaAuthorizationRepository) {
+                                          UserBootstrap userBootstrap) {
         return (args) -> {
             try {
                 SecurityContextHolder.createEmptyContext();
@@ -33,14 +30,12 @@ public class BootstrapRunner {
 
                 ensureSettingsBootstrap.ensureAppSettings();
 
-                adminAuthorityLevelBootstrap.ensureAdminAuthorityLevel();
                 ensureAnAdminUserBootstrap.ensureAnAdminUser();
 
                 userBootstrap.createUsers();
                 postBootstrap.createPosts();
                 superGroupBootstrap.createSuperGroups();
                 groupBootstrap.createGroups();
-                authorityLevelBootstrap.createAuthorities();
 
                 clientBootstrap.runOauthClient();
                 apiKeyBootstrap.ensureApiKeys();

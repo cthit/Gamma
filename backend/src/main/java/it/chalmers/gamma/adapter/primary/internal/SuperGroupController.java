@@ -26,7 +26,7 @@ public class SuperGroupController {
 
     @GetMapping()
     public List<SuperGroupFacade.SuperGroupDTO> getAllSuperGroups() {
-        return this.superGroupFacade.getAllSuperGroups();
+        return this.superGroupFacade.getAll();
     }
 
     @GetMapping("/{id}")

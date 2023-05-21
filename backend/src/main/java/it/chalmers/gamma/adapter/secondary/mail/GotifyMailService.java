@@ -1,16 +1,10 @@
 package it.chalmers.gamma.adapter.secondary.mail;
 
 import it.chalmers.gamma.app.mail.domain.MailService;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 public class GotifyMailService implements MailService {
@@ -45,19 +39,20 @@ public class GotifyMailService implements MailService {
      * @return true if message was successfully sent false if not
      */
     private void sendMailViaGotify(String email, String subject, String body) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        JSONObject object = new JSONObject();
-        object.put("to", email);
-        object.put("from", "no-reply@chalmers.it");
-        object.put("subject", subject);
-        object.put("body", body);
-
-        HttpEntity<JSONObject> entity = new HttpEntity<>(object, headers);
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.postForEntity(this.gotifyURL, entity, String.class);
-        LOGGER.info("Gotify responded with " + response.getHeaders() + response.getBody());
+        throw new UnsupportedOperationException("dont use json");
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        JSONObject object = new JSONObject();
+//        object.put("to", email);
+//        object.put("from", "no-reply@chalmers.it");
+//        object.put("subject", subject);
+//        object.put("body", body);
+//
+//        HttpEntity<JSONObject> entity = new HttpEntity<>(object, headers);
+//        RestTemplate restTemplate = new RestTemplate();
+//        ResponseEntity<String> response = restTemplate.postForEntity(this.gotifyURL, entity, String.class);
+//        LOGGER.info("Gotify responded with " + response.getHeaders() + response.getBody());
     }
 
 }

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.utils;
 
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
+import it.chalmers.gamma.app.authority.domain.Authority;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
@@ -179,13 +179,6 @@ public final class DomainUtils {
         );
     }
 
-    public static Client removeUserExtended(Client client) {
-        return client.withApprovedUsers(client.approvedUsers()
-                .stream()
-                .map(DomainUtils::removeUserExtended)
-                .toList());
-    }
-
     public static Group removeUserExtended(Group group) {
         return group.withGroupMembers(group.groupMembers()
                 .stream()
@@ -201,21 +194,22 @@ public final class DomainUtils {
         return user.withExtended(user.extended().withVersion(1));
     }
 
-    public static AuthorityLevel asSaved(AuthorityLevel authorityLevel) {
-        return new AuthorityLevel(
-                authorityLevel.name(),
-                authorityLevel.posts()
+    public static Authority asSaved(Authority authority) {
+        return new Authority(
+                authority.client(),
+                authority.name(),
+                authority.posts()
                         .stream()
-                        .map(superGroupPost -> new AuthorityLevel.SuperGroupPost(
+                        .map(superGroupPost -> new Authority.SuperGroupPost(
                                 superGroupPost.superGroup().withVersion(1),
                                 superGroupPost.post().withVersion(1)
                         ))
                         .toList(),
-                authorityLevel.superGroups()
+                authority.superGroups()
                         .stream()
                         .map(superGroup -> superGroup.withVersion(1))
                         .toList(),
-                authorityLevel.users()
+                authority.users()
                         .stream()
                         .map(user -> user.withExtended(user.extended().withVersion(1)))
                         .toList()

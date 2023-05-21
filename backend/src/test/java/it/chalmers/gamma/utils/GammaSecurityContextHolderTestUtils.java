@@ -1,13 +1,14 @@
 package it.chalmers.gamma.utils;
 
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevel;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelRepository;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityType;
+import it.chalmers.gamma.app.authority.domain.Authority;
+import it.chalmers.gamma.app.authority.domain.AuthorityName;
+import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
+import it.chalmers.gamma.app.authority.domain.AuthorityType;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
@@ -63,16 +64,15 @@ public class GammaSecurityContextHolderTestUtils {
             ClientUid.generate(),
             ClientId.generate(),
             ClientSecret.generate(),
-            new RedirectUrl("https://mat.chalmers.it"),
+            new ClientRedirectUrl("https://mat.chalmers.it"),
             new PrettyName("Mat"),
             new Text(
                     "Klient för mat",
                     "Client for mat"
             ),
-            List.of(new AuthorityLevelName("admin")),
             Collections.emptyList(),
-            Collections.emptyList(),
-            Optional.of(DEFAULT_CLIENT_API_KEY)
+            DEFAULT_CLIENT_API_KEY,
+            new ClientOwnerOfficial()
     );
 
     public static GammaUser setAuthenticatedAsNormalUser(UserRepository userRepository) {
@@ -80,8 +80,8 @@ public class GammaSecurityContextHolderTestUtils {
         return DEFAULT_USER.withExtended(DEFAULT_USER.extended().withVersion(1));
     }
 
-    public static GammaUser setAuthenticatedAsAdminUser(UserRepository userRepository, AuthorityLevelRepository authorityLevelRepository) {
-        setAuthenticatedUser(userRepository, authorityLevelRepository, DEFAULT_USER, true);
+    public static GammaUser setAuthenticatedAsAdminUser(UserRepository userRepository, AdminRepository adminRepository) {
+        setAuthenticatedUser(userRepository, adminRepository, DEFAULT_USER, true);
         return DEFAULT_USER.withExtended(DEFAULT_USER.extended().withVersion(1));
     }
 
@@ -90,7 +90,7 @@ public class GammaSecurityContextHolderTestUtils {
     }
 
     public static void setAuthenticatedUser(UserRepository userRepository,
-                                            AuthorityLevelRepository authorityLevelRepository,
+                                            AdminRepository adminRepository,
                                             GammaUser gammaUser,
                                             boolean isAdmin) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -105,28 +105,8 @@ public class GammaSecurityContextHolderTestUtils {
         }
 
         List<UserAuthority> authorities = new ArrayList<>();
-        AuthorityLevelName admin = new AuthorityLevelName("admin");
 
-        if (authorityLevelRepository != null) {
-            try {
-                authorityLevelRepository.create(admin);
-
-                if (isAdmin) {
-                    authorityLevelRepository.save(new AuthorityLevel(
-                            admin,
-                            new ArrayList<>(),
-                            new ArrayList<>(),
-                            List.of(gammaUser)
-                    ));
-                }
-            } catch (AuthorityLevelRepository.AuthorityLevelAlreadyExistsException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (isAdmin) {
-            authorities.add(new UserAuthority(new AuthorityLevelName("admin"), AuthorityType.AUTHORITY));
-        }
+        adminRepository.setAdmin(gammaUser.id(), isAdmin);
 
         User user = new User(gammaUser.id().value().toString(), "{noop}" + password, Collections.emptyList());
 

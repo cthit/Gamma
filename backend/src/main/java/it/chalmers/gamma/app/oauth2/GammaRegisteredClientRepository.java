@@ -42,7 +42,7 @@ public class GammaRegisteredClientRepository implements RegisteredClientReposito
                 .withId(client.clientUid().getValue())
                 .clientId(client.clientId().value())
                 .clientSecret(client.clientSecret().value())
-                .redirectUri(client.redirectUrl().value())
+                .redirectUri(client.clientRedirectUrl().value())
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .clientName(client.prettyName().value())
                 .clientSettings(

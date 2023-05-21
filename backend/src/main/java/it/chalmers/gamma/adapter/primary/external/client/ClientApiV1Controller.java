@@ -44,7 +44,7 @@ public class ClientApiV1Controller {
 
     @GetMapping("/superGroups")
     public List<SuperGroupFacade.SuperGroupDTO> getSuperGroups() {
-        return this.superGroupFacade.getAllSuperGroups();
+        return this.superGroupFacade.getAll();
     }
 
     @GetMapping("/users")

@@ -7,9 +7,7 @@
       "cid": "wmacmak",
       "nick": "Chokladkaka",
       "acceptanceYear": 2014,
-      "authorities": [
-        "admin"
-      ]
+      "admin": true
     },
     {
       "id": "bc605869-9a4d-46ec-8a29-d00819d4c195",
@@ -381,10 +379,7 @@
       "id": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
       "name": "kandidatmiddagen",
       "prettyName": "Kandidatmiddagen",
-      "type": "FUNCTIONARIES",
-      "authorities": [
-        "myauthority"
-      ]
+      "type": "FUNCTIONARIES"
     }
   ],
   "posts": [
@@ -415,13 +410,6 @@
         "sv": "Vice Ordförande",
         "en": "Vice-chairman"
       }
-    }
-  ],
-  "postAuthorities": [
-    {
-      "name": "myauthority",
-      "superGroupId": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
-      "postId": "524db9a7-e8be-403e-a07c-a41803ea5ee7"
     }
   ]
 }

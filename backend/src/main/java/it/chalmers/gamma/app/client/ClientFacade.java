@@ -6,17 +6,17 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authoritylevel.domain.AuthorityLevelName;
+import it.chalmers.gamma.app.authority.domain.AuthorityName;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.user.UserFacade;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 
 @Service
 public class ClientFacade extends Facade {
@@ -37,23 +37,21 @@ public class ClientFacade extends Facade {
         this.accessGuard.require(isAdmin());
 
         ClientSecret clientSecret = ClientSecret.generate();
-        Optional<ApiKey> apiKey = Optional.empty();
+        ApiKey apiKey = null;
         ApiKeyToken apiKeyToken = null;
 
         if (newClient.generateApiKey) {
             apiKeyToken = ApiKeyToken.generate();
 
-            apiKey = Optional.of(
-                    new ApiKey(
-                            ApiKeyId.generate(),
-                            new PrettyName(newClient.prettyName),
-                            new Text(
-                                    "Api nyckel för klienten: " + newClient.prettyName,
-                                    "Api key for client: " + newClient.prettyName
-                            ),
-                            ApiKeyType.CLIENT,
-                            apiKeyToken
-                    )
+            apiKey = new ApiKey(
+                    ApiKeyId.generate(),
+                    new PrettyName(newClient.prettyName),
+                    new Text(
+                            "Api nyckel för klienten: " + newClient.prettyName,
+                            "Api key for client: " + newClient.prettyName
+                    ),
+                    ApiKeyType.CLIENT,
+                    apiKeyToken
             );
         }
 
@@ -71,16 +69,15 @@ public class ClientFacade extends Facade {
                         clientUid,
                         clientId,
                         clientSecret,
-                        new RedirectUrl(newClient.webServerRedirectUrl),
+                        new ClientRedirectUrl(newClient.redirectUrl),
                         new PrettyName(newClient.prettyName),
                         new Text(
                                 newClient.svDescription,
                                 newClient.enDescription
                         ),
-                        newClient.restrictions.stream().map(AuthorityLevelName::new).toList(),
                         scopes,
-                        Collections.emptyList(),
-                        apiKey
+                        apiKey,
+                        new ClientOwnerOfficial()
                 )
         );
         return new ClientAndApiKeySecrets(
@@ -89,6 +86,13 @@ public class ClientFacade extends Facade {
                 clientSecret.value(),
                 apiKeyToken == null ? null : apiKeyToken.value()
         );
+    }
+
+    @Transactional
+    public ClientAndApiKeySecrets createDev(NewClient newClient) {
+        accessGuard.require(isSignedIn());
+
+        return null;
     }
 
     public void delete(String clientUid) throws ClientFacade.ClientNotFoundException {
@@ -128,12 +132,11 @@ public class ClientFacade extends Facade {
         return newSecret.value();
     }
 
-    public record NewClient(String webServerRedirectUrl,
+    public record NewClient(String redirectUrl,
                             String prettyName,
                             String svDescription,
                             String enDescription,
                             boolean generateApiKey,
-                            List<String> restrictions,
                             boolean emailScope) {
     }
 
@@ -151,25 +154,15 @@ public class ClientFacade extends Facade {
                             String prettyName,
                             String svDescription,
                             String enDescription,
-                            List<String> restrictions,
-                            List<UserFacade.UserDTO> approvedUsers,
                             boolean hasApiKey) {
 
         public ClientDTO(Client client) {
             this(client.clientUid().value(),
                     client.clientId().value(),
-                    client.redirectUrl().value(),
+                    client.clientRedirectUrl().value(),
                     client.prettyName().value(),
                     client.description().sv().value(),
                     client.description().en().value(),
-                    client.restrictions()
-                            .stream()
-                            .map(AuthorityLevelName::value)
-                            .toList(),
-                    client.approvedUsers()
-                            .stream()
-                            .map(UserFacade.UserDTO::new)
-                            .toList(),
                     client.clientApiKey().isPresent()
             );
         }

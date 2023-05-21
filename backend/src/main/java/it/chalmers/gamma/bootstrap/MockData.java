@@ -7,12 +7,10 @@ import java.util.UUID;
 public record MockData(List<MockUser> users,
                        List<MockGroup> groups,
                        List<MockSuperGroup> superGroups,
-                       List<MockPost> posts,
-                       List<MockPostAuthority> postAuthorities) {
+                       List<MockPost> posts) {
 
     public static MockData empty() {
         return new MockData(
-                Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
@@ -54,14 +52,7 @@ public record MockData(List<MockUser> users,
             String firstName,
             String lastName,
             int acceptanceYear,
-            List<String> authorities) {
-    }
-
-    public record MockPostAuthority(
-            String name,
-            UUID superGroupId,
-            UUID postId
-    ) {
+            boolean admin) {
     }
 
 }

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.authoritylevel.AuthorityLevelEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
@@ -25,8 +24,8 @@ import java.util.Optional;
 @Transactional
 public class ClientRepositoryAdapter implements ClientRepository {
 
-    private static final PersistenceErrorState authorityLevelNotFound = new PersistenceErrorState(
-            "itclient_authority_level_restriction_authority_level_fkey",
+    private static final PersistenceErrorState authorityNotFound = new PersistenceErrorState(
+            "itclient_authority_level_restriction_authority_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
     private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
@@ -62,8 +61,8 @@ public class ClientRepositoryAdapter implements ClientRepository {
         } catch (Exception e) {
             PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 
-            if (state.equals(authorityLevelNotFound)) {
-                throw new AuthorityLevelNotFoundRuntimeException();
+            if (state.equals(authorityNotFound)) {
+                throw new AuthorityNotFoundRuntimeException();
             } else if (state.equals(userNotFound)) {
                 throw new UserNotFoundRuntimeException();
             } else if (state.equals(clientIdAlreadyExists)) {
@@ -148,35 +147,13 @@ public class ClientRepositoryAdapter implements ClientRepository {
         clientEntity.clientId = client.clientId().value();
         clientEntity.clientSecret = client.clientSecret().value();
         clientEntity.prettyName = client.prettyName().value();
-        clientEntity.webServerRedirectUrl = client.redirectUrl().value();
+        clientEntity.webServerRedirectUrl = client.clientRedirectUrl().value();
 
         if (clientEntity.description == null) {
             clientEntity.description = new TextEntity();
         }
 
         clientEntity.description.apply(client.description());
-
-        clientEntity.restrictions.clear();
-        clientEntity.restrictions.addAll(
-                client.restrictions()
-                        .stream()
-                        .map(authorityLevelName -> new ClientRestrictionEntity(
-                                clientEntity,
-                                authorityLevelName
-                        ))
-                        .toList()
-        );
-
-        clientEntity.approvals.clear();
-        clientEntity.approvals.addAll(
-                client.approvedUsers()
-                        .stream()
-                        .map(user -> new UserApprovalEntity(
-                                this.userJpaRepository.getById(user.id().value()),
-                                clientEntity
-                        ))
-                        .toList()
-        );
 
         clientEntity.scopes.clear();
         clientEntity.scopes.addAll(
