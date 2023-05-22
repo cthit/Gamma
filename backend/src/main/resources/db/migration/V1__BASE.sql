@@ -1,11 +1,13 @@
-CREATE TABLE internal_text
+-- g_ = gamma prefix to prevent using reserved names
+
+CREATE TABLE g_text
 (
     text_id UUID PRIMARY KEY,
     sv      VARCHAR(2048) NOT NULL,
     en      VARCHAR(2048) NOT NULL
 );
 
-CREATE TABLE ituser
+CREATE TABLE g_user
 (
     user_id                 UUID PRIMARY KEY,
     cid                     VARCHAR(12)  NOT NULL UNIQUE,
@@ -24,26 +26,26 @@ CREATE TABLE ituser
     locked                  BOOLEAN               DEFAULT FALSE
 );
 
-CREATE TABLE user_avatar_uri
+CREATE TABLE g_user_avatar_uri
 (
     user_id    UUID REFERENCES ituser ON DELETE CASCADE,
     avatar_uri VARCHAR(255) NOT NULL,
     version    INT
 );
 
-CREATE TABLE password_reset
+CREATE TABLE g_password_reset
 (
     token      VARCHAR(100) UNIQUE,
     user_id    UUID PRIMARY KEY REFERENCES ituser ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT current_timestamp
 );
 
-CREATE TABLE super_group_type
+CREATE TABLE g_super_group_type
 (
     super_group_type_name VARCHAR(30) PRIMARY KEY
 );
 
-CREATE TABLE fkit_super_group
+CREATE TABLE g_super_group
 (
     super_group_id        UUID PRIMARY KEY,
     e_name                VARCHAR(50) NOT NULL UNIQUE,
@@ -53,7 +55,7 @@ CREATE TABLE fkit_super_group
     version               INT
 );
 
-CREATE TABLE fkit_group
+CREATE TABLE g_group
 (
     group_id       UUID PRIMARY KEY,
     e_name         VARCHAR(50) NOT NULL UNIQUE,
@@ -62,7 +64,7 @@ CREATE TABLE fkit_group
     version        INT
 );
 
-CREATE TABLE post
+CREATE TABLE g_post
 (
     post_id      UUID PRIMARY KEY,
     post_name    UUID NOT NULL REFERENCES internal_text ON DELETE CASCADE,
@@ -70,12 +72,12 @@ CREATE TABLE post
     version      INT
 );
 
-CREATE TABLE admin_user
+CREATE TABLE g_admin_user
 (
     user_id     UUID PRIMARY KEY REFERENCES ituser(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE membership
+CREATE TABLE g_membership
 (
     user_id              UUID REFERENCES ituser ON DELETE CASCADE,
     group_id             UUID REFERENCES fkit_group ON DELETE CASCADE,
@@ -84,19 +86,19 @@ CREATE TABLE membership
     PRIMARY KEY (user_id, group_id, post_id)
 );
 
-CREATE TABLE whitelist_cid
+CREATE TABLE g_allowlist
 (
     cid VARCHAR(10) PRIMARY KEY CHECK (LOWER(cid) = cid)
 );
 
-CREATE TABLE user_activation
+CREATE TABLE g_user_activation
 (
     cid        VARCHAR(10) PRIMARY KEY REFERENCES whitelist_cid,
     token      VARCHAR(10) UNIQUE NOT NULL,
     created_at TIMESTAMP          NOT NULL DEFAULT current_timestamp
 );
 
-CREATE TABLE itclient
+CREATE TABLE g_client
 (
     client_uid    UUID PRIMARY KEY,
     client_id     VARCHAR(100) UNIQUE,
@@ -106,21 +108,21 @@ CREATE TABLE itclient
     description   UUID REFERENCES internal_text ON DELETE CASCADE
 );
 
-CREATE TABLE itclient_owner
+CREATE TABLE g_client_owner
 (
     user_id UUID REFERENCES ituser(user_id),
     client_uid UUID REFERENCES itclient(client_uid),
     PRIMARY KEY (user_id, client_uid)
 );
 
-CREATE TABLE itclient_scope
+CREATE TABLE g_client_scope
 (
     client_uid UUID REFERENCES itclient,
     scope      VARCHAR(30) NOT NULL,
     PRIMARY KEY (client_uid, scope)
 );
 
-CREATE TABLE apikey
+CREATE TABLE g_apikey
 (
     api_key_id  UUID PRIMARY KEY,
     pretty_name VARCHAR(30) NOT NULL,
@@ -130,20 +132,20 @@ CREATE TABLE apikey
     version     INT
 );
 
-CREATE TABLE itclient_apikey
+CREATE TABLE g_client_apikey
 (
     client_uid UUID PRIMARY KEY REFERENCES itclient ON DELETE CASCADE,
     api_key_id UUID REFERENCES apikey ON DELETE CASCADE
 );
 
-CREATE TABLE it_user_approval
+CREATE TABLE g_user_approval
 (
     user_id    UUID REFERENCES ituser ON DELETE CASCADE,
     client_uid UUID REFERENCES itclient ON DELETE CASCADE,
     PRIMARY KEY (user_id, client_uid)
 );
 
-CREATE TABLE group_images_uri
+CREATE TABLE g_group_images_uri
 (
     group_id   UUID REFERENCES fkit_group ON DELETE CASCADE,
     avatar_uri VARCHAR(255),
@@ -151,7 +153,7 @@ CREATE TABLE group_images_uri
     version    INT
 );
 
-CREATE TABLE settings
+CREATE TABLE g_settings
 (
     id                          UUID PRIMARY KEY,
     updated_at                  TIMESTAMP NOT NULL,
@@ -160,21 +162,21 @@ CREATE TABLE settings
 );
 
 
-CREATE TABLE settings_info_api_super_group_types
+CREATE TABLE g_settings_info_api_super_group_types
 (
     settings_id           UUID REFERENCES settings,
     super_group_type_name VARCHAR(30) REFERENCES super_group_type,
     PRIMARY KEY (settings_id, super_group_type_name)
 );
 
-CREATE TABLE client_authority
+CREATE TABLE g_client_authority
 (
     client_uid      UUID REFERENCES itclient(client_uid) ON DELETE CASCADE,
     authority_name VARCHAR(30),
     PRIMARY KEY (client_uid, authority_name)
 );
 
-CREATE TABLE client_authority_post
+CREATE TABLE g_client_authority_post
 (
     super_group_id  UUID REFERENCES fkit_super_group,
     post_id         UUID REFERENCES post,
@@ -186,7 +188,7 @@ CREATE TABLE client_authority_post
         ON DELETE CASCADE
 );
 
-CREATE TABLE client_authority_super_group
+CREATE TABLE g_client_authority_super_group
 (
     super_group_id  UUID REFERENCES fkit_super_group,
     client_uid      UUID,
@@ -197,7 +199,7 @@ CREATE TABLE client_authority_super_group
         ON DELETE CASCADE
 );
 
-CREATE TABLE client_authority_user
+CREATE TABLE g_client_authority_user
 (
     user_id         UUID REFERENCES ituser ON DELETE CASCADE,
     client_uid      UUID,
@@ -209,7 +211,7 @@ CREATE TABLE client_authority_user
 );
 
 
-CREATE TABLE client_restriction_post
+CREATE TABLE g_client_restriction_post
 (
     super_group_id  UUID REFERENCES fkit_super_group,
     post_id         UUID REFERENCES post,
@@ -217,14 +219,14 @@ CREATE TABLE client_restriction_post
     PRIMARY KEY (post_id, super_group_id, client_uid)
 );
 
-CREATE TABLE client_restriction_super_group
+CREATE TABLE g_client_restriction_super_group
 (
     super_group_id  UUID REFERENCES fkit_super_group,
     client_uid      UUID REFERENCES itclient ON DELETE CASCADE,
     PRIMARY KEY (super_group_id, client_uid)
 );
 
-CREATE TABLE client_restriction_user
+CREATE TABLE g_client_restriction_user
 (
     user_id         UUID REFERENCES ituser ON DELETE CASCADE,
     client_uid      UUID REFERENCES itclient ON DELETE CASCADE,

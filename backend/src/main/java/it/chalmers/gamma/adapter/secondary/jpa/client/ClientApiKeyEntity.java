@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "itclient_apikey")
+@Table(name = "g_client_apikey")
 public class ClientApiKeyEntity extends ImmutableEntity<UUID> {
 
     @Id

@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "admin_user")
+@Table(name = "g_admin_user")
 public class AdminEntity extends ImmutableEntity<UUID> {
 
     @Id

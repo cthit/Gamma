@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "settings")
+@Table(name = "g_settings")
 public class SettingsEntity extends MutableEntity<SettingsId> {
 
     @Column(name = "updated_at")

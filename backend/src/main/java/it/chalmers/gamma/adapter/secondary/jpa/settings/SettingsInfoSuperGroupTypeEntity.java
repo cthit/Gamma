@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "settings_info_api_super_group_types")
+@Table(name = "g_settings_info_api_super_group_types")
 public class SettingsInfoSuperGroupTypeEntity extends ImmutableEntity<SettingsInfoSuperGroupTypePK> {
 
     @EmbeddedId

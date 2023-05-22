@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "group_images_uri")
+@Table(name = "g_group_images_uri")
 public class GroupImagesEntity extends MutableEntity<GroupId> {
 
     @Id

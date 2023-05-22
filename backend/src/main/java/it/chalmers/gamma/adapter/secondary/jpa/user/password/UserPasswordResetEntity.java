@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "password_reset")
+@Table(name = "g_password_reset")
 public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
 
     @Id

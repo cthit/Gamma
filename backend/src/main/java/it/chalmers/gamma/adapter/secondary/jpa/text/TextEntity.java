@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "internal_text")
+@Table(name = "g_text")
 public class TextEntity extends ImmutableEntity<TextId> {
 
     @Id

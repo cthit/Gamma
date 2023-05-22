@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "post")
+@Table(name = "g_post")
 public class PostEntity extends MutableEntity<UUID> {
 
     @Id

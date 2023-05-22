@@ -9,7 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "client_restriction_user")
+@Table(name = "g_client_restriction_user")
 public class ClientRestrictionUserEntity extends ImmutableEntity<ClientRestrictionUserPK> {
 
     @EmbeddedId

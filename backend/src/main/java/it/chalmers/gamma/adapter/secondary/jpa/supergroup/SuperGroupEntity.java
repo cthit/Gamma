@@ -8,7 +8,7 @@ import java.util.UUID;
 
 
 @Entity
-@Table(name = "fkit_super_group")
+@Table(name = "g_super_group")
 public class SuperGroupEntity extends MutableEntity<UUID> {
 
     @Id

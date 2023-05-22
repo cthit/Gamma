@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name = "whitelist_cid")
+@Table(name = "g_allowlist")
 public class WhitelistEntity extends AbstractEntity<Cid> {
 
     @Id

@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "itclient_scope")
+@Table(name = "g_client_scope")
 public class ClientScopeEntity extends ImmutableEntity<ClientScopePK> {
 
     @EmbeddedId

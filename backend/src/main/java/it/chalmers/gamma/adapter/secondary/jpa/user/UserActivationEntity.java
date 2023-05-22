@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 
 @Entity
-@Table(name = "user_activation")
+@Table(name = "g_user_activation")
 public class UserActivationEntity extends ImmutableEntity<String> {
 
     @Id

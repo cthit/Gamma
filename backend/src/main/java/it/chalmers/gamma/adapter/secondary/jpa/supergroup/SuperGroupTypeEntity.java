@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "super_group_type")
+@Table(name = "g_super_group_type")
 public class SuperGroupTypeEntity extends AbstractEntity<String> {
 
     @Id

@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_avatar_uri")
+@Table(name = "g_user_avatar_uri")
 public class UserAvatarEntity extends MutableEntity<UUID> {
 
     @Id

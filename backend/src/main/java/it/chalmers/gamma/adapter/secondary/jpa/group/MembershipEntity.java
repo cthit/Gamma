@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "membership")
+@Table(name = "g_membership")
 public class MembershipEntity extends ImmutableEntity<MembershipPK> {
 
     @EmbeddedId

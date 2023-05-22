@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "client_authority_post")
+@Table(name = "g_client_authority_post")
 public class ClientAuthorityPostEntity extends ImmutableEntity<ClientAuthorityPostPK> {
 
     @EmbeddedId

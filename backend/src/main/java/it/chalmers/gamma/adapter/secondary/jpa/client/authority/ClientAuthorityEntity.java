@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "client_authority")
+@Table(name = "g_client_authority")
 public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntityPK> {
 
     @OneToMany(mappedBy = "id.clientAuthority", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

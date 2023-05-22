@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "client_authority_super_group")
+@Table(name = "g_client_authority_super_group")
 public class ClientAuthoritySuperGroupEntity extends ImmutableEntity<ClientAuthoritySuperGroupPK> {
 
     @EmbeddedId

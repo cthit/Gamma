@@ -8,7 +8,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ituser")
+@Table(name = "g_user")
 public class UserEntity extends MutableEntity<UUID> {
 
     @Id
