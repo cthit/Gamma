@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.admin;
+package it.chalmers.gamma.adapter.secondary.jpa.user.admin;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import jakarta.persistence.Column;

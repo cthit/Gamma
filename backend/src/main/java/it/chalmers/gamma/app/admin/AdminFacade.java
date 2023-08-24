@@ -22,12 +22,14 @@ public class AdminFacade extends Facade {
     }
 
     public void setAdmin(UUID userId, boolean admin) {
-        super.accessGuard.require(isAdmin());
+        accessGuard.require(isAdmin());
 
         this.adminRepository.setAdmin(new UserId(userId), admin);
     }
 
     public List<UUID> getAllAdmins() {
+        accessGuard.require(isAdmin());
+
         return this.adminRepository
                 .getAll()
                 .stream()

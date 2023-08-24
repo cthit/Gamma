@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.admin;
+package it.chalmers.gamma.adapter.secondary.jpa.user.admin;
 
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.user.domain.UserId;

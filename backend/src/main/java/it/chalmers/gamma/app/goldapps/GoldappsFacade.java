@@ -52,7 +52,8 @@ public class GoldappsFacade extends Facade {
                     List<GoldappsUserPostDTO> activeGroupMember = group.groupMembers()
                             .stream()
                             .filter(groupMember -> !groupMember.user().extended().locked())
-                            .filter(groupMember -> groupMember.user().extended().gdprTrained())
+                            //TODO:
+//                            .filter(groupMember -> groupMember.user().extended().gdprTrained())
                             .map(GoldappsUserPostDTO::new)
                             .toList();
 
@@ -95,7 +96,8 @@ public class GoldappsFacade extends Facade {
                 .map(GroupMember::user)
                 .distinct()
                 .filter(user -> !user.extended().locked())
-                .filter(user -> user.extended().gdprTrained())
+                //TODO:
+//                .filter(user -> user.extended().gdprTrained())
                 .map(GoldappsUserDTO::new)
                 .toList();
     }

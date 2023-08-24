@@ -4,7 +4,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,30 +15,23 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 @Service
 public class UserGdprTrainingFacade extends Facade {
 
-    private final UserRepository userRepository;
+    private final GdprTrainedRepository gdprTrainedRepository;
 
-    public UserGdprTrainingFacade(AccessGuard accessGuard,
-                                  UserRepository userRepository) {
+    public UserGdprTrainingFacade(AccessGuard accessGuard, GdprTrainedRepository gdprTrainedRepository) {
         super(accessGuard);
-        this.userRepository = userRepository;
+        this.gdprTrainedRepository = gdprTrainedRepository;
     }
 
     public List<UserGdprTrainedDTO> getUsersWithGdprTrained() {
         this.accessGuard.require(isAdmin());
 
-        return this.userRepository.getAll()
-                .stream()
-                .map(UserGdprTrainedDTO::new)
-                .toList();
+        throw new UnsupportedOperationException();
     }
 
     public void updateGdprTrainedStatus(UUID userId, boolean gdprTrained) {
         this.accessGuard.require(isAdmin());
 
-        GammaUser oldUser = this.userRepository.get(new UserId(userId)).orElseThrow();
-        GammaUser newUser = oldUser.withExtended(oldUser.extended().withGdprTrained(gdprTrained));
-
-        this.userRepository.save(newUser);
+        throw new UnsupportedOperationException();
     }
 
     public record UserGdprTrainedDTO(String cid,
@@ -47,13 +40,13 @@ public class UserGdprTrainingFacade extends Facade {
                                      String lastName,
                                      String nick,
                                      boolean gdpr) {
-        public UserGdprTrainedDTO(GammaUser user) {
+        public UserGdprTrainedDTO(GammaUser user, boolean gdprTrained) {
             this(user.cid().value(),
                     user.id().value(),
                     user.firstName().value(),
                     user.lastName().value(),
                     user.nick().value(),
-                    user.extended().gdprTrained());
+                    gdprTrained);
         }
     }
 

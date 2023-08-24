@@ -72,7 +72,6 @@ public class UserPasswordRetrieverEntityIntegrationTests extends AbstractEntityI
                                 0,
                                 true,
                                 false,
-                                false,
                                 ImageUri.defaultUserAvatar()
                         )
                 ),

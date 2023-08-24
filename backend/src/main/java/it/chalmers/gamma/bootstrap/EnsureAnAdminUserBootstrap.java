@@ -79,7 +79,6 @@ public class EnsureAnAdminUserBootstrap {
                         new Email(name + "@chalmers.it"),
                         0,
                         true,
-                        true,
                         false,
                         null
                 )
@@ -88,7 +87,7 @@ public class EnsureAnAdminUserBootstrap {
         try {
             this.userRepository.create(
                     adminUser,
-                    new UnencryptedPassword("password")
+                    new UnencryptedPassword(password)
             );
         } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
             LOGGER.error(e.getMessage());

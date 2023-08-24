@@ -2,6 +2,7 @@ package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -42,7 +43,7 @@ public class SecurityFiltersConfig {
                                                     PasswordEncoder passwordEncoder,
                                                     UserJpaRepository userJpaRepository,
                                                     SettingsRepository settingsRepository,
-                                                    ClientAuthorityRepository clientAuthorityRepository) throws Exception {
+                                                    AdminRepository adminRepository) throws Exception {
 
         TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
                 userJpaRepository,
@@ -68,7 +69,7 @@ public class SecurityFiltersConfig {
 
         http
                 .securityMatchers(matcher -> matcher.requestMatchers(internalRequestMatcher, loginRequestMatcher, logoutRequestMatcher))
-                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, clientAuthorityRepository), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
                         authorization
                                 .requestMatchers(new OrRequestMatcher(permittedRequests)).hasRole("ANONYMOUS")

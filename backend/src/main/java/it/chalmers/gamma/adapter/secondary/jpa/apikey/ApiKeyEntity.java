@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 import java.util.UUID;
 
 @Entity
-@Table(name = "apikey")
+@Table(name = "g_apikey")
 public class ApiKeyEntity extends MutableEntity<UUID> {
 
     @Id

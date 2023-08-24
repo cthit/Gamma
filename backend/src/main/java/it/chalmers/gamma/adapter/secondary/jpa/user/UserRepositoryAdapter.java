@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -74,7 +75,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public List<GammaUser> getAll() {
-        return this.repository.findAll().stream().map(this.converter::toDomain).toList();
+        return this.repository.findAll().stream().map(this.converter::toDomain).filter(Objects::nonNull).toList();
     }
 
     @Override
@@ -138,7 +139,6 @@ public class UserRepositoryAdapter implements UserRepository {
         e.firstName = d.firstName().value();
         e.lastName = d.lastName().value();
         e.nick = d.nick().value();
-        e.gdprTraining = d.extended().gdprTrained();
         e.locked = d.extended().locked();
         e.language = d.language();
 

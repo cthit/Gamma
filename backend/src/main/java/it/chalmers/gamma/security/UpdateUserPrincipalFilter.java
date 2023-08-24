@@ -1,9 +1,9 @@
 package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.UserAuthority;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,11 +16,11 @@ import java.util.List;
 public class UpdateUserPrincipalFilter implements Filter {
 
     private final TrustedUserDetailsRepository userDetailsRepository;
-    private final ClientAuthorityRepository clientAuthorityRepository;
+    private final AdminRepository adminRepository;
 
-    public UpdateUserPrincipalFilter(TrustedUserDetailsRepository userDetailsRepository, ClientAuthorityRepository clientAuthorityRepository) {
+    public UpdateUserPrincipalFilter(TrustedUserDetailsRepository userDetailsRepository, AdminRepository adminRepository) {
         this.userDetailsRepository = userDetailsRepository;
-        this.clientAuthorityRepository = clientAuthorityRepository;
+        this.adminRepository = adminRepository;
     }
 
     @Override
@@ -31,8 +31,7 @@ public class UpdateUserPrincipalFilter implements Filter {
             }
 
             final GammaUser gammaUser = userDetailsRepository.getGammaUserByUser();
-            //TODO:
-            final List<UserAuthority> authorities = new ArrayList<>();//this.clientAuthorityRepository.getByUser(gammaUser.id());
+            final boolean isAdmin = adminRepository.isAdmin(gammaUser.id());
 
             UserAuthentication userPrincipal = new UserAuthentication() {
                 @Override
@@ -41,8 +40,8 @@ public class UpdateUserPrincipalFilter implements Filter {
                 }
 
                 @Override
-                public List<UserAuthority> getAuthorities() {
-                    return authorities;
+                public boolean isAdmin() {
+                    return isAdmin;
                 }
             };
 

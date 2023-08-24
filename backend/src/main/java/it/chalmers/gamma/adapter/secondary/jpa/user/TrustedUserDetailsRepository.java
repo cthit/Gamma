@@ -46,7 +46,6 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
                         new Email(userEntity.email),
                         userEntity.getVersion(),
                         acceptedUserAgreement,
-                        userEntity.gdprTraining,
                         userEntity.locked,
                         userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri)
                 )

@@ -15,10 +15,7 @@ import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
@@ -175,7 +172,6 @@ public class UserFacade extends Facade {
                                   int version,
                                   int acceptanceYear,
                                   String email,
-                                  boolean gdprTrained,
                                   boolean locked,
                                   boolean userAgreement,
                                   String language) {
@@ -189,7 +185,6 @@ public class UserFacade extends Facade {
                     user.extended().version(),
                     user.acceptanceYear().value(),
                     user.extended().email().value(),
-                    user.extended().gdprTrained(),
                     user.extended().locked(),
                     user.extended().acceptedUserAgreement(),
                     user.language().name()

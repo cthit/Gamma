@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
@@ -20,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,10 +73,11 @@ public class MeFacade extends Facade {
     public MeDTO getMe() {
         GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
         GammaUser user = null;
-        List<UserAuthority> authorities = new ArrayList<>();
+        boolean isAdmin = false;
+
         if (authenticated instanceof UserAuthentication userAuthentication) {
             user = userAuthentication.get();
-            authorities = userAuthentication.getAuthorities();
+            isAdmin = userAuthentication.isAdmin();
         }
 
         if (user == null) {
@@ -89,7 +90,7 @@ public class MeFacade extends Facade {
                 .map(MyMembership::new)
                 .toList();
 
-        return new MeDTO(user, groups, authorities);
+        return new MeDTO(user, groups, isAdmin);
     }
 
     public void updateMe(UpdateMe updateMe) {
@@ -183,9 +184,6 @@ public class MeFacade extends Facade {
         }
     }
 
-    public record MyAuthority(String authority, String type) {
-    }
-
     public record MyMembership(PostFacade.PostDTO post, GroupFacade.GroupDTO group, String unofficialPostName) {
         public MyMembership(UserMembership userMembership) {
             this(new PostFacade.PostDTO(userMembership.post()), new GroupFacade.GroupDTO(userMembership.group()), userMembership.unofficialPostName().value());
@@ -199,12 +197,11 @@ public class MeFacade extends Facade {
                         String email,
                         UUID id,
                         int acceptanceYear,
-                        boolean gdprTrained,
                         boolean userAgreement,
                         List<MyMembership> groups,
-                        List<MyAuthority> authorities,
-                        String language) {
-        public MeDTO(GammaUser user, List<MyMembership> groups, List<UserAuthority> authorities) {
+                        String language,
+                        boolean isAdmin) {
+        public MeDTO(GammaUser user, List<MyMembership> groups, boolean isAdmin) {
             this(user.nick().value(),
                     user.firstName().value(),
                     user.lastName().value(),
@@ -212,11 +209,10 @@ public class MeFacade extends Facade {
                     user.extended().email().value(),
                     user.id().value(),
                     user.acceptanceYear().value(),
-                    user.extended().gdprTrained(),
                     user.extended().acceptedUserAgreement(),
                     groups,
-                    authorities.stream().map(a -> new MyAuthority(a.authorityName().value(), a.authorityType().name().toLowerCase())).toList(),
-                    user.language().name()
+                    user.language().name(),
+                    isAdmin
             );
         }
     }

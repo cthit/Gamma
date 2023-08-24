@@ -43,9 +43,6 @@ public class UserEntity extends MutableEntity<UUID> {
     @Column(name = "acceptance_year")
     protected int acceptanceYear;
 
-    @Column(name = "gdpr_training")
-    protected boolean gdprTraining;
-
     @Column(name = "locked")
     protected boolean locked;
 

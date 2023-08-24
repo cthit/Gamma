@@ -140,7 +140,6 @@ public final class DomainUtils {
                         new Email(cid + "@chalmers.it"),
                         0,
                         true,
-                        gdprTrained,
                         locked,
                         null
                 )

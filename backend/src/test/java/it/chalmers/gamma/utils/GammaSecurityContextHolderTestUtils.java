@@ -44,7 +44,6 @@ public class GammaSecurityContextHolderTestUtils {
                     0,
                     true,
                     false,
-                    false,
                     ImageUri.defaultUserAvatar()
             )
     );
@@ -104,8 +103,6 @@ public class GammaSecurityContextHolderTestUtils {
             }
         }
 
-        List<UserAuthority> authorities = new ArrayList<>();
-
         adminRepository.setAdmin(gammaUser.id(), isAdmin);
 
         User user = new User(gammaUser.id().value().toString(), "{noop}" + password, Collections.emptyList());
@@ -126,8 +123,8 @@ public class GammaSecurityContextHolderTestUtils {
             }
 
             @Override
-            public List<UserAuthority> getAuthorities() {
-                return authorities;
+            public boolean isAdmin() {
+                return isAdmin;
             }
         });
     }

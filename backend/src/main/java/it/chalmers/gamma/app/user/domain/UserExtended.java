@@ -15,7 +15,6 @@ import it.chalmers.gamma.app.image.domain.ImageUri;
 public record UserExtended(Email email,
                            int version,
                            boolean acceptedUserAgreement,
-                           boolean gdprTrained,
                            boolean locked,
                            ImageUri avatarUri) implements UserExtendedBuilder.With {
 
