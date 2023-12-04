@@ -10,6 +10,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupRepositoryAd
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserRepositoryAdapter;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
+import it.chalmers.gamma.app.client.domain.ClientAuthorityFacade;
 import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

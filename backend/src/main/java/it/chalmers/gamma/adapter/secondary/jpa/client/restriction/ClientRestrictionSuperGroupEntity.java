@@ -3,7 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.client.restriction;
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -18,8 +17,8 @@ public class ClientRestrictionSuperGroupEntity extends ImmutableEntity<ClientRes
     protected ClientRestrictionSuperGroupEntity() {
     }
 
-    protected ClientRestrictionSuperGroupEntity(ClientEntity clientEntity, SuperGroupEntity superGroupEntity) {
-        this.id = new ClientRestrictionSuperGroupPK(clientEntity, superGroupEntity);
+    protected ClientRestrictionSuperGroupEntity(ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
+        this.id = new ClientRestrictionSuperGroupPK(clientRestrictionEntity, superGroupEntity);
     }
 
     public ClientRestrictionSuperGroupPK getId() {

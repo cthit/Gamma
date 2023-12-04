@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
-import it.chalmers.gamma.app.authority.ClientAuthorityFacade;
+import it.chalmers.gamma.app.client.domain.ClientAuthorityFacade;
 import it.chalmers.gamma.util.response.AlreadyExistsResponse;
 import it.chalmers.gamma.util.response.NotFoundResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;

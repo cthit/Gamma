@@ -43,21 +43,10 @@ const Clients = () => {
     const [text] = useDigitTranslations(translations);
     const [openCustomDialog] = useDigitCustomDialog();
     const [openDialog] = useDigitDialog();
-    const [authorityLevels, setAuthorityLevels] = useState(null);
-
-    useEffect(() => {
-        getAuthorityLevels().then(response =>
-            setAuthorityLevels(response.data)
-        );
-    }, []);
 
     const admin = useGammaIsAdmin();
     if (!admin) {
         return <InsufficientAccess />;
-    }
-
-    if (authorityLevels == null) {
-        return <DigitLoading loading alignSelf={"center"} margin={"auto"} />;
     }
 
     return (
@@ -68,7 +57,7 @@ const Clients = () => {
             keysText={keysText(text)}
             formValidationSchema={validationSchema(text)}
             formInitialValues={initialValues()}
-            formComponentData={keysComponentData(text, authorityLevels)}
+            formComponentData={keysComponentData(text)}
             name={"clients"}
             path={"/clients"}
             readAllRequest={getClients}

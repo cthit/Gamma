@@ -12,6 +12,7 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -71,6 +72,11 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
             throw e;
         }
+    }
+
+    @Override
+    public void save(Client client, ClientRestriction clientRestriction) throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -4,7 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.client.PostFK;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;

@@ -3,7 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.client.restriction;
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -18,8 +17,8 @@ public class ClientRestrictionUserEntity extends ImmutableEntity<ClientRestricti
     protected ClientRestrictionUserEntity() {
     }
 
-    protected ClientRestrictionUserEntity(ClientEntity clientEntity, UserEntity userEntity) {
-        this.id = new ClientRestrictionUserPK(clientEntity, userEntity);
+    protected ClientRestrictionUserEntity(ClientRestrictionEntity clientRestrictionEntity, UserEntity userEntity) {
+        this.id = new ClientRestrictionUserPK(clientRestrictionEntity, userEntity);
     }
 
     public ClientRestrictionUserPK getId() {

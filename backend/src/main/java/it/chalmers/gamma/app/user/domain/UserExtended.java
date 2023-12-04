@@ -16,7 +16,8 @@ public record UserExtended(Email email,
                            int version,
                            boolean acceptedUserAgreement,
                            boolean locked,
-                           ImageUri avatarUri) implements UserExtendedBuilder.With {
+                           ImageUri avatarUri,
+                           boolean gdpr) implements UserExtendedBuilder.With {
 
 }
 

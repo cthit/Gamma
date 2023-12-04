@@ -213,25 +213,30 @@ CREATE TABLE g_client_authority_user
         ON DELETE CASCADE
 );
 
+CREATE TABLE g_client_restriction (
+      restriction_id UUID,
+      client_uid      UUID REFERENCES g_client ON DELETE CASCADE,
+      PRIMARY KEY (restriction_id)
+);
 
 CREATE TABLE g_client_restriction_post
 (
     super_group_id  UUID REFERENCES g_super_group,
     post_id         UUID REFERENCES g_post,
-    client_uid      UUID REFERENCES g_client ON DELETE CASCADE,
-    PRIMARY KEY (post_id, super_group_id, client_uid)
+    restriction_id  UUID REFERENCES g_client_restriction ON DELETE CASCADE,
+    PRIMARY KEY (post_id, super_group_id, restriction_id)
 );
 
 CREATE TABLE g_client_restriction_super_group
 (
-    super_group_id  UUID REFERENCES g_super_group,
-    client_uid      UUID REFERENCES g_client ON DELETE CASCADE,
-    PRIMARY KEY (super_group_id, client_uid)
+    super_group_id  UUID REFERENCES g_super_group ON DELETE CASCADE,
+    restriction_id      UUID REFERENCES g_client_restriction ON DELETE CASCADE,
+    PRIMARY KEY (super_group_id, restriction_id)
 );
 
 CREATE TABLE g_client_restriction_user
 (
     user_id         UUID REFERENCES g_user ON DELETE CASCADE,
-    client_uid      UUID REFERENCES g_client ON DELETE CASCADE,
-    PRIMARY KEY (user_id, client_uid)
+    restriction_id      UUID REFERENCES g_client_restriction ON DELETE CASCADE,
+    PRIMARY KEY (user_id, restriction_id)
 );

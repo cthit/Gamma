@@ -2,7 +2,6 @@ package it.chalmers.gamma.security;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
-import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.*;
@@ -10,8 +9,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class UpdateUserPrincipalFilter implements Filter {
 

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.oauth2;
 
-import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
+import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;

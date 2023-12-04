@@ -108,17 +108,6 @@ export const keysComponentData = (text, authorityLevels) => {
         }
     };
 
-    keysComponentData[CLIENT_RESTRICTIONS] = {
-        component: DigitAutocompleteSelectMultiple,
-        componentProps: {
-            outlined: true,
-            options: authorityLevels.map(level => ({
-                text: level.authorityLevelName,
-                value: level.authorityLevelName
-            }))
-        }
-    };
-
     return keysComponentData;
 };
 

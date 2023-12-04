@@ -1,9 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionUserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.PrettyName;
 import org.springframework.stereotype.Service;

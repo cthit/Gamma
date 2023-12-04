@@ -1,11 +1,10 @@
-package it.chalmers.gamma.app.authority;
+package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authority.domain.Authority;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
-import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
-import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.authority.Authority;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
+import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;

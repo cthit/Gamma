@@ -110,6 +110,7 @@ public class UserAccessGuard {
                     );
                 }
 
+
                 throw new UnsupportedOperationException();
 //                return apiAuthenticationPrincipal.getClient().get().approvedUsers()
 //                        .stream()

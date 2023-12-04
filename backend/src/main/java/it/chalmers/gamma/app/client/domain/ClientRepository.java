@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.user.domain.UserId;
 
 import java.util.List;
@@ -9,6 +10,9 @@ import java.util.Optional;
 public interface ClientRepository {
 
     void save(Client client)
+            throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
+
+    void save(Client client, ClientRestriction clientRestriction)
             throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
 
     void delete(ClientUid clientId) throws ClientNotFoundException;

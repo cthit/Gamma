@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
+import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.user.domain.GammaUser;

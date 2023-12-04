@@ -77,11 +77,6 @@ const Drawer = ({ closeDrawer }) => {
                     link="/access-keys"
                 />
                 <DigitNavLink
-                    text={text.Authorities}
-                    onClick={closeDrawer}
-                    link={"/authorities"}
-                />
-                <DigitNavLink
                     text={text.SuperGroupTypes}
                     onClick={closeDrawer}
                     link={"/super-group-types"}

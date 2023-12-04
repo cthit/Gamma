@@ -5,10 +5,6 @@ import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.authority.domain.Authority;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
-import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
-import it.chalmers.gamma.app.authority.domain.AuthorityType;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
@@ -23,9 +19,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 public class GammaSecurityContextHolderTestUtils {
@@ -44,7 +38,8 @@ public class GammaSecurityContextHolderTestUtils {
                     0,
                     true,
                     false,
-                    ImageUri.defaultUserAvatar()
+                    ImageUri.defaultUserAvatar(),
+                    false
             )
     );
 

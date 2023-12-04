@@ -6,8 +6,9 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
 import it.chalmers.gamma.app.client.domain.*;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestrictionId;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import jakarta.transaction.Transactional;
@@ -23,17 +24,22 @@ public class ClientFacade extends Facade {
 
     private final ClientRepository clientRepository;
 
+
     public ClientFacade(AccessGuard accessGuard,
                         ClientRepository clientRepository) {
         super(accessGuard);
         this.clientRepository = clientRepository;
     }
 
+    public ClientAndApiKeySecrets create(NewClient newClient) {
+        return create(newClient, null);
+    }
+
     /**
      * @return The client secret for the client
      */
     @Transactional
-    public ClientAndApiKeySecrets create(NewClient newClient) {
+    public ClientAndApiKeySecrets create(NewClient newClient, NewClientRestrictions clientRestrictions) {
         this.accessGuard.require(isAdmin());
 
         ClientSecret clientSecret = ClientSecret.generate();
@@ -64,22 +70,40 @@ public class ClientFacade extends Facade {
         ClientUid clientUid = ClientUid.generate();
         ClientId clientId = ClientId.generate();
 
-        this.clientRepository.save(
-                new Client(
-                        clientUid,
-                        clientId,
-                        clientSecret,
-                        new ClientRedirectUrl(newClient.redirectUrl),
-                        new PrettyName(newClient.prettyName),
-                        new Text(
-                                newClient.svDescription,
-                                newClient.enDescription
-                        ),
-                        scopes,
-                        apiKey,
-                        new ClientOwnerOfficial()
-                )
+        Client client = new Client(
+                clientUid,
+                clientId,
+                clientSecret,
+                new ClientRedirectUrl(newClient.redirectUrl),
+                new PrettyName(newClient.prettyName),
+                new Text(
+                        newClient.svDescription,
+                        newClient.enDescription
+                ),
+                scopes,
+                apiKey,
+                new ClientOwnerOfficial()
         );
+
+        if(clientRestrictions == null) {
+            this.clientRepository.save(
+                    client
+            );
+        } else {
+            this.clientRepository.save(
+                    client,
+                    new ClientRestriction(
+                            ClientRestrictionId.generate(),
+                            new ArrayList<>(),
+                            new ArrayList<>(),
+                            new ArrayList<>()
+                    )
+            );
+        }
+
+
+
+
         return new ClientAndApiKeySecrets(
                 clientUid.value(),
                 clientId.value(),
@@ -92,7 +116,7 @@ public class ClientFacade extends Facade {
     public ClientAndApiKeySecrets createDev(NewClient newClient) {
         accessGuard.require(isSignedIn());
 
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     public void delete(String clientUid) throws ClientFacade.ClientNotFoundException {
@@ -131,6 +155,10 @@ public class ClientFacade extends Facade {
 
         return newSecret.value();
     }
+
+    public record SuperGroupPost (UUID superGroupId, UUID postId) { }
+
+    public record NewClientRestrictions(List<UUID> users, List<UUID> superGroupIds, List<SuperGroupPost> superGroupPosts) {}
 
     public record NewClient(String redirectUrl,
                             String prettyName,

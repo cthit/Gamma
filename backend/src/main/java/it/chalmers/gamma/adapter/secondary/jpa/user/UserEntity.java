@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.gdpr.GdprTrainedEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
 import it.chalmers.gamma.app.user.domain.Language;
 import jakarta.persistence.*;
@@ -48,6 +49,9 @@ public class UserEntity extends MutableEntity<UUID> {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     protected UserAvatarEntity userAvatar;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    protected GdprTrainedEntity gdprTrained;
 
     protected UserEntity() {
     }

@@ -2,7 +2,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.client.authority;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.persistence.*;

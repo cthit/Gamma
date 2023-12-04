@@ -18,8 +18,8 @@ public class ClientRestrictionPostEntity extends ImmutableEntity<ClientRestricti
     protected ClientRestrictionPostEntity() {
     }
 
-    protected ClientRestrictionPostEntity(ClientEntity clientEntity, SuperGroupEntity superGroupEntity, PostEntity postEntity) {
-        this.id = new ClientRestrictionPostPK(superGroupEntity, postEntity, clientEntity);
+    protected ClientRestrictionPostEntity(ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity, PostEntity postEntity) {
+        this.id = new ClientRestrictionPostPK(superGroupEntity, postEntity, clientRestrictionEntity);
     }
 
     public ClientRestrictionPostPK getId() {

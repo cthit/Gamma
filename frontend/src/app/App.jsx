@@ -14,31 +14,29 @@ import translations from "common/utils/translations/CommonTranslations";
 import About from "../use-cases/about";
 import ActivationCodes from "../use-cases/activation-codes";
 import ApiKeys from "../use-cases/api-keys";
-import Authorities from "../use-cases/authorities/Authorities";
 import Clients from "../use-cases/clients";
 import CreateAccount from "../use-cases/create-account";
 import FourOFour from "../use-cases/four-o-four";
 import Gdpr from "../use-cases/gdpr";
 import Groups from "../use-cases/groups";
 import Home from "../use-cases/home";
+import InfoApiSettings from "../use-cases/info-api-settings";
 import Me from "../use-cases/me";
 import Members from "../use-cases/members";
 import Posts from "../use-cases/posts";
 import ResetPassword from "../use-cases/reset-password";
+import SuperGroupTypes from "../use-cases/super-group-types";
 import SuperGroups from "../use-cases/super-groups";
+import UserAgreement from "../use-cases/useragreement";
 import Users from "../use-cases/users";
 import Whitelist from "../use-cases/whitelist";
 import FiveZeroZero from "./elements/five-zero-zero";
-import Drawer from "./views/drawer";
-import SuperGroupTypes from "../use-cases/super-group-types";
 import EnforceUserAgreement from "./enforce-user-agreement";
-import UserAgreement from "../use-cases/useragreement";
-import InfoApiSettings from "../use-cases/info-api-settings";
+import Drawer from "./views/drawer";
 
 export const App = () => {
-    const [user, update, [loading, error], ignore] = useContext(
-        GammaUserContext
-    );
+    const [user, update, [loading, error], ignore] =
+        useContext(GammaUserContext);
     const [, , , setCommonTranslations] = useDigitTranslations(translations);
     const { pathname } = useLocation();
 
@@ -78,7 +76,6 @@ export const App = () => {
             {error && <FiveZeroZero getMe={update} />}
             {!loading && !error && (
                 <Switch>
-                    <Route path="/authorities" component={Authorities} />
                     <Route path="/clients" component={Clients} />
                     <Route path="/users" component={Users} />
                     <Route path="/groups" component={Groups} />

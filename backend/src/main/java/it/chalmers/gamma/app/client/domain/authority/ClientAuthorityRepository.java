@@ -1,4 +1,4 @@
-package it.chalmers.gamma.app.authority.domain;
+package it.chalmers.gamma.app.client.domain.authority;
 
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.user.domain.UserId;

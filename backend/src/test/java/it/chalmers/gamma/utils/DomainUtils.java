@@ -1,7 +1,6 @@
 package it.chalmers.gamma.utils;
 
-import it.chalmers.gamma.app.authority.domain.Authority;
-import it.chalmers.gamma.app.client.domain.Client;
+import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -141,7 +140,8 @@ public final class DomainUtils {
                         0,
                         true,
                         locked,
-                        null
+                        null,
+                        gdprTrained
                 )
         );
     }

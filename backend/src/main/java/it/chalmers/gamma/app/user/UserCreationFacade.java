@@ -69,7 +69,8 @@ public class UserCreationFacade extends Facade {
                                     0,
                                     false,
                                     false,
-                                    null
+                                    null,
+                                    true
                             )),
                     new UnencryptedPassword(newUser.password)
             );
@@ -104,7 +105,8 @@ public class UserCreationFacade extends Facade {
                                         0,
                                         false,
                                         false,
-                                        null
+                                        null,
+                                        false
                                 )
                         ),
                         new UnencryptedPassword(data.password)

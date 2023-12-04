@@ -1,4 +1,4 @@
-package it.chalmers.gamma.app.client.domain.clientapproval;
+package it.chalmers.gamma.app.client.domain.approval;
 
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.user.domain.GammaUser;

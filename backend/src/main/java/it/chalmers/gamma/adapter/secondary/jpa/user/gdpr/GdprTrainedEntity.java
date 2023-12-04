@@ -1,10 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.gdpr;
 
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -16,10 +14,15 @@ public class GdprTrainedEntity extends ImmutableEntity<UUID> {
     @Column(name = "user_id", columnDefinition = "uuid")
     private UUID userId;
 
+    @OneToOne
+    @PrimaryKeyJoinColumn(name = "user_id")
+    private UserEntity user;
+
     protected GdprTrainedEntity() {}
 
-    public GdprTrainedEntity(UUID userId) {
-        this.userId = userId;
+    public GdprTrainedEntity(UserEntity userEntity) {
+        this.userId = userEntity.getId();
+        this.user = userEntity;
     }
 
     @Override

@@ -1,45 +1,8 @@
 package it.chalmers.gamma.app.authentication;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
-import it.chalmers.gamma.app.authority.domain.ClientAuthorityRepository;
-import it.chalmers.gamma.app.authority.domain.AuthorityType;
-import it.chalmers.gamma.app.client.domain.*;
-import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.common.PrettyName;
-import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.group.domain.*;
-import it.chalmers.gamma.app.post.domain.Post;
-import it.chalmers.gamma.app.post.domain.PostId;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
-import it.chalmers.gamma.app.user.domain.*;
-import it.chalmers.gamma.security.authentication.ApiAuthentication;
-import it.chalmers.gamma.security.authentication.LocalRunnerAuthentication;
-import it.chalmers.gamma.security.authentication.UserAuthentication;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.*;
-
-import static it.chalmers.gamma.app.authentication.AccessGuard.*;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mockStatic;
 
 

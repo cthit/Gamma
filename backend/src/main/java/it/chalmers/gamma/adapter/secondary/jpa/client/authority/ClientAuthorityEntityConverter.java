@@ -4,8 +4,8 @@ import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
-import it.chalmers.gamma.app.authority.domain.Authority;
-import it.chalmers.gamma.app.authority.domain.AuthorityName;
+import it.chalmers.gamma.app.client.domain.authority.Authority;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

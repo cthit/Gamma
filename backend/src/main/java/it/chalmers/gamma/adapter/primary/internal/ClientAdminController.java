@@ -6,6 +6,7 @@ import it.chalmers.gamma.util.response.SuccessResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/admin/client")
@@ -27,7 +28,15 @@ public final class ClientAdminController {
                         request.enDescription,
                         request.generateApiKey,
                         request.emailScope
-                )
+                ),
+                request.restriction != null ? new ClientFacade.NewClientRestrictions(
+                        request.restriction.userIds,
+                        request.restriction.superGroupIds,
+                        request.restriction.superGroupPosts.stream().map(superGroupPost -> new ClientFacade.SuperGroupPost(
+                                superGroupPost.superGroupId,
+                                superGroupPost.postId
+                        )).toList()
+                ) : null
         );
     }
 
@@ -64,13 +73,17 @@ public final class ClientAdminController {
         }
     }
 
+    private record CreateClientRestrictionSuperGroupPost(UUID superGroupId, UUID postId) {}
+
+    private record CreateClientRestriction(List<UUID> userIds, List<UUID> superGroupIds, List<CreateClientRestrictionSuperGroupPost> superGroupPosts) { }
+
     private record CreateClientRequest(String webServerRedirectUrl,
                                        String prettyName,
                                        String svDescription,
                                        String enDescription,
                                        boolean generateApiKey,
-                                       List<String> restrictions,
-                                       boolean emailScope
+                                       boolean emailScope,
+                                       CreateClientRestriction restriction
     ) {
     }
 

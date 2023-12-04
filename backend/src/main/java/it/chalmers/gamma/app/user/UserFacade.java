@@ -45,16 +45,10 @@ public class UserFacade extends Facade {
         );
 
         Optional<UserDTO> maybeUser = this.userRepository.get(userId).map(UserDTO::new);
-        if (maybeUser.isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                new UserWithGroupsDTO(
-                        maybeUser.get(),
-                        getUserGroups(userId)
-                )
-        );
+        return maybeUser.map(userDTO -> new UserWithGroupsDTO(
+                userDTO,
+                getUserGroups(userId)
+        ));
     }
 
     private List<UserGroupDTO> getUserGroups(UserId userId) {

@@ -1,35 +1,35 @@
 {
-  "name": "gamma",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@babel/runtime": "7.5.4",
-    "@cthit/react-digit-components": "1.0.3",
-    "@material-ui/icons": "4.11.2",
-    "axios": "0.27.2",
-    "lodash": "4.17.21",
-    "prop-types": "15.7.2",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
-    "react-is": "16.13.1",
-    "react-router-dom": "5.2.0",
-    "styled-components": "5.2.1",
-    "yup": "0.27.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build"
-  },
-  "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^2.0.2",
-    "http-proxy-middleware": "^1.0.3",
-    "prettier": "2.3.0",
-    "react-scripts": "4.0.3"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+    "name": "gamma",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@babel/runtime": "7.5.4",
+        "@cthit/react-digit-components": "1.0.3",
+        "@material-ui/icons": "4.11.2",
+        "axios": "0.27.2",
+        "lodash": "4.17.21",
+        "prop-types": "15.7.2",
+        "react": "17.0.1",
+        "react-dom": "17.0.1",
+        "react-is": "16.13.1",
+        "react-router-dom": "5.2.0",
+        "styled-components": "5.2.1",
+        "yup": "0.27.0"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build"
+    },
+    "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^2.0.2",
+        "http-proxy-middleware": "^1.0.3",
+        "prettier": "2.3.0",
+        "react-scripts": "5.0.1"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ]
 }
