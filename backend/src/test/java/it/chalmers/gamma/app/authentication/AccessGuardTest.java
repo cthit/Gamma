@@ -160,14 +160,14 @@ class AccessGuardTest {
             ApiKeyType.GOLDAPPS,
             ApiKeyToken.generate()
     );
-    private static final ApiKey whitelistApi = new ApiKey(
+    private static final ApiKey allowListApi = new ApiKey(
             ApiKeyId.generate(),
-            new PrettyName("whitelist api key"),
+            new PrettyName("allow list api key"),
             new Text(
-                    "whitelist api nyckel",
-                    "whitelist api key"
+                    "allow list api nyckel",
+                    "allow list api key"
             ),
-            ApiKeyType.WHITELIST,
+            ApiKeyType.ALLOW_LIST,
             ApiKeyToken.generate()
     );
     private static final ApiAuthentication INFO_API_DETAILS = new ApiAuthentication() {
@@ -192,10 +192,10 @@ class AccessGuardTest {
             return Optional.empty();
         }
     };
-    private static final ApiAuthentication WHITELIST_API_DETAILS = new ApiAuthentication() {
+    private static final ApiAuthentication ALLOW_LIST_API_DETAILS = new ApiAuthentication() {
         @Override
         public ApiKey get() {
-            return whitelistApi;
+            return allowListApi;
         }
 
         @Override
@@ -495,9 +495,9 @@ class AccessGuardTest {
 
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
-                    .thenReturn(wrapDetails(WHITELIST_API_DETAILS));
+                    .thenReturn(wrapDetails(ALLOW_LIST_API_DETAILS));
             assertThatNoException()
-                    .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.WHITELIST)));
+                    .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.ALLOW_LIST)));
         }
     }
 
@@ -509,7 +509,7 @@ class AccessGuardTest {
         }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)
-                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.WHITELIST)));
+                .isThrownBy(() -> this.accessGuard.require(isApi(ApiKeyType.ALLOW_LIST)));
 
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
@@ -529,7 +529,7 @@ class AccessGuardTest {
 
         try (MockedStatic<SecurityContextHolder> mocked = mockStatic(SecurityContextHolder.class)) {
             mocked.when(SecurityContextHolder::getContext)
-                    .thenReturn(wrapDetails(WHITELIST_API_DETAILS));
+                    .thenReturn(wrapDetails(ALLOW_LIST_API_DETAILS));
         }
 
         assertThatExceptionOfType(AccessGuard.AccessDeniedException.class)

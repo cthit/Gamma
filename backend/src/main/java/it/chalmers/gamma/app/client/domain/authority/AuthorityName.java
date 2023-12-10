@@ -4,7 +4,6 @@ import it.chalmers.gamma.app.common.Id;
 
 public record AuthorityName(String value) implements Id<String> {
 
-    //TODO: Compile regex
     public AuthorityName {
         if (value == null) {
             throw new NullPointerException("Authority name cannot be null");

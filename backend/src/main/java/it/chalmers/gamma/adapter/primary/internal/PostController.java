@@ -26,7 +26,6 @@ public final class PostController {
                 .orElseThrow(PostNotFoundResponse::new);
     }
 
-
     @GetMapping()
     public List<PostFacade.PostDTO> getPosts() {
         return this.postFacade.getAll();

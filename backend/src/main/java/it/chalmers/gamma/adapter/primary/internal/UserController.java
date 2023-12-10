@@ -2,7 +2,9 @@ package it.chalmers.gamma.adapter.primary.internal;
 
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.util.response.ErrorResponse;
 import it.chalmers.gamma.util.response.SuccessResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +35,10 @@ public final class UserController {
 
     @PostMapping("/create")
     public UserCreatedResponse createUser(@RequestBody CreateUserRequest request) {
-        //TODO: Check userAgreement
+        if(!request.userAgreement) {
+            throw new NotAcceptedUserAgreementResponse();
+        }
+
         //TODO: Check for any exceptions, and throw a generic error if something goes wrong
         try {
             this.userCreationFacade.createUserWithCode(
@@ -67,6 +72,13 @@ public final class UserController {
     }
 
     private static class UserCreatedResponse extends SuccessResponse {
+    }
+
+    private static class NotAcceptedUserAgreementResponse extends ErrorResponse {
+
+        public NotAcceptedUserAgreementResponse() {
+            super(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

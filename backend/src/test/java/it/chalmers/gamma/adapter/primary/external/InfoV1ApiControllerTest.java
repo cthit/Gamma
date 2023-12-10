@@ -88,7 +88,7 @@ class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
                 .statusCode(401);
 
         given()
-                .filter(apiAuthFilter("WHITELIST-super-secret-code"))
+                .filter(apiAuthFilter("ALLOW-LIST-super-secret-code"))
                 .and()
                 .get("/api/external/info/v1/groups")
                 .then()

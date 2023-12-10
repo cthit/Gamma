@@ -1,35 +1,36 @@
 {
-    "name": "gamma",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "@babel/runtime": "7.5.4",
-        "@cthit/react-digit-components": "1.0.3",
-        "@material-ui/icons": "4.11.2",
-        "axios": "0.27.2",
-        "lodash": "4.17.21",
-        "prop-types": "15.7.2",
-        "react": "17.0.1",
-        "react-dom": "17.0.1",
-        "react-is": "16.13.1",
-        "react-router-dom": "5.2.0",
-        "styled-components": "5.2.1",
-        "yup": "0.27.0"
-    },
-    "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build"
-    },
-    "devDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^2.0.2",
-        "http-proxy-middleware": "^1.0.3",
-        "prettier": "2.3.0",
-        "react-scripts": "5.0.1"
-    },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ]
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite ",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@stylexjs/stylex": "^0.3.0",
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.42",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.32",
+    "prettier": "3.1.0",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.7"
+  }
 }

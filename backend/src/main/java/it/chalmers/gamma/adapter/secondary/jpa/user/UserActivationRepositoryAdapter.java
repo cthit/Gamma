@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 public class UserActivationRepositoryAdapter implements UserActivationRepository {
 
-    private static final PersistenceErrorState cidNotWhitelisted = new PersistenceErrorState(
+    private static final PersistenceErrorState cidNotAllowed = new PersistenceErrorState(
             "user_activation_cid_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
@@ -26,7 +26,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
     }
 
     @Override
-    public UserActivationToken createActivationToken(Cid cid) throws CidNotWhitelistedException {
+    public UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException {
         UserActivationEntity entity = this.userActivationJpaRepository.findById(cid.value())
                 .orElse(new UserActivationEntity(cid));
 
@@ -39,8 +39,8 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
         } catch (DataIntegrityViolationException e) {
             PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 
-            if (state.equals(cidNotWhitelisted)) {
-                throw new CidNotWhitelistedException();
+            if (state.equals(cidNotAllowed)) {
+                throw new CidNotAllowedException();
             }
 
             throw e;

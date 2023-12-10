@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.internal;
 
+import it.chalmers.gamma.app.admin.AdminFacade;
 import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
@@ -9,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,13 +22,16 @@ public final class UserAdminController {
     private final UserFacade userFacade;
     private final UserCreationFacade userCreationFacade;
     private final ImageFacade imageFacade;
+    private final AdminFacade adminFacade;
 
     public UserAdminController(UserFacade userFacade,
                                UserCreationFacade userCreationFacade,
-                               ImageFacade imageFacade) {
+                               ImageFacade imageFacade,
+                               AdminFacade adminFacade) {
         this.userFacade = userFacade;
         this.userCreationFacade = userCreationFacade;
         this.imageFacade = imageFacade;
+        this.adminFacade = adminFacade;
     }
 
     @PutMapping("/{id}/change_password")
@@ -93,6 +98,19 @@ public final class UserAdminController {
         return new UserAvatarRemovedResponse();
     }
 
+    @GetMapping("/admins")
+    public List<UUID> getAdmins() {
+        return this.adminFacade.getAllAdmins();
+    }
+
+    @PutMapping("/admins/{id}")
+    public void setAdmin(@PathVariable("id") UUID id, @RequestBody SetAdmin request) {
+        this.adminFacade.setAdmin(id, request.isAdmin);
+    }
+
+    record SetAdmin(boolean isAdmin) {
+    }
+
     record AdminChangePasswordRequest(String password) {
     }
 
@@ -112,6 +130,10 @@ public final class UserAdminController {
                            String email,
                            String language,
                            int acceptanceYear) {
+    }
+
+    private static class UserAdminChangeResponse extends SuccessResponse {
+
     }
 
     private static class PasswordChangedResponse extends SuccessResponse {

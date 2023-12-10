@@ -73,7 +73,7 @@ public final class ApiKeyAdminController {
             String prettyName,
             String svDescription,
             String enDescription,
-            String keyType // goldapps, info, whitelist
+            String keyType // goldapps, info, allowlist
     ) {
     }
 

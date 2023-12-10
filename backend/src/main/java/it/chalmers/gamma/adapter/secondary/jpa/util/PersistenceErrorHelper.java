@@ -20,8 +20,6 @@ public final class PersistenceErrorHelper {
     private PersistenceErrorHelper() {
     }
 
-    //TODO: this can be refactored
-    // DataIntegrityViolationException, should not be Exception
     public static PersistenceErrorState getState(Exception e) {
         List<PersistenceErrorState> states = new ArrayList<>();
 

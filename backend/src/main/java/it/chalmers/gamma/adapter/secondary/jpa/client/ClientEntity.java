@@ -40,7 +40,7 @@ public class ClientEntity extends ImmutableEntity<UUID> {
     protected List<ClientScopeEntity> scopes;
 
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected ClientApiKeyEntity clientsApiKey;
+        protected ClientApiKeyEntity clientsApiKey;
 
     @OneToOne(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     protected ClientRestrictionEntity clientRestriction;

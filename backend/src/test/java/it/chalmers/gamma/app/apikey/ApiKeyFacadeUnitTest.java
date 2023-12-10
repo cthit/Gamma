@@ -53,7 +53,7 @@ class ApiKeyFacadeUnitTest {
                 "CLIENT",
                 "GOLDAPPS",
                 "INFO",
-                "WHITELIST"
+                "ALLOW_LIST"
         };
 
         assertThat(apiKeyFacade.getApiKeyTypes())

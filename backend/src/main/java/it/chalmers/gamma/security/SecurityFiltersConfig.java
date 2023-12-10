@@ -61,7 +61,7 @@ public class SecurityFiltersConfig {
         AntPathRequestMatcher[] permittedRequests = Stream.of(
                 "/login",
                 "/internal/users/create",
-                "/internal/whitelist/activate_cid",
+                "/internal/allow-list/activate-cid",
                 "/internal/users/reset_password",
                 "/internal/users/reset_password/finish"
         ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);

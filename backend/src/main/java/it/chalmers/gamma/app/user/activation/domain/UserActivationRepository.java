@@ -11,10 +11,10 @@ public interface UserActivationRepository {
      * Creates an activation token that is connected to the cid.
      * If there already is a token generated, then a new one will be generated.
      *
-     * @param cid A cid that has been whitelisted
+     * @param cid A cid that has been allowed
      * @return A token that can be used to create an account with the given cid
      */
-    UserActivationToken createActivationToken(Cid cid) throws CidNotWhitelistedException;
+    UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException;
 
     Optional<UserActivation> get(Cid cid);
 
@@ -30,6 +30,6 @@ public interface UserActivationRepository {
     class CidNotActivatedException extends RuntimeException {
     }
 
-    class CidNotWhitelistedException extends Exception {
+    class CidNotAllowedException extends Exception {
     }
 }

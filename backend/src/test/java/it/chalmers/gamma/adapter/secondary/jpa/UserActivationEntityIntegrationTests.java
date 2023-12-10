@@ -1,12 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserActivationRepositoryAdapter;
-import it.chalmers.gamma.adapter.secondary.jpa.whitelist.WhitelistRepositoryAdapter;
+import it.chalmers.gamma.adapter.secondary.jpa.allowlist.AllowListRepositoryAdapter;
 import it.chalmers.gamma.app.user.activation.domain.UserActivation;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.Cid;
-import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
+import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ import static org.assertj.core.api.Assertions.*;
 
 @ActiveProfiles("test")
 @Import({UserActivationRepositoryAdapter.class,
-        WhitelistRepositoryAdapter.class})
+        AllowListRepositoryAdapter.class})
 public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrationTests {
 
     @Autowired
     private UserActivationRepositoryAdapter userActivationRepositoryAdapter;
 
     @Autowired
-    private WhitelistRepository whitelistRepository;
+    private AllowListRepository allowListRepository;
 
     @BeforeEach
     public void clearSecurityContext() {
@@ -36,10 +36,10 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
 
 
     @Test
-    void Given_ValidCid_Expect_createActivationToken_To_CreateAValidUserActivationToken() throws WhitelistRepository.AlreadyWhitelistedException {
+    void Given_ValidCid_Expect_createActivationToken_To_CreateAValidUserActivationToken() throws AllowListRepository.AlreadyAllowedException {
         Cid asdf = new Cid("asdf");
 
-        whitelistRepository.whitelist(asdf);
+        allowListRepository.allow(asdf);
 
         assertThatNoException()
                 .isThrownBy(() -> {
@@ -53,10 +53,10 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_ValidCid_Expect_removeActivation_To_Work() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_ValidCid_Expect_removeActivation_To_Work() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid asdf = new Cid("asdf");
 
-        whitelistRepository.whitelist(asdf);
+        allowListRepository.allow(asdf);
 
         userActivationRepositoryAdapter.createActivationToken(asdf);
 
@@ -68,14 +68,14 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_MultipleActivations_Expect_getAll_To_ReturnThem() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_MultipleActivations_Expect_getAll_To_ReturnThem() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid cid1 = new Cid("asdf"),
                 cid2 = new Cid("fdas"),
                 cid3 = new Cid("lmao");
 
-        whitelistRepository.whitelist(cid1);
-        whitelistRepository.whitelist(cid2);
-        whitelistRepository.whitelist(cid3);
+        allowListRepository.allow(cid1);
+        allowListRepository.allow(cid2);
+        allowListRepository.allow(cid3);
 
         userActivationRepositoryAdapter.createActivationToken(cid1);
         userActivationRepositoryAdapter.createActivationToken(cid2);
@@ -96,10 +96,10 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_ValidCid_Expect_get_To_ReturnCorrespondingActivation() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_ValidCid_Expect_get_To_ReturnCorrespondingActivation() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid cid1 = new Cid("asdf");
 
-        whitelistRepository.whitelist(cid1);
+        allowListRepository.allow(cid1);
 
         userActivationRepositoryAdapter.createActivationToken(cid1);
 
@@ -111,10 +111,10 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_ValidCid_Expect_getByToken_To_ReturnCorrespondingActivation() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_ValidCid_Expect_getByToken_To_ReturnCorrespondingActivation() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid cid1 = new Cid("asdf");
 
-        whitelistRepository.whitelist(cid1);
+        allowListRepository.allow(cid1);
 
         UserActivationToken userActivationToken = userActivationRepositoryAdapter.createActivationToken(cid1);
 
@@ -123,20 +123,20 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_CidThatIsNotWhitelisted_Expect_createActivationToken_To_Throw() {
+    public void Given_CidThatIsNotAllowed_Expect_createActivationToken_To_Throw() {
         Cid cid1 = new Cid("asdf");
 
-        assertThatExceptionOfType(UserActivationRepository.CidNotWhitelistedException.class)
+        assertThatExceptionOfType(UserActivationRepository.CidNotAllowedException.class)
                 .isThrownBy(() -> userActivationRepositoryAdapter.createActivationToken(cid1));
     }
 
     @Test
-    public void Given_InvalidCid_Expect_get_To_ReturnEmpty() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_InvalidCid_Expect_get_To_ReturnEmpty() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid cid1 = new Cid("asdf"),
                 cid2 = new Cid("fdsa");
 
-        whitelistRepository.whitelist(cid1);
-        whitelistRepository.whitelist(cid2);
+        allowListRepository.allow(cid1);
+        allowListRepository.allow(cid2);
 
         userActivationRepositoryAdapter.createActivationToken(cid1);
 
@@ -151,10 +151,10 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_AnAlreadyActivatedCid_Expect_createActivationToken_To_GenerateANewToken() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_AnAlreadyActivatedCid_Expect_createActivationToken_To_GenerateANewToken() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid cid1 = new Cid("asdf");
 
-        whitelistRepository.whitelist(cid1);
+        allowListRepository.allow(cid1);
 
         UserActivationToken token1 = userActivationRepositoryAdapter.createActivationToken(cid1);
         UserActivationToken token2 = userActivationRepositoryAdapter.createActivationToken(cid1);
@@ -168,9 +168,9 @@ public class UserActivationEntityIntegrationTests extends AbstractEntityIntegrat
     }
 
     @Test
-    public void Given_InvalidCid_Expect_getByToken_To_Throw() throws WhitelistRepository.AlreadyWhitelistedException, UserActivationRepository.CidNotWhitelistedException {
+    public void Given_InvalidCid_Expect_getByToken_To_Throw() throws AllowListRepository.AlreadyAllowedException, UserActivationRepository.CidNotAllowedException {
         Cid cid1 = new Cid("asdf");
-        whitelistRepository.whitelist(cid1);
+        allowListRepository.allow(cid1);
         this.userActivationRepositoryAdapter.createActivationToken(cid1);
 
         assertThatExceptionOfType(UserActivationRepository.TokenNotActivatedException.class)

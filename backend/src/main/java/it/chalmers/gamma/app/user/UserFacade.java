@@ -146,10 +146,10 @@ public class UserFacade extends Facade {
         }
     }
 
-    public record UserGroupDTO(GroupFacade.GroupWithMembersDTO group, PostFacade.PostDTO post) {
+    public record UserGroupDTO(GroupFacade.GroupDTO group, PostFacade.PostDTO post) {
         public UserGroupDTO(UserMembership userMembership) {
             this(
-                    new GroupFacade.GroupWithMembersDTO(userMembership.group()),
+                    new GroupFacade.GroupDTO(userMembership.group()),
                     new PostFacade.PostDTO(userMembership.post())
             );
         }

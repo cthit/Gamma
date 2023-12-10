@@ -7,7 +7,7 @@ import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.*;
-import it.chalmers.gamma.app.user.whitelist.WhitelistRepository;
+import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +22,18 @@ public class UserCreationFacade extends Facade {
     private static final String MAIL_POSTFIX = "student.chalmers.se";
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCreationFacade.class);
     private final MailService mailService;
-    private final WhitelistRepository whitelistRepository;
+    private final AllowListRepository allowListRepository;
     private final UserActivationRepository userActivationRepository;
     private final UserRepository userRepository;
 
     public UserCreationFacade(AccessGuard accessGuard,
                               MailService mailService,
-                              WhitelistRepository whitelistRepository,
+                              AllowListRepository allowListRepository,
                               UserActivationRepository userActivationRepository,
                               UserRepository userRepository) {
         super(accessGuard);
         this.mailService = mailService;
-        this.whitelistRepository = whitelistRepository;
+        this.allowListRepository = allowListRepository;
         this.userActivationRepository = userActivationRepository;
         this.userRepository = userRepository;
     }
@@ -46,7 +46,7 @@ public class UserCreationFacade extends Facade {
             UserActivationToken userActivationToken = this.userActivationRepository.createActivationToken(cid);
             sendEmail(cid, userActivationToken);
             LOGGER.info("Cid " + cid + " has been activated");
-        } catch (UserActivationRepository.CidNotWhitelistedException e) {
+        } catch (UserActivationRepository.CidNotAllowedException e) {
             LOGGER.info("Someone tried to activate the cid: " + cid);
         }
     }
