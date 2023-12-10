@@ -37,6 +37,8 @@ import { EmailSentPage } from "./pages/create-account/email-sent";
 import { InputNewAccountPage } from "./pages/create-account/input-new-account";
 import { AdminsPage } from "./pages/admins";
 import { adminsLoader } from "./pages/admins/loader";
+import { GdprTrainedPage } from "./pages/gdpr";
+import { gdprTrainedLoader } from "./pages/gdpr/loader";
 
 export const router = createBrowserRouter([
   {
@@ -144,6 +146,11 @@ export const router = createBrowserRouter([
         path: "/admins",
         element: <AdminsPage />,
         loader: adminsLoader,
+      },
+      {
+        path: "/gdpr",
+        element: <GdprTrainedPage />,
+        loader: gdprTrainedLoader,
       },
     ],
   },

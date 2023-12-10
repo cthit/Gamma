@@ -41,6 +41,9 @@ export const HomePage: FC = () => {
             <li>
               <Link to={"/admins"}>Admins</Link>
             </li>
+            <li>
+              <Link to={"/gdpr"}>Gdpr trained</Link>
+            </li>
           </>
         )}
       </ul>

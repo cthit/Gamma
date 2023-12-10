@@ -9,6 +9,7 @@ import { GammaAllowListClient } from "./gamma-allow-list-client";
 import { GammaActivationCodesClient } from "./gamma-activation-codes-client";
 import { GammaCreateAccountClient } from "./gamma-create-account-client";
 import { GammaAdminsClient } from "./gamma-admins-client";
+import { GammaGdprClient } from "./gamma-gdpr-client";
 
 export class GammaClient {
   private client: AxiosInstance = axios.create({
@@ -25,6 +26,7 @@ export class GammaClient {
   public readonly activationCodes: GammaActivationCodesClient;
   public readonly createAccount: GammaCreateAccountClient;
   public readonly admins: GammaAdminsClient;
+  public readonly gdpr: GammaGdprClient;
 
   constructor() {
     this.client.interceptors.response.use(
@@ -46,6 +48,7 @@ export class GammaClient {
     this.activationCodes = new GammaActivationCodesClient(this.client);
     this.createAccount = new GammaCreateAccountClient(this.client);
     this.admins = new GammaAdminsClient(this.client);
+    this.gdpr = new GammaGdprClient(this.client);
   }
 
   private static gammaClientInstance = new GammaClient();
