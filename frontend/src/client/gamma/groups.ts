@@ -68,7 +68,7 @@ const getGroupValidation = z
   })
   .strict();
 
-export class GammaGroupsClient {
+export class Groups {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

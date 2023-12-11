@@ -12,7 +12,7 @@ type CreateAccountInput = {
   userAgreement: boolean;
 };
 
-export class GammaCreateAccountClient {
+export class CreateAccount {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

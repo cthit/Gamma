@@ -38,8 +38,7 @@ public class GammaSecurityContextHolderTestUtils {
                     0,
                     true,
                     false,
-                    ImageUri.defaultUserAvatar(),
-                    false
+                    ImageUri.defaultUserAvatar()
             )
     );
 

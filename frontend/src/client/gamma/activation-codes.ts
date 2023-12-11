@@ -11,7 +11,7 @@ const getActivationCodesValidation = z.array(
     .strict(),
 );
 
-export class GammaActivationCodesClient {
+export class ActivationCodes {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

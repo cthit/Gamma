@@ -24,14 +24,6 @@ public final class AllowListAdminController {
         this.allowListFacade = allowListFacade;
     }
 
-    @GetMapping("/{cid}/activated")
-    public CidIsAllowListResponse getAllowed(@PathVariable("cid") String cid) {
-        if (!this.allowListFacade.isAllowed(cid)) {
-            throw new CidNotAllowedResponse();
-        }
-        return new CidIsAllowListResponse();
-    }
-
     @GetMapping()
     public List<String> getAllowList() {
         return this.allowListFacade.getAllowList();

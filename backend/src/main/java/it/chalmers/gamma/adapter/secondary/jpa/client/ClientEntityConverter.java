@@ -3,6 +3,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.app.client.domain.*;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.common.PrettyName;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class ClientEntityConverter {
     }
 
     public Client toDomain(ClientEntity clientEntity) {
-        //TODO:
+//        TODO:
 //        List<AuthorityName> restrictions = clientEntity.restrictions
 //                .stream()
 //                .map(ClientRestrictionUserEntity::getAuthorityLevelName)

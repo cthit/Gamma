@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 
 type AdminsLoaderReturn = Awaited<ReturnType<typeof adminsLoader>>;
 
@@ -9,7 +9,7 @@ export const useAdminsLoaderData = (): AdminsLoaderReturn => {
 
 export const adminsLoader = async () => {
   return {
-    admins: await GammaClient.getInstance().admins.getAdmins(),
-    users: await GammaClient.getInstance().users.getUsers(),
+    admins: await GammaClient.instance().admins.getAdmins(),
+    users: await GammaClient.instance().users.getUsers(),
   };
 };

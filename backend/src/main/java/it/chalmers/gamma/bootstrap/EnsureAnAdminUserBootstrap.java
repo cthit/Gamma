@@ -3,6 +3,7 @@ package it.chalmers.gamma.bootstrap;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,16 +17,18 @@ public class EnsureAnAdminUserBootstrap {
 
     private final UserRepository userRepository;
     private final AdminRepository adminRepository;
+    private final GdprTrainedRepository gdprTrainedRepository;
     private final BootstrapSettings bootstrapSettings;
     private final boolean production;
 
     public EnsureAnAdminUserBootstrap(UserRepository userRepository,
                                       AdminRepository adminRepository,
-                                      BootstrapSettings bootstrapSettings,
+                                      GdprTrainedRepository gdprTrainedRepository, BootstrapSettings bootstrapSettings,
                                       @Value("${application.production}")
                                       boolean production) {
         this.userRepository = userRepository;
         this.adminRepository = adminRepository;
+        this.gdprTrainedRepository = gdprTrainedRepository;
         this.bootstrapSettings = bootstrapSettings;
         this.production = production;
     }
@@ -80,8 +83,7 @@ public class EnsureAnAdminUserBootstrap {
                         0,
                         true,
                         false,
-                        null,
-                        true
+                        null
                 )
         );
 
@@ -96,6 +98,7 @@ public class EnsureAnAdminUserBootstrap {
         }
 
         this.adminRepository.setAdmin(adminUser.id(), true);
+        this.gdprTrainedRepository.setGdprTrainedStatus(adminUser.id(), true);
 
         LOGGER.info("Admin user created!");
         LOGGER.info("cid: " + name);

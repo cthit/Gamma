@@ -27,7 +27,7 @@ const getSuperGroupValidation = z
   })
   .strict();
 
-export class GammaSuperGroupsClient {
+export class SuperGroups {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

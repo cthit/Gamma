@@ -27,7 +27,23 @@ const getClientValidation = z
   })
   .strict();
 
-export class GammaClientsClient {
+type CreateClient = {
+  webServerRedirectUrl: string;
+  svDescription: string;
+  enDescription: string;
+  generateApiKey: boolean;
+  emailScope: boolean;
+  restriction: {
+    userIds: string[];
+    superGroupIds: string[];
+    superGroupPosts: {
+      superGroupId: string;
+      postId: string;
+    }[];
+  };
+};
+
+export class Clients {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {
@@ -44,5 +60,9 @@ export class GammaClientsClient {
     return getClientValidation.parse(
       (await this.client.get("/admin/client/" + id)).data,
     );
+  }
+
+  public async createClient(data: CreateClient) {
+    return this.client.post("/admin/client", data);
   }
 }

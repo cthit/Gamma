@@ -18,8 +18,8 @@ public class UserGDPRAdminController {
     }
 
     @GetMapping()
-    public List<UserGdprTrainingFacade.UserGdprTrainedDTO> getUsersWithGdprTraining() {
-        return this.userGdprTrainingFacade.getUsersWithGdprTrained();
+    public List<UUID> getUsersWithGdprTraining() {
+        return this.userGdprTrainingFacade.getGdprTrained();
     }
 
     @PutMapping("/{id}")

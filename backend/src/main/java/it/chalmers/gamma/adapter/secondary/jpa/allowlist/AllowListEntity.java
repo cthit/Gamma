@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "g_allowlist")
-public class AllowListEntity extends AbstractEntity<Cid> {
+public class AllowListEntity extends AbstractEntity<String> {
 
     @Id
     @Column(name = "cid")
@@ -24,7 +24,7 @@ public class AllowListEntity extends AbstractEntity<Cid> {
     }
 
     @Override
-    public Cid getId() {
-        return new Cid(this.cid);
+    public String getId() {
+        return this.cid;
     }
 }

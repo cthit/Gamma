@@ -140,8 +140,7 @@ public final class DomainUtils {
                         0,
                         true,
                         locked,
-                        null,
-                        gdprTrained
+                        null
                 )
         );
     }

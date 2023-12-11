@@ -1,4 +1,4 @@
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 import * as z from "zod";
 
 const inputNewAccountValidation = z
@@ -24,7 +24,7 @@ export const InputNewAccountPage = () => {
     const form = Object.fromEntries(new FormData(e.currentTarget));
 
     const validatedForm = inputNewAccountValidation.parse(form);
-    GammaClient.getInstance()
+    GammaClient.instance()
       .createAccount.createAccount(validatedForm)
       .then(() => {
         window.location.href = "http://gamma:8081/api/login";

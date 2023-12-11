@@ -25,33 +25,16 @@ public class UserGdprTrainingFacade extends Facade {
         this.userRepository = userRepository;
     }
 
-    public List<UserGdprTrainedDTO> getUsersWithGdprTrained() {
+    public List<UUID> getGdprTrained() {
         this.accessGuard.require(isAdmin());
 
-        return this.userRepository.getAll().stream().map(UserGdprTrainedDTO::new).toList();
+        return this.gdprTrainedRepository.getAll().stream().map(UserId::value).toList();
     }
 
     public void updateGdprTrainedStatus(UUID userId, boolean gdprTrained) {
         this.accessGuard.require(isAdmin());
 
         this.gdprTrainedRepository.setGdprTrainedStatus(new UserId(userId), gdprTrained);
-    }
-
-
-    public record UserGdprTrainedDTO(String cid,
-                                     UUID id,
-                                     String firstName,
-                                     String lastName,
-                                     String nick,
-                                     boolean gdpr) {
-        public UserGdprTrainedDTO(GammaUser user) {
-            this(user.cid().value(),
-                    user.id().value(),
-                    user.firstName().value(),
-                    user.lastName().value(),
-                    user.nick().value(),
-                    user.extended().gdpr());
-        }
     }
 
 }

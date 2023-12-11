@@ -62,7 +62,6 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
     public void delete(SuperGroupId superGroupId) throws SuperGroupNotFoundException, SuperGroupIsUsedException {
         try {
             this.repository.deleteById(superGroupId.value());
-            this.repository.flush();
         } catch (EmptyResultDataAccessException e) {
             throw new SuperGroupNotFoundException();
         } catch (Exception e) {

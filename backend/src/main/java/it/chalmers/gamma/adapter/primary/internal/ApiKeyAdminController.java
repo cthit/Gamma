@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/internal/admin/api_keys")
+@RequestMapping("/internal/admin/api-keys")
 public final class ApiKeyAdminController {
 
     private final ApiKeyFacade apiKeyFacade;

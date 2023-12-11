@@ -3,7 +3,7 @@ import * as z from "zod";
 
 const getGdprTrainedValidation = z.array(z.string());
 
-export class GammaGdprClient {
+export class Gdpr {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

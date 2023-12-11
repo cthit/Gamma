@@ -48,8 +48,7 @@ public class UserBootstrap {
                                         0,
                                         true,
                                         false,
-                                        null,
-                                        false
+                                        null
                                 )
                         ),
                         new UnencryptedPassword("password")

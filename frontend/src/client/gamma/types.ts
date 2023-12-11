@@ -3,7 +3,7 @@ import * as z from "zod";
 
 const getTypesValidation = z.array(z.string());
 
-export class GammaTypesClient {
+export class Types {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {
@@ -14,5 +14,13 @@ export class GammaTypesClient {
     return getTypesValidation.parse(
       (await this.client.get("/admin/supergrouptype")).data,
     );
+  }
+
+  public async addType(type: string) {
+    return this.client.post("/admin/supergrouptype", { type });
+  }
+
+  public async deleteType(type: string) {
+    return this.client.delete("/admin/supergrouptype/" + type);
   }
 }

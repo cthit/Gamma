@@ -23,7 +23,7 @@ const getPostValidation = z
   })
   .strict();
 
-export class GammaPostsClient {
+export class Posts {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

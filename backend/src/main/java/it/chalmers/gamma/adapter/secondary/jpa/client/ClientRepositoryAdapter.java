@@ -76,7 +76,8 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public void save(Client client, ClientRestriction clientRestriction) throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException {
-        throw new UnsupportedOperationException();
+        //TODO: add clientRestriction
+        this.save(client);
     }
 
     @Override

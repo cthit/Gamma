@@ -111,7 +111,7 @@ const getUserValidation = z
   })
   .strict();
 
-export class GammaUsersClient {
+export class Users {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

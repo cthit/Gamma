@@ -24,7 +24,6 @@ public class ClientBootstrap {
     private final DefaultOAuth2Client defaultOAuth2Client;
     private final ClientRepository clientRepository;
 
-
     public ClientBootstrap(BootstrapSettings bootstrapSettings,
                            DefaultOAuth2Client defaultOAuth2Client,
                            ClientRepository clientRepository) {

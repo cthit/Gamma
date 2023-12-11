@@ -50,9 +50,6 @@ public class UserEntity extends MutableEntity<UUID> {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     protected UserAvatarEntity userAvatar;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected GdprTrainedEntity gdprTrained;
-
     protected UserEntity() {
     }
 

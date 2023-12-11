@@ -44,6 +44,9 @@ export const HomePage: FC = () => {
             <li>
               <Link to={"/gdpr"}>Gdpr trained</Link>
             </li>
+            <li>
+              <Link to={"/api-keys"}>Api keys</Link>
+            </li>
           </>
         )}
       </ul>

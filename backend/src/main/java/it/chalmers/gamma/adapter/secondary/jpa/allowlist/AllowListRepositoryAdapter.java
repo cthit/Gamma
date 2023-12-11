@@ -40,8 +40,7 @@ public class AllowListRepositoryAdapter implements AllowListRepository {
     public void remove(Cid cid) throws NotOnAllowListException {
         try {
             this.allowListJpaRepository.deleteById(cid.value());
-            this.allowListJpaRepository.flush();
-        } catch (EmptyResultDataAccessException e) {
+        } catch(EmptyResultDataAccessException e) {
             throw new NotOnAllowListException();
         }
     }
@@ -56,6 +55,7 @@ public class AllowListRepositoryAdapter implements AllowListRepository {
         return this.allowListJpaRepository.findAll()
                 .stream()
                 .map(AllowListEntity::getId)
+                .map(Cid::new)
                 .toList();
     }
 }

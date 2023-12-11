@@ -1,6 +1,6 @@
 import { useGdprTrainedLoaderData } from "./loader";
 import { Link, useRevalidator } from "react-router-dom";
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 
 const tableCellStyle = "border border-slate-300 p-1";
 
@@ -10,7 +10,7 @@ export const GdprTrainedPage = () => {
 
   const setGdprTrained =
     (userId: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      GammaClient.getInstance()
+      GammaClient.instance()
         .gdpr.setGdprTrained(userId, e.target.checked)
         .then(() => {
           revalidator.revalidate();

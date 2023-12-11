@@ -7,27 +7,30 @@ export const ClientsPage = () => {
   const clients = useClientsLoaderData();
 
   return (
-    <table
-      className={
-        "m-auto w-full table-fixed border-collapse border border-slate-400"
-      }
-    >
-      <thead>
-        <tr>
-          <th className={tableCellStyle + " text-left"}>Name</th>
-          <th className={tableCellStyle + " text-left"}>Details</th>
-        </tr>
-      </thead>
-      <tbody>
-        {clients.map((client) => (
-          <tr key={client.clientUid}>
-            <td className={tableCellStyle}>{client.prettyName}</td>
-            <td className={tableCellStyle}>
-              <Link to={"/clients/" + client.clientUid}>Details</Link>
-            </td>
+    <div className={"flex flex-col gap-4"}>
+      <Link to={"/clients/create"}>Create new client</Link>
+      <table
+        className={
+          "m-auto w-full table-fixed border-collapse border border-slate-400"
+        }
+      >
+        <thead>
+          <tr>
+            <th className={tableCellStyle + " text-left"}>Name</th>
+            <th className={tableCellStyle + " text-left"}>Details</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {clients.map((client) => (
+            <tr key={client.clientUid}>
+              <td className={tableCellStyle}>{client.prettyName}</td>
+              <td className={tableCellStyle}>
+                <Link to={"/clients/" + client.clientUid}>Details</Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };

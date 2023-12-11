@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 
 type GdprTrainedLoaderReturn = Awaited<ReturnType<typeof gdprTrainedLoader>>;
 
@@ -9,7 +9,7 @@ export const useGdprTrainedLoaderData = (): GdprTrainedLoaderReturn => {
 
 export const gdprTrainedLoader = async () => {
   return {
-    gdprTrained: await GammaClient.getInstance().gdpr.getGdprTrained(),
-    users: await GammaClient.getInstance().users.getUsers(),
+    gdprTrained: await GammaClient.instance().gdpr.getGdprTrained(),
+    users: await GammaClient.instance().users.getUsers(),
   };
 };

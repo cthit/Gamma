@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 
 type ShowPostLoaderReturn = Awaited<ReturnType<typeof showPostLoader>>;
 
@@ -8,5 +8,5 @@ export const useShowPostLoaderData = (): ShowPostLoaderReturn => {
 };
 
 export const showPostLoader = async (id: string) => {
-  return await GammaClient.getInstance().posts.getPost(id);
+  return await GammaClient.instance().posts.getPost(id);
 };

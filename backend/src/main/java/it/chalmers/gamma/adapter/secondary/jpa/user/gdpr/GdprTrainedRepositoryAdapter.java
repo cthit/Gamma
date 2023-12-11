@@ -5,6 +5,7 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,4 +29,11 @@ public class GdprTrainedRepositoryAdapter implements GdprTrainedRepository {
             this.gdprTrainedJpaRepository.deleteById(userId.value());
         }
     }
+
+    @Override
+    public List<UserId> getAll() {
+        return this.gdprTrainedJpaRepository.findAll().stream().map(gdprTrainedEntity -> new UserId(gdprTrainedEntity.getId())).toList();
+    }
+
+
 }

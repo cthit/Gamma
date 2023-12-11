@@ -1,6 +1,6 @@
 import { useAdminsLoaderData } from "./loader";
 import { Link, useRevalidator } from "react-router-dom";
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 
 const tableCellStyle = "border border-slate-300 p-1";
 
@@ -10,7 +10,7 @@ export const AdminsPage = () => {
 
   const setAdmin =
     (userId: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      GammaClient.getInstance()
+      GammaClient.instance()
         .admins.setAdmin(userId, e.target.checked)
         .then(() => {
           revalidator.revalidate();

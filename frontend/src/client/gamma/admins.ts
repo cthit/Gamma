@@ -3,7 +3,7 @@ import * as z from "zod";
 
 const getAdminsValidation = z.array(z.string());
 
-export class GammaAdminsClient {
+export class Admins {
   private client: AxiosInstance;
 
   constructor(client: AxiosInstance) {

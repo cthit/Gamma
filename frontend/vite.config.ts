@@ -9,7 +9,7 @@ export default defineConfig({
     host: "gamma",
     port: 3000,
     proxy: {
-      "/api": {
+      "/api/": {
         target: "http://gamma:8081",
         changeOrigin: true,
         secure: false,

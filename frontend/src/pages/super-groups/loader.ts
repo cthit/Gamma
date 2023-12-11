@@ -1,5 +1,5 @@
 import { useLoaderData } from "react-router-dom";
-import { GammaClient } from "../../client/gamma-client";
+import { GammaClient } from "../../client/gamma";
 
 type SuperGroupsLoaderReturn = Awaited<ReturnType<typeof superGroupsLoader>>;
 
@@ -8,5 +8,5 @@ export const useSuperGroupsLoaderData = (): SuperGroupsLoaderReturn => {
 };
 
 export const superGroupsLoader = async () => {
-  return await GammaClient.getInstance().superGroups.getSuperGroups();
+  return await GammaClient.instance().superGroups.getSuperGroups();
 };

@@ -40,8 +40,7 @@ public class UserEntityConverter {
                     userEntity.getVersion(),
                     acceptedUserAgreement,
                     userEntity.locked,
-                    userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri),
-                    userEntity.gdprTrained != null
+                    userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri)
             );
         }
 

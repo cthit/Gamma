@@ -39,6 +39,12 @@ import { AdminsPage } from "./pages/admins";
 import { adminsLoader } from "./pages/admins/loader";
 import { GdprTrainedPage } from "./pages/gdpr";
 import { gdprTrainedLoader } from "./pages/gdpr/loader";
+import { ApiKeysPage } from "./pages/api-keys";
+import { apiKeysLoader } from "./pages/api-keys/loader";
+import { ShowApiKeyPage } from "./pages/show-api-key";
+import { showApiKeyLoader } from "./pages/show-api-key/loader";
+import { CreateClientPage } from "./pages/create-client";
+import { createClientsLoader } from "./pages/create-client/loader";
 
 export const router = createBrowserRouter([
   {
@@ -112,6 +118,11 @@ export const router = createBrowserRouter([
         },
       },
       {
+        path: "/clients/create",
+        element: <CreateClientPage />,
+        loader: createClientsLoader,
+      },
+      {
         path: "/clients",
         element: <ClientsPage />,
         loader: clientsLoader,
@@ -151,6 +162,22 @@ export const router = createBrowserRouter([
         path: "/gdpr",
         element: <GdprTrainedPage />,
         loader: gdprTrainedLoader,
+      },
+      {
+        path: "/api-keys/:id",
+        element: <ShowApiKeyPage />,
+        loader: ({ params }) => {
+          if (params.id === undefined) {
+            throw new Error("Unexpected undefined id in params");
+          }
+
+          return showApiKeyLoader(params.id);
+        },
+      },
+      {
+        path: "/api-keys",
+        element: <ApiKeysPage />,
+        loader: apiKeysLoader,
       },
     ],
   },
