@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/internal/admin/superGroups")
+@RequestMapping("/internal/admin/super-groups")
 public class SuperGroupAdminController {
 
     private final SuperGroupFacade superGroupFacade;

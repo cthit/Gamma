@@ -80,8 +80,8 @@ class ClientFacadeUnitTest {
                 ),
                 List.of(Scope.PROFILE),
                 null,
-                new ClientOwnerOfficial()
-        );
+                new ClientOwnerOfficial(),
+                restriction);
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);
@@ -132,8 +132,8 @@ class ClientFacadeUnitTest {
                 ),
                 List.of(Scope.PROFILE, Scope.EMAIL),
                 null,
-                new ClientOwnerOfficial()
-        );
+                new ClientOwnerOfficial(),
+                restriction);
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);
@@ -192,8 +192,8 @@ class ClientFacadeUnitTest {
                 ),
                 List.of(Scope.PROFILE, Scope.EMAIL),
                 expectedApiKey,
-                new ClientOwnerOfficial()
-        );
+                new ClientOwnerOfficial(),
+                restriction);
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);
@@ -239,8 +239,8 @@ class ClientFacadeUnitTest {
 //                List.of(new AuthorityName("mat")),
                 List.of(Scope.PROFILE),
                 null,
-                new ClientOwnerOfficial()
-        );
+                new ClientOwnerOfficial(),
+                restriction);
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);

@@ -11,6 +11,12 @@ import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestrictionId;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +29,20 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 public class ClientFacade extends Facade {
 
     private final ClientRepository clientRepository;
-
+    private final UserRepository userRepository;
+    private final SuperGroupRepository superGroupRepository;
+    private final PostRepository postRepository;
 
     public ClientFacade(AccessGuard accessGuard,
-                        ClientRepository clientRepository) {
+                        ClientRepository clientRepository,
+                        UserRepository userRepository,
+                        SuperGroupRepository superGroupRepository,
+                        PostRepository postRepository) {
         super(accessGuard);
         this.clientRepository = clientRepository;
+        this.userRepository = userRepository;
+        this.superGroupRepository = superGroupRepository;
+        this.postRepository = postRepository;
     }
 
     public ClientAndApiKeySecrets create(NewClient newClient) {
@@ -82,7 +96,11 @@ public class ClientFacade extends Facade {
                 ),
                 scopes,
                 apiKey,
-                new ClientOwnerOfficial()
+                new ClientOwnerOfficial(),
+                new ClientRestriction(
+                        ClientRestrictionId.generate(),
+                        clientRestrictions.
+                )
         );
 
         if(clientRestrictions == null) {
@@ -94,9 +112,21 @@ public class ClientFacade extends Facade {
                     client,
                     new ClientRestriction(
                             ClientRestrictionId.generate(),
-                            new ArrayList<>(),
-                            new ArrayList<>(),
-                            new ArrayList<>()
+                            clientRestrictions.superGroupPosts
+                                    .stream()
+                                    .map(post -> new ClientRestriction.SuperGroupPost(
+                                            superGroupRepository.get(new SuperGroupId(post.superGroupId)).orElseThrow(),
+                                            postRepository.get(new PostId(post.postId)).orElseThrow()
+
+                                    )).toList(),
+                            clientRestrictions.superGroups
+                                    .stream()
+                                    .map(superGroupId -> superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow())
+                                    .toList(),
+                            clientRestrictions.users
+                                    .stream()
+                                    .map(userId -> userRepository.get(new UserId(userId)).orElseThrow())
+                                    .toList()
                     )
             );
         }
@@ -158,7 +188,7 @@ public class ClientFacade extends Facade {
 
     public record SuperGroupPost (UUID superGroupId, UUID postId) { }
 
-    public record NewClientRestrictions(List<UUID> users, List<UUID> superGroupIds, List<SuperGroupPost> superGroupPosts) {}
+    public record NewClientRestrictions(List<UUID> users, List<UUID> superGroups, List<SuperGroupPost> superGroupPosts) {}
 
     public record NewClient(String redirectUrl,
                             String prettyName,

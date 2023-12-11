@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/internal/superGroups")
+@RequestMapping("/internal/super-groups")
 public class SuperGroupController {
 
     private final SuperGroupFacade superGroupFacade;

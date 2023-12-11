@@ -8,5 +8,8 @@ export const useSuperGroupsLoaderData = (): SuperGroupsLoaderReturn => {
 };
 
 export const superGroupsLoader = async () => {
-  return await GammaClient.instance().superGroups.getSuperGroups();
+  return {
+    types: await GammaClient.instance().types.getTypes(),
+    superGroups: await GammaClient.instance().superGroups.getSuperGroups(),
+  };
 };

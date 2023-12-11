@@ -27,6 +27,14 @@ const getSuperGroupValidation = z
   })
   .strict();
 
+type CreateSuperGroup = {
+  name: string;
+  prettyName: string;
+  svDescription: string;
+  enDescription: string;
+  type: string;
+};
+
 export class SuperGroups {
   private client: AxiosInstance;
 
@@ -36,13 +44,21 @@ export class SuperGroups {
 
   public async getSuperGroups() {
     return getSuperGroupsValidation.parse(
-      (await this.client.get("/superGroups")).data,
+      (await this.client.get("/super-groups")).data,
     );
   }
 
   public async getSuperGroup(id: string) {
     return getSuperGroupValidation.parse(
-      (await this.client.get("/superGroups/" + id)).data,
+      (await this.client.get("/super-groups/" + id)).data,
     );
+  }
+
+  public async createSuperGroup(data: CreateSuperGroup) {
+    return this.client.post("/admin/super-groups", data);
+  }
+
+  public async deleteSuperGroup(id: string) {
+    return this.client.delete("/admin/super-groups/" + id);
   }
 }

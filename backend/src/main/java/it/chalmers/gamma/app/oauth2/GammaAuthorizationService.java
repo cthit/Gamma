@@ -1,13 +1,21 @@
 package it.chalmers.gamma.app.oauth2;
 
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
+import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationToken;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserMembership;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -18,20 +26,23 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
     private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationService.class);
     private final GammaAuthorizationRepository gammaAuthorizationRepository;
     private final ClientRepository clientRepository;
-    private final ClientAuthorityRepository clientAuthorityRepository;
+    private final GroupRepository groupRepository;
 
 
     public GammaAuthorizationService(GammaAuthorizationRepository gammaAuthorizationRepository,
-                                     ClientRepository clientRepository, ClientAuthorityRepository clientAuthorityRepository) {
+                                     ClientRepository clientRepository,
+                                     GroupRepository groupRepository) {
         this.gammaAuthorizationRepository = gammaAuthorizationRepository;
         this.clientRepository = clientRepository;
-        this.clientAuthorityRepository = clientAuthorityRepository;
+        this.groupRepository = groupRepository;
     }
 
     @Override
@@ -46,28 +57,30 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
                     .orElseThrow();
 
             // If the client has no restrictions, then any user can sign in.
-            // TODO: Update the following
-//            if(!client.restrictions().isEmpty()) {
-//                UserId userId = UserId.valueOf(user.getUsername());
-//                List<AuthorityName> authorities = this.authorityRepository.getByUser(userId).stream().map(UserAuthority::authorityName).toList();
-//
-//                List<AuthorityName> restrictions = client.restrictions();
-//
-//                boolean found = false;
-//                for (AuthorityName authority : authorities) {
-//                    if (restrictions.contains(authority)) {
-//                        found = true;
-//                        break;
-//                    }
-//                }
-//
-//                if(!found) {
-//                    throw new AccessDeniedException("User does not have the necessary authority level");
-//                }
-//            }
+            if(client.restrictions().isPresent() && userPassesRestriction(client.restrictions().get(), user)) {
+                throw new AccessDeniedException("User does not have the necessary authority");
+            }
         }
 
         gammaAuthorizationRepository.save(authorization);
+    }
+
+    private boolean userPassesRestriction(ClientRestriction restriction, User user) {
+        boolean found = false;
+        UserId userId = UserId.valueOf(user.getUsername());
+
+        if(restriction.users().stream().anyMatch(gammaUser -> gammaUser.id().equals(userId))) {
+            return true;
+        }
+
+        List<UserMembership> memberships = this.groupRepository.getAllByUser(userId);
+        List<SuperGroupId> userSuperGroups = memberships.stream().map(UserMembership::group).map(group -> group.superGroup().id()).distinct().toList();
+
+        if(restriction.superGroups().stream().anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()))) {
+            return true;
+        }
+
+        return false;
     }
 
     private boolean hasNoTokens(OAuth2Authorization authorization) {

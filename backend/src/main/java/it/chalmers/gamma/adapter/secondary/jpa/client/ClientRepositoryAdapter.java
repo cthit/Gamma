@@ -76,8 +76,7 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
     @Override
     public void save(Client client, ClientRestriction clientRestriction) throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException {
-        //TODO: add clientRestriction
-        this.save(client);
+        this.clientJpaRepository.save(toEntity(client));
     }
 
     @Override

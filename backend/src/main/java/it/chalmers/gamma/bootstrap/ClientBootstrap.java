@@ -12,9 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Component
 public class ClientBootstrap {
@@ -65,7 +63,8 @@ public class ClientBootstrap {
                                 ApiKeyType.CLIENT,
                                 apiKeyToken
                         ),
-                        new ClientOwnerOfficial()
+                        new ClientOwnerOfficial(),
+                        null
                 )
         );
 

@@ -8,5 +8,8 @@ export const useGroupsLoaderData = (): GroupsLoaderReturn => {
 };
 
 export const groupsLoader = async () => {
-  return await GammaClient.instance().groups.getGroups();
+  return {
+    superGroups: await GammaClient.instance().superGroups.getSuperGroups(),
+    groups: await GammaClient.instance().groups.getGroups(),
+  };
 };

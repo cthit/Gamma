@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 
@@ -19,6 +20,7 @@ public final class Client {
     private final List<Scope> scopes;
     private final ApiKey clientApiKey;
     private final ClientOwner owner;
+    private final ClientRestriction restriction;
 
     public Client(ClientUid clientUid,
                   ClientId clientId,
@@ -28,7 +30,8 @@ public final class Client {
                   Text description,
                   List<Scope> scopes,
                   ApiKey clientApiKey,
-                  ClientOwner owner) {
+                  ClientOwner owner,
+                  ClientRestriction restriction) {
         Objects.requireNonNull(clientId);
         Objects.requireNonNull(clientRedirectUrl);
         Objects.requireNonNull(prettyName);
@@ -49,6 +52,7 @@ public final class Client {
         this.scopes = scopes;
         this.clientApiKey = clientApiKey;
         this.owner = owner;
+        this.restriction = restriction;
     }
 
     public ClientUid clientUid() {
@@ -83,6 +87,10 @@ public final class Client {
         return Optional.ofNullable(this.clientApiKey);
     }
 
+    public Optional<ClientRestriction> restrictions() {
+        return Optional.ofNullable(this.restriction);
+    }
+
     public ClientOwner access() {
         return owner;
     }
@@ -97,7 +105,8 @@ public final class Client {
                 this.description,
                 this.scopes,
                 this.clientApiKey,
-                this.owner
+                this.owner,
+                this.restriction
         );
     }
 
@@ -114,7 +123,8 @@ public final class Client {
                 && description.equals(client.description)
                 && scopes.equals(client.scopes)
                 && Objects.equals(clientApiKey, client.clientApiKey)
-                && owner == client.owner;
+                && owner == client.owner
+                && restriction == client.restriction;
     }
 
     @Override
@@ -127,7 +137,8 @@ public final class Client {
                 description,
                 scopes,
                 clientApiKey,
-                owner
+                owner,
+                restriction
         );
     }
 
@@ -142,6 +153,7 @@ public final class Client {
                 ", scopes=" + scopes +
                 ", clientApiKey=" + clientApiKey +
                 ", access=" + owner +
+                ", restriction=" + restriction +
                 '}';
     }
 }

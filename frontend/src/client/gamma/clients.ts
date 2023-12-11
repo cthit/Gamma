@@ -40,7 +40,7 @@ type CreateClient = {
       superGroupId: string;
       postId: string;
     }[];
-  };
+  } | null;
 };
 
 export class Clients {
