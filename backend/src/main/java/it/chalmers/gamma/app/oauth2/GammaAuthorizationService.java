@@ -66,21 +66,12 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     }
 
     private boolean userPassesRestriction(ClientRestriction restriction, User user) {
-        boolean found = false;
         UserId userId = UserId.valueOf(user.getUsername());
-
-        if(restriction.users().stream().anyMatch(gammaUser -> gammaUser.id().equals(userId))) {
-            return true;
-        }
 
         List<UserMembership> memberships = this.groupRepository.getAllByUser(userId);
         List<SuperGroupId> userSuperGroups = memberships.stream().map(UserMembership::group).map(group -> group.superGroup().id()).distinct().toList();
 
-        if(restriction.superGroups().stream().anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()))) {
-            return true;
-        }
-
-        return false;
+        return restriction.superGroups().stream().anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()));
     }
 
     private boolean hasNoTokens(OAuth2Authorization authorization) {

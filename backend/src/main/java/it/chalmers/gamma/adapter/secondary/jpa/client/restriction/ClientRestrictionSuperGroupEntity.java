@@ -17,7 +17,7 @@ public class ClientRestrictionSuperGroupEntity extends ImmutableEntity<ClientRes
     protected ClientRestrictionSuperGroupEntity() {
     }
 
-    protected ClientRestrictionSuperGroupEntity(ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
+    public ClientRestrictionSuperGroupEntity(ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
         this.id = new ClientRestrictionSuperGroupPK(clientRestrictionEntity, superGroupEntity);
     }
 

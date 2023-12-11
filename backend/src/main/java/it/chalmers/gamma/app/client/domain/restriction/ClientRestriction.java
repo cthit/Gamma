@@ -9,7 +9,6 @@ import it.chalmers.gamma.app.user.domain.GammaUser;
 import java.util.List;
 
 @RecordBuilder
-public record ClientRestriction(ClientRestrictionId id, List<SuperGroupPost> posts, List<SuperGroup> superGroups, List<GammaUser> users) {
-    public record SuperGroupPost(SuperGroup superGroup, Post post) {
-    }
+public record ClientRestriction(ClientRestrictionId id, List<SuperGroup> superGroups) {
+
 }

@@ -3,7 +3,10 @@ package it.chalmers.gamma.adapter.secondary.jpa.client;
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.app.client.domain.*;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
+import it.chalmers.gamma.app.client.domain.restriction.ClientRestrictionId;
 import it.chalmers.gamma.app.common.PrettyName;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,22 +15,16 @@ import java.util.Optional;
 @Service
 public class ClientEntityConverter {
 
-    private final UserEntityConverter userEntityConverter;
     private final ApiKeyEntityConverter apiKeyEntityConverter;
+    private final SuperGroupRepository superGroupRepository;
 
-    public ClientEntityConverter(UserEntityConverter userEntityConverter,
-                                 ApiKeyEntityConverter apiKeyEntityConverter) {
-        this.userEntityConverter = userEntityConverter;
+    public ClientEntityConverter(ApiKeyEntityConverter apiKeyEntityConverter,
+                                 SuperGroupRepository superGroupRepository) {
         this.apiKeyEntityConverter = apiKeyEntityConverter;
+        this.superGroupRepository = superGroupRepository;
     }
 
     public Client toDomain(ClientEntity clientEntity) {
-//        TODO:
-//        List<AuthorityName> restrictions = clientEntity.restrictions
-//                .stream()
-//                .map(ClientRestrictionUserEntity::getAuthorityLevelName)
-//                .toList();
-
         List<Scope> scopes = clientEntity.scopes
                 .stream()
                 .map(ClientScopeEntity::getScope)
@@ -46,7 +43,14 @@ public class ClientEntityConverter {
                         .map(apiKeyEntityConverter::toDomain)
                         .orElse(null),
                 new ClientOwnerOfficial(),
-                restriction);
+                clientEntity.clientRestriction == null ? null : new ClientRestriction(
+                        new ClientRestrictionId(clientEntity.clientRestriction.getRestrictionId()),
+                        clientEntity.clientRestriction.getSuperGroupRestrictions()
+                                .stream()
+                                .map(clientRestrictionSuperGroupEntity -> this.superGroupRepository.get(clientRestrictionSuperGroupEntity.getId().getValue().superGroupId()).orElseThrow())
+                                .toList()
+                )
+        );
     }
 
 }

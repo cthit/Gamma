@@ -1,6 +1,9 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionSuperGroupEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
@@ -12,7 +15,7 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -42,17 +45,20 @@ public class ClientRepositoryAdapter implements ClientRepository {
     private final ClientEntityConverter clientEntityConverter;
     private final UserApprovalJpaRepository userApprovalJpaRepository;
     private final UserJpaRepository userJpaRepository;
+    private final SuperGroupJpaRepository superGroupJpaRepository;
 
     public ClientRepositoryAdapter(ClientJpaRepository clientJpaRepository,
                                    ClientApiKeyJpaRepository clientApiKeyJpaRepository,
                                    ClientEntityConverter clientEntityConverter,
                                    UserApprovalJpaRepository userApprovalJpaRepository,
-                                   UserJpaRepository userJpaRepository) {
+                                   UserJpaRepository userJpaRepository,
+                                   SuperGroupJpaRepository superGroupJpaRepository) {
         this.clientJpaRepository = clientJpaRepository;
         this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
         this.clientEntityConverter = clientEntityConverter;
         this.userApprovalJpaRepository = userApprovalJpaRepository;
         this.userJpaRepository = userJpaRepository;
+        this.superGroupJpaRepository = superGroupJpaRepository;
     }
 
     @Override
@@ -72,11 +78,6 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
             throw e;
         }
-    }
-
-    @Override
-    public void save(Client client, ClientRestriction clientRestriction) throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException {
-        this.clientJpaRepository.save(toEntity(client));
     }
 
     @Override
@@ -182,6 +183,22 @@ public class ClientRepositoryAdapter implements ClientRepository {
                     );
 
                     clientEntity.clientsApiKey = new ClientApiKeyEntity(clientEntity, apiKeyEntity);
+                }
+        );
+
+        client.restrictions().ifPresent(
+                clientRestriction -> {
+                    clientEntity.clientRestriction = new ClientRestrictionEntity(clientRestriction.id().value(), client.clientUid().value());
+
+                    List<ClientRestrictionSuperGroupEntity> clientRestrictionSuperGroupEntities = clientRestriction.superGroups()
+                            .stream()
+                            .map(superGroup -> new ClientRestrictionSuperGroupEntity(
+                                            clientEntity.clientRestriction,
+                                            this.superGroupJpaRepository.findById(superGroup.id().value()).orElseThrow()
+                                    )
+                            ).toList();
+
+                    clientEntity.clientRestriction.setSuperGroupRestrictions(clientRestrictionSuperGroupEntities);
                 }
         );
 

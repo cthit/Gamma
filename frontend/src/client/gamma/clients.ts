@@ -11,6 +11,22 @@ const getClientsValidation = z.array(
       hasApiKey: z.boolean(),
       prettyName: z.string(),
       webServerRedirectUrl: z.string(),
+      restriction: z
+        .object({
+          superGroups: z.array(
+            z.object({
+              id: z.string(),
+              name: z.string(),
+              prettyName: z.string(),
+              svDescription: z.string(),
+              enDescription: z.string(),
+              type: z.string(),
+              version: z.number(),
+            }),
+          ),
+        })
+        .strict()
+        .nullable(),
     })
     .strict(),
 );
@@ -24,6 +40,22 @@ const getClientValidation = z
     hasApiKey: z.boolean(),
     prettyName: z.string(),
     webServerRedirectUrl: z.string(),
+    restriction: z
+      .object({
+        superGroups: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            prettyName: z.string(),
+            svDescription: z.string(),
+            enDescription: z.string(),
+            type: z.string(),
+            version: z.number(),
+          }),
+        ),
+      })
+      .strict()
+      .nullable(),
   })
   .strict();
 
@@ -34,12 +66,7 @@ type CreateClient = {
   generateApiKey: boolean;
   emailScope: boolean;
   restriction: {
-    userIds: string[];
     superGroupIds: string[];
-    superGroupPosts: {
-      superGroupId: string;
-      postId: string;
-    }[];
   } | null;
 };
 
@@ -64,5 +91,9 @@ export class Clients {
 
   public async createClient(data: CreateClient) {
     return this.client.post("/admin/client", data);
+  }
+
+  public async deleteClient(clientUid: string) {
+    return this.client.delete("/admin/client/" + clientUid);
   }
 }

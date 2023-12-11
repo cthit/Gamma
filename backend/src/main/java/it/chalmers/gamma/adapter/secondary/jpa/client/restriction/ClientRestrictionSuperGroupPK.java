@@ -34,7 +34,7 @@ public class ClientRestrictionSuperGroupPK extends PKId<ClientRestrictionSuperGr
         );
     }
 
-    protected record ClientRestrictionPKDTO(ClientRestrictionId clientRestrictionId,
+    public record ClientRestrictionPKDTO(ClientRestrictionId clientRestrictionId,
                                             SuperGroupId superGroupId) {
     }
 

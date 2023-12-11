@@ -27,16 +27,11 @@ public final class ClientAdminController {
                         request.svDescription,
                         request.enDescription,
                         request.generateApiKey,
-                        request.emailScope
-                ),
-                request.restriction != null ? new ClientFacade.NewClientRestrictions(
-                        request.restriction.userIds,
-                        request.restriction.superGroupIds,
-                        request.restriction.superGroupPosts.stream().map(superGroupPost -> new ClientFacade.SuperGroupPost(
-                                superGroupPost.superGroupId,
-                                superGroupPost.postId
-                        )).toList()
-                ) : null
+                        request.emailScope,
+                        request.restriction != null ? new ClientFacade.NewClientRestrictions(
+                                request.restriction.superGroupIds
+                        ) : null
+                )
         );
     }
 
@@ -73,9 +68,7 @@ public final class ClientAdminController {
         }
     }
 
-    private record CreateClientRestrictionSuperGroupPost(UUID superGroupId, UUID postId) {}
-
-    private record CreateClientRestriction(List<UUID> userIds, List<UUID> superGroupIds, List<CreateClientRestrictionSuperGroupPost> superGroupPosts) { }
+    private record CreateClientRestriction(List<UUID> superGroupIds) { }
 
     private record CreateClientRequest(String webServerRedirectUrl,
                                        String prettyName,

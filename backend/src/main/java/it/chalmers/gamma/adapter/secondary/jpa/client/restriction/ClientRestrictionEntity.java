@@ -4,6 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntity;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,10 +12,10 @@ import java.util.UUID;
 @Table(name = "g_client_restriction")
 public class ClientRestrictionEntity {
 
-    @Id
     @Column(name = "restriction_id", columnDefinition = "uuid")
     protected UUID restrictionId;
 
+    @Id
     @Column(name = "client_uid", columnDefinition = "uuid")
     protected UUID clientUid;
 
@@ -23,13 +24,25 @@ public class ClientRestrictionEntity {
     protected ClientEntity client;
 
     @OneToMany(mappedBy = "id.clientRestriction", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<ClientRestrictionUserEntity> userRestrictions;
-
-    @OneToMany(mappedBy = "id.clientRestriction", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<ClientRestrictionSuperGroupEntity> superGroupRestrictions;
 
-    @OneToMany(mappedBy = "id.clientRestriction", cascade = CascadeType.ALL, orphanRemoval = true)
-    protected List<ClientRestrictionPostEntity> superGroupPostRestrictions;
+    public ClientRestrictionEntity() { }
 
+    public ClientRestrictionEntity(UUID restrictionId, UUID clientUid) {
+        this.restrictionId = restrictionId;
+        this.clientUid = clientUid;
+        this.superGroupRestrictions = new ArrayList<>();
+    }
 
+    public void setSuperGroupRestrictions(List<ClientRestrictionSuperGroupEntity> superGroupRestrictions) {
+        this.superGroupRestrictions = superGroupRestrictions;
+    }
+
+    public UUID getRestrictionId() {
+        return restrictionId;
+    }
+
+    public List<ClientRestrictionSuperGroupEntity> getSuperGroupRestrictions() {
+        return superGroupRestrictions;
+    }
 }

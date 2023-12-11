@@ -66,7 +66,8 @@ public class GammaSecurityContextHolderTestUtils {
             Collections.emptyList(),
             DEFAULT_CLIENT_API_KEY,
             new ClientOwnerOfficial(),
-            restriction);
+            null
+    );
 
     public static GammaUser setAuthenticatedAsNormalUser(UserRepository userRepository) {
         setAuthenticatedUser(userRepository, null, DEFAULT_USER, false);

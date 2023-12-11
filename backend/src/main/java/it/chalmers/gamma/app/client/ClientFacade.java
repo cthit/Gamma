@@ -13,6 +13,8 @@ import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -45,15 +47,11 @@ public class ClientFacade extends Facade {
         this.postRepository = postRepository;
     }
 
-    public ClientAndApiKeySecrets create(NewClient newClient) {
-        return create(newClient, null);
-    }
-
     /**
      * @return The client secret for the client
      */
     @Transactional
-    public ClientAndApiKeySecrets create(NewClient newClient, NewClientRestrictions clientRestrictions) {
+    public ClientAndApiKeySecrets create(NewClient newClient) {
         this.accessGuard.require(isAdmin());
 
         ClientSecret clientSecret = ClientSecret.generate();
@@ -99,40 +97,15 @@ public class ClientFacade extends Facade {
                 new ClientOwnerOfficial(),
                 new ClientRestriction(
                         ClientRestrictionId.generate(),
-                        clientRestrictions.
+                        newClient.restrictions
+                                .superGroups
+                                .stream()
+                                .map(superGroupId -> this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow())
+                                .toList()
                 )
         );
 
-        if(clientRestrictions == null) {
-            this.clientRepository.save(
-                    client
-            );
-        } else {
-            this.clientRepository.save(
-                    client,
-                    new ClientRestriction(
-                            ClientRestrictionId.generate(),
-                            clientRestrictions.superGroupPosts
-                                    .stream()
-                                    .map(post -> new ClientRestriction.SuperGroupPost(
-                                            superGroupRepository.get(new SuperGroupId(post.superGroupId)).orElseThrow(),
-                                            postRepository.get(new PostId(post.postId)).orElseThrow()
-
-                                    )).toList(),
-                            clientRestrictions.superGroups
-                                    .stream()
-                                    .map(superGroupId -> superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow())
-                                    .toList(),
-                            clientRestrictions.users
-                                    .stream()
-                                    .map(userId -> userRepository.get(new UserId(userId)).orElseThrow())
-                                    .toList()
-                    )
-            );
-        }
-
-
-
+        this.clientRepository.save(client);
 
         return new ClientAndApiKeySecrets(
                 clientUid.value(),
@@ -186,16 +159,15 @@ public class ClientFacade extends Facade {
         return newSecret.value();
     }
 
-    public record SuperGroupPost (UUID superGroupId, UUID postId) { }
-
-    public record NewClientRestrictions(List<UUID> users, List<UUID> superGroups, List<SuperGroupPost> superGroupPosts) {}
+    public record NewClientRestrictions(List<UUID> superGroups) {}
 
     public record NewClient(String redirectUrl,
                             String prettyName,
                             String svDescription,
                             String enDescription,
                             boolean generateApiKey,
-                            boolean emailScope) {
+                            boolean emailScope,
+                            NewClientRestrictions restrictions) {
     }
 
     public record ClientAndApiKeySecrets(
@@ -212,7 +184,8 @@ public class ClientFacade extends Facade {
                             String prettyName,
                             String svDescription,
                             String enDescription,
-                            boolean hasApiKey) {
+                            boolean hasApiKey,
+                            ClientRestrictionDTO restriction) {
 
         public ClientDTO(Client client) {
             this(client.clientUid().value(),
@@ -221,9 +194,14 @@ public class ClientFacade extends Facade {
                     client.prettyName().value(),
                     client.description().sv().value(),
                     client.description().en().value(),
-                    client.clientApiKey().isPresent()
+                    client.clientApiKey().isPresent(),
+                    client.restrictions().map(clientRestriction -> new ClientRestrictionDTO(
+                            clientRestriction.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList()
+                    )).orElse(null)
             );
         }
+
+        public record ClientRestrictionDTO(List<SuperGroupFacade.SuperGroupDTO> superGroups) { }
     }
 
     public static class ClientNotFoundException extends Exception {

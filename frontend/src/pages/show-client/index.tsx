@@ -12,6 +12,16 @@ export const ShowClientPage = () => {
         <li>{client.enDescription}</li>
         <li>{client.webServerRedirectUrl}</li>
         <li>Has Api key? {client.hasApiKey + ""}</li>
+        {client.restriction !== null && (
+          <>
+            <li>Restricted to:</li>
+            <ul className={"list-disc"}>
+              {client.restriction.superGroups.map((superGroup) => (
+                <li>{superGroup.prettyName}</li>
+              ))}
+            </ul>
+          </>
+        )}
       </ul>
     </div>
   );

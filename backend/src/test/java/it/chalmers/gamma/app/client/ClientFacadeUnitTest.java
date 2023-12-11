@@ -50,7 +50,8 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 false,
-                false
+                false,
+                null
         );
 
         ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(newClient);
@@ -81,7 +82,8 @@ class ClientFacadeUnitTest {
                 List.of(Scope.PROFILE),
                 null,
                 new ClientOwnerOfficial(),
-                restriction);
+                null
+        );
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);
@@ -102,7 +104,8 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 false,
-                true
+                true,
+                null
         );
 
         ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(newClient);
@@ -133,7 +136,8 @@ class ClientFacadeUnitTest {
                 List.of(Scope.PROFILE, Scope.EMAIL),
                 null,
                 new ClientOwnerOfficial(),
-                restriction);
+                null
+        );
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);
@@ -147,7 +151,8 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 true,
-                true
+                true,
+                null
         );
 
         ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(newClient);
@@ -193,7 +198,8 @@ class ClientFacadeUnitTest {
                 List.of(Scope.PROFILE, Scope.EMAIL),
                 expectedApiKey,
                 new ClientOwnerOfficial(),
-                restriction);
+                null
+        );
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);
@@ -207,8 +213,8 @@ class ClientFacadeUnitTest {
                 "Klient för Mat",
                 "Client for mat",
                 false,
-//                List.of("mat"),
-                false
+                false,
+                null
         );
 
         ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(newClient);
@@ -236,11 +242,11 @@ class ClientFacadeUnitTest {
                         newClient.svDescription(),
                         newClient.enDescription()
                 ),
-//                List.of(new AuthorityName("mat")),
                 List.of(Scope.PROFILE),
                 null,
                 new ClientOwnerOfficial(),
-                restriction);
+                null
+        );
 
         Assertions.assertThat(capturedNewClient)
                 .isEqualTo(expectedClient);

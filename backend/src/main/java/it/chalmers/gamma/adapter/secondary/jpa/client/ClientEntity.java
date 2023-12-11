@@ -1,9 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionPostEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionSuperGroupEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionUserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import jakarta.persistence.*;

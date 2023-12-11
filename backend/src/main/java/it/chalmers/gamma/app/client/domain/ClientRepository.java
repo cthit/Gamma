@@ -12,9 +12,6 @@ public interface ClientRepository {
     void save(Client client)
             throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
 
-    void save(Client client, ClientRestriction clientRestriction)
-            throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
-
     void delete(ClientUid clientId) throws ClientNotFoundException;
 
     List<Client> getAll();
