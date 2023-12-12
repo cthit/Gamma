@@ -1,0 +1,57 @@
+{
+    "CreateUser": ["Create user", "Skapa användare"],
+    "EditUser": ["Edit user", "Redigera användare"],
+    "SaveUser": ["Save user", "Spara användare"],
+    "UserUpdated": ["Updated user ", "Uppdaterade användare "],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "Cid": ["Cid", "Cid"],
+    "Nick": ["Nick", "Nick"],
+    "Language": ["Language", "Språk"],
+    "LanguageLowerLabel": ["Your preferred language", "Din föredragna språk"],
+    "Email": ["Email", "Email"],
+    "AcceptanceYear": ["Acceptance year", "Antagningsår"],
+    "AcceptanceYearLowerLabel": ["When you started IT", "När du började IT"],
+    "Details": ["Details", "Detaljer"],
+    "NoUsers": [
+        "There's no users, wait how are you logged in?!?!?!?!",
+        "Det finns inga användare, wait hur är du inloggad?!?!?!?!"
+    ],
+    "Users": ["Users", "Användare"],
+    "SearchForUsers": ["Search for users", "Sök efter användare"],
+    "FailedCreatingUser": [
+        "Failed to create user",
+        "Misslyckades att skapa användaren"
+    ],
+    "UserDeletionFailed1": [
+        "Something went wrong when trying to delete the user",
+        "Någonting gick fel när användaren"
+    ],
+    "UserDeletionFailed2": ["", "försökte raderas"],
+    "UserUpdateFailed1": [
+        "Something went wrong when trying to update the user",
+        "Någonting gick fel när användaren"
+    ],
+    "UserUpdateFailed2": ["", "försökte uppdateras"],
+    "AcceptUserAgreement": [
+        "I accept the user agreements",
+        "Jag accepterar användaravtalet"
+    ],
+    "Password": ["Password", "Lösenord"],
+    "PasswordAtleast": ["Minimum 8 chars", "Minst 8 karaktärer"],
+    "PasswordTooShort": [
+        "The password must be atleast 8 characters",
+        "Lösenordet måste vara minst 8 karaktärer"
+    ],
+    "ChangePassword": ["Change password", "Ändra lösenordet"],
+    "Phone": ["Phone number", "Telefonnummer"],
+    "YouMustAccept": [
+        "You must accept the user agreement",
+        "Du måste acceptera användaravtalen"
+    ],
+    "Min4CharCid": [
+        "Cid must be atleast 4 characters",
+        "Cid måste vara minst 4 karaktärer"
+    ],
+    "EditPassword": ["Edit password", "Redigera lösenord"]
+}

@@ -1,0 +1,83 @@
+spring:
+  datasource:
+    username: ${DB_USER:user}
+    password: ${DB_PASSWORD:password}
+    url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:postgres}
+  output:
+    ansi:
+      enabled: ALWAYS
+  flyway:
+    baseline-on-migrate: true
+    locations: classpath:/db/migration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate:
+        temp:
+          #http://vkuzel.blogspot.se/2016/03/spring-boot-jpa-hibernate-atomikos.html
+          use_jdbc_metadata_defaults: false
+  session:
+    store-type: redis
+    
+  redis:
+    host: ${REDIS_HOST:localhost}
+    password: ${REDIS_PASSWORD:password}
+    port: ${REDIS_PORT:6379}
+
+server:
+  port: ${SERVER_PORT:9090}
+  servlet:
+    context-path: /api
+    session:
+      timeout: ${SESSION_TIMEOUT:-1}
+
+
+
+logging:
+  file: ${LOGGING_FILE:production.log}
+  level:
+    root: ${ROOT_DEBUG_LEVEL:WARN}
+    org:
+      springframework:
+        web: ${WEB_DEBUG_LEVEL:WARN}
+      hibernate: ${HIBERNATE_DEBUG_LEVEL:ERROR}
+
+security:
+  jwt:
+    token:
+      secret-key: ${JWT_SECRET_KEY:jwtkey} # This is only for Development, should also be a secret one for Production
+      expire-length: ${JWT_EXPIRE_LENGTH:25200} #7 Hours. Subject to change.
+      issuer: ${JWT_ISSUER:http://localhost:9090}
+      audience: ${JWT_AUDIENCE:http://localhost:3000}
+
+
+
+application:
+  base-uri: ${BACKEND_URI:http://localhost:9090/api}
+  production: ${PRODUCTION:true}
+  cookie:
+    domain: ${COOKIE_DOMAIN:https://gamma.chalmers.it}
+    path: ${COOKIE_PATH:/}
+    validity-time: 31536000 # One year
+  password-expiration-time: 3600
+  frontend-client-details:
+    client-id: ${FRONTEND_CLIENT_ID:7hAdUEtMo4MgFnA7ZoZ41ohTe1NNRoJmjL67Gf0NIrrBnauyhc}
+    client-secret: ${FRONTEND_CLIENT_SECRET:LBoxmzohQOSRCz99uBhS0IjLglxUOaLRXJxIC8iWuHTWYCLLqo}
+    redirect-uri: ${FRONTEND_REDIRECT_URI:http://localhost:8080/login}
+    successful-login-uri: ${SUCCESSFUL_LOGIN:http://localhost:8080}
+  standard-admin-account:
+    password: ${ADMIN_PASSWORD:password}
+  mocking: ${IS_MOCKING:false}
+  default-oauth2-client:
+    client-name: ${DEFAULT_CLIENT_NAME:name}
+    client-id: ${DEFAULT_CLIENT_ID:id}
+    client-secret: ${DEFAULT_CLIENT_SECRET:secret}
+    redirect-uri: ${DEFAULT_REDIRECT_URI:http://localhost:3001/auth/callback}
+    api-key: ${DEFAULT_API_KEY:key}
+  gotify:
+    key: ${GOTIFY_KEY:key}
+    url: ${GOTIFY_URL:https://gotify.chalmers.it}
+  allowed-origin: ${CORS_ALLOWED_ORIGIN:https://gamma.chalmers.it}
+  auth:
+    accessTokenValidityTime: ${AUTH_ACCESS_TOKEN_VALIDITY:3600}
+    refreshTokenValidityTime: ${AUTH_REFRESH_TOKEN_VALIDITY:500000000}

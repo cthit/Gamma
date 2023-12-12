@@ -1,0 +1,70 @@
+{
+    "Add": ["Add", "Lägg till"],
+    "Cancel": ["Cancel", "Avbryt"],
+    "Back": ["Back", "Tillbaka"],
+    "Close": ["Close", "Stäng"],
+    "Edit": ["Edit", "Redigera"],
+    "Update": ["Edit", "Redigera"],
+    "Delete": ["Delete", "Radera"],
+    "Create": ["Create", "Skapa"],
+    "Details": ["Details", "Detaljer"],
+    "IsRequired": [" is required", " krävs"],
+    "FieldNotEmail": ["Must be an email", "Måste vara en giltig emailadress"],
+    "SomethingWentWrong": [
+        "Something went wrong when trying to send the data, please try again or contact digit@chalmers.it",
+        "Någonting gick snett när vi försökte skicka ditt data, var vänlig och försök igen eller kontakta digit@chalmers.it"
+    ],
+    "Logout": ["Logout", "Logga ut"],
+    "LoggedOut": ["You have logged out", "Du har loggat ut"],
+    "Save": ["Save", "Spara"],
+    "Swedish": ["Swedish", "Svenska"],
+    "English": ["English", "Engelska"],
+    "Email": ["Email", "Email"],
+    "Id": ["Id", "Id"],
+    "Cid": ["Cid", "Cid"],
+    "Name": ["Name", "Namn"],
+    "AreYouSure": ["Are you sure?", "Är du säker?"],
+    "AreYouSureYouWantToDelete": [
+        "Are you sure you want to delete",
+        "Är du säker att du vill radera"
+    ],
+    "WasCreatedSuccessfully": [
+        "was created successfully",
+        "skapades framgångsrikt"
+    ],
+    "WasDeletedSuccessfully": [
+        "was deleted successfully",
+        "raderades framgångsrikt"
+    ],
+    "WasUpdatedSuccessfully": [
+        "was updated successfully",
+        "uppdaterades framgångsrikt"
+    ],
+    "FailedDeleting": [
+        "Failed when trying to delete",
+        "Misslyckades att radera"
+    ],
+    "Groups": ["Groups", "Grupper"],
+    "NoGroups": ["No groups", "Inga grupper"],
+    "Next": ["Next", "Nästa"],
+    "SwedishDescription": ["Swedish description", "Svensk beskrivning"],
+    "EnglishDescription": ["English description", "Engelsk beskrivning"],
+    "Description": ["Description", "Beskrivning"],
+    "Nick": ["Nick", "Nick"],
+    "Password": ["Password", "Lösenord"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "ConfirmPassword": ["Confirm password", "Bekräfta lösenord"],
+    "PrettyName": ["Pretty name", "Pretty namn"],
+    "Type": ["Group type", "Grupp typ"],
+    "Society": ["Society", "Förening"],
+    "Committee": ["Committee", "Kommitté"],
+    "Board": ["Board", "Nämnd"],
+    "Admin": ["Admin", "Admin"],
+    "Functionaries": ["Functionaries", "Funktionärer"],
+    "Alumni": ["Alumni", "Pateter"],
+    "SuperGroup": ["Super group", "Supergrupp"],
+    "Post": ["Post", "Post"],
+    "Search": ["Search", "Sök"],
+    "PostEmail": ["Post email", "Post mail"]
+}

@@ -1,0 +1,16 @@
+{
+    "short_name": "Gamma",
+    "name": "Gamma - IT-account",
+    "icons": [
+        {
+            "src": "/android-icon-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png",
+            "density": "3.0"
+        }
+    ],
+    "start_url": "./index.html",
+    "display": "standalone",
+    "theme_color": "#2196f3",
+    "background_color": "#ffffff"
+}

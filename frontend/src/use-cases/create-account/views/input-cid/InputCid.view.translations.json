@@ -1,0 +1,13 @@
+{
+    "EnterYourCid": ["Enter your cid", "Skriv in ditt cid"],
+    "EnterYourCidDescription": [
+        "We will send an email to your student email to confirm your identity.",
+        "Vi kommer skicka ett mail till din studentmail för att bekräfta din identitet."
+    ],
+    "SendCid": ["Send cid", "Skicka cid"],
+    "SomethingWentWrong": [
+        "Something went wrong when trying to send the cid, please try again or contact digit@chalmers.it",
+        "Någonting gick snett när vi försökte skicka ditt cid, var vänlig och försök igen eller kontakta digit@chalmers.it"
+    ],
+    "AlreadyHaveCode": ["Already have code", "Har redan en kod"]
+}

@@ -1,0 +1,37 @@
+{
+    "ApiKeysTitle": ["API keys", "API nycklar"],
+    "DialogDeleteTitle": ["Are you sure?", "Är du säker?"],
+    "DialogDeleteDescription1": [
+        "Are you sure that you want to delete the API key ",
+        "Är du säker att du vill radera API nyckeln "
+    ],
+    "DialogDeleteDescription2": [
+        "? This is permanent.",
+        "? Detta är permanent."
+    ],
+    "Name": ["API key name", "API nyckelnamn"],
+    "ToastDelete1": ["Deletion of ", "Radering av "],
+    "ToastDeleteFailed2": [" failed", " misslyckades"],
+    "ToastDeleteSuccessful2": [" was successful", " lyckades"],
+    "CreateNewApiKey": ["Create a new API key", "Skapa en ny API nyckel"],
+    "YourApiKeySecret": [
+        "The secret for you API key",
+        "Hemliga lösenordet för din API nyckel"
+    ],
+    "YourApiKeySecretDescription": [
+        "Make sure this is kept safe. This key can be used to access everything in Gamma! This will be the last time it will be shown.",
+        "Se till att denna nyckel behålls hemlig. Denna nyckel kan användas för att få tillgång till allting! Detta är enda gången den kommer att synas."
+    ],
+    "CreateApiKeySubtitle": [
+        "Here you can create your own Api key, but be careful! These Api keys are very powerful and can be used to access and edit everything stored on Gamma.",
+        "Här kan du skapa din egna api nyckel, men va försiktig! Dessa api nycklar har väldigt mycket makt och kan användas för att komma åt och redigera allting som sparas på Gamma."
+    ],
+    "ApiKeyCreated": [
+        "Api key was created successfully",
+        "En api nyckel har skapats"
+    ],
+    "ApiKeyCreateFailed": [
+        "Something went wrong when deleting the api key",
+        "Någonting gick fel när api nyckeln försöktes raderas"
+    ]
+}

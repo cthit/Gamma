@@ -1,0 +1,12 @@
+{
+    "Cid": ["Cid", "Cid"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "Nick": ["Nick", "Nick"],
+    "Email": ["Email", "Email"],
+    "AcceptanceYear": ["Acceptance Year", "Antagningsår"],
+    "CreatedAt": ["Account created at", "Konto skapat"],
+    "LastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
+    "Edit": ["Edit account", "Redigera konto"],
+    "ChangePassword": ["Change Password", "Ändra Lösenord"]
+}

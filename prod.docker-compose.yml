@@ -1,0 +1,97 @@
+version: "3"
+networks:
+  gamma:
+
+services:
+  db: 
+    image: postgres:10
+    restart: always
+    environment:
+      POSTGRES_USER: user   # These should all be changed
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    networks:
+      - gamma
+
+  frontend:
+    image: frontend:latest
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_BACKEND_URL: http://localhost:8080/api
+    depends_on:
+      - backend
+    networks:
+      - gamma
+
+  backend:
+    build:
+      context: ./backend/
+      dockerfile: dockerfile
+    environment:
+      # Default admin user name = admin
+      # Default admin password  = password
+
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: postgres
+
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ""
+      REDIS_PORT: 6379
+
+      GOTIFY_KEY: "123abc"
+      GOTIFY_URL: http://gotify:8080/mail
+
+      SERVER_PORT: 8081
+      SUCCESSFUL_LOGIN: http://localhost:8080
+      CORS_ALLOWED_ORIGIN: http://localhost:8080
+      BACKEND_URI: http://localhost:8080/api/
+      PRODUCTION: "false"
+      COOKIE_DOMAIN: localhost
+      IS_MOCKING_CLIENT: "true"
+    depends_on:
+      - redis
+      - db
+    networks:
+      - gamma
+
+  redis:
+    image: redis
+    networks:
+      - gamma
+
+  adminer:
+    image: adminer
+    restart: always
+    networks:
+      - gamma
+    ports:
+      - 8082:8080
+
+  gotify:
+    image: cthit/gotify
+    networks:
+      - gamma
+    environment:
+      GOTIFY_PRE-SHARED-KEY: 123abc
+      GOTIFY_MOCK-MODE: "true"
+
+  proxy:
+    image: nginx:1.16.0-alpine
+    networks:
+      - gamma
+    ports:
+      - 8080:80
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    volumes:
+      - ./nginx-proxy.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
+    command: [nginx-debug, '-g', 'daemon off;']
