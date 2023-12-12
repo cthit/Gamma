@@ -49,16 +49,16 @@ public class GammaAuthoritiesMapper implements GrantedAuthoritiesMapper {
         for (GrantedAuthority grantedAuthority : grantedAuthorities) {
             if (grantedAuthority instanceof OidcUserAuthority oidcUserAuthority) {
                 OidcUserInfo userInfo = oidcUserAuthority.getUserInfo();
-                List<Map<String, String>> authorities = userInfo.getClaim("authorities");
-                for (Map<String, String> authority : authorities) {
-                    newGrantedAuthorities.add(
-                            new SimpleGrantedAuthority(
-                                    authority.get("type").toUpperCase()
-                                    + "_"
-                                    + authority.get("authority").toUpperCase()
-                            )
-                    );
-                }
+//                List<Map<String, String>> authorities = userInfo.getClaim("authorities");
+//                for (Map<String, String> authority : authorities) {
+//                    newGrantedAuthorities.add(
+//                            new SimpleGrantedAuthority(
+//                                    authority.get("type").toUpperCase()
+//                                    + "_"
+//                                    + authority.get("authority").toUpperCase()
+//                            )
+//                    );
+//                }
             }
         }
 
