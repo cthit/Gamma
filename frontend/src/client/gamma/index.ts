@@ -37,7 +37,7 @@ export class GammaClient {
       (response) => response,
       (error) => {
         if (error.response.status === 401) {
-          window.location.href = "http://gamma:8081/api/login";
+          window.location.href = import.meta.env.VITE_LOGIN_URL + "/login";
         }
       },
     );
