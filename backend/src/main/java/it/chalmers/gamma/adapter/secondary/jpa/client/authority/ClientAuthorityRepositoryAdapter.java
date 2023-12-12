@@ -65,7 +65,7 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
             throw new ClientAuthorityAlreadyExistsException(authorityName.value());
         }
 
-        repository.saveAndFlush(new ClientAuthorityEntity(this.clientJpaRepository.getReferenceById(clientUid.value()), authorityName.getValue()));
+        repository.saveAndFlush(new ClientAuthorityEntity(this.clientJpaRepository.findById(clientUid.value()).orElseThrow(), authorityName.getValue()));
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
     private ClientAuthorityEntity toEntity(Authority authority) throws ClientAuthorityNotFoundRuntimeException {
         String name = authority.name().getValue();
 
-        ClientAuthorityEntity clientAuthorityEntity = this.repository.findById(new ClientAuthorityEntityPK()).orElseThrow(ClientAuthorityNotFoundRuntimeException::new);
+        ClientAuthorityEntity clientAuthorityEntity = this.repository.findById(new ClientAuthorityEntityPK(this.clientJpaRepository.findById(authority.client().clientUid().value()).orElseThrow(), authority.name().value())).orElseThrow(ClientAuthorityNotFoundRuntimeException::new);
 
         List<ClientAuthorityUserEntity> users = authority.users().stream().map(user -> new ClientAuthorityUserEntity(toEntity(user), clientAuthorityEntity)).toList();
         List<ClientAuthorityPostEntity> posts = authority.posts().stream().map(post -> new ClientAuthorityPostEntity(toEntity(post.superGroup()), toEntity(post.post()), clientAuthorityEntity)).toList();
@@ -167,7 +167,7 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
     }
 
     private ClientAuthorityEntityPK toAuthorityEntityPK(ClientUid clientUid, AuthorityName authorityName) {
-        return new ClientAuthorityEntityPK(this.clientJpaRepository.getReferenceById(clientUid.value()), authorityName.value());
+        return new ClientAuthorityEntityPK(this.clientJpaRepository.findById(clientUid.value()).orElseThrow(), authorityName.value());
     }
 
 }

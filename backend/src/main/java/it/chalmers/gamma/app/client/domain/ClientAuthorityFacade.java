@@ -198,7 +198,7 @@ public class ClientAuthorityFacade extends Facade {
     }
     public record ClientAuthorityDTO(
             UUID clientUid,
-            String clientAuthority,
+            String authorityName,
             List<SuperGroupFacade.SuperGroupDTO> superGroups,
             List<UserFacade.UserDTO> users,
             List<SuperGroupPostDTO> posts) {

@@ -6,6 +6,7 @@ export const MePage = () => {
   return (
     <div className={"mx-auto mt-4 w-fit"}>
       <ul className={"list-disc"}>
+        <img src={"/api/images/user/avatar/" + me.id} alt={"avatar"} />
         <li>{me.firstName + ' "' + me.nick + '" ' + me.lastName}</li>
         <li>Acceptance year: {me.acceptanceYear}</li>
         <li>Cid: {me.cid}</li>

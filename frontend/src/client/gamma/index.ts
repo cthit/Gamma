@@ -11,6 +11,7 @@ import { CreateAccount } from "./create-account";
 import { Admins } from "./admins";
 import { Gdpr } from "./gdpr";
 import { ApiKeys } from "./api-keys";
+import { ClientAuthorities } from "./client-authorities";
 
 export class GammaClient {
   private client: AxiosInstance = axios.create({
@@ -29,6 +30,7 @@ export class GammaClient {
   public readonly admins: Admins;
   public readonly gdpr: Gdpr;
   public readonly apiKeys: ApiKeys;
+  public readonly clientAuthorities: ClientAuthorities;
 
   constructor() {
     this.client.interceptors.response.use(
@@ -52,6 +54,7 @@ export class GammaClient {
     this.admins = new Admins(this.client);
     this.gdpr = new Gdpr(this.client);
     this.apiKeys = new ApiKeys(this.client);
+    this.clientAuthorities = new ClientAuthorities(this.client);
   }
 
   private static gammaClientInstance = new GammaClient();

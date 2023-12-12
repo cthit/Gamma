@@ -5,6 +5,7 @@ export const ShowUserPage = () => {
 
   return (
     <div className={"mx-auto mt-4 w-fit"}>
+      <img src={"/api/images/user/avatar/" + user.id} alt={"avatar"} />
       <ul className={"list-disc"}>
         <li>{user.firstName + ' "' + user.nick + '" ' + user.lastName}</li>
         <li>Acceptance year: {user.acceptanceYear}</li>

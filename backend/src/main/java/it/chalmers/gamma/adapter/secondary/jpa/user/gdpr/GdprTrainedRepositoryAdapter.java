@@ -24,7 +24,7 @@ public class GdprTrainedRepositoryAdapter implements GdprTrainedRepository {
         Optional<GdprTrainedEntity> maybeGdprTrainedEntity = this.gdprTrainedJpaRepository.findById(userId.value());
 
         if(gdprTrained && maybeGdprTrainedEntity.isEmpty()) {
-            this.gdprTrainedJpaRepository.save(new GdprTrainedEntity(userJpaRepository.getReferenceById(userId.value())));
+            this.gdprTrainedJpaRepository.save(new GdprTrainedEntity(userJpaRepository.findById(userId.value()).orElseThrow()));
         } else if(!gdprTrained && maybeGdprTrainedEntity.isPresent()) {
             this.gdprTrainedJpaRepository.deleteById(userId.value());
         }

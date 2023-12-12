@@ -1,7 +1,7 @@
-import { useShowClientLoaderData } from "./loader";
+import { useShowApiKeyLoaderData } from "./loader";
 
 export const ShowApiKeyPage = () => {
-  const apiKey = useShowClientLoaderData();
+  const apiKey = useShowApiKeyLoaderData();
 
   return (
     <div className={"mx-auto mt-4 w-fit"}>

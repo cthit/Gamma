@@ -8,5 +8,12 @@ export const useShowClientLoaderData = (): ShowClientLoaderReturn => {
 };
 
 export const showClientLoader = async (id: string) => {
-  return await GammaClient.instance().clients.getClient(id);
+  return {
+    client: await GammaClient.instance().clients.getClient(id),
+    authorities:
+      await GammaClient.instance().clientAuthorities.getAuthorities(id),
+    superGroups: await GammaClient.instance().superGroups.getSuperGroups(),
+    users: await GammaClient.instance().users.getUsers(),
+    posts: await GammaClient.instance().posts.getPosts(),
+  };
 };

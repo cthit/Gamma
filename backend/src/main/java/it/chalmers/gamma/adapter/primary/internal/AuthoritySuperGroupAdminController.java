@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/internal/admin/authority/supergroup")
+@RequestMapping("/internal/admin/client/authority/super-group")
 public final class AuthoritySuperGroupAdminController {
 
     private final ClientAuthorityFacade clientAuthorityFacade;

@@ -6,6 +6,16 @@ export const ShowGroupPage = () => {
 
   return (
     <div className={"mx-auto mt-4 w-fit"}>
+      <img
+        className={"w-20"}
+        src={"/api/images/group/avatar/" + group.id}
+        alt={"avatar"}
+      />
+      <img
+        className={"w-40"}
+        src={"/api/images/group/banner/" + group.id}
+        alt={"banner"}
+      />
       <ul className={"list-disc"}>
         <li>{group.name}</li>
         <li>{group.prettyName}</li>

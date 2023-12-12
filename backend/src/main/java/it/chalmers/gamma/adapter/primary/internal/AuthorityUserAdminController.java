@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/internal/admin/authority/user")
+@RequestMapping("/internal/admin/client/authority/user")
 public final class AuthorityUserAdminController {
 
     private final ClientAuthorityFacade clientAuthorityFacade;

@@ -45,12 +45,6 @@ public final class ClientAuthorityAdminController {
         return new ClientAuthorityDeletedResponse();
     }
 
-    @GetMapping("/{clientUid}/authority/{name}")
-    public ClientAuthorityFacade.ClientAuthorityDTO getClientAuthority(@PathVariable("clientUid") UUID clientUid, @PathVariable("name") String name) {
-        return this.clientAuthorityFacade.get(clientUid, name)
-                .orElseThrow(ClientAuthorityNotFoundResponse::new);
-    }
-
     private record CreateClientAuthorityRequest(UUID clientUid, String authorityName) {
     }
 

@@ -3,7 +3,7 @@ import { GammaClient } from "../../client/gamma";
 
 type ShowApiKeyLoaderReturn = Awaited<ReturnType<typeof showApiKeyLoader>>;
 
-export const useShowClientLoaderData = (): ShowApiKeyLoaderReturn => {
+export const useShowApiKeyLoaderData = (): ShowApiKeyLoaderReturn => {
   return useLoaderData() as ShowApiKeyLoaderReturn;
 };
 
