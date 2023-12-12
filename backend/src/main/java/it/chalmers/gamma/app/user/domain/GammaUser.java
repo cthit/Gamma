@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.user.domain;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @RecordBuilder
@@ -12,7 +13,7 @@ public record GammaUser(UserId id,
                         LastName lastName,
                         AcceptanceYear acceptanceYear,
                         Language language,
-                        UserExtended extended) implements GammaUserBuilder.With {
+                        UserExtended extended) implements GammaUserBuilder.With, Serializable {
 
     public GammaUser {
         Objects.requireNonNull(id);

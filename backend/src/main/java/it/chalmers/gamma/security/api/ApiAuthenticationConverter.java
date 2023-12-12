@@ -7,6 +7,7 @@ import org.springframework.security.web.authentication.AuthenticationConverter;
 import java.util.Optional;
 
 public class ApiAuthenticationConverter implements AuthenticationConverter {
+
     @Override
     public Authentication convert(HttpServletRequest request) {
         Optional<String> maybeApiKeyToken = resolveToken(request);

@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
+import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.user.domain.GammaUser;
@@ -21,17 +21,17 @@ public class AccessGuard {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccessGuard.class);
 
-    private final ClientAuthorityRepository clientAuthorityRepository;
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
-    public AccessGuard(ClientAuthorityRepository clientAuthorityRepository,
-                       UserRepository userRepository) {
-        this.clientAuthorityRepository = clientAuthorityRepository;
+    public AccessGuard(UserRepository userRepository,
+                       ClientRepository clientRepository) {
         this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
     }
 
     public static AccessChecker isAdmin() {
-        return (clientAuthorityRepository, userRepository) -> {
+        return (clientRepository, userRepository) -> {
             if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthenticated) {
                 return userAuthenticated.isAdmin();
             }
@@ -41,7 +41,7 @@ public class AccessGuard {
     }
 
     public static AccessChecker passwordCheck(String password) {
-        return (clientAuthorityRepository, userRepository) -> {
+        return (clientRepository, userRepository) -> {
             if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthenticated) {
                 GammaUser user = userAuthenticated.get();
                 return userRepository.checkPassword(user.id(), new UnencryptedPassword(password));
@@ -52,7 +52,7 @@ public class AccessGuard {
     }
 
     public static AccessChecker isApi(ApiKeyType apiKeyType) {
-        return (clientAuthorityRepository, userRepository) -> {
+        return (clientRepository, userRepository) -> {
             if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
                 return apiPrincipal.get().keyType() == apiKeyType;
             }
@@ -62,7 +62,7 @@ public class AccessGuard {
     }
 
     public static AccessChecker isClientApi() {
-        return (clientAuthorityRepository, userRepository) -> {
+        return (clientRepository, userRepository) -> {
             if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
                 return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
             }
@@ -72,7 +72,7 @@ public class AccessGuard {
     }
 
     public static AccessChecker isSignedInUserMemberOfGroup(Group group) {
-        return (clientAuthorityRepository, userRepository) -> {
+        return (clientRepository, userRepository) -> {
             if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userPrincipal) {
                 GammaUser user = userPrincipal.get();
                 return group.groupMembers().stream().anyMatch(groupMember -> groupMember.user().equals(user));
@@ -83,22 +83,21 @@ public class AccessGuard {
     }
 
     public static AccessChecker isSignedIn() {
-        return (clientAuthorityRepository, userRepository)
+        return (clientRepository, userRepository)
                 -> AuthenticationExtractor.getAuthentication() instanceof UserAuthentication;
     }
 
     public static AccessChecker isNotSignedIn() {
-        return (clientAuthorityRepository, userRepository) ->
+        return (clientRepository, userRepository) ->
                 AuthenticationExtractor.getAuthentication() == null;
     }
 
     public static AccessChecker userHasAcceptedClient(UserId id) {
-        return (clientAuthorityRepository, userRepository) -> {
+        return (clientRepository, userRepository) -> {
             if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
                 if (apiPrincipal.getClient().isPresent()) {
                     Client client = apiPrincipal.getClient().get();
-                    throw new UnsupportedOperationException();
-//                    return client.approvedUsers().stream().anyMatch(user -> user.id().equals(id));
+                    return clientRepository.isApprovedByUser(id, client.clientUid());
                 }
             }
 
@@ -110,7 +109,7 @@ public class AccessGuard {
      * Such as Bootstrap
      */
     public static AccessChecker isLocalRunner() {
-        return (clientAuthorityRepository, userRepository) ->
+        return (clientRepository, userRepository) ->
                 AuthenticationExtractor.getAuthentication() instanceof LocalRunnerAuthentication;
     }
 
@@ -141,11 +140,11 @@ public class AccessGuard {
     }
 
     private boolean validate(AccessChecker check) {
-        return check.validate(clientAuthorityRepository, userRepository);
+        return check.validate(clientRepository, userRepository);
     }
 
     public interface AccessChecker {
-        boolean validate(ClientAuthorityRepository clientAuthorityRepository, UserRepository userRepository);
+        boolean validate(ClientRepository clientRepository, UserRepository userRepository);
     }
 
     public static class AccessDeniedException extends RuntimeException {

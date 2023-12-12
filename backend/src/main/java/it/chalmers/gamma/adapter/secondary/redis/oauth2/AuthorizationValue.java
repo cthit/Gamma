@@ -18,7 +18,6 @@ public class AuthorizationValue {
     public AuthorizationValue() {
     }
 
-
     public AuthorizationValue(OAuth2Authorization authorization) {
         this.id = authorization.getId();
         try {

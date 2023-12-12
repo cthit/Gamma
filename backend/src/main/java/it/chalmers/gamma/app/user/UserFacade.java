@@ -4,6 +4,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
+import it.chalmers.gamma.app.client.domain.approval.ClientApprovalsRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
@@ -25,15 +26,18 @@ public class UserFacade extends Facade {
     private final UserRepository userRepository;
     private final GroupRepository groupRepository;
     private final SettingsRepository settingsRepository;
+    private final ClientApprovalsRepository clientApprovalsRepository;
 
     public UserFacade(AccessGuard accessGuard,
                       UserRepository userRepository,
                       GroupRepository groupRepository,
-                      SettingsRepository settingsRepository) {
+                      SettingsRepository settingsRepository,
+                      ClientApprovalsRepository clientApprovalsRepository) {
         super(accessGuard);
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
         this.settingsRepository = settingsRepository;
+        this.clientApprovalsRepository = clientApprovalsRepository;
     }
 
     public Optional<UserWithGroupsDTO> get(UUID id) {
@@ -71,12 +75,10 @@ public class UserFacade extends Facade {
 
         if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiAuthentication) {
             Client client = apiAuthentication.getClient().orElseThrow();
-            throw new UnsupportedOperationException();
-//            return client.approvedUsers()
-//                    .stream()
-//                    .filter(user -> user.extended().acceptedUserAgreement())
-//                    .map(UserDTO::new)
-//                    .toList();
+            return clientApprovalsRepository.getAllByClientUid(client.clientUid())
+                    .stream()
+                    .map(UserDTO::new)
+                    .toList();
         }
 
         return Collections.emptyList();

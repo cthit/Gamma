@@ -13,5 +13,4 @@ public class ApiAuthenticationFilter extends AuthenticationFilter {
         });
     }
 
-
 }

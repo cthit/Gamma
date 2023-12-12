@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
@@ -21,6 +22,12 @@ import org.springframework.stereotype.Service;
 public class UserAccessGuard {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserAccessGuard.class);
+
+    private final ClientRepository clientRepository;
+
+    public UserAccessGuard(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     public boolean accessToExtended(UserId userId) {
         return isMe(userId) || isAdmin() || isLocalRunnerAuthenticated();
@@ -111,10 +118,7 @@ public class UserAccessGuard {
                 }
 
 
-                throw new UnsupportedOperationException();
-//                return apiAuthenticationPrincipal.getClient().get().approvedUsers()
-//                        .stream()
-//                        .anyMatch(gammaUser -> gammaUser.id().equals(userId));
+                return clientRepository.isApprovedByUser(userId, apiAuthenticationPrincipal.getClient().get().clientUid());
             }
         }
 
