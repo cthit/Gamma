@@ -14,15 +14,10 @@ public class GdprTrainedEntity extends ImmutableEntity<UUID> {
     @Column(name = "user_id", columnDefinition = "uuid")
     private UUID userId;
 
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "user_id")
-    private UserEntity user;
-
     protected GdprTrainedEntity() {}
 
     public GdprTrainedEntity(UserEntity userEntity) {
         this.userId = userEntity.getId();
-        this.user = userEntity;
     }
 
     @Override

@@ -15,7 +15,7 @@ public class ClientRestrictionSuperGroupPK extends PKId<ClientRestrictionSuperGr
     private ClientRestrictionEntity clientRestriction;
 
     @JoinColumn(name = "super_group_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     protected SuperGroupEntity superGroupEntity;
 
     protected ClientRestrictionSuperGroupPK() {

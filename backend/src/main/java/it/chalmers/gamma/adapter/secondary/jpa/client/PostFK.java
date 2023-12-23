@@ -11,11 +11,11 @@ import jakarta.persistence.ManyToOne;
 public class PostFK {
 
     @JoinColumn(name = "super_group_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private SuperGroupEntity superGroupEntity;
 
     @JoinColumn(name = "post_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private PostEntity postEntity;
 
     public PostFK() {

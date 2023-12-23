@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class ClientAuthorityUserPK extends PKId<ClientAuthorityUserPK.AuthorityUserPKRecord> {
 
     @JoinColumn(name = "user_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     private UserEntity userEntity;
 
     @Embedded

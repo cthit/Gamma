@@ -18,7 +18,7 @@ public class SettingsEntity extends MutableEntity<SettingsId> {
     protected Instant updatedAt;
     @Column(name = "last_updated_user_agreement")
     protected Instant lastUpdatedUserAgreement;
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "id.settings", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.settings", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<SettingsInfoSuperGroupTypeEntity> infoSuperGroupTypeEntities;
     @Id
     @Column(name = "id", columnDefinition = "uuid")

@@ -2,7 +2,6 @@
   <configuration default="false" name="GammaApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="gamma.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="it.chalmers.gamma.GammaApplication" />
-    <option name="ALTERNATIVE_JRE_PATH" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

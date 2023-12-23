@@ -25,7 +25,7 @@ public class SuperGroupEntity extends MutableEntity<UUID> {
     @Column(name = "pretty_name")
     protected String prettyName;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "super_group_type_name")
     protected SuperGroupTypeEntity superGroupType;
 

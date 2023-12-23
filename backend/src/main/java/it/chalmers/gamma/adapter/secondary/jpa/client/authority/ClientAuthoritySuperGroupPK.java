@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class ClientAuthoritySuperGroupPK extends PKId<ClientAuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {
 
     @JoinColumn(name = "super_group_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     protected SuperGroupEntity superGroupEntity;
 
     @Embedded
@@ -36,7 +36,7 @@ public class ClientAuthoritySuperGroupPK extends PKId<ClientAuthoritySuperGroupP
         );
     }
 
-    protected record AuthoritySuperGroupPKDTO(SuperGroupId superGroupId,
+    public record AuthoritySuperGroupPKDTO(SuperGroupId superGroupId,
                                               AuthorityName authorityName,
                                               ClientUid clientUid) {
     }

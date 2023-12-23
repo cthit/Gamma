@@ -14,6 +14,7 @@ public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApproval
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
     @ManyToOne
     @JoinColumn(name = "client_uid")
     private ClientEntity client;

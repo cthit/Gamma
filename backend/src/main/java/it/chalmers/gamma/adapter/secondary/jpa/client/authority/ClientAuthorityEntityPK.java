@@ -12,8 +12,8 @@ public class ClientAuthorityEntityPK extends PKId<ClientAuthorityEntityPK.Author
     @Column(name = "authority_name")
     protected String name;
 
-    @JoinColumn(name = "client_uid", columnDefinition = "uuid")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_uid")
+    @ManyToOne
     protected ClientEntity client;
 
     protected ClientAuthorityEntityPK() {
