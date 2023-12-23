@@ -25,7 +25,7 @@
             image.onload = function () {
                 document.getElementsByTagName("body")[0].appendChild(image);
             }
-            image.src = "/api/img/enbarsskar.jpg";
+            image.src = "/img/enbarsskar.jpg";
             image.className = "fadeInBackground";
 
         }, false);
@@ -69,7 +69,7 @@
 
         <div class="padding"></div>
 
-        <form action="/api/oauth2/authorize" id="confirmationForm" method="post" name="confirmationForm">
+        <form action="/oauth2/authorize" id="confirmationForm" method="post" name="confirmationForm">
             <input name="client_id" th:value="${clientId}" type="hidden">
             <input name="state" th:value="${state}" type="hidden">
 

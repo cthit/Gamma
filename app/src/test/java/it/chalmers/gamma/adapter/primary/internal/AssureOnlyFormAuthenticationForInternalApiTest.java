@@ -14,7 +14,7 @@ public class AssureOnlyFormAuthenticationForInternalApiTest extends AbstractInte
     public void basicAuthenticationShouldFail() {
         given()
                 .auth().basic("admin", "password")
-                .get("/api/internal/users/me")
+                .get("/internal/users/me")
                 .then()
                 .statusCode(401);
     }
@@ -23,7 +23,7 @@ public class AssureOnlyFormAuthenticationForInternalApiTest extends AbstractInte
     public void digestAuthenticationShouldFail() {
         given()
                 .auth().digest("admin", "password")
-                .get("/api/internal/users/me")
+                .get("/internal/users/me")
                 .then()
                 .statusCode(401);
     }
@@ -31,7 +31,7 @@ public class AssureOnlyFormAuthenticationForInternalApiTest extends AbstractInte
     @Test
     public void formAuthenticationShouldSucceed() {
         givenAdminUser()
-                .get("/api/internal/users/me").then().statusCode(200);
+                .get("/internal/users/me").then().statusCode(200);
     }
 
 

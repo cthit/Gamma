@@ -28,7 +28,7 @@ public class InfoApiSettingsAdminControllerTest extends AbstractInternalApiContr
 //                .filter(adminAuthFilter())
                 .and()
 //                .body(new Request(List.of("committee", "board")))
-                .get("/api/internal/admin/info-api-settings/super-group-types");
+                .get("/internal/admin/info-api-settings/super-group-types");
 
         System.out.println("headers");
         System.out.println(request.getHeaders());

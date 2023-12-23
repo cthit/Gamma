@@ -49,8 +49,6 @@ server:
     whitelabel:
       enabled: true
     path: /error
-  servlet:
-    context-path: /api
 
 logging:
   level:

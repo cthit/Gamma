@@ -15,7 +15,7 @@ public class AbstractInternalApiControllerTest extends AbstractApiControllerTest
     }
 
     protected RequestSpecification givenAdminUser(SessionFilter sessionFilter) {
-        FormAuthConfig formAuthConfig = new FormAuthConfig("/api/login", "username", "password");
+        FormAuthConfig formAuthConfig = new FormAuthConfig("/login", "username", "password");
         var request = given()
                 .auth().form("admin", "password", formAuthConfig);
 

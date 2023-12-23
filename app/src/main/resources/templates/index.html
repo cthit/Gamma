@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <base href="/">
+    <meta
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+    />
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <header>
+        Gamma
+    </header>
+    <main th:switch="${page}">
+        <div th:case="home">
+            <div th:replace="~{pages/home}"></div>
+        </div>
+        <div th:case="show-users">
+            <div th:replace="~{pages/show-users}"></div>
+        </div>
+        <div th:case="*">404</div>
+    </main>
+</body>
+</html>

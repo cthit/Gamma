@@ -23,15 +23,12 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
     private final ClientAuthorityRepository clientAuthorityRepository;
     private final UserRepository userRepository;
     private final String baseUrl;
-    private final String contextPath;
 
     public UserInfoMapper(ClientAuthorityRepository clientAuthorityRepository, UserRepository userRepository,
-                          @Value("${application.base-uri}") String baseUrl,
-                          @Value("${server.servlet.context-path}") String contextPath) {
+                          @Value("${application.base-uri}") String baseUrl) {
         this.clientAuthorityRepository = clientAuthorityRepository;
         this.userRepository = userRepository;
         this.baseUrl = baseUrl;
-        this.contextPath = contextPath;
     }
 
     public OidcUserInfo apply(OidcUserInfoAuthenticationContext context) {
@@ -60,7 +57,6 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
                 claims.put("locale", me.language().toString().toLowerCase());
 
                 claims.put("picture", this.baseUrl
-                        + this.contextPath
                         + "/images/user/avatar/"
                         + me.id().value()
                 );

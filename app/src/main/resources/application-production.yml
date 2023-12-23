@@ -51,7 +51,6 @@ server:
       enabled: false
     path: /error
   servlet:
-    context-path: /api
     session:
       timeout: ${SESSION_TIMEOUT:43200}
 

@@ -30,7 +30,7 @@ public abstract class AbstractApiControllerTest {
                 .sessionConfig(new SessionConfig()
                         .sessionIdName("gamma")
                 )
-                .csrfConfig(new CsrfConfig("/api/login")
+                .csrfConfig(new CsrfConfig("/login")
                         .csrfHeaderName("X-XSRF-TOKEN")
                 );
         RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());

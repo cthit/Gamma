@@ -75,7 +75,7 @@ class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
         var response = given()
                 .filter(apiAuthFilter("INFO-super-secret-code"))
                 .and()
-                .get("/api/external/info/v1/groups")
+                .get("/external/info/v1/groups")
                 .andReturn();
 
         assertThat(response.print()).isEqualTo(expected.replaceAll("\\s+",""));
@@ -83,14 +83,14 @@ class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
         given()
                 .filter(apiAuthFilter("bad-key"))
                 .and()
-                .get("/api/external/info/v1/groups")
+                .get("/external/info/v1/groups")
                 .then()
                 .statusCode(401);
 
         given()
                 .filter(apiAuthFilter("ALLOW-LIST-super-secret-code"))
                 .and()
-                .get("/api/external/info/v1/groups")
+                .get("/external/info/v1/groups")
                 .then()
                 .statusCode(403);
     }
