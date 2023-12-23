@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <base href="/">
+
+    <meta
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+    />
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <link rel="icon" th:href="@{/img/favicon.ico}" type="image/png">
+</head>
+<body>
+<table>
+    <tr id="replaceMe">
+        <td colspan="3">
+            <button class='btn' data-hx-get="/api/test"
+                    data-hx-target="#replaceMe"
+                    data-hx-swap="outerHTML">
+                Load More Agents... <img class="htmx-indicator" src="/img/favicon.ico">
+            </button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
