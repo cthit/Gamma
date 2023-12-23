@@ -12,13 +12,13 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/users")
-public final class UserController {
+public final class OldUserController {
 
     private final UserFacade userFacade;
     private final UserCreationFacade userCreationFacade;
 
-    public UserController(UserFacade userFacade,
-                          UserCreationFacade userCreationFacade) {
+    public OldUserController(UserFacade userFacade,
+                             UserCreationFacade userCreationFacade) {
         this.userFacade = userFacade;
         this.userCreationFacade = userCreationFacade;
     }

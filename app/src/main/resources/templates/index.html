@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org"
       lang="en">
 <head>
     <base href="/">
@@ -9,11 +8,12 @@
             name="viewport"
     />
 
+    <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 </head>
 <body>
     <header>
-        Gamma
+        <img th:src="@{/img/header.jpg}"/>
     </header>
     <main th:switch="${page}">
         <div th:case="home">

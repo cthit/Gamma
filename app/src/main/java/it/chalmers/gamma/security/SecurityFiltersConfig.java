@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
@@ -32,64 +33,6 @@ import java.util.stream.Stream;
 @Configuration
 public class SecurityFiltersConfig {
 
-    /**
-     * Sets up the security for the api that is used by the frontend.
-     */
-    @Bean
-    SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
-                                                    CsrfTokenRepository csrfTokenRepository,
-                                                    GammaRequestCache requestCache,
-                                                    PasswordEncoder passwordEncoder,
-                                                    UserJpaRepository userJpaRepository,
-                                                    SettingsRepository settingsRepository,
-                                                    AdminRepository adminRepository) throws Exception {
-
-        TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
-                userJpaRepository,
-                settingsRepository
-        );
-
-        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
-        userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
-        userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-
-        RegexRequestMatcher internalRequestMatcher = new RegexRequestMatcher("/internal.+", null);
-        RegexRequestMatcher loginRequestMatcher = new RegexRequestMatcher("/login.*", null);
-        RegexRequestMatcher logoutRequestMatcher = new RegexRequestMatcher("/logout", null);
-
-
-        AntPathRequestMatcher[] permittedRequests = Stream.of(
-                "/login",
-                "/internal/users/create",
-                "/internal/allow-list/activate-cid",
-                "/internal/users/reset_password",
-                "/internal/users/reset_password/finish"
-        ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);
-
-        http
-                .securityMatchers(matcher -> matcher.requestMatchers(internalRequestMatcher, loginRequestMatcher, logoutRequestMatcher))
-                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(authorization ->
-                        authorization
-                                .requestMatchers(new OrRequestMatcher(permittedRequests)).hasRole("ANONYMOUS")
-                                .anyRequest().authenticated()
-                )
-                .httpBasic().disable()
-                .formLogin(new LoginCustomizer())
-                .logout(new LogoutCustomizer())
-                .authenticationProvider(userAuthenticationProvider)
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(csrfTokenRepository)
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-                )
-                .cors(Customizer.withDefaults())
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-        return http.build();
-    }
 
     @Bean
     SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,
@@ -123,6 +66,55 @@ public class SecurityFiltersConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .csrf(csrf -> csrf.disable());
+        return http.build();
+    }
+
+
+    /**
+     * Sets up the security for the api that is used by the frontend.
+     */
+    @Bean
+    SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
+                                                    CsrfTokenRepository csrfTokenRepository,
+                                                    GammaRequestCache requestCache,
+                                                    PasswordEncoder passwordEncoder,
+                                                    UserJpaRepository userJpaRepository,
+                                                    SettingsRepository settingsRepository,
+                                                    AdminRepository adminRepository) throws Exception {
+
+        TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
+                userJpaRepository,
+                settingsRepository
+        );
+
+        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
+        userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
+        userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+
+        AntPathRequestMatcher[] permittedRequests = Stream.of(
+                "/login"
+        ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);
+
+        http
+                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(authorization ->
+                        authorization
+                                .requestMatchers(new OrRequestMatcher(permittedRequests)).hasRole("ANONYMOUS")
+                                .anyRequest().authenticated()
+                )
+                .formLogin(new LoginCustomizer())
+                .logout(new LogoutCustomizer())
+                .authenticationProvider(userAuthenticationProvider)
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                )
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(csrfTokenRepository)
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+                )
+                .cors(Customizer.withDefaults())
+                .exceptionHandling();
+
         return http.build();
     }
 

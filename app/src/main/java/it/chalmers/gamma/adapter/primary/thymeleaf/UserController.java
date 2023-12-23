@@ -1,30 +1,29 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
+import it.chalmers.gamma.app.user.UserFacade;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
-public class WebController {
+public class UserController {
 
-    @GetMapping("/")
-    public ModelAndView getHome(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
-        var mv = new ModelAndView();
+    private final UserFacade userFacade;
 
-        if(htmxRequest) {
-            mv.setViewName("pages/home");
-        } else {
-            mv.setViewName("index");
-            mv.addObject("page", "home");
-        }
-
-        return mv;
+    public UserController(UserFacade userFacade) {
+        this.userFacade = userFacade;
     }
+
 
     @GetMapping("/users")
     public ModelAndView getUsers(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+        List<UserFacade.UserDTO> users = this.userFacade.getAll();
+
         var mv = new ModelAndView();
+        mv.addObject("users", users);
 
         if(htmxRequest) {
             mv.setViewName("pages/show-users");
@@ -35,5 +34,4 @@ public class WebController {
 
         return mv;
     }
-
 }

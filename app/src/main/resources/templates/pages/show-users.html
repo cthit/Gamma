@@ -1,4 +1,25 @@
 <div th:fragment="show-users">
     <a data-hx-get="/" data-hx-target="main div" data-hx-push-url="true">Back</a>
-    Users
+    <table>
+        <thead>
+        <tr>
+            <th>First name</th>
+            <th>Nick</th>
+            <th>Last name</th>
+            <th>Acceptance year</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.firstName()}"></td>
+                <td th:text="${user.nick()}"></td>
+                <td th:text="${user.lastName()}"></td>
+                <td th:text="${user.acceptanceYear()}"></td>
+                <td>
+                    <a th:href="${'/users/' + user.id}">Details</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

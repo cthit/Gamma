@@ -47,7 +47,7 @@ public class LoginController {
             gammaRequestCache.removeRequest(request, response);
         }
 
-        return "login";
+        return "old/login";
     }
 
 }
