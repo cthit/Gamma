@@ -16,7 +16,6 @@ spring:
         globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
@@ -42,6 +41,8 @@ spring:
     suffix: .html
     servlet:
       content-type: text/html
+  session:
+    store-type: redis
 
 server:
   port: ${SERVER_PORT:8081}

@@ -16,11 +16,12 @@ public class DemoClientApplication {
 //		headers.setContentType(MediaType.APPLICATION_JSON);
 //
 //		HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-//
+//Could not safely identify store assignment for repository candidate
 //		RestTemplate restTemplate = new RestTemplate();
 //		ResponseEntity<String> response = restTemplate.exchange("http://gamma:8081/api/external/info/v1/users/d5683b6d-a0e5-4169-b9c4-e0f82644b591", HttpMethod.GET, requestEntity, String.class);
 //		System.out.println("Gamma responded with " + response.getHeaders() + response.getBody());
 
+		/*
 		HttpHeaders headers2 = new HttpHeaders();
 		headers2.add(HttpHeaders.AUTHORIZATION, "pre-shared test-api-key-secret-code");
 		headers2.setContentType(MediaType.APPLICATION_JSON);
@@ -34,6 +35,8 @@ public class DemoClientApplication {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+
+		 */
 	}
 
 

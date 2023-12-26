@@ -72,8 +72,6 @@ public class SuperGroupFacade extends Facade {
         accessGuard.require(isAdmin());
 
 
-        System.out.println(updateSuperGroup);
-
         SuperGroup oldSuperGroup = this.superGroupRepository.get(new SuperGroupId(updateSuperGroup.id)).orElseThrow();
         SuperGroup newSuperGroup = SuperGroupBuilder
                 .builder(oldSuperGroup)

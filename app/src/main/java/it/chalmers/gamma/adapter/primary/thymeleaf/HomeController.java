@@ -10,16 +10,7 @@ public class HomeController {
 
     @GetMapping("/")
     public ModelAndView getHome(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
-        var mv = new ModelAndView();
-
-        if(htmxRequest) {
-            mv.setViewName("pages/home");
-        } else {
-            mv.setViewName("index");
-            mv.addObject("page", "home");
-        }
-
-        return mv;
+       return Page.HOME.create(htmxRequest);
     }
 
 }

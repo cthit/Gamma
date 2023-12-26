@@ -1,0 +1,21 @@
+<div th:fragment="show-super-groups">
+    <a data-hx-get="/" data-hx-target="main div" data-hx-push-url="true">Back</a>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="superGroup : ${superGroups}">
+            <td th:text="${superGroup.prettyName()}"></td>
+            <td th:text="${superGroup.type()}"></td>
+            <td>
+                <a th:href="${'/super-groups/' + superGroup.id()}">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

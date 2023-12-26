@@ -17,7 +17,6 @@ spring:
         globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
     open-in-view: false
@@ -30,6 +29,8 @@ spring:
       host: ${REDIS_HOST:0.0.0.0}
       password: ${REDIS_PASSWORD:}
       port: ${REDIS_PORT:6379}
+      repositories:
+        enabled: true
   thymeleaf:
     cache: false
     check-template: false

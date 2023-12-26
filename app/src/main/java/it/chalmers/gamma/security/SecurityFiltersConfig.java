@@ -10,6 +10,8 @@ import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -30,6 +32,8 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 import java.util.stream.Stream;
 
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+
 @Configuration
 public class SecurityFiltersConfig {
 
@@ -42,7 +46,7 @@ public class SecurityFiltersConfig {
 
         ApiAuthenticationProvider apiAuthenticationProvider = new ApiAuthenticationProvider(apiKeyRepository, clientRepository);
 
-        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/external.+", null);
+        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api.+", null);
         http
                 .securityMatcher(regexRequestMatcher)
                 .addFilterBefore(new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)), BasicAuthenticationFilter.class)
@@ -73,6 +77,7 @@ public class SecurityFiltersConfig {
     /**
      * Sets up the security for the api that is used by the frontend.
      */
+    @Order(Ordered.LOWEST_PRECEDENCE)
     @Bean
     SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
                                                     CsrfTokenRepository csrfTokenRepository,
@@ -96,6 +101,7 @@ public class SecurityFiltersConfig {
         ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);
 
         http
+                .securityMatchers(matcher -> matcher.anyRequest())
                 .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
                         authorization

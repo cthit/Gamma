@@ -15,13 +15,12 @@
     <header>
         <img th:src="@{/img/header.jpg}"/>
     </header>
-    <main th:switch="${page}">
-        <div th:case="home">
-            <div th:replace="~{pages/home}"></div>
-        </div>
-        <div th:case="show-users">
-            <div th:replace="~{pages/show-users}"></div>
-        </div>
+    <main th:switch="${selectedPage.name()}">
+        <th:block th:each="page : ${T(it.chalmers.gamma.adapter.primary.thymeleaf.Page).values()}">
+            <th:block th:case="${page.name()}">
+                <div th:replace="__${page.FRAGMENT}__"></div>
+            </th:block>
+        </th:block>
         <div th:case="*">404</div>
     </main>
 </body>
