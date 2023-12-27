@@ -15,6 +15,7 @@ public enum Page {
     SHOW_ACTIVATION_CODES("pages/show-activation-codes", ADMIN),
     SHOW_CLIENTS("pages/show-clients", ADMIN),
     ADMINS("pages/admins", ADMIN),
+    GDPR("pages/gdpr", ADMIN),
     SHOW_API_KEYS("pages/show-api-keys", ADMIN);
 
     Page(String fragment, PageAuth auth) {

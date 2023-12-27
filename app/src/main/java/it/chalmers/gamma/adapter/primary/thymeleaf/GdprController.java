@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
-import it.chalmers.gamma.app.admin.AdminFacade;
 import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,30 +14,30 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-public class AdminController {
+public class GdprController {
 
     private final UserFacade userFacade;
-    private final AdminFacade adminFacade;
+    private final UserGdprTrainingFacade userGdprTrainingFacade;
 
-    public AdminController(UserFacade userFacade, AdminFacade adminFacade) {
+    public GdprController(UserFacade userFacade, UserGdprTrainingFacade userGdprTrainingFacade) {
         this.userFacade = userFacade;
-        this.adminFacade = adminFacade;
+        this.userGdprTrainingFacade = userGdprTrainingFacade;
     }
 
-    @GetMapping("/admins")
-    public ModelAndView getAllAdmins(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    @GetMapping("/gdpr")
+    public ModelAndView getAlLGdprTrained(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<UserFacade.UserDTO> users = this.userFacade.getAll();
-        List<UUID> admins = this.adminFacade.getAllAdmins();
+        List<UUID> gdprTrained = this.userGdprTrainingFacade.getGdprTrained();
 
-        ModelAndView mv = Page.ADMINS.create(htmxRequest);
+        ModelAndView mv = Page.GDPR.create(htmxRequest);
         mv.addObject("users", users);
-        mv.addObject("admins", admins);
+        mv.addObject("gdprTrained", gdprTrained);
 
         return mv;
     }
 
-    @PutMapping("/admins/{userId}")
-    public ModelAndView setAdmin(@RequestBody MultiValueMap<String, String> formData) {
+    @PutMapping("/gdpr/{userId}")
+    public ModelAndView seGdprTrained(@RequestBody MultiValueMap<String, String> formData) {
         var entrySet = formData.entrySet().stream().findFirst();
 
         if(entrySet.isEmpty()) {
@@ -45,11 +45,12 @@ public class AdminController {
         }
 
         UUID userId = UUID.fromString(entrySet.get().getKey());
-        boolean shouldBeAdmin = entrySet.get().getValue().getFirst().equals("on");
+        boolean haveBeenGdprTrained = entrySet.get().getValue().getFirst().equals("on");
 
-        this.adminFacade.setAdmin(userId, shouldBeAdmin);
+        this.userGdprTrainingFacade.updateGdprTrainedStatus(userId, haveBeenGdprTrained);
 
-        return this.getAllAdmins(true);
+        return this.getAlLGdprTrained(true);
     }
+
 
 }
