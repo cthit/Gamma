@@ -10,12 +10,15 @@
 
     <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 </head>
 <body>
     <header>
         <img th:src="@{/img/header.jpg}"/>
     </header>
-    <main th:switch="${selectedPage.name()}">
+    <main th:switch="${selectedPage.name()}" data-hx-boost="true">
         <th:block th:each="page : ${T(it.chalmers.gamma.adapter.primary.thymeleaf.Page).values()}">
             <th:block th:case="${page.name()}">
                 <div th:replace="__${page.FRAGMENT}__"></div>
@@ -23,5 +26,21 @@
         </th:block>
         <div th:case="*">404</div>
     </main>
+
+    <script>
+        document.body.addEventListener("htmx:configRequest", function (evt) {
+            evt.detail.headers["accept"] = "text/html-partial";
+
+            if (evt.detail.verb !== "get") {
+                const csrfHeaderName = document
+                    .querySelector("meta[name='_csrf_header']")
+                    .getAttribute("content");
+
+                evt.detail.headers[csrfHeaderName] = document
+                    .querySelector("meta[name='_csrf']")
+                    .getAttribute("content");
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,32 @@
+<div th:fragment="admins">
+    <a data-hx-get="/" data-hx-target="main div" data-hx-push-url="true">Back</a>
+    <form>
+        <table>
+            <thead>
+            <tr>
+                <th>Admin</th>
+                <th>First Name</th>
+                <th>Nick</th>
+                <th>Last name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td>
+                    <input type="checkbox"
+                           th:name="${user.id()}"
+                           th:id="${user.id()}"
+                           th:checked="${admins.contains(user.id())}"
+                           th:data-hx-put="@{/admins/{id}(id=${user.id()})}"
+                           th:data-hx-params="${user.id()}"
+                           data-hx-target="main div"
+                    />
+                </td>
+                <td th:text="${user.firstName()}"></td>
+                <td th:text="${user.nick()}"></td>
+                <td th:text="${user.lastName()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>

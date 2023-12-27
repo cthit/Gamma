@@ -12,7 +12,10 @@ public enum Page {
     SHOW_POSTS("pages/show-posts", SIGNED_IN),
     SHOW_USERS("pages/show-users", SIGNED_IN),
     SHOW_GROUPS("pages/show-groups", SIGNED_IN),
-    SHOW_CLIENTS("pages/show-clients", ADMIN);
+    SHOW_ACTIVATION_CODES("pages/show-activation-codes", ADMIN),
+    SHOW_CLIENTS("pages/show-clients", ADMIN),
+    ADMINS("pages/admins", ADMIN),
+    SHOW_API_KEYS("pages/show-api-keys", ADMIN);
 
     Page(String fragment, PageAuth auth) {
         this.FRAGMENT = fragment;

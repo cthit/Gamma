@@ -46,7 +46,7 @@ public class SecurityFiltersConfig {
 
         ApiAuthenticationProvider apiAuthenticationProvider = new ApiAuthenticationProvider(apiKeyRepository, clientRepository);
 
-        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api.+", null);
+        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api/.+", null);
         http
                 .securityMatcher(regexRequestMatcher)
                 .addFilterBefore(new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)), BasicAuthenticationFilter.class)
