@@ -3,13 +3,16 @@ spring:
     username: ${DB_USER:user}
     password: ${DB_PASSWORD:password}
     url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:postgres}
+
   flyway:
     baseline-on-migrate: true
     locations:
       classpath:/db/migration
+
   output:
     ansi:
       enabled: ALWAYS
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
@@ -20,10 +23,12 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
   servlet:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
+
   data:
     redis:
       host: ${REDIS_HOST:0.0.0.0}
@@ -31,6 +36,7 @@ spring:
       port: ${REDIS_PORT:6379}
       repositories:
         enabled: true
+
   thymeleaf:
     cache: false
     check-template: false
@@ -42,8 +48,14 @@ spring:
     suffix: .html
     servlet:
       content-type: text/html
+
   session:
     store-type: redis
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: on
 
 server:
   port: ${SERVER_PORT:9090}
@@ -75,4 +87,6 @@ application:
     key: ${GOTIFY_KEY:""}
     url: ${GOTIFY_URL:""}
   allowed-origin: ${CORS_ALLOWED_ORIGIN:https://gamma.chalmers.it}
+
+
 

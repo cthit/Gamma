@@ -16,7 +16,7 @@ public class AllowListRepositoryAdapter implements AllowListRepository {
     private final AllowListJpaRepository allowListJpaRepository;
 
     private final PersistenceErrorState CID_ALREADY_ALLOWED = new PersistenceErrorState(
-            null, PersistenceErrorState.Type.NOT_UNIQUE
+            "g_allowlist_pkey", PersistenceErrorState.Type.NOT_UNIQUE
     );
 
     public AllowListRepositoryAdapter(AllowListJpaRepository allowListJpaRepository) {

@@ -21,8 +21,6 @@ public final class PersistenceErrorHelper {
     }
 
     public static PersistenceErrorState getState(Exception e) {
-        List<PersistenceErrorState> states = new ArrayList<>();
-
         for (Throwable t = e.getCause(); t != null; t = t.getCause()) {
 
             //If there's a specific PQLException such as a UNIQUE violation

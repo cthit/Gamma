@@ -21,7 +21,14 @@ public class SuperGroupController {
     public ModelAndView getSuperGroups(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<SuperGroupFacade.SuperGroupDTO> superGroups = this.superGroupFacade.getAll();
 
-        var mv = Page.SHOW_SUPER_GROUPS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-super-groups");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-super-groups");
+        }
+
         mv.addObject("superGroups", superGroups);
 
         return mv;

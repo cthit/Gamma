@@ -22,7 +22,14 @@ public class SuperGroupTypeController {
     public ModelAndView getSuperGroupTypes(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<String> types = this.superGroupFacade.getAllTypes();
 
-        var mv = Page.SHOW_SUPER_GROUP_TYPES.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-types");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-types");
+        }
+
         mv.addObject("types", types);
 
         return mv;

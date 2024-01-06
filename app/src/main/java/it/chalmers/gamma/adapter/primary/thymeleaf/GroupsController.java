@@ -22,7 +22,14 @@ public class GroupsController {
     public ModelAndView getGroups(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<GroupFacade.GroupDTO> groups = this.groupFacade.getAll();
 
-        var mv = Page.SHOW_GROUPS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-groups");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-groups");
+        }
+
         mv.addObject("groups", groups);
 
         return mv;

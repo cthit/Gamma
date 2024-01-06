@@ -21,7 +21,13 @@ public class ClientsController {
     public ModelAndView getClients(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<ClientFacade.ClientDTO> clients = this.clientFacade.getAll();
 
-        var mv = Page.SHOW_CLIENTS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-clients");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-clients");
+        }
         mv.addObject("clients", clients);
 
         return mv;

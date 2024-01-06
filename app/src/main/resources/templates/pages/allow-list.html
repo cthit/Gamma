@@ -1,0 +1,22 @@
+<div th:fragment="allow">
+     <a href="/" data-hx-target="main">Back</a>
+    <div>
+        <form th:action="@{/allow-list}" th:method="put" data-hx-target="main">
+            <input type="text" name="cid" placeholder="Cid">
+            <span th:if="${cidInputError != null}" th:text="${cidInputError}"></span>
+            <button type="submit">Active</button>
+        </form>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Cid</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="allowedCid : ${allowList}">
+            <td th:text="${allowedCid}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

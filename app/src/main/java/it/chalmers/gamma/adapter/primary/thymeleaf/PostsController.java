@@ -21,7 +21,14 @@ public class PostsController {
     public ModelAndView getPosts(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<PostFacade.PostDTO> posts = postFacade.getAll();
 
-        var mv = Page.SHOW_POSTS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-posts");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-posts");
+        }
+
         mv.addObject("posts", posts);
 
         return mv;

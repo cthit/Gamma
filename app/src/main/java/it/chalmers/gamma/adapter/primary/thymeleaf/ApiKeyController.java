@@ -21,7 +21,14 @@ public class ApiKeyController {
     public ModelAndView getApiKeys(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<ApiKeyFacade.ApiKeyDTO> apiKeys = this.apiKeyFacade.getAll();
 
-        ModelAndView mv = Page.SHOW_API_KEYS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-api-keys");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-api-keys");
+        }
+
         mv.addObject("apiKeys", apiKeys);
 
         return mv;

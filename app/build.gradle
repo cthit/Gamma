@@ -59,6 +59,7 @@ dependencies {
 
             // Spring session
             "org.springframework.session:spring-session-core:3.1.1",
+            "org.springframework.session:spring-session-data-redis:3.1.1",
 
             // Jackson (JSON)
             'com.fasterxml.jackson.core:jackson-core:2.14.2',

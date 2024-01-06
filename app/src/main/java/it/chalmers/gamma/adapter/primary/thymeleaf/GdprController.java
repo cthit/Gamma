@@ -29,7 +29,14 @@ public class GdprController {
         List<UserFacade.UserDTO> users = this.userFacade.getAll();
         List<UUID> gdprTrained = this.userGdprTrainingFacade.getGdprTrained();
 
-        ModelAndView mv = Page.GDPR.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/gdpr");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/gdpr");
+        }
+
         mv.addObject("users", users);
         mv.addObject("gdprTrained", gdprTrained);
 

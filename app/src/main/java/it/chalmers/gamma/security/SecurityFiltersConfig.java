@@ -80,7 +80,6 @@ public class SecurityFiltersConfig {
     @Order(Ordered.LOWEST_PRECEDENCE)
     @Bean
     SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
-                                                    CsrfTokenRepository csrfTokenRepository,
                                                     GammaRequestCache requestCache,
                                                     PasswordEncoder passwordEncoder,
                                                     UserJpaRepository userJpaRepository,
@@ -97,7 +96,12 @@ public class SecurityFiltersConfig {
         userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
         AntPathRequestMatcher[] permittedRequests = Stream.of(
-                "/login"
+                "/login",
+                "/register",
+                "/favicon.ico",
+                "/img/**",
+                "/css/**"
+
         ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);
 
         http
@@ -105,7 +109,7 @@ public class SecurityFiltersConfig {
                 .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorization ->
                         authorization
-                                .requestMatchers(new OrRequestMatcher(permittedRequests)).hasRole("ANONYMOUS")
+                                .requestMatchers(new OrRequestMatcher(permittedRequests)).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .formLogin(new LoginCustomizer())
@@ -113,10 +117,6 @@ public class SecurityFiltersConfig {
                 .authenticationProvider(userAuthenticationProvider)
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-                .csrf(csrf -> csrf
-                        .csrfTokenRepository(csrfTokenRepository)
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
                 )
                 .cors(Customizer.withDefaults())
                 .exceptionHandling();

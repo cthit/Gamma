@@ -3,12 +3,15 @@ spring:
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:example}
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}
+
   flyway:
     baseline-on-migrate: true
     locations: classpath:/db/migration
+
   output:
     ansi:
       enabled: ALWAYS
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
@@ -19,10 +22,12 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+
   servlet:
     multipart:
       max-file-size: 2MB
       max-request-size: 2MB
+
   data:
     redis:
       host: ${REDIS_HOST:0.0.0.0}
@@ -30,8 +35,9 @@ spring:
       port: ${REDIS_PORT:6379}
       repositories:
         enabled: true
+
   thymeleaf:
-    cache: false
+    cache: true
     check-template: true
     check-template-location: true
     enabled: true
@@ -41,8 +47,14 @@ spring:
     suffix: .html
     servlet:
       content-type: text/html
+
   session:
     store-type: redis
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: on
 
 server:
   port: ${SERVER_PORT:8081}
@@ -50,6 +62,11 @@ server:
     whitelabel:
       enabled: true
     path: /error
+
+  servlet:
+    session:
+      cookie:
+        same-site: strict
 
 logging:
   level:
@@ -76,6 +93,6 @@ application:
   frontend-client-details:
     successful-login-uri: ${SUCCESSFUL_LOGIN:http://gamma:3000}
   gotify:
-    key: "123abc"                  # This is not needed, but application crashes since it looks for these values.
+    key: "123abc"
     url: "localhost:7000"
   allowed-origin: ${CORS_ALLOWED_ORIGIN:http://gamma:3000}

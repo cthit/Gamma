@@ -15,6 +15,9 @@ public interface AllowListRepository {
     List<Cid> getAllowList();
 
     class AlreadyAllowedException extends Exception {
+        public AlreadyAllowedException() {
+            super("Cid already allowed");
+        }
     }
 
     class NotOnAllowListException extends RuntimeException {

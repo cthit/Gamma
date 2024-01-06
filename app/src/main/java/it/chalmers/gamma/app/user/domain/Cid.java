@@ -15,7 +15,7 @@ public record Cid(String value) implements Id<String>, UserIdentifier, Serializa
         value = value.toLowerCase(Locale.ROOT);
 
         if (!value.matches("^([a-z]{4,12})$")) {
-            throw new IllegalArgumentException("Input: " + value + "; Cid length must be between 4 and 12, and only have letters between a - z");
+            throw new IllegalArgumentException("Cid length must be between 4 and 12, and only have letters between a - z");
         }
 
     }

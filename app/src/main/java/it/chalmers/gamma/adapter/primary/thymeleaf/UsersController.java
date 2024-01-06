@@ -21,7 +21,14 @@ public class UsersController {
     public ModelAndView getUsers(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
         List<UserFacade.UserDTO> users = this.userFacade.getAll();
 
-        var mv = Page.SHOW_USERS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/show-users");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/show-users");
+        }
+
         mv.addObject("users", users);
 
         return mv;

@@ -1,0 +1,33 @@
+<div th:fragment="login">
+    <div th:if="${error}">
+        Invalid cid/email or password.
+    </div>
+    <div th:if="${logout}">
+        You have been logged out.
+    </div>
+
+    <div th:if="${authorizing}">
+        <h2>
+            Before deciding on authorizing the client, please verify your identity
+        </h2>
+    </div>
+
+    <form th:action="@{/login}" th:method="post" data-hx-target="main div">
+        <input type="text" name="username" placeholder="Username">
+        <input type="password" name="password" placeholder="Password">
+        <button type="submit">Login</button>
+    </form>
+
+    <div>
+        <a data-hx-get="/register" data-hx-target="main div" data-hx-push-url="true">
+            <button type=button>
+                Register
+            </button>
+        </a>
+        <a data-hx-get="/forgot-password" data-hx-target="main div" data-hx-push-url="true">
+            <button type=button>
+                Forgot password
+            </button>
+        </a>
+    </div>
+</div>

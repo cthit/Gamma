@@ -6,7 +6,6 @@ import io.restassured.config.SessionConfig;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.parsing.Parser;
-import io.restassured.spi.AuthFilter;
 import it.chalmers.gamma.GammaApplication;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;

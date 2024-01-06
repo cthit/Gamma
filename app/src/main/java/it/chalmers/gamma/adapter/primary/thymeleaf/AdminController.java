@@ -29,7 +29,14 @@ public class AdminController {
         List<UserFacade.UserDTO> users = this.userFacade.getAll();
         List<UUID> admins = this.adminFacade.getAllAdmins();
 
-        ModelAndView mv = Page.ADMINS.create(htmxRequest);
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/admins");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/admins");
+        }
+
         mv.addObject("users", users);
         mv.addObject("admins", admins);
 
