@@ -1,0 +1,5 @@
+<th:block th:fragment="textInput (name, label, errorMessage)">
+    <label th:for="${name}" th:text="${label}"></label>
+    <input type="text" th:id="${name}" th:name="${name}" th:aria-labelledby="${name}"/>
+    <span th:if="${errorMessage != null}" th:text="${errorMessage}" id="${name}-error"></span>
+</th:block>

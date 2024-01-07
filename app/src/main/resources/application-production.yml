@@ -80,13 +80,10 @@ application:
     domain: ${COOKIE_DOMAIN:https://gamma.chalmers.it}
     path: ${COOKIE_PATH:/}
     validity-time: 31536000 # One year
-  frontend-client-details:
-    successful-login-uri: ${SUCCESSFUL_LOGIN:http://gamma:8080}
   mocking: ${IS_MOCKING:false}
   gotify:
     key: ${GOTIFY_KEY:""}
     url: ${GOTIFY_URL:""}
-  allowed-origin: ${CORS_ALLOWED_ORIGIN:https://gamma.chalmers.it}
 
 
 

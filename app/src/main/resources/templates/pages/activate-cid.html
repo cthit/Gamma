@@ -1,9 +1,7 @@
-<div th:fragment="activate-cid">
-    <form data-hx-post="/activate-cid">
-        <label>
-            <input type="text" name="cid" placeholder="Cid" />
-            Enter cid to start process of creating an account
-        </label>
+<main>
+    <form th:action="@{/activate-cid}" th:method="post" data-hx-target="main">
+        <p>Enter cid to start process of creating an account</p>
+        <div th:replace="~{common/input :: textInput('cid', 'Cid', ${cidInputError})}"></div>
         <button type="submit">Activate cid</button>
     </form>
-</div>
+</main>

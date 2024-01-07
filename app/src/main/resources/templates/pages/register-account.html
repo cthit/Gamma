@@ -1,0 +1,13 @@
+<main>
+    <form>
+        <div th:replace="~{common/input :: textInput('cid', 'Cid', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('code', 'Code from the email', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('password', 'Password', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('confirmedPassword', 'Confirm password', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('nick', 'Nick', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('firstName', 'First name', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('lastName', 'Last name', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('email', 'Non student email', ${null})}"></div>
+        <button type="submit">Create account</button>
+    </form>
+</main>

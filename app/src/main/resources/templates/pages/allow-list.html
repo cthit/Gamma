@@ -1,9 +1,8 @@
-<div th:fragment="allow">
+<main>
      <a href="/" data-hx-target="main">Back</a>
     <div>
         <form th:action="@{/allow-list}" th:method="put" data-hx-target="main">
-            <input type="text" name="cid" placeholder="Cid">
-            <span th:if="${cidInputError != null}" th:text="${cidInputError}"></span>
+            <div th:replace="~{common/input :: textInput('cid', 'Cid', ${cidInputError})}"></div>
             <button type="submit">Active</button>
         </form>
     </div>
@@ -19,4 +18,4 @@
         </tr>
         </tbody>
     </table>
-</div>
+</main>

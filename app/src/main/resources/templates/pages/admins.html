@@ -1,6 +1,8 @@
-<div th:fragment="admins">
-     <a href="/" data-hx-target="main">Back</a>
-    <form>
+<main>
+    <a href="/" data-hx-target="main">Back</a>
+    <form th:action="@{/admins}" th:method="put" data-hx-target="main">
+        <button type="submit">Save</button>
+        <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
         <table>
             <thead>
             <tr>
@@ -15,11 +17,7 @@
                 <td>
                     <input type="checkbox"
                            th:name="${user.id()}"
-                           th:id="${user.id()}"
                            th:checked="${admins.contains(user.id())}"
-                           th:data-hx-put="@{/admins/{id}(id=${user.id()})}"
-                           th:data-hx-params="${user.id()}"
-                           data-hx-target="main"
                     />
                 </td>
                 <td th:text="${user.firstName()}"></td>
@@ -29,4 +27,4 @@
             </tbody>
         </table>
     </form>
-</div>
+</main>

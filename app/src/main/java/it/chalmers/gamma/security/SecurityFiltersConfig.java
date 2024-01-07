@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -95,22 +96,21 @@ public class SecurityFiltersConfig {
         userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
         userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
-        AntPathRequestMatcher[] permittedRequests = Stream.of(
-                "/login",
-                "/register",
-                "/favicon.ico",
-                "/img/**",
-                "/css/**"
-
-        ).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new);
-
         http
-                .securityMatchers(matcher -> matcher.anyRequest())
                 .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(authorization ->
-                        authorization
-                                .requestMatchers(new OrRequestMatcher(permittedRequests)).permitAll()
-                                .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/img/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/css/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/webjars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/login").anonymous()
+                        .requestMatchers(HttpMethod.POST, "/login").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/activate-cid").anonymous()
+                        .requestMatchers(HttpMethod.POST, "/activate-cid").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/email-sent").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/register").anonymous()
+                        .requestMatchers(HttpMethod.POST, "/register").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/robots.txt").permitAll()
+                        .anyRequest().authenticated()
                 )
                 .formLogin(new LoginCustomizer())
                 .logout(new LogoutCustomizer())
@@ -118,8 +118,7 @@ public class SecurityFiltersConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 )
-                .cors(Customizer.withDefaults())
-                .exceptionHandling();
+                .cors(Customizer.withDefaults());
 
         return http.build();
     }

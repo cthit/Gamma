@@ -21,10 +21,6 @@ public class AllowListController {
     }
 
     @GetMapping("/allow-list")
-    public ModelAndView getAllowList(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
-        return this.getAllowList(htmxRequest, null);
-    }
-
     public ModelAndView getAllowList(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, @Nullable String cidInputError) {
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
@@ -45,14 +41,14 @@ public class AllowListController {
     }
 
     @PutMapping(value = "/allow-list")
-    public ModelAndView allow(AllowCidRequestBody request) {
+    public ModelAndView allow(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, AllowCidRequestBody request) {
         try {
             allowListFacade.allow(request.cid);
         } catch (AllowListRepository.AlreadyAllowedException | IllegalArgumentException e) {
-            return getAllowList(true, e.getMessage());
+            return getAllowList(htmxRequest, e.getMessage());
         }
 
-        return getAllowList(true);
+        return getAllowList(htmxRequest, null);
     }
 
     public record AllowCidRequestBody (String cid) {}

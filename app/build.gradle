@@ -66,9 +66,6 @@ dependencies {
 
             // Redis
             'org.springframework.data:spring-data-redis:3.1.2',
-
-            // htmx
-            'org.webjars.npm:htmx.org:1.9.9'
     )
 
     runtimeOnly(
@@ -78,10 +75,14 @@ dependencies {
             // Spring Boot
             "org.springframework.boot:spring-boot-devtools:3.1.2",
             "org.springframework.boot:spring-boot-starter-data-redis:3.1.2",
-            "org.springframework.boot:spring-boot-starter-thymeleaf:3.1.2",
-    )
 
-    // https://start.spring.io/#!type=gradle-project&language=java&platformVersion=3.2.0&packaging=jar&jvmVersion=21&groupId=it.chalmers&artifactId=gamma&name=Gamma&description=Gamma&packageName=it.chalmers.gamma&dependencies=native,web,data-jpa,security,session,postgresql,devtools,oauth2-authorization-server,data-redis,flyway,thymeleaf,testcontainers
+            // Thymeleaf
+            "org.springframework.boot:spring-boot-starter-thymeleaf:3.1.2",
+            "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE",
+
+            // htmx
+            'org.webjars.npm:htmx.org:1.9.10',
+    )
 
     testImplementation(
             "com.tngtech.archunit:archunit:1.0.0",

@@ -21,10 +21,20 @@ public class AdminFacade extends Facade {
         this.adminRepository = adminRepository;
     }
 
-    public void setAdmin(UUID userId, boolean admin) {
+    public void updateAdmins(List<UUID> adminsToAdd, List<UUID> adminsToRemove) {
         accessGuard.require(isAdmin());
 
-        this.adminRepository.setAdmin(new UserId(userId), admin);
+        if(adminsToAdd.isEmpty()) {
+            throw new IllegalArgumentException("There must be at least one admin");
+        }
+
+        for (UUID userId : adminsToAdd) {
+            this.adminRepository.setAdmin(new UserId(userId), true);
+        }
+
+        for (UUID userId : adminsToRemove) {
+            this.adminRepository.setAdmin(new UserId(userId), false);
+        }
     }
 
     public List<UUID> getAllAdmins() {

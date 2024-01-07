@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
       lang="en">
 <head>
     <base href="/">
+    <title>Gamma</title>
     <meta
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
             name="viewport"
     />
-
+    <link rel="shortcut icon" type="image/png" th:href="@{/img/favicon.ico}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.min.js}"></script>
     <script>
         htmx.config.selfRequestsOnly = true;
         htmx.config.allowScriptTags = false;
@@ -18,11 +19,8 @@
     </script>
 </head>
 <body data-hx-boost="true" data-hx-history="false" >
-    <header>
-        <img th:src="@{/img/bg.jpg}"/>
-    </header>
-    <main>
-        <div th:replace="~{__${page}__}"></div>
+   <header th:replace="~{common/header}"></header>
+    <main th:replace="~{__${page}__}">
     </main>
 </body>
 </html>

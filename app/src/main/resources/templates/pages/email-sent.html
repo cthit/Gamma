@@ -1,0 +1,16 @@
+<main>
+    <h2>
+        An email should be sent to your student email
+    </h2>
+    <p>
+        If you have not received an email within a few minutes, you may have entered the wrong cid.
+        If you're sure that you have written the correct cid, and you still haven't received an email please contact digIT at digit@chalmers.it.
+        Make sure to check your spam folder as well.
+    </p>
+    <a th:href="@{/activate-cid}" data-hx-target="main">
+        I have not received a code
+    </a>
+    <a th:href="@{/register}" data-hx-target="main">
+        I have received a code
+    </a>
+</main>

@@ -1,6 +1,7 @@
-<div th:fragment="gdpr">
+<main>
      <a href="/" data-hx-target="main">Back</a>
-    <form>
+    <form th:action="@{/gdpr}" th:method="put" data-hx-target="main">
+        <button type="submit">Save</button>
         <table>
             <thead>
             <tr>
@@ -15,11 +16,7 @@
                 <td>
                     <input type="checkbox"
                            th:name="${user.id()}"
-                           th:id="${user.id()}"
                            th:checked="${gdprTrained.contains(user.id())}"
-                           th:data-hx-put="@{/gdpr/{id}(id=${user.id()})}"
-                           th:data-hx-params="${user.id()}"
-                           data-hx-target="main"
                     />
                 </td>
                 <td th:text="${user.firstName()}"></td>
@@ -29,4 +26,4 @@
             </tbody>
         </table>
     </form>
-</div>
+</main>

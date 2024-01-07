@@ -1,8 +1,8 @@
-<div th:fragment="show-types    ">
+<main>
      <a href="/" data-hx-target="main">Back</a>
     <ul th:each="type : ${types}">
         <li>
             <p th:text="${type}"></p>
         </li>
     </ul>
-</div>
+</main>
