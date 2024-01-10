@@ -13,7 +13,6 @@ public class ActivationCodesController {
 
     private final ActivationCodeFacade activationCodeFacade;
 
-
     public ActivationCodesController(ActivationCodeFacade activationCodeFacade) {
         this.activationCodeFacade = activationCodeFacade;
     }

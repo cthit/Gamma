@@ -1,7 +1,8 @@
+<header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" data-hx-target="main">Back</a>
+     <a href="/" >Back</a>
     <div>
-        <form th:action="@{/allow-list}" th:method="put" data-hx-target="main">
+        <form th:action="@{/allow-list}" th:method="put" >
             <div th:replace="~{common/input :: textInput('cid', 'Cid', ${cidInputError})}"></div>
             <button type="submit">Active</button>
         </form>

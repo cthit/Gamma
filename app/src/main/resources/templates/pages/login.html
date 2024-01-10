@@ -1,3 +1,4 @@
+<header th:replace="~{common/header}"></header>
 <main>
     <div th:if="${error}">
         Invalid cid/email or password.
@@ -12,19 +13,19 @@
         </h2>
     </div>
 
-    <form th:action="@{/login}" th:method="post" data-hx-target="main">
+    <form th:action="@{/login}" th:method="post" >
         <input type="text" name="username" placeholder="Username">
         <input type="password" name="password" placeholder="Password">
         <button type="submit">Login</button>
     </form>
 
     <div>
-        <a data-hx-get="/activate-cid" data-hx-target="main" data-hx-push-url="true">
+        <a data-hx-get="/activate-cid"  data-hx-push-url="true">
             <button type=button>
                 Register
             </button>
         </a>
-        <a data-hx-get="/forgot-password" data-hx-target="main" data-hx-push-url="true">
+        <a data-hx-get="/forgot-password"  data-hx-push-url="true">
             <button type=button>
                 Forgot password
             </button>

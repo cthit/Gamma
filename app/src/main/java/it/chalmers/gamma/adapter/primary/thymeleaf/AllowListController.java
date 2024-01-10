@@ -48,7 +48,7 @@ public class AllowListController {
             return getAllowList(htmxRequest, e.getMessage());
         }
 
-        return getAllowList(htmxRequest, null);
+        return new ModelAndView("redirect:allow-list");
     }
 
     public record AllowCidRequestBody (String cid) {}

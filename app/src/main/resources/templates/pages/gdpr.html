@@ -1,6 +1,7 @@
+<header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" data-hx-target="main">Back</a>
-    <form th:action="@{/gdpr}" th:method="put" data-hx-target="main">
+     <a href="/" >Back</a>
+    <form th:action="@{/gdpr}" th:method="put" >
         <button type="submit">Save</button>
         <table>
             <thead>

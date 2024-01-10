@@ -1,8 +1,46 @@
-body {
-    margin: 0;
+:root {
+    --gamma-primary: #05c46b;
 }
 
-header img {
-    height: 200px;
-    object-fit: contain;
+body {
+    margin: 0;
+    background-color: black;
+    color: white;
+    color-scheme: dark;
+    font-family: Verdana, sans-serif;
+    box-sizing: content-box;
+    line-height: 1.5rem;
+}
+
+li {
+    height: 100%;
+}
+
+a {
+    padding: 0.5rem;
+    outline: solid var(--gamma-primary);
+    color: white;
+}
+
+img {
+    opacity: .75;
+    transition: opacity .5s ease-in-out;
+}
+
+img:hover {
+    opacity: 1;
+}
+
+header {
+    background-color: #1f1f1f;
+    padding: 1rem;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1, h2 {
+    font-family: 'Courier New', monospace;
 }

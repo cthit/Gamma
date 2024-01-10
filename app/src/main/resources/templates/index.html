@@ -8,7 +8,7 @@
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
             name="viewport"
     />
-    <link rel="shortcut icon" type="image/png" th:href="@{/img/favicon.ico}" />
+    <link rel="shortcut icon" type="image/svg" th:href="@{/img/itlogo.svg}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
     <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.min.js}"></script>
     <script>
@@ -19,8 +19,6 @@
     </script>
 </head>
 <body data-hx-boost="true" data-hx-history="false" >
-   <header th:replace="~{common/header}"></header>
-    <main th:replace="~{__${page}__}">
-    </main>
+    <th:block th:replace="~{__${page}__}"></th:block>
 </body>
 </html>

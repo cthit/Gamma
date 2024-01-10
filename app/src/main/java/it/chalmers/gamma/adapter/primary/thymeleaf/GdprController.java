@@ -78,7 +78,7 @@ public class GdprController {
             this.userGdprTrainingFacade.updateGdprTrainedStatus(userId, false);
         }
 
-        return this.getAlLGdprTrained(htmxRequest);
+        return new ModelAndView("redirect:gdpr");
     }
 
 }

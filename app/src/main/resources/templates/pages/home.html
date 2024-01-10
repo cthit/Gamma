@@ -1,13 +1,38 @@
+<header th:replace="~{common/header}"></header>
 <main>
-    <a th:href="@{/users}" data-hx-target="main">Users</a>
-    <a th:href="@{/groups}" data-hx-target="main">Groups</a>
-    <a th:href="@{/super-groups}" data-hx-target="main">Super groups</a>
-    <a th:href="@{/types}" data-hx-target="main">Types</a>
-    <a th:href="@{/posts}" data-hx-target="main">Posts</a>
-    <a th:href="@{/clients}" data-hx-target="main">Clients</a>
-    <a th:href="@{/api-keys}" data-hx-target="main">Api keys</a>
-    <a th:href="@{/activation-codes}" data-hx-target="main">Activation codes</a>
-    <a th:href="@{/admins}" data-hx-target="main">Admins</a>
-    <a th:href="@{/gdpr}" data-hx-target="main">Gdpr trained</a>
-    <a th:href="@{/allow-list}" data-hx-target="main">Allow lists</a>
+    <ul>
+        <li>
+            <a th:href="@{/users}">Users</a>
+        </li>
+        <li>
+            <a th:href="@{/groups}">Groups</a>
+        </li>
+        <li>
+            <a th:href="@{/super-groups}">Super groups</a>
+        </li>
+        <li>
+            <a th:href="@{/types}">Types</a>
+        </li>
+        <li>
+            <a th:href="@{/posts}">Posts</a>
+        </li>
+        <li>
+            <a th:href="@{/clients}">Clients</a>
+        </li>
+        <li>
+            <a th:href="@{/api-keys}">Api keys</a>
+        </li>
+        <li>
+            <a th:href="@{/activation-codes}">Activation codes</a>
+        </li>
+        <li>
+            <a th:href="@{/admins}">Admins</a>
+        </li>
+        <li>
+            <a th:href="@{/gdpr}">Gdpr trained</a>
+        </li>
+        <li>
+            <a th:href="@{/allow-list}">Allow lists</a>
+        </li>
+    </ul>
 </main>

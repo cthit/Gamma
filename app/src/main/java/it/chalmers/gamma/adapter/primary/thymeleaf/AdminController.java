@@ -77,6 +77,6 @@ public class AdminController {
             return this.getAdmins(htmxRequest, e.getMessage());
         }
 
-        return this.getAdmins(htmxRequest, null);
+        return new ModelAndView("redirect:admins");
     }
 }

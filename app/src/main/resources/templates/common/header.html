@@ -1,11 +1,15 @@
-<header data-hx-trigger="header from:body" data-hx-get="/header" data-hx-target="header">
-    <img th:src="@{/img/bg.jpg}"/>
-    <th:block sec:authorize="isAuthenticated()">
-        <form th:action="@{/logout}" th:method="post" data-hx-target="main">
-            <button>
-                Logout
-            </button>
-        </form>
-        <div th:text="|Hey, ${#authentication.getDetails().get().nick().value()}!|"></div>
-    </th:block>
+<header data-hx-trigger="header from:body" data-hx-get="/header">
+    <h1>
+        Gamma
+    </h1>
+    <div>
+        <th:block sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" th:method="post" >
+                <button>
+                    Logout
+                </button>
+            </form>
+            <div th:text="|Hey, ${#authentication.getDetails().get().nick().value()}!|"></div>
+        </th:block>
+    </div>
 </header>
