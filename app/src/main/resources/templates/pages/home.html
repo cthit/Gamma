@@ -1,38 +1,55 @@
 <header th:replace="~{common/header}"></header>
+<style>
+
+    main {
+        padding: 1rem;
+    }
+
+    main div {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    main div div {
+        width: fit-content;
+    }
+</style>
 <main>
-    <ul>
-        <li>
+    <div>
+        <div>
             <a th:href="@{/users}">Users</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/groups}">Groups</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/super-groups}">Super groups</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/types}">Types</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/posts}">Posts</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/clients}">Clients</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/api-keys}">Api keys</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/activation-codes}">Activation codes</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/admins}">Admins</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/gdpr}">Gdpr trained</a>
-        </li>
-        <li>
+        </div>
+        <div>
             <a th:href="@{/allow-list}">Allow lists</a>
-        </li>
-    </ul>
+        </div>
+    </div>
 </main>

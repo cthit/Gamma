@@ -5,40 +5,22 @@
 body {
     margin: 0;
     background-color: black;
-    color: white;
-    color-scheme: dark;
-    font-family: Verdana, sans-serif;
-    box-sizing: content-box;
     line-height: 1.5rem;
+    min-height: calc(100vh - 3rem);
+    padding-bottom: 3rem;
 }
 
-li {
-    height: 100%;
+* {
+    font-family: Verdana, sans-serif;
+    color: white;
+    color-scheme: dark;
+    box-sizing: border-box;
 }
 
 a {
     padding: 0.5rem;
-    outline: solid var(--gamma-primary);
-    color: white;
-}
-
-img {
-    opacity: .75;
-    transition: opacity .5s ease-in-out;
-}
-
-img:hover {
-    opacity: 1;
-}
-
-header {
-    background-color: #1f1f1f;
-    padding: 1rem;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    border: solid var(--gamma-primary);
+    cursor: pointer;
 }
 
 h1, h2 {

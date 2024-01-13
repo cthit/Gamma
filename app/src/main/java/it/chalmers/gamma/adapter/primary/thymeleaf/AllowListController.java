@@ -41,7 +41,7 @@ public class AllowListController {
     }
 
     @PutMapping(value = "/allow-list")
-    public ModelAndView allow(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, AllowCidRequestBody request) {
+    public ModelAndView allow(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, AllowCidForm request) {
         try {
             allowListFacade.allow(request.cid);
         } catch (AllowListRepository.AlreadyAllowedException | IllegalArgumentException e) {
@@ -51,6 +51,6 @@ public class AllowListController {
         return new ModelAndView("redirect:allow-list");
     }
 
-    public record AllowCidRequestBody (String cid) {}
+    public record AllowCidForm(String cid) {}
 
 }

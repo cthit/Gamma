@@ -127,8 +127,8 @@ public class UserCreationFacade extends Facade {
     public record NewUser(String password,
                           String nick,
                           String firstName,
-                          String email,
                           String lastName,
+                          String email,
                           int acceptanceYear,
                           String cid,
                           String language) {

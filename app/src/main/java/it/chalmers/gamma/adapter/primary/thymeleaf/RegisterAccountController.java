@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class CreateAccountController {
+public class RegisterAccountController {
 
     private final UserCreationFacade userCreationFacade;
 
-    public CreateAccountController(UserCreationFacade userCreationFacade) {
+    public RegisterAccountController(UserCreationFacade userCreationFacade) {
         this.userCreationFacade = userCreationFacade;
     }
 
@@ -62,6 +62,53 @@ public class CreateAccountController {
             mv.addObject("page", "pages/register-account");
         }
         return mv;
+    }
+
+    @PostMapping("/register")
+    public ModelAndView registerAccount(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, CreateAccountForm form) {
+        if(!form.password.equals(form.confirmPassword)) {
+
+        }
+
+        if(!form.acceptUserAgreement) {
+
+        }
+
+        try {
+            this.userCreationFacade.createUserWithCode(
+                    new UserCreationFacade.NewUser(
+                            form.password,
+                            form.nick,
+                            form.firstName,
+                            form.lastName,
+                            form.email,
+                            form.acceptanceYear,
+                            form.cid,
+                            form.language
+                    ),
+                    form.code
+            );
+        } catch (UserCreationFacade.SomePropertyNotUniqueException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new ModelAndView("redirect:/login");
+    }
+
+    public record CreateAccountForm(
+            String cid,
+            String code,
+            String password,
+            String confirmPassword,
+            String nick,
+            String firstName,
+            String lastName,
+            String email,
+            int acceptanceYear,
+            String language,
+            boolean acceptUserAgreement
+    ) {
+
     }
 
 }

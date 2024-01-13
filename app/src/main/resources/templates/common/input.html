@@ -1,5 +1,17 @@
 <th:block th:fragment="textInput (name, label, errorMessage)">
     <label th:for="${name}" th:text="${label}"></label>
     <input type="text" th:id="${name}" th:name="${name}" th:aria-labelledby="${name}"/>
-    <span th:if="${errorMessage != null}" th:text="${errorMessage}" id="${name}-error"></span>
+    <span th:if="${errorMessage != null}" th:text="${errorMessage}" th:id="${name}-error"></span>
+</th:block>
+
+<th:block th:fragment="emailTextInput (name, label, errorMessage)">
+    <label th:for="${name}" th:text="${label}"></label>
+    <input type="email" th:id="${name}" th:name="${name}" th:aria-labelledby="${name}"/>
+    <span th:if="${errorMessage != null}" th:text="${errorMessage}" th:id="${name}-error"></span>
+</th:block>
+
+<th:block th:fragment="passwordTextInput (name, label, errorMessage)">
+    <label th:for="${name}" th:text="${label}"></label>
+    <input type="password" th:id="${name}" th:name="${name}" th:aria-labelledby="${name}"/>
+    <span th:if="${errorMessage != null}" th:text="${errorMessage}" th:id="${name}-error"></span>
 </th:block>

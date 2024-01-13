@@ -1,12 +1,24 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <div th:if="${error}">
-        Invalid cid/email or password.
-    </div>
-    <div th:if="${logout}">
-        You have been logged out.
-    </div>
+<style>
+    main {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
 
+    form {
+        display: contents;
+    }
+
+    #links {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+    }
+</style>
+<main>
     <div th:if="${authorizing}">
         <h2>
             Before deciding on authorizing the client, please verify your identity
@@ -14,21 +26,25 @@
     </div>
 
     <form th:action="@{/login}" th:method="post" >
-        <input type="text" name="username" placeholder="Username">
+        <input type="text" name="username" placeholder="Cid / Email">
         <input type="password" name="password" placeholder="Password">
         <button type="submit">Login</button>
     </form>
 
-    <div>
-        <a data-hx-get="/activate-cid"  data-hx-push-url="true">
-            <button type=button>
-                Register
-            </button>
+    <div th:if="${error}">
+        Invalid cid/email or password.
+    </div>
+
+    <div th:if="${logout}">
+        You have been logged out.
+    </div>
+
+    <div id="links">
+        <a href="/activate-cid">
+            Register
         </a>
-        <a data-hx-get="/forgot-password"  data-hx-push-url="true">
-            <button type=button>
-                Forgot password
-            </button>
+        <a href="/forgot-password">
+            Forgot password
         </a>
     </div>
 </main>
