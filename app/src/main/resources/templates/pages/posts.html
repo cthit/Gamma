@@ -1,0 +1,42 @@
+<style>
+    .table {
+        display: table;
+
+        width: 100%;
+        max-width: 1280px;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .table-row {
+        display: table-row;
+        height: 50px;
+    }
+
+    .table-cell {
+        display: table-cell;
+    }
+</style>
+
+<header th:replace="~{common/header}"></header>
+<main>
+     <a href="/" >Back</a>
+    <div class="table">
+        <div class="table-row">
+            <div class="table-cell">Swedish name</div>
+            <div class="table-cell">English name</div>
+            <div class="table-cell">Email prefix</div>
+        </div>
+        <th:block th:each="post : ${posts}">
+            <div class="table-row" th:fragment="post-row" >
+                <div class="table-cell" th:text="${post.svName()}"></div>
+                <div class="table-cell" th:text="${post.enName()}"></div>
+                <div class="table-cell" th:text="${post.emailPrefix()}"></div>
+                <div class="table-cell">
+                    <button th:data-hx-get="@{/posts/{postId}/edit(postId=${post.id()})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">Edit</button>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</main>

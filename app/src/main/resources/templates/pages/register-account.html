@@ -15,14 +15,14 @@
 <header th:replace="~{common/header}"></header>
 <main>
     <form th:method="post" th:action="@{/register}">
-        <div th:replace="~{common/input :: textInput('cid', 'Cid', ${null})}"></div>
-        <div th:replace="~{common/input :: textInput('code', 'Code from the email', ${null})}"></div>
-        <div th:replace="~{common/input :: passwordTextInput('password', 'Password', ${null})}"></div>
-        <div th:replace="~{common/input :: passwordTextInput('confirmPassword', 'Confirm password', ${null})}"></div>
-        <div th:replace="~{common/input :: textInput('nick', 'Nick', ${null})}"></div>
-        <div th:replace="~{common/input :: textInput('firstName', 'First name', ${null})}"></div>
-        <div th:replace="~{common/input :: textInput('lastName', 'Last name', ${null})}"></div>
-        <div th:replace="~{common/input :: emailTextInput('email', 'Non student email', ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('cid', 'Cid', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('code', 'Code from the email', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: passwordTextInput('password', 'Password', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: passwordTextInput('confirmPassword', 'Confirm password', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('nick', 'Nick', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('firstName', 'First name', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: textInput('lastName', 'Last name', ${null}, ${null})}"></div>
+        <div th:replace="~{common/input :: emailTextInput('email', 'Non student email', ${null}, ${null})}"></div>
         <label>
             Which year did you start at IT?
             <select th:name="acceptanceYear">

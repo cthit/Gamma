@@ -1,0 +1,20 @@
+<form class="table-row" th:data-hx-post="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">
+    <input type="hidden" name="_method" value="put" />
+    <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}" />
+    <input type="hidden" name="version" th:value="${post.version()}" />
+    <div class="table-cell">
+        <div th:replace="~{common/input :: textInput(name='svName', value=${post.svName()}, errorMessage=${null}, label=${null})}"></div>
+    </div>
+    <div class="table-cell">
+        <div class="table-cell" th:replace="~{common/input :: textInput(name='enName', value=${post.enName()}, errorMessage=${null}, label=${null})}"></div>
+    </div>
+    <div class="table-cell">
+        <div class="table-cell" th:replace="~{common/input :: textInput(name='emailPrefix', value=${post.emailPrefix()}, errorMessage=${null}, label=${null})}"></div>
+    </div>
+    <div class="table-cell">
+        <button type="button" th:data-hx-get="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">Cancel</button>
+        <button type="submit">Save</button>
+    </div>
+</form>

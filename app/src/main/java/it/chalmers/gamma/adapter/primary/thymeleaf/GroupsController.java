@@ -24,10 +24,10 @@ public class GroupsController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("pages/show-groups");
+            mv.setViewName("groups");
         } else {
             mv.setViewName("index");
-            mv.addObject("page", "pages/show-groups");
+            mv.addObject("page", "pages/groups");
         }
 
         mv.addObject("groups", groups);

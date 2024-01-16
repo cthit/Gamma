@@ -15,12 +15,14 @@ body {
     color: white;
     color-scheme: dark;
     box-sizing: border-box;
+    min-width: 0;
 }
 
 a {
     padding: 0.5rem;
     border: solid var(--gamma-primary);
     cursor: pointer;
+    display: inline-block;
 }
 
 h1, h2 {

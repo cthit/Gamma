@@ -68,9 +68,13 @@ server:
       cookie:
         same-site: strict
 
+  http2:
+    enabled: true
+
 logging:
   level:
     root: ${ROOT_DEBUG_LEVEL:INFO}
+    web: trace
 
 application:
   base-uri: http://gamma:8081

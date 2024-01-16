@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import it.chalmers.gamma.app.user.UserFacade;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,10 +23,10 @@ public class SuperGroupTypeController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("pages/show-types");
+            mv.setViewName("types");
         } else {
             mv.setViewName("index");
-            mv.addObject("page", "pages/show-types");
+            mv.addObject("page", "pages/types");
         }
 
         mv.addObject("types", types);

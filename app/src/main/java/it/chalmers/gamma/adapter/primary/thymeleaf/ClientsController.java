@@ -23,10 +23,10 @@ public class ClientsController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("pages/show-clients");
+            mv.setViewName("clients");
         } else {
             mv.setViewName("index");
-            mv.addObject("page", "pages/show-clients");
+            mv.addObject("page", "pages/clients");
         }
         mv.addObject("clients", clients);
 

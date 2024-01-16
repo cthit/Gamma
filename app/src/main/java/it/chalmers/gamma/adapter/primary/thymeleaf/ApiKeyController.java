@@ -23,10 +23,10 @@ public class ApiKeyController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("pages/show-api-keys");
+            mv.setViewName("api-keys");
         } else {
             mv.setViewName("index");
-            mv.addObject("page", "pages/show-api-keys");
+            mv.addObject("page", "pages/api-keys");
         }
 
         mv.addObject("apiKeys", apiKeys);

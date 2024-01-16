@@ -23,10 +23,10 @@ public class UsersController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("pages/show-users");
+            mv.setViewName("users");
         } else {
             mv.setViewName("index");
-            mv.addObject("page", "pages/show-users");
+            mv.addObject("page", "pages/users");
         }
 
         mv.addObject("users", users);

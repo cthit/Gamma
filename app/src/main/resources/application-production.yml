@@ -63,9 +63,13 @@ server:
     whitelabel:
       enabled: false
     path: /error
+
   servlet:
     session:
       timeout: ${SESSION_TIMEOUT:43200}
+
+  http2:
+    enabled: true
 
 logging:
   file:

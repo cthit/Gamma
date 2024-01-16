@@ -3,7 +3,7 @@
      <a href="/" >Back</a>
     <div>
         <form th:action="@{/allow-list}" th:method="put" >
-            <div th:replace="~{common/input :: textInput('cid', 'Cid', ${cidInputError})}"></div>
+            <div th:replace="~{common/input :: textInput(name='cid', label='Cid', errorMessage=${cidInputError}, value=${name})}"></div>
             <button type="submit">Active</button>
         </form>
     </div>
