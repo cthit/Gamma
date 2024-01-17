@@ -1,13 +1,11 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -108,5 +106,46 @@ public class PostsController {
             String emailPrefix,
             int version
     ) { }
+
+    @PostMapping("/posts")
+    public ModelAndView updateEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, CreatePost form) {
+        UUID postId = postFacade.create(new PostFacade.NewPost(
+                form.svName,
+                form.enName,
+                form.emailPrefix
+        ));
+
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("partial/created-post");
+        mv.addObject("post", new PostFacade.PostDTO(
+                postId,
+                0,
+                form.svName,
+                form.enName,
+                form.emailPrefix
+        ));
+
+        return mv;
+    }
+
+    public record CreatePost(
+            String svName,
+            String enName,
+            String emailPrefix
+    ) {
+
+    }
+
+    @DeleteMapping(value = "/posts/{id}", produces = MediaType.TEXT_HTML_VALUE)
+    public String deleteEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") UUID postId) {
+        try {
+            postFacade.delete(postId);
+        } catch (PostRepository.PostNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "common/empty";
+    }
 
 }

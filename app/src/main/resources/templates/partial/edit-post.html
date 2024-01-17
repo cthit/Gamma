@@ -1,8 +1,6 @@
 <form class="table-row" th:data-hx-post="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">
     <input type="hidden" name="_method" value="put" />
-    <input type="hidden"
-           th:name="${_csrf.parameterName}"
-           th:value="${_csrf.token}" />
+    <div th:replace="~{common/form-csrf}"></div>
     <input type="hidden" name="version" th:value="${post.version()}" />
     <div class="table-cell">
         <div th:replace="~{common/input :: textInput(name='svName', value=${post.svName()}, errorMessage=${null}, label=${null})}"></div>

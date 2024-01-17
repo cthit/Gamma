@@ -32,15 +32,19 @@ public class PostFacade extends Facade {
         this.groupRepository = groupRepository;
     }
 
-    public void create(NewPost newPost) {
+    public UUID create(NewPost newPost) {
+        PostId postId = PostId.generate();
+
         this.postRepository.save(
                 new Post(
-                        PostId.generate(),
+                        postId,
                         0,
                         new Text(newPost.svText, newPost.enText),
                         new EmailPrefix(newPost.emailPrefix)
                 )
         );
+
+        return postId.value();
     }
 
     public void update(UpdatePost updatePost) throws PostRepository.PostNotFoundException {
