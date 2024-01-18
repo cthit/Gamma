@@ -1,9 +1,53 @@
+<style>
+    main {
+        margin-left: auto;
+        margin-right: auto;
+        width: max-content;
+    }
+
+    form {
+        display: contents;
+    }
+
+    li {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    button {
+        height: fit-content;
+    }
+
+    .htmx-swapping {
+        opacity: 0;
+        transition: opacity 1s ease-out;
+    }
+</style>
 <header th:replace="~{common/header}"></header>
 <main>
      <a href="/" >Back</a>
-    <ul th:each="type : ${types}">
-        <li>
-            <p th:text="${type}"></p>
-        </li>
+    <ul>
+        <th:block th:each="type : ${types}" th:with="swap=${null}">
+            <li th:fragment="type-item(swap)" th:attr="data-hx-swap-oob=${swap != null} ? ${swap} : null">
+                <p th:text="${type}"></p>
+                <form th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest li" data-hx-swap="outerHTML swap:1s">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        </th:block>
     </ul>
+    <form th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
+        <div th:replace="~{common/form-csrf}"></div>
+        <div class="table-cell">
+            <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
+        </div>
+        <div class="table-cell">
+            <button type="submit">Save</button>
+        </div>
+    </form>
 </main>

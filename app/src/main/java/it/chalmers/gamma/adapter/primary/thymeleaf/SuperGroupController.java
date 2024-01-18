@@ -23,7 +23,7 @@ public class SuperGroupController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("super-groups");
+            mv.setViewName("pages/super-groups");
         } else {
             mv.setViewName("index");
             mv.addObject("page", "pages/super-groups");

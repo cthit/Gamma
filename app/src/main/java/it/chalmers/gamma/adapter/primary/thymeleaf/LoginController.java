@@ -52,6 +52,8 @@ public class LoginController {
             gammaRequestCache.removeRequest(request, response);
         }
 
+        response.addHeader("HX-Retarget", "body");
+
         return mv;
     }
 

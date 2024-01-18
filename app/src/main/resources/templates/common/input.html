@@ -19,6 +19,20 @@
     </span>
 </th:block>
 
+<th:block th:fragment="textInput2(field, label)"
+          th:assert="${field != null}">
+    <label th:if="${label != null}"
+           th:for="${field}"
+           th:text="${label}">
+    </label>
+    <input
+            type="text"
+            th:field="*{__${field}__}"
+    />
+    <span th:if="${#fields.hasErrors(field)}"
+          th:errors="*{__${field}__}"></span>
+</th:block>
+
 <th:block th:fragment="emailTextInput (name, label, errorMessage)">
     <label th:for="${name}" th:text="${label}"></label>
     <input type="email" th:id="${name}" th:name="${name}" th:aria-labelledby="${name}"/>

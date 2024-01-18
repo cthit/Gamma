@@ -24,7 +24,7 @@ public class GroupsController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("groups");
+            mv.setViewName("pages/groups");
         } else {
             mv.setViewName("index");
             mv.addObject("page", "pages/groups");

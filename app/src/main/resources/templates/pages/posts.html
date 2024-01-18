@@ -34,19 +34,18 @@
             <div class="table-cell">Email prefix</div>
         </div>
         <th:block th:each="post : ${posts}">
-            <div class="table-row" th:fragment="post-row" >
+            <div class="table-row" th:fragment="post-row">
                 <div class="table-cell" th:text="${post.svName()}"></div>
                 <div class="table-cell" th:text="${post.enName()}"></div>
                 <div class="table-cell" th:text="${post.emailPrefix()}"></div>
                 <div class="table-cell">
                     <button th:data-hx-get="@{/posts/{postId}/edit(postId=${post.id()})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">Edit</button>
-                    <form  th:data-hx-post="@{/posts/{postId}(postId=${post.id()})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML swap:1s">
+                    <form th:data-hx-post="@{/posts/{postId}(postId=${post.id()})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML swap:1s">
                         <div th:replace="~{common/form-csrf}"></div>
                         <input type="hidden" name="_method" value="delete" />
                         <button type="submit">Delete</button>
                     </form>
                 </div>
-
             </div>
         </th:block>
         <form th:fragment="create-post" class="table-row" th:data-hx-post="@{/posts}" data-hx-target="this" data-hx-swap="outerHTML">

@@ -23,7 +23,7 @@ public class ActivationCodesController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("activation-codes");
+            mv.setViewName("pages/activation-codes");
         } else {
             mv.setViewName("index");
             mv.addObject("page", "pages/activation-codes");

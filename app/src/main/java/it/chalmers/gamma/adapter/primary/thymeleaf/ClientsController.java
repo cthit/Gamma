@@ -23,7 +23,7 @@ public class ClientsController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("clients");
+            mv.setViewName("pages/clients");
         } else {
             mv.setViewName("index");
             mv.addObject("page", "pages/clients");
