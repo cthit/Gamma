@@ -15,7 +15,7 @@ import java.util.List;
 public class SuperGroupTypeRepositoryAdapter implements SuperGroupTypeRepository {
 
     private static final PersistenceErrorState typeIsUsed = new PersistenceErrorState(
-            "fkit_super_group_super_group_type_name_fkey",
+            "g_super_group_super_group_type_name_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
     private final SuperGroupTypeJpaRepository repository;

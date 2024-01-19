@@ -33,7 +33,7 @@
         <th:block th:each="type : ${types}" th:with="swap=${null}">
             <li th:fragment="type-item(swap)" th:attr="data-hx-swap-oob=${swap != null} ? ${swap} : null">
                 <p th:text="${type}"></p>
-                <form th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest li" data-hx-swap="outerHTML swap:1s">
+                <form th:id=|${type}-delete-form| th:fragment="delete-type" th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest li" data-hx-swap="outerHTML swap:1s">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
                     <button type="submit">Delete</button>

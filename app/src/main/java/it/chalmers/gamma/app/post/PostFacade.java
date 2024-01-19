@@ -35,6 +35,7 @@ public class PostFacade extends Facade {
     public UUID create(NewPost newPost) {
         PostId postId = PostId.generate();
 
+        //TODO: Post text should not be able to be empty
         this.postRepository.save(
                 new Post(
                         postId,

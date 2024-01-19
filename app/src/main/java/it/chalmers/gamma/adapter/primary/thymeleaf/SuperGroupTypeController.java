@@ -4,6 +4,7 @@ import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -58,7 +59,6 @@ public class SuperGroupTypeController {
                             "Type already exist"
                     )
             );
-            bindingResult.addError(new ObjectError("form", "OH NO"));
         }
 
         ModelAndView mv = new ModelAndView();
@@ -66,7 +66,6 @@ public class SuperGroupTypeController {
             mv.setViewName("pages/types :: create-type");
             mv.addObject("form", form);
             mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
-            bindingResult.getAllErrors().forEach(System.out::println);
         } else {
             mv.setViewName("partial/created-type");
             mv.addObject("type", form.type);
@@ -79,16 +78,38 @@ public class SuperGroupTypeController {
     public record CreateType(String type) {}
 
     @DeleteMapping("/types/{id}")
-    public String deleteEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") String type) {
+    public ModelAndView deleteEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+                                       @PathVariable("id") String type,
+                                       final DeleteSuperGroupType form,
+                                       final BindingResult bindingResult,
+                                       HttpServletResponse response) {
         try {
             this.superGroupFacade.removeType(type);
-        } catch (SuperGroupTypeRepository.SuperGroupTypeNotFoundException |
-                 SuperGroupTypeRepository.SuperGroupTypeHasUsagesException e) {
-            throw new RuntimeException(e);
+        } catch (SuperGroupTypeRepository.SuperGroupTypeNotFoundException e) {
+            return new ModelAndView("common/empty");
+        } catch (SuperGroupTypeRepository.SuperGroupTypeHasUsagesException e) {
+            bindingResult.addError(
+                    new ObjectError(
+                            "global",
+                            "Type has usages"
+                    )
+            );
+
+            ModelAndView mv = new ModelAndView();
+
+            mv.setViewName("partial/delete-type-error");
+            mv.addObject("deleteForm", form);
+            mv.addObject(BindingResult.MODEL_KEY_PREFIX + "deleteForm", bindingResult);
+
+            response.addHeader("HX-Retarget", "#" + type + "-delete-form");
+            response.addHeader("HX-Reswap", "outerHTML");
+
+            return mv;
         }
 
-        return "common/empty";
+        return new ModelAndView("common/empty");
     }
 
+    public record DeleteSuperGroupType() { }
 
 }
