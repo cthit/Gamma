@@ -71,7 +71,7 @@ public class SuperGroupController {
     }
 
     @GetMapping("/super-groups/{id}/edit")
-    public ModelAndView getSuperGroupEdit(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, @PathVariable("id") UUID id) {
+    public ModelAndView getSuperGroupEdit(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") UUID id) {
         Optional<SuperGroupFacade.SuperGroupDTO> superGroup = this.superGroupFacade.get(id);
 
         if (superGroup.isEmpty()) {
@@ -79,12 +79,7 @@ public class SuperGroupController {
         }
 
         ModelAndView mv = new ModelAndView();
-        if (htmxRequest) {
-            mv.setViewName("partial/edit-super-group");
-        } else {
-            mv.setViewName("index");
-            mv.addObject("page", "partial/super-group-edit");
-        }
+        mv.setViewName("partial/edit-super-group");
 
         SuperGroupFacade.SuperGroupDTO sg = superGroup.get();
 

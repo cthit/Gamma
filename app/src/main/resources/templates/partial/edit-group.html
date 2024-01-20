@@ -1,0 +1,11 @@
+<form th:object="${form}" th:data-hx-post="@{/groups/{groupId}(groupId=${groupId})}" data-hx-target="body" data-hx-swap="innerHTML">
+    <input type="hidden" name="version" th:value="${form.version}" />
+    <input type="hidden" name="_method" value="put" />
+    <div th:replace="~{common/form-csrf}"></div>
+    <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
+    <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+    <select name="superGroupId">
+        <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId()}"></option>
+    </select>
+    <button type="submit">Save</button>
+</form>

@@ -151,6 +151,12 @@ public class GroupFacade extends Facade {
         return this.groupRepository.getAll().stream().map(GroupDTO::new).toList();
     }
 
+    public Optional<GroupDTO> get(UUID id) {
+        accessGuard.requireEither(isSignedIn());
+
+        return this.groupRepository.get(new GroupId(id)).map(GroupDTO::new);
+    }
+
     public List<GroupWithMembersDTO> getAllForInfoApi() {
         accessGuard.require(isApi(ApiKeyType.INFO));
 
@@ -193,12 +199,13 @@ public class GroupFacade extends Facade {
         }
     }
 
-    public record GroupDTO(UUID id, String name, String prettyName, SuperGroupFacade.SuperGroupDTO superGroup) {
+    public record GroupDTO(UUID id, String name, String prettyName, SuperGroupFacade.SuperGroupDTO superGroup, int version) {
         public GroupDTO(Group group) {
             this(group.id().value(),
                     group.name().value(),
                     group.prettyName().value(),
-                    new SuperGroupFacade.SuperGroupDTO(group.superGroup())
+                    new SuperGroupFacade.SuperGroupDTO(group.superGroup()),
+                    group.version()
             );
         }
     }

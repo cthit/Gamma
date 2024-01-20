@@ -7,7 +7,7 @@
     <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
     <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
     <select name="type">
-        <option th:each="type : ${types}" th:text="${type}" th:selected="${type == form.type}"></option>
+        <option th:each="type : ${types}" th:text="${type}" th:value="${type}" th:selected="${type == form.type}"></option>
     </select>
     <button type="submit">Save</button>
 </form>

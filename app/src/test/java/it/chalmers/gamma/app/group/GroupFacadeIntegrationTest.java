@@ -128,7 +128,8 @@ public class GroupFacadeIntegrationTest {
                         groupDTO.id(),
                         newGroup.name(),
                         newGroup.prettyName(),
-                        new SuperGroupFacade.SuperGroupDTO(superGroup)
+                        new SuperGroupFacade.SuperGroupDTO(superGroup),
+                        1
                 ));
     }
 

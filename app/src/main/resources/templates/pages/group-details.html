@@ -1,0 +1,18 @@
+<style>
+    ul {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<header th:replace="~{common/header}"></header>
+<main>
+    <ul>
+        <li th:text="${group.name()}"></li>
+        <li th:text="${group.prettyName()}"></li>
+        <li th:text="${group.superGroup().prettyName()}"></li>
+    </ul>
+    <button th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
+            data-hx-target="main"
+            data-hx-swap="innerHTML">Edit
+    </button>
+</main>
