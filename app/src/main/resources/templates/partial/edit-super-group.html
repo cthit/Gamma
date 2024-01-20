@@ -1,0 +1,13 @@
+<form th:object="${form}" th:data-hx-post="@{/super-groups/{superGroupId}(superGroupId=${superGroupId})}" data-hx-target="body" data-hx-swap="innerHTML">
+    <input type="hidden" name="version" th:value="${form.version}" />
+    <input type="hidden" name="_method" value="put" />
+    <div th:replace="~{common/form-csrf}"></div>
+    <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
+    <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+    <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+    <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+    <select name="type">
+        <option th:each="type : ${types}" th:text="${type}" th:selected="${type == form.type}"></option>
+    </select>
+    <button type="submit">Save</button>
+</form>

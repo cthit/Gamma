@@ -1,0 +1,20 @@
+<style>
+    ul {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<header th:replace="~{common/header}"></header>
+<main>
+    <ul>
+        <li th:text="${superGroup.name()}"></li>
+        <li th:text="${superGroup.prettyName()}"></li>
+        <li th:text="${superGroup.svDescription()}"></li>
+        <li th:text="${superGroup.enDescription()}"></li>
+        <li th:text="${superGroup.type()}"></li>
+    </ul>
+    <button th:data-hx-get="@{/super-groups/{superGroupId}/edit(superGroupId=${superGroup.id()})}"
+            data-hx-target="main"
+            data-hx-swap="innerHTML">Edit
+    </button>
+</main>
