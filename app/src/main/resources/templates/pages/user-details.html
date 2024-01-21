@@ -1,0 +1,20 @@
+<style>
+    main {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<header th:replace="~{common/header}"></header>
+<main>
+    <a href="/users" >Back</a>
+    <ul>
+        <li th:text="${name}"></li>
+        <li th:text="${cid}"></li>
+        <li th:text="${acceptanceYear}"></li>
+    </ul>
+    <ul>
+        <li th:each="group : ${groups}">
+            <div th:text="${group}"></div>
+        </li>
+    </ul>
+</main>

@@ -5,7 +5,21 @@
     <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
     <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
     <select name="superGroupId">
-        <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId()}"></option>
+        <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId}"></option>
     </select>
+    <div th:each="member, memberStat : *{members}">
+        <div th:text="${users.get(member.userId)}"></div>
+        <input type="hidden" th:field="*{members[__${memberStat.index}__].userId}" />
+        <label>
+            Post
+            <select th:field="*{members[__${memberStat.index}__].postId}">
+                <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+            </select>
+        </label>
+        <label>
+            Unofficial post name
+            <input type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}" />
+        </label>
+    </div>
     <button type="submit">Save</button>
 </form>

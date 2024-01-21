@@ -11,6 +11,9 @@
         <li th:text="${group.prettyName()}"></li>
         <li th:text="${group.superGroup().prettyName()}"></li>
     </ul>
+    <ul>
+        <li th:each="member : ${members}" th:text="${member}"></li>
+    </ul>
     <button th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
             data-hx-target="main"
             data-hx-swap="innerHTML">Edit

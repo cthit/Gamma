@@ -1,0 +1,15 @@
+<style>
+    ul {
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+<header th:replace="~{common/header}"></header>
+<main>
+    <ul>
+        <li th:text="${apiKey.prettyName()}"></li>
+        <li th:text="${apiKey.svDescription()}"></li>
+        <li th:text="${apiKey.enDescription()}"></li>
+        <li th:text="${apiKey.keyType()}"></li>
+    </ul>
+</main>
