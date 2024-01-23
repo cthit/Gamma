@@ -1,0 +1,19 @@
+<div class="member-row">
+    <label>
+        User
+        <select class="userId">
+            <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"></option>
+        </select>
+    </label>
+    <label>
+        Post
+        <select class="postId">
+            <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+        </select>
+    </label>
+    <label>
+        Unofficial post name
+        <input class="unofficialPostName" type="text" value=""/>
+    </label>
+    <button _="on click remove closest .member-row then call reindexMembers()" type="button">Delete</button>
+</div>

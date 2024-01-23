@@ -1,25 +1,60 @@
+<script type="text/javascript">
+    function reindexMembers() {
+        console.log("hello");
+        update('.userId');
+        update('.postId');
+        update('.unofficialPostName');
+    }
+
+    function update(n) {
+        const userInputFields = document.querySelectorAll(n);
+        userInputFields.forEach(function(input, index) {
+            input.name = 'members[' + index + ']' + n;
+            input.id = 'members' + index + n;
+        });
+    }
+
+    document.body.addEventListener("htmx:afterSwap", reindexMembers);
+</script>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+</style>
+
 <form th:object="${form}" th:data-hx-post="@{/groups/{groupId}(groupId=${groupId})}" data-hx-target="body" data-hx-swap="innerHTML">
     <input type="hidden" name="version" th:value="${form.version}" />
     <input type="hidden" name="_method" value="put" />
     <div th:replace="~{common/form-csrf}"></div>
     <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
     <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
-    <select name="superGroupId">
-        <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId}"></option>
-    </select>
-    <div th:each="member, memberStat : *{members}">
+    <label>
+        Super group
+        <select name="superGroupId">
+            <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId}"></option>
+        </select>
+    </label>
+    <div class="member-row" th:each="member, memberStat : *{members}">
         <div th:text="${users.get(member.userId)}"></div>
-        <input type="hidden" th:field="*{members[__${memberStat.index}__].userId}" />
+        <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}" />
         <label>
             Post
-            <select th:field="*{members[__${memberStat.index}__].postId}">
+            <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
                 <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
             </select>
         </label>
         <label>
             Unofficial post name
-            <input type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}" />
+            <input class="unofficialPostName" type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}" />
         </label>
+        <button _="on click remove closest .member-row then call reindexMembers()" type="button">Delete</button>
     </div>
+    <button type="button" data-hx-get="/groups/new-member" data-hx-target="previous .member-row" data-hx-swap="afterend">Add member</button>
     <button type="submit">Save</button>
 </form>

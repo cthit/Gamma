@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -73,7 +70,7 @@ public class GroupsController {
         mv.addObject("group", group.get());
         mv.addObject("members", group.get().groupMembers()
                 .stream()
-                .map(groupMember -> groupMember.user().nick() + " - " + groupMember.post().enName() + " - " + groupMember.unofficialPostName())
+                .map(groupMember -> groupMember.user().nick() + " - " + groupMember.post().enName() + " - " + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""))
                 .toList()
         );
 
@@ -265,4 +262,32 @@ public class GroupsController {
 
         return this.getGroup(htmxRequest, id);
     }
+
+    @GetMapping("/groups/new-member")
+    public ModelAndView getNewMember(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+        List<UserFacade.UserDTO> users = this.userFacade.getAll();
+        List<PostFacade.PostDTO> posts = this.postFacade.getAll();
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("partial/add-member-to-group");
+
+        mv.addObject("posts", posts
+                .stream()
+                .collect(Collectors.toMap(
+                        PostFacade.PostDTO::id,
+                        PostFacade.PostDTO::enName
+                ))
+        );
+
+        mv.addObject("users", users
+                .stream()
+                .collect(Collectors.toMap(
+                        UserFacade.UserDTO::id,
+                        UserFacade.UserDTO::nick
+                ))
+        );
+
+        return mv;
+    }
+
 }

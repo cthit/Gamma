@@ -11,9 +11,11 @@
     <link rel="shortcut icon" type="image/svg" th:href="@{/img/itlogo.svg}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" type="text/css"/>
     <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.min.js}"></script>
+    <script th:src="@{/webjars/hyperscript.org/0.9.12/dist/_hyperscript.min.js}"></script>
     <script>
         htmx.config.selfRequestsOnly = true;
-        htmx.config.allowScriptTags = false;
+        //TODO: Enable CSP
+        htmx.config.allowScriptTags = true;
         htmx.config.historyCacheSize = 0;
         htmx.config.allowEval = false;
         htmx.config.useTemplateFragments = true;
