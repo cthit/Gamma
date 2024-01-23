@@ -1,0 +1,20 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <a href="/clients" >Back</a>
+
+    <ul>
+        <li th:text="${client.prettyName()}"></li>
+        <li th:text="${client.svDescription()}"></li>
+        <li th:text="${client.enDescription()}"></li>
+        <li th:text="${client.clientId()}"></li>
+        <li th:text="|Has api key: ${client.hasApiKey()}|"></li>
+        <li th:text="${client.webServerRedirectUrl()}"></li>
+        <li th:if="${client.restriction() != null}">
+            Super group restrictions
+            <ul>
+                <li th:each="restrictionSuperGroup : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName()}"></li>
+            </ul>
+        </li>
+    </ul>
+
+</main>

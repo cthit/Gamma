@@ -132,8 +132,8 @@ public class ClientFacade extends Facade {
         }
     }
 
-    public Optional<ClientDTO> get(String clientUid) {
-        return this.clientRepository.get(ClientUid.valueOf(clientUid)).map(ClientDTO::new);
+    public Optional<ClientDTO> get(UUID clientUid) {
+        return this.clientRepository.get(new ClientUid(clientUid)).map(ClientDTO::new);
     }
 
     public List<ClientDTO> getAll() {
