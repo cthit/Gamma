@@ -57,6 +57,7 @@ public class UsersController {
 
         String name = u.user().firstName() + " '" + u.user().nick() + "' " + u.user().lastName();
 
+        mv.addObject("userId", u.user().id());
         mv.addObject("name", name);
         mv.addObject("cid", u.user().cid());
         mv.addObject("acceptanceYear", u.user().acceptanceYear());

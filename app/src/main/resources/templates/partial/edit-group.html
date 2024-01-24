@@ -52,6 +52,6 @@
         </label>
         <button _="on click remove closest .member-row then call reindexMembers()" type="button">Delete</button>
     </div>
-    <button type="button" data-hx-get="/groups/new-member" data-hx-target="previous .member-row" data-hx-swap="afterend">Add member</button>
+    <button type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">Add member</button>
     <button type="submit">Save</button>
 </form>
