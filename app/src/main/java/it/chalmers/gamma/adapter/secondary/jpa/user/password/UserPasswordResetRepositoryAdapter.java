@@ -36,16 +36,18 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
             throw new UserNotFoundException();
         }
 
+
         UserEntity userEntity = maybeUserEntity.get();
         PasswordResetToken token = PasswordResetToken.generate();
 
-        this.userPasswordResetJpaRepository.save(
-                new UserPasswordResetEntity(
-                        userEntity.getId(),
-                        Instant.now(),
-                        token.value()
-                )
-        );
+        UserPasswordResetEntity userPasswordResetEntity = this.userPasswordResetJpaRepository.findByUserId(userEntity.getId())
+                .orElse(new UserPasswordResetEntity());
+
+        userPasswordResetEntity.userId = userEntity.getId();
+        userPasswordResetEntity.createdAt = Instant.now();
+        userPasswordResetEntity.token = token.value();
+
+        this.userPasswordResetJpaRepository.save(userPasswordResetEntity);
 
         return token;
     }

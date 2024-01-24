@@ -18,13 +18,13 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
 
     @Id
     @Column(name = "user_id", columnDefinition = "uuid")
-    private UUID userId;
+    protected UUID userId;
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    protected Instant createdAt;
 
     @Column(name = "token")
-    private String token;
+    protected String token;
 
     protected UserPasswordResetEntity() {
     }

@@ -74,7 +74,7 @@ server:
 logging:
   level:
     root: ${ROOT_DEBUG_LEVEL:INFO}
-    web: trace
+    web: INFO
 
 application:
   base-uri: http://gamma:8081

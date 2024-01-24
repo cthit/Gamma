@@ -66,6 +66,7 @@ public class RegisterAccountController {
 
     @PostMapping("/register")
     public ModelAndView registerAccount(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, CreateAccountForm form) {
+        //TODO: Move validation to facade
         if(!form.password.equals(form.confirmPassword)) {
 
         }
