@@ -1,0 +1,6 @@
+<div class="restriction-row">
+    <select class="restriction">
+        <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"></option>
+    </select>
+    <button _="on click remove closest .restriction-row then call reindexMembers()" type="button">Delete</button>
+</div>

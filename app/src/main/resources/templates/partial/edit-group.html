@@ -1,14 +1,13 @@
 <script type="text/javascript">
     function reindexMembers() {
-        console.log("hello");
         update('.userId');
         update('.postId');
         update('.unofficialPostName');
     }
 
     function update(n) {
-        const userInputFields = document.querySelectorAll(n);
-        userInputFields.forEach(function(input, index) {
+        const inputFields = document.querySelectorAll(n);
+        inputFields.forEach(function(input, index) {
             input.name = 'members[' + index + ']' + n;
             input.id = 'members' + index + n;
         });
@@ -28,10 +27,8 @@
     }
 </style>
 
-<form th:object="${form}" th:data-hx-post="@{/groups/{groupId}(groupId=${groupId})}" data-hx-target="body" data-hx-swap="innerHTML">
+<form th:object="${form}" th:action="@{/groups/{groupId}(groupId=${groupId})}" th:method="put">
     <input type="hidden" name="version" th:value="${form.version}" />
-    <input type="hidden" name="_method" value="put" />
-    <div th:replace="~{common/form-csrf}"></div>
     <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
     <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
     <label>

@@ -1,0 +1,42 @@
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>
+<script type="text/javascript">
+    function reindexMembers() {
+        update('.restriction');
+    }
+
+    function update(n) {
+        const inputFields = document.querySelectorAll(n);
+        inputFields.forEach(function(input, index) {
+            input.name = 'restrictions[' + index + ']';
+            input.id = 'restrictions' + index;
+        });
+    }
+
+    document.body.addEventListener("htmx:afterSwap", reindexMembers);
+</script>
+<header th:replace="~{common/header}"></header>
+<main>
+    <a href="/clients" >Back</a>
+    <form th:object="${form}" th:action="@{/clients}" th:method="post">
+        <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+        <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+        <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+        <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
+        <label>
+            Generate api key
+            <input type="checkbox" th:field="*{generateApiKey}"/>
+        </label>
+        <label>
+            Include email scope
+            <input type="checkbox" th:field="*{emailScope}"/>
+        </label>
+        <button data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin">Add restriction</button>
+        <button type="submit">Create</button>
+    </form>
+</main>
