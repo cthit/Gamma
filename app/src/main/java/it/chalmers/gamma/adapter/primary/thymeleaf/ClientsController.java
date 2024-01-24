@@ -210,7 +210,7 @@ public class ClientsController {
            )
         ));
 
-        mv.setViewName("pages/show-client-credentials");
+        mv.setViewName("pages/client-credentials");
         mv.addObject("clientUid", secrets.clientUid());
         mv.addObject("clientSecret", secrets.clientSecret());
         mv.addObject("apiKeyToken", secrets.apiKeyToken());

@@ -33,7 +33,9 @@ public class ApiKeyFacade extends Facade {
         return s;
     }
 
-    public String create(NewApiKey newApiKey) {
+    public record CreatedApiKey(UUID apiKeyId, String token) { }
+
+    public CreatedApiKey create(NewApiKey newApiKey) {
         this.accessGuard.require(isAdmin());
 
         ApiKeyType type = ApiKeyType.valueOf(newApiKey.keyType);
@@ -42,17 +44,21 @@ public class ApiKeyFacade extends Facade {
             throw new IllegalArgumentException("Cannot create api key with type client without creating a client at the same time");
         }
 
+        ApiKeyId apiKeyId = ApiKeyId.generate();
         ApiKeyToken apiKeyToken = ApiKeyToken.generate();
         apiKeyRepository.create(
                 new ApiKey(
-                        ApiKeyId.generate(),
+                        apiKeyId,
                         new PrettyName(newApiKey.prettyName),
                         new Text(newApiKey.svDescription, newApiKey.enDescription),
                         type,
                         apiKeyToken
                 )
         );
-        return apiKeyToken.value();
+        return new CreatedApiKey(
+                apiKeyId.value(),
+                apiKeyToken.value()
+        );
     }
 
     public void delete(UUID apiKeyId) throws ApiKeyNotFoundException {

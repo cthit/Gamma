@@ -72,7 +72,7 @@ class ApiKeyFacadeUnitTest {
                 "CLIENT"
         );
 
-        String apiKeyTokenRaw = apiKeyFacade.create(newApiKey);
+        String apiKeyTokenRaw = apiKeyFacade.create(newApiKey).token();
 
         ArgumentCaptor<ApiKey> captor = ArgumentCaptor.forClass(ApiKey.class);
         verify(apiKeyRepository).create(captor.capture());

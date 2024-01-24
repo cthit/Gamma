@@ -127,7 +127,7 @@ public class ApiKeyFacadeIntegrationTest {
                 "INFO"
         );
 
-        String token = apiKeyFacade.create(newApiKey);
+        String token = apiKeyFacade.create(newApiKey).token();
         List<ApiKeyFacade.ApiKeyDTO> apiKeys = apiKeyFacade.getAll();
         assertThat(apiKeys)
                 .hasSize(1);
