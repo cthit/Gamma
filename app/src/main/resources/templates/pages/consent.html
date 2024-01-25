@@ -1,0 +1,47 @@
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+<script type="text/javascript">
+    function authorize() {
+        const checkboxes = document.querySelectorAll("input[type='checkbox']");
+        for (const checkbox of checkboxes) {
+            checkbox.checked = true;
+        }
+
+        document.confirmationForm.submit();
+    }
+</script>
+<header th:replace="~{common/header}"></header>
+<main hx-boost="false">
+    <h2 class="text text--roboto center-vertical"
+        th:text="'Do you want to authorize ' + ${clientName} + ' to access:'"></h2>
+
+    <ul>
+        <li class="text text--roboto">First and last name</li>
+        <li class="text text--roboto" th:if="${hasEmailScope}">Email</li>
+        <li class="text text--roboto">Nickname</li>
+        <li class="text text--roboto">Preferred language</li>
+        <li class="text text--roboto">Cid</li>
+        <li class="text text--roboto">Authorities</li>
+        <li class="text text--roboto">Groups that you're apart of</li>
+    </ul>
+
+    <form th:action="@{/oauth2/authorize}" th:method="post" id="confirmationForm" name="confirmationForm">
+        <input name="client_id" th:value="${clientId}" type="hidden">
+        <input name="state" th:value="${state}" type="hidden">
+
+        <div style="display: none;" th:each="scope: ${scopes}">
+            <input class="form-check-input"
+                   name="scope"
+                   th:value="${scope}"
+                   type="checkbox">
+        </div>
+
+        <button type="submit">Deny</button>
+        <button type="button" onclick="authorize();">Authorize</button>
+    </form>
+</main>
+

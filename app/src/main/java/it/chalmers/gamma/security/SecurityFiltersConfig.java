@@ -76,7 +76,7 @@ public class SecurityFiltersConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                //Since only backends will call the /external
+                //Since only backends will call this
                 .csrf(csrf -> csrf.disable());
         return http.build();
     }
