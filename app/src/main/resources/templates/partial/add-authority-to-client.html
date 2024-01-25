@@ -1,0 +1,19 @@
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        gap: 1rem;
+    }
+
+    .padding {
+        margin-top: 1rem;
+    }
+</style>
+<form th:action="@{/clients/{id}/authority(id=${client.clientUid()})}" th:method="post" data-hx-target="this" data-hx-swap="delete">
+    <div class="padding"></div>
+    <div th:replace="common/input :: textInput(name='authority', label='Authority name', value=${null}, errorMessage=${null})"></div>
+    <button data-hx-get="/clients/authority/new-super-group" data-hx-target="closest form" data-hx-swap="afterbegin">Add super group authority</button>
+    <button data-hx-get="/clients/authority/new-user" data-hx-target="closest form" data-hx-swap="afterbegin">Add user authority</button>
+    <button type="submit">Save</button>
+</form>

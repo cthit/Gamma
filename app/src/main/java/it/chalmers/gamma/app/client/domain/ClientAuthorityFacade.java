@@ -90,25 +90,6 @@ public class ClientAuthorityFacade extends Facade {
     }
 
     @Transactional
-    public void addSuperGroupPostToClientAuthority(UUID clientUid, String name, UUID superGroupId, UUID postId)
-            throws ClientAuthorityNotFoundException, SuperGroupNotFoundException, PostNotFoundException {
-        this.accessGuard.require(isAdmin());
-
-        Authority authority = this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
-                .orElseThrow(ClientAuthorityNotFoundException::new);
-
-        List<Authority.SuperGroupPost> posts = new ArrayList<>(authority.posts());
-        posts.add(new Authority.SuperGroupPost(
-                this.superGroupRepository.get(new SuperGroupId(superGroupId))
-                        .orElseThrow(SuperGroupNotFoundException::new),
-                this.postRepository.get(new PostId(postId))
-                        .orElseThrow(PostNotFoundException::new)
-        ));
-
-        this.clientAuthorityRepository.save(authority.withPosts(posts));
-    }
-
-    @Transactional
     public void addUserToClientAuthority(UUID clientUid, String name, UUID userId) throws ClientAuthorityRepository.ClientAuthorityNotFoundRuntimeException, ClientAuthorityNotFoundException, UserNotFoundException {
         this.accessGuard.requireEither(
                 isAdmin(),
@@ -145,27 +126,6 @@ public class ClientAuthorityFacade extends Facade {
         this.clientAuthorityRepository.save(authority.withSuperGroups(newSuperGroups));
     }
 
-    @Transactional
-    public void removeSuperGroupPostFromClientAuthority(UUID clientUid, String name, UUID superGroupId, UUID postId)
-            throws ClientAuthorityNotFoundException {
-        this.accessGuard.require(isAdmin());
-
-        Authority authority = this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
-                .orElseThrow(ClientAuthorityNotFoundException::new);
-
-        List<Authority.SuperGroupPost> newPosts = new ArrayList<>(authority.posts());
-        for (int i = 0; i < newPosts.size(); i++) {
-            Authority.SuperGroupPost superGroupPost = newPosts.get(i);
-            if (superGroupPost.post().id().value().equals(postId)
-                    && superGroupPost.superGroup().id().value().equals(superGroupId)) {
-                newPosts.remove(i);
-                break;
-            }
-        }
-
-        this.clientAuthorityRepository.save(authority.withPosts(newPosts));
-    }
-
     public List<ClientAuthorityDTO> getAll(UUID clientUid) {
         this.accessGuard.require(isAdmin());
 
@@ -191,24 +151,18 @@ public class ClientAuthorityFacade extends Facade {
 
         this.clientAuthorityRepository.save(authority.withUsers(newUsers));
     }
-    public record SuperGroupPostDTO(SuperGroupFacade.SuperGroupDTO superGroup, PostFacade.PostDTO post) {
-        public SuperGroupPostDTO(Authority.SuperGroupPost post) {
-            this(new SuperGroupFacade.SuperGroupDTO(post.superGroup()), new PostFacade.PostDTO(post.post()));
-        }
-    }
+
     public record ClientAuthorityDTO(
             UUID clientUid,
             String authorityName,
             List<SuperGroupFacade.SuperGroupDTO> superGroups,
-            List<UserFacade.UserDTO> users,
-            List<SuperGroupPostDTO> posts) {
+            List<UserFacade.UserDTO> users) {
 
         public ClientAuthorityDTO(Authority authority) {
             this(authority.client().clientUid().value(),
                     authority.name().value(),
                     authority.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList(),
-                    authority.users().stream().map(UserFacade.UserDTO::new).toList(),
-                    authority.posts().stream().map(SuperGroupPostDTO::new).toList());
+                    authority.users().stream().map(UserFacade.UserDTO::new).toList());
         }
     }
 
@@ -219,9 +173,6 @@ public class ClientAuthorityFacade extends Facade {
     }
 
     public static class UserNotFoundException extends Exception {
-    }
-
-    public static class PostNotFoundException extends Exception {
     }
 
 }

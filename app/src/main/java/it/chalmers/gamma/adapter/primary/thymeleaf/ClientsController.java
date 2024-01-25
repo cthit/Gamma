@@ -1,7 +1,11 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
 import it.chalmers.gamma.app.client.ClientFacade;
+import it.chalmers.gamma.app.client.domain.ClientAuthorityFacade;
+import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import it.chalmers.gamma.app.user.UserFacade;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +24,18 @@ import java.util.stream.Collectors;
 public class ClientsController {
 
     private final ClientFacade clientFacade;
+    private final ClientAuthorityFacade clientAuthorityFacade;
     private final SuperGroupFacade superGroupFacade;
+    private final UserFacade userFacade;
 
     public ClientsController(ClientFacade clientFacade,
-                             SuperGroupFacade superGroupFacade) {
+                             ClientAuthorityFacade clientAuthorityFacade,
+                             SuperGroupFacade superGroupFacade,
+                             UserFacade userFacade) {
         this.clientFacade = clientFacade;
+        this.clientAuthorityFacade = clientAuthorityFacade;
         this.superGroupFacade = superGroupFacade;
+        this.userFacade = userFacade;
     }
 
     @GetMapping("/clients")
@@ -52,6 +62,8 @@ public class ClientsController {
             throw new RuntimeException();
         }
 
+        List<ClientAuthorityFacade.ClientAuthorityDTO> clientAuthorities = this.clientAuthorityFacade.getAll(clientUid);
+
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
             mv.setViewName("pages/client-details");
@@ -60,6 +72,7 @@ public class ClientsController {
             mv.addObject("page", "pages/client-details");
         }
         mv.addObject("client", client.get());
+        mv.addObject("clientAuthorities", clientAuthorities);
 
         return mv;
     }
@@ -177,7 +190,7 @@ public class ClientsController {
     public ModelAndView newRestrictionRow(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
         ModelAndView mv = new ModelAndView();
 
-        mv.setViewName("partial/new-restriction-to-client");
+        mv.setViewName("partial/add-restriction-to-client");
 
         mv.addObject("superGroups", this.superGroupFacade.getAll()
                 .stream()
@@ -216,6 +229,146 @@ public class ClientsController {
         mv.addObject("apiKeyToken", secrets.apiKeyToken());
 
         return mv;
+    }
+
+    @GetMapping("/clients/{id}/authorities")
+    public ModelAndView getEditAuthorities(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") UUID clientUid) {
+        Optional<ClientFacade.ClientDTO> client = this.clientFacade.get(clientUid);
+
+        if(client.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        List<ClientAuthorityFacade.ClientAuthorityDTO> clientAuthorities = clientAuthorityFacade.getAll(client.get().clientUid());
+
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("pages/client-details :: client-authorities");
+        mv.addObject("client", client.get());
+        mv.addObject("clientAuthorities", clientAuthorities);
+
+        return mv;
+    }
+
+    @GetMapping("/clients/{id}/new-authority")
+    public ModelAndView newAuthority(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+                                     @PathVariable("id") UUID clientUid) {
+        Optional<ClientFacade.ClientDTO> client = this.clientFacade.get(clientUid);
+
+        if(client.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("partial/add-authority-to-client");
+        mv.addObject("client", client.get());
+
+        return mv;
+    }
+
+    @GetMapping("/clients/authority/new-super-group")
+    public ModelAndView newSuperGroupAuthority(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("partial/add-super-group-authority-to-client");
+
+        mv.addObject("superGroups", this.superGroupFacade.getAll()
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                SuperGroupFacade.SuperGroupDTO::id,
+                                SuperGroupFacade.SuperGroupDTO::prettyName
+                        )
+                )
+        );
+
+        return mv;
+    }
+
+    @GetMapping("/clients/authority/new-user")
+    public ModelAndView newUserToAuthority(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("partial/add-user-authority-to-client");
+
+        mv.addObject("users", this.userFacade.getAll()
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                UserFacade.UserDTO::id,
+                                UserFacade.UserDTO::nick
+                        )
+                )
+        );
+
+        return mv;
+    }
+
+    public static final class CreateAuthority {
+        private List<UUID> superGroups;
+        private List<UUID> users;
+        private String authority;
+
+        public List<UUID> getSuperGroups() {
+            return superGroups;
+        }
+
+        public void setSuperGroups(List<UUID> superGroups) {
+            this.superGroups = superGroups;
+        }
+
+        public List<UUID> getUsers() {
+            return users;
+        }
+
+        public void setUsers(List<UUID> users) {
+            this.users = users;
+        }
+
+        public String getAuthority() {
+            return authority;
+        }
+
+        public void setAuthority(String authority) {
+            this.authority = authority;
+        }
+    }
+
+    @PostMapping("/clients/{id}/authority")
+    public ModelAndView createAuthority(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+                                        @PathVariable("id") UUID clientUid,
+                                        CreateAuthority form,
+                                        HttpServletResponse response) {
+
+        // TODO: Move this to one call in the facade.
+        try {
+            this.clientAuthorityFacade.create(clientUid, form.authority);
+        } catch (ClientAuthorityRepository.ClientAuthorityAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
+
+        form.superGroups.forEach(superGroup -> {
+            try {
+                this.clientAuthorityFacade.addSuperGroupToClientAuthority(clientUid, form.authority, superGroup);
+            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException |
+                     ClientAuthorityFacade.SuperGroupNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        form.users.forEach(user -> {
+            try {
+                this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
+            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException |
+                     ClientAuthorityFacade.UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+       response.addHeader("HX-Trigger", "authorities-updated");
+
+        return new ModelAndView("common/empty");
     }
 
 }
