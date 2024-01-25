@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.thymeleaf;
+package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.user.activation.ActivationCodeFacade;
 import org.springframework.stereotype.Controller;

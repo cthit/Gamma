@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.primary.thymeleaf;
+package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.post.PostFacade;

@@ -1,11 +1,8 @@
-package it.chalmers.gamma.adapter.primary.thymeleaf;
+package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.security.GammaRequestCache;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;

@@ -1,11 +1,8 @@
-package it.chalmers.gamma.adapter.primary.thymeleaf;
+package it.chalmers.gamma.adapter.primary.web;
 
-import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
-import java.util.UUID;
 
 @Controller
 public class SuperGroupTypeController {

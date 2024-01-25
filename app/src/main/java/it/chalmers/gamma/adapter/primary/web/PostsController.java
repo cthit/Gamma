@@ -1,7 +1,6 @@
-package it.chalmers.gamma.adapter.primary.thymeleaf;
+package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
