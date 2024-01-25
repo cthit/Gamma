@@ -14,12 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class LoginController {
 
-    private final GammaRequestCache gammaRequestCache;
-
-    public LoginController(GammaRequestCache gammaRequestCache) {
-        this.gammaRequestCache = gammaRequestCache;
-    }
-
     @GetMapping("/login")
     public ModelAndView getLogin(@RequestParam(value = "error", required = false) String error,
                                  @RequestParam(value = "logout", required = false) String logout,
@@ -48,9 +42,9 @@ public class LoginController {
          * Gamma frontend that they're redirected to that, and not redirected
          * to the consent page for example.
          */
-        if (!isAuthorizing) {
+        /*if (!isAuthorizing) {
             gammaRequestCache.removeRequest(request, response);
-        }
+        }*/
 
         response.addHeader("HX-Retarget", "body");
 

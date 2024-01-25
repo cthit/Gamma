@@ -27,7 +27,7 @@ public class CookieConfig {
     @Bean
     public CookieSerializer cookieSerializer() {
         DefaultCookieSerializer serializer = new DefaultCookieSerializer();
-        serializer.setSameSite("STRICT");
+        serializer.setSameSite("LAX");
         serializer.setUseSecureCookie(this.production);
         serializer.setCookieName("gamma");
         serializer.setDomainName(this.domain);

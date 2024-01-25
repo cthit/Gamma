@@ -39,7 +39,7 @@ public class ClientBootstrap {
 
         ClientUid clientUid = ClientUid.generate();
         ClientId clientId = new ClientId(defaultOAuth2Client.clientId());
-        ClientSecret clientSecret = new ClientSecret("{noop}" + defaultOAuth2Client.clientSecret());
+        ClientSecret clientSecret = new ClientSecret(defaultOAuth2Client.clientSecret());
         ApiKeyToken apiKeyToken = new ApiKeyToken(defaultOAuth2Client.apiKey());
         PrettyName prettyName = new PrettyName(defaultOAuth2Client.clientName());
         ClientRedirectUrl clientRedirectUrl = new ClientRedirectUrl(defaultOAuth2Client.redirectUrl());
@@ -70,7 +70,7 @@ public class ClientBootstrap {
 
         LOGGER.info("Client generated with information:");
         LOGGER.info("ClientId: " + clientId.value());
-        LOGGER.info("ClientSecret: " + clientSecret.value().substring("{noop}".length()));
+        LOGGER.info("ClientSecret: " + clientSecret.value());
         LOGGER.info("Client redirect uri: " + clientRedirectUrl.value());
         LOGGER.info("An API key was also generated with the client, it has the code: " + apiKeyToken.value());
         LOGGER.info("==========                  ==========");

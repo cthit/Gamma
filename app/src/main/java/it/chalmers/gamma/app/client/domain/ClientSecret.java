@@ -8,10 +8,6 @@ public record ClientSecret(String value) {
 
     public ClientSecret {
         Objects.requireNonNull(value);
-        //Should I not encode this?
-        if (!value.startsWith("{noop}")) {
-            throw new IllegalArgumentException();
-        }
     }
 
     public static ClientSecret generate() {

@@ -5,41 +5,61 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
+import it.chalmers.gamma.app.oauth2.UserInfoMapper;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.AnyRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-
-import java.util.stream.Stream;
-
-import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+import org.springframework.security.web.util.matcher.*;
 
 @Configuration
 public class SecurityFiltersConfig {
 
+    @Order(1)
+    @Bean
+    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, UserInfoMapper userInfoMapper) throws Exception {
+        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
+        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+                .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+                        .consentPage("/oauth2/consent")
+                )
+                .oidc(oidcConfigurer -> oidcConfigurer
+                        .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))
+                );
+
+        http
+                .exceptionHandling((exceptions) -> exceptions
+                        .defaultAuthenticationEntryPointFor(
+                                new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
+                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
+                        )
+                )
+                .oauth2ResourceServer((resourceServer) -> resourceServer
+                        .jwt(Customizer.withDefaults()));
+
+        return http.build();
+    }
+
+
+    @Order(2)
     @Bean
     SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,
                                                     ApiKeyRepository apiKeyRepository,
@@ -61,6 +81,7 @@ public class SecurityFiltersConfig {
         return http.build();
     }
 
+    @Order(3)
     @Bean
     SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -75,18 +96,16 @@ public class SecurityFiltersConfig {
         return http.build();
     }
 
-
     /**
-     * Sets up the security for the api that is used by the frontend.
+     * Sets up the security for web interface
      */
-    @Order(Ordered.LOWEST_PRECEDENCE)
+    @Order(4)
     @Bean
-    SecurityFilterChain internalSecurityFilterChain(HttpSecurity http,
-                                                    GammaRequestCache requestCache,
-                                                    PasswordEncoder passwordEncoder,
-                                                    UserJpaRepository userJpaRepository,
-                                                    SettingsRepository settingsRepository,
-                                                    AdminRepository adminRepository) throws Exception {
+    SecurityFilterChain webSecurityFilterChain(HttpSecurity http,
+                                               PasswordEncoder passwordEncoder,
+                                               UserJpaRepository userJpaRepository,
+                                               SettingsRepository settingsRepository,
+                                               AdminRepository adminRepository) throws Exception {
 
         TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
                 userJpaRepository,
@@ -130,5 +149,6 @@ public class SecurityFiltersConfig {
 
         return http.build();
     }
+
 
 }

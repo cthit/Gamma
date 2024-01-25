@@ -52,13 +52,4 @@ public class ClientApiV1Controller {
         return this.userFacade.getAllByClientAccepting();
     }
 
-    @GetMapping("/users/{id}")
-    public UserFacade.UserWithGroupsDTO getUser(@PathVariable("id") UUID id) {
-        return this.userFacade.get(id)
-                .orElseThrow(UserNotFoundResponse::new);
-    }
-
-    private static class UserNotFoundResponse extends NotFoundResponse {
-    }
-
 }

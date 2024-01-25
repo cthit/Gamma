@@ -7,7 +7,7 @@ import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class GammaRequestCache implements RequestCache {
 
     private final RequestCache requestCache;

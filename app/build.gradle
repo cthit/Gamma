@@ -55,7 +55,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-websocket:3.1.2",
 
             // OAuth2 Server
-            "org.springframework.security:spring-security-oauth2-authorization-server:1.1.1",
+            "org.springframework.security:spring-security-oauth2-authorization-server:1.2.1",
 
             // Spring session
             "org.springframework.session:spring-session-core:3.1.1",

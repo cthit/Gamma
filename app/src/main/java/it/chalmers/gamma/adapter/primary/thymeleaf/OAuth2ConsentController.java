@@ -39,7 +39,7 @@ public class OAuth2ConsentController {
         model.addAttribute("scopes", scope.split(" "));
 
 
-        return "consent";
+        return "old/consent";
     }
 
 }

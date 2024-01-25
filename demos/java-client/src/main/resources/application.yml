@@ -19,8 +19,8 @@ spring:
                         client-name: gamma
                 provider:
                     gamma:
-                        token-uri: http://gamma:8081/api/oauth2/token
-                        authorization-uri: http://gamma:8081/api/oauth2/authorize
-                        jwk-set-uri: http://gamma:8081/api/oauth2/jwks
-                        user-info-uri: http://gamma:8081/api/userinfo
+                        token-uri: http://gamma:8081/oauth2/token
+                        authorization-uri: http://gamma:8081/oauth2/authorize
+                        jwk-set-uri: http://gamma:8081/oauth2/jwks
+                        user-info-uri: http://gamma:8081/userinfo
                         user-name-attribute: name

@@ -19,6 +19,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,19 +47,22 @@ public class ClientRepositoryAdapter implements ClientRepository {
     private final UserApprovalJpaRepository userApprovalJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final SuperGroupJpaRepository superGroupJpaRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public ClientRepositoryAdapter(ClientJpaRepository clientJpaRepository,
                                    ClientApiKeyJpaRepository clientApiKeyJpaRepository,
                                    ClientEntityConverter clientEntityConverter,
                                    UserApprovalJpaRepository userApprovalJpaRepository,
                                    UserJpaRepository userJpaRepository,
-                                   SuperGroupJpaRepository superGroupJpaRepository) {
+                                   SuperGroupJpaRepository superGroupJpaRepository,
+                                   PasswordEncoder passwordEncoder) {
         this.clientJpaRepository = clientJpaRepository;
         this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
         this.clientEntityConverter = clientEntityConverter;
         this.userApprovalJpaRepository = userApprovalJpaRepository;
         this.userJpaRepository = userJpaRepository;
         this.superGroupJpaRepository = superGroupJpaRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -152,7 +156,7 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
         clientEntity.clientUid = client.clientUid().value();
         clientEntity.clientId = client.clientId().value();
-        clientEntity.clientSecret = client.clientSecret().value();
+        clientEntity.clientSecret = this.passwordEncoder.encode(client.clientSecret().value());
         clientEntity.prettyName = client.prettyName().value();
         clientEntity.webServerRedirectUrl = client.clientRedirectUrl().value();
 
