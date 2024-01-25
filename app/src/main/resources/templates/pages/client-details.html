@@ -55,4 +55,8 @@
         </div>
         <button th:data-hx-get="@{/clients/{id}/new-authority(id=${client.clientUid()})}" data-hx-target="this" data-hx-swap="outerHTML">Add authority</button>
     </th:block>
+    <h2>User approvals</h2>
+    <ul>
+        <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
+    </ul>
 </main>

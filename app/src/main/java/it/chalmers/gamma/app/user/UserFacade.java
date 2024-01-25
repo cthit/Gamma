@@ -71,8 +71,6 @@ public class UserFacade extends Facade {
     public List<UserDTO> getAllByClientAccepting() {
         this.accessGuard.require(isClientApi());
 
-        Settings settings = settingsRepository.getSettings();
-
         if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiAuthentication) {
             Client client = apiAuthentication.getClient().orElseThrow();
             return clientApprovalsRepository.getAllByClientUid(client.clientUid())

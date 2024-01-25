@@ -1,7 +1,8 @@
 package it.chalmers.gamma.adapter.primary.thymeleaf;
 
+import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
-import it.chalmers.gamma.app.client.domain.ClientAuthorityFacade;
+import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
@@ -25,15 +26,18 @@ public class ClientsController {
 
     private final ClientFacade clientFacade;
     private final ClientAuthorityFacade clientAuthorityFacade;
+    private final ClientApprovalFacade clientApprovalFacade;
     private final SuperGroupFacade superGroupFacade;
     private final UserFacade userFacade;
 
     public ClientsController(ClientFacade clientFacade,
                              ClientAuthorityFacade clientAuthorityFacade,
+                             ClientApprovalFacade clientApprovalFacade,
                              SuperGroupFacade superGroupFacade,
                              UserFacade userFacade) {
         this.clientFacade = clientFacade;
         this.clientAuthorityFacade = clientAuthorityFacade;
+        this.clientApprovalFacade = clientApprovalFacade;
         this.superGroupFacade = superGroupFacade;
         this.userFacade = userFacade;
     }
@@ -63,6 +67,7 @@ public class ClientsController {
         }
 
         List<ClientAuthorityFacade.ClientAuthorityDTO> clientAuthorities = this.clientAuthorityFacade.getAll(clientUid);
+        List<UserFacade.UserDTO> userApprovals = this.clientApprovalFacade.getApprovalsForClient(clientUid);
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
@@ -73,6 +78,7 @@ public class ClientsController {
         }
         mv.addObject("client", client.get());
         mv.addObject("clientAuthorities", clientAuthorities);
+        mv.addObject("userApprovals", userApprovals);
 
         return mv;
     }
