@@ -73,11 +73,7 @@ server:
 
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:INFO}
-    org:
-      springframework:
-        security:
-          oauth2: TRACE
+    root: ${ROOT_DEBUG_LEVEL:TRACE}
 
 application:
   base-uri: http://gamma:8081

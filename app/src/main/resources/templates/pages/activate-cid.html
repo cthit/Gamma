@@ -2,7 +2,7 @@
 <main>
     <form th:action="@{/activate-cid}" th:method="post" >
         <p>Enter cid to start process of creating an account</p>
-        <div th:replace="common/input :: textInput(name='cid', value=${null}, errorMessage=${null}, label=${null})"></div>
+        <div th:replace="~{common/input :: textInput(name='cid', value=${null}, errorMessage=${null}, label=${null})}"></div>
         <button type="submit">Activate cid</button>
     </form>
     <a href="/register">I already have a code</a>
