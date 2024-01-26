@@ -36,7 +36,7 @@ services:
 
       COOKIE_DOMAIN: gamma
       IS_MOCKING_CLIENT: "true"
-      BASE_URI: "http://gamma:808"
+      BASE_URI: "http://gamma:8081"
     depends_on:
       - redis
       - db
