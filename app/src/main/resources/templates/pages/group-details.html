@@ -18,8 +18,32 @@
 <header th:replace="~{common/header}"></header>
 <main>
     <a href="/groups">Back</a>
-    <img th:src="@{/images/group/banner/{id}(id=${group.id()})}" alt="Group banner" />
-    <img th:src="@{/images/group/avatar/{id}(id=${group.id()})}" alt="Group avatar" />
+    <th:block th:with="groupId=${group.id()}">
+        <div th:fragment="group-avatar">
+            <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+            <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
+                  enctype="multipart/form-data"
+                  data-hx-target="closest div"
+                  data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <input type="hidden" name="_method" value="put" />
+                <input type='file' name='file'>
+                <button>Upload avatar</button>
+            </form>
+        </div>
+        <div th:fragment="group-banner">
+            <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+            <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
+                  enctype="multipart/form-data"
+                  data-hx-target="closest div"
+                  data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <input type="hidden" name="_method" value="put" />
+                <input type='file' name='file'>
+                <button>Upload banner</button>
+            </form>
+        </div>
+    </th:block>
     <ul>
         <li th:text="${group.name()}"></li>
         <li th:text="${group.prettyName()}"></li>
@@ -28,6 +52,7 @@
     <ul>
         <li th:each="member : ${members}" th:text="${member}"></li>
     </ul>
+
     <button th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
             data-hx-target="main"
             data-hx-swap="innerHTML">Edit

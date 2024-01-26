@@ -73,6 +73,7 @@ public class GroupsController {
                 .map(groupMember -> groupMember.user().nick() + " - " + groupMember.post().enName() + " - " + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""))
                 .toList()
         );
+        mv.addObject("random", Math.random());
 
         return mv;
     }
