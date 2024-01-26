@@ -33,12 +33,10 @@ services:
       GOTIFY_URL: http://gotify:8080/mail
 
       SERVER_PORT: 8081
-      SUCCESSFUL_LOGIN: http://localhost:8080
-      CORS_ALLOWED_ORIGIN: http://localhost:8080
-      BACKEND_URI: http://localhost:8080/api/
-      PRODUCTION: "false"
-      COOKIE_DOMAIN: localhost
+
+      COOKIE_DOMAIN: gamma
       IS_MOCKING_CLIENT: "true"
+      BASE_URI: "http://gamma:808"
     depends_on:
       - redis
       - db
