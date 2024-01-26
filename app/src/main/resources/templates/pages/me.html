@@ -1,0 +1,30 @@
+<style>
+    main {
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+        gap: 1rem;
+    }
+</style>
+<header th:replace="~{common/header}"></header>
+<main>
+    <a href="/" >Back</a>
+    <a href="/me/edit">Edit</a>
+    <img th:src="|/images/user/avatar/${me.id()}|" alt="Me avatar" />
+    <ul>
+        <li th:text="${me.firstName()}"></li>
+        <li th:text="${me.lastName()}"></li>
+        <li th:text="${me.nick()}"></li>
+        <li th:text="${me.email()}"></li>
+        <li th:text="${me.acceptanceYear()}"></li>
+        <li th:text="${me.cid()}"></li>
+        <li th:text="${me.language()}"></li>
+        <li th:text="|isAdmin? ${me.isAdmin()}|"></li>
+    </ul>
+    <h2>
+        My groups
+    </h2>
+    <ul>
+        <li th:each="group : ${me.groups()}" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></li>
+    </ul>
+</main>
