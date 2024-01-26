@@ -36,6 +36,7 @@ jobs:
           ./gradlew bootImageBuild
           docker tag my-app:1.0.0-SNAPSHOT ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
+        working-directory: ./app
 
       - name: Cleanup Gradle Cache
 
