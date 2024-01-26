@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class ThymeleafAdvice {
 
-    // adds a global value to every model
     @ModelAttribute("isAdmin")
     public boolean isAdmin() {
         if(AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthenticated) {
@@ -19,5 +18,6 @@ public class ThymeleafAdvice {
             return false;
         }
     }
+
 }
 

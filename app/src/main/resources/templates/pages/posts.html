@@ -48,7 +48,7 @@
                 </div>
             </div>
         </th:block>
-        <form th:fragment="create-post" class="table-row" th:data-hx-post="@{/posts}" data-hx-target="this" data-hx-swap="outerHTML">
+        <form th:if="${isAdmin}" th:fragment="create-post" class="table-row" th:data-hx-post="@{/posts}" data-hx-target="this" data-hx-swap="outerHTML">
             <div th:replace="~{common/form-csrf}"></div>
             <div class="table-cell">
                 <div th:replace="~{common/input :: textInput(name='svName', value=${null}, errorMessage=${null}, label='Swedish name')}"></div>

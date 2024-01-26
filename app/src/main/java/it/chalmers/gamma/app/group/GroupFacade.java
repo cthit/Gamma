@@ -55,7 +55,7 @@ public class GroupFacade extends Facade {
     }
 
     @Transactional
-    public void create(NewGroup newGroup) throws GroupAlreadyExistsException {
+    public UUID create(NewGroup newGroup) throws GroupAlreadyExistsException {
         accessGuard.require(isAdmin());
 
         Group group = new Group(
@@ -75,6 +75,8 @@ public class GroupFacade extends Facade {
         } catch (GroupRepository.GroupNameAlreadyExistsException e) {
             throw new GroupAlreadyExistsException();
         }
+
+        return group.id().value();
     }
 
     @Transactional

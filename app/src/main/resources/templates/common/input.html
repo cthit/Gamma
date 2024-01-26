@@ -58,3 +58,18 @@
     <span th:if="${#fields.hasErrors(field)}"
           th:errors="*{__${field}__}"></span>
 </th:block>
+
+<th:block th:fragment="emailInput2(field, label)"
+          th:assert="${field != null}">
+    <label th:if="${label != null}"
+           th:for="${field}"
+           th:text="${label}">
+    </label>
+    <input
+            type="email"
+            th:field="*{__${field}__}"
+    />
+    <span th:if="${#fields.hasErrors(field)}"
+          th:errors="*{__${field}__}"></span>
+</th:block>
+

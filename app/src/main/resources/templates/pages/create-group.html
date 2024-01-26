@@ -1,0 +1,36 @@
+<script type="text/javascript">
+    function reindexMembers() {
+        update('.userId');
+        update('.postId');
+        update('.unofficialPostName');
+    }
+
+    function update(n) {
+        const inputFields = document.querySelectorAll(n);
+        inputFields.forEach(function(input, index) {
+            input.name = 'members[' + index + ']' + n;
+            input.id = 'members' + index + n;
+        });
+    }
+
+    document.body.addEventListener("htmx:afterSwap", reindexMembers);
+</script>
+
+<style>
+    form {
+        margin-left: auto;
+        margin-right: auto;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        width: fit-content;
+    }
+</style>
+<header th:replace="~{common/header}"></header>
+<main>
+    <form th:object="${form}" th:action="@{/groups}" th:method="post">
+        <div th:replace="~{partial/edit-group :: inner-form}"></div>
+    </form>
+</main>

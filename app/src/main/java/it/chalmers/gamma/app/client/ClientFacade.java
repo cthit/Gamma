@@ -31,20 +31,14 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 public class ClientFacade extends Facade {
 
     private final ClientRepository clientRepository;
-    private final UserRepository userRepository;
     private final SuperGroupRepository superGroupRepository;
-    private final PostRepository postRepository;
 
     public ClientFacade(AccessGuard accessGuard,
                         ClientRepository clientRepository,
-                        UserRepository userRepository,
-                        SuperGroupRepository superGroupRepository,
-                        PostRepository postRepository) {
+                        SuperGroupRepository superGroupRepository) {
         super(accessGuard);
         this.clientRepository = clientRepository;
-        this.userRepository = userRepository;
         this.superGroupRepository = superGroupRepository;
-        this.postRepository = postRepository;
     }
 
     /**

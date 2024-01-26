@@ -6,7 +6,8 @@
 </style>
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
+    <a href="/" >Back</a>
+    <a th:if="${isAdmin}" href="/groups/create">Create group</a>
     <table>
         <thead>
         <tr>

@@ -50,12 +50,14 @@ public class SuperGroupFacade extends Facade {
                 .toList();
     }
 
-    public void createSuperGroup(NewSuperGroup newSuperGroup) throws SuperGroupRepository.SuperGroupAlreadyExistsException {
+    public UUID createSuperGroup(NewSuperGroup newSuperGroup) throws SuperGroupRepository.SuperGroupAlreadyExistsException {
         accessGuard.require(isAdmin());
+
+        SuperGroupId superGroupId = SuperGroupId.generate();
 
         this.superGroupRepository.save(
                 new SuperGroup(
-                        SuperGroupId.generate(),
+                        superGroupId,
                         0,
                         new Name(newSuperGroup.name),
                         new PrettyName(newSuperGroup.prettyName),
@@ -66,6 +68,8 @@ public class SuperGroupFacade extends Facade {
                         )
                 )
         );
+
+        return superGroupId.value();
     }
 
     public void updateSuperGroup(UpdateSuperGroup updateSuperGroup) throws SuperGroupRepository.SuperGroupNotFoundException {
@@ -88,11 +92,11 @@ public class SuperGroupFacade extends Facade {
         this.superGroupRepository.save(newSuperGroup);
     }
 
-    public void deleteSuperGroup(SuperGroupId superGroupId) throws SuperGroupIsUsedException, SuperGroupNotFoundException {
+    public void deleteSuperGroup(UUID superGroupId) throws SuperGroupIsUsedException, SuperGroupNotFoundException {
         accessGuard.require(isAdmin());
 
         try {
-            this.superGroupRepository.delete(superGroupId);
+            this.superGroupRepository.delete(new SuperGroupId(superGroupId));
         } catch (SuperGroupRepository.SuperGroupNotFoundException e) {
             throw new SuperGroupNotFoundException();
         } catch (SuperGroupRepository.SuperGroupIsUsedException e) {

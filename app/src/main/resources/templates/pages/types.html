@@ -41,7 +41,7 @@
             </li>
         </th:block>
     </ul>
-    <form th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
+    <form th:if="${isAdmin}" th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
         <div th:replace="~{common/form-csrf}"></div>
         <div class="table-cell">
             <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>

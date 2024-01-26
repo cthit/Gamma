@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
@@ -51,13 +53,15 @@ public class UserCreationFacade extends Facade {
         }
     }
 
-    public void createUser(NewUser newUser) throws SomePropertyNotUniqueException {
+    public UUID createUser(NewUser newUser) throws SomePropertyNotUniqueException {
         this.accessGuard.require(isAdmin());
+
+        UserId userId = UserId.generate();
 
         try {
             this.userRepository.create(
                     new GammaUser(
-                            UserId.generate(),
+                            userId,
                             new Cid(newUser.cid),
                             new Nick(newUser.nick),
                             new FirstName(newUser.firstName),
@@ -72,6 +76,8 @@ public class UserCreationFacade extends Facade {
                             )),
                     new UnencryptedPassword(newUser.password)
             );
+
+            return userId.value();
         } catch (UserRepository.CidAlreadyInUseException | UserRepository.EmailAlreadyInUseException e) {
             throw new SomePropertyNotUniqueException();
         }

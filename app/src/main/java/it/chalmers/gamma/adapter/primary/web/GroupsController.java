@@ -6,10 +6,7 @@ import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.*;
@@ -79,22 +76,22 @@ public class GroupsController {
     }
 
     //TODO: Investigate if this can be a record...
-    public static final class UpdateGroupForm {
+    public static final class GroupForm {
         private int version;
         private String name;
         private String prettyName;
         private UUID superGroupId;
         private List<Member> members;
 
-        public UpdateGroupForm() {
+        public GroupForm() {
             this.members = new ArrayList<>();
         }
 
-        public UpdateGroupForm(int version,
-                               String name,
-                               String prettyName,
-                               UUID superGroupId,
-                               List<Member> members) {
+        public GroupForm(int version,
+                         String name,
+                         String prettyName,
+                         UUID superGroupId,
+                         List<Member> members) {
             this.version = version;
             this.name = name;
             this.prettyName = prettyName;
@@ -198,14 +195,14 @@ public class GroupsController {
         List<UserFacade.UserDTO> users = this.userFacade.getAll();
         List<PostFacade.PostDTO> posts = this.postFacade.getAll();
 
-        UpdateGroupForm form = new UpdateGroupForm(
+        GroupForm form = new GroupForm(
                 group.get().version(),
                 group.get().name(),
                 group.get().prettyName(),
                 group.get().superGroup().id(),
                 group.get().groupMembers()
                         .stream()
-                        .map(groupMember -> new UpdateGroupForm.Member(
+                        .map(groupMember -> new GroupForm.Member(
                                 groupMember.user().id(),
                                 groupMember.post().id(),
                                 groupMember.unofficialPostName()
@@ -238,7 +235,7 @@ public class GroupsController {
     @PutMapping("/groups/{id}")
     public ModelAndView updateGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
                                     @PathVariable("id") UUID id,
-                                    final UpdateGroupForm form,
+                                    final GroupForm form,
                                     final BindingResult bindingResult) {
         try {
             this.groupFacade.update(new GroupFacade.UpdateGroup(
@@ -289,6 +286,52 @@ public class GroupsController {
         );
 
         return mv;
+    }
+
+    @GetMapping("/groups/create")
+    public ModelAndView getCreateGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+        ModelAndView mv = new ModelAndView();
+
+        if(htmxRequest) {
+            mv.setViewName("pages/create-group");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/create-group");
+        }
+
+        GroupForm form = new GroupForm();
+
+        mv.addObject("form", form);
+        mv.addObject("superGroups", this.superGroupFacade.getAll());
+
+        return mv;
+    }
+
+    @PostMapping("/groups")
+    public ModelAndView createGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+                                    final GroupForm form,
+                                    final BindingResult bindingResult) {
+        //TODO: Do this in one facade call
+        try {
+            UUID groupId = this.groupFacade.create(new GroupFacade.NewGroup(
+                    form.name,
+                    form.prettyName,
+                    form.superGroupId
+            ));
+            this.groupFacade.setMembers(groupId, form.members
+                    .stream()
+                    .map(m -> new GroupFacade.ShallowMember(
+                            m.userId,
+                            m.postId,
+                            m.unofficialPostName
+                    ))
+                    .toList()
+            );
+
+            return new ModelAndView("redirect:/groups/" + groupId);
+        } catch (GroupFacade.GroupAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

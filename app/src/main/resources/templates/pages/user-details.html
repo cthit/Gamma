@@ -10,6 +10,12 @@
         width: fit-content;
     }
 
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
     img {
         height: 100px;
         object-fit: contain;
@@ -20,11 +26,17 @@
 <main>
     <a href="/users" >Back</a>
     <img th:src="@{/images/user/avatar/{id}(id=${userId})}" alt="User avatar"/>
-    <ul>
-        <li th:text="${name}"></li>
-        <li th:text="${cid}"></li>
-        <li th:text="${acceptanceYear}"></li>
-    </ul>
+    <div th:fragment="userinfo" class="userinfo">
+        <ul>
+            <li th:text="${name}"></li>
+            <li th:text="${cid}"></li>
+            <li th:text="${acceptanceYear}"></li>
+            <li th:if="${isAdmin}" th:text="${email}"></li>
+            <li th:if="${isAdmin}" th:text="${locked}"></li>
+        </ul>
+        <button th:if="${isAdmin}" data-hx-target="closest .userinfo" th:data-hx-get="@{|/users/${userId}/edit|}" data-hx-swap="outerHTML">Edit user</button>
+    </div>
+
     <ul>
         <li th:each="group : ${groups}">
             <div th:text="${group}"></div>

@@ -1,0 +1,29 @@
+<form th:object="${form}" th:data-hx-post="@{|/users/${userId}|}">
+    <div th:replace="~{common/form-csrf}"></div>
+    <input type="hidden" name="_method" value="put" />
+    <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
+    <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
+    <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
+    <div th:replace="~{common/input :: emailInput2('email', 'Email')}"></div>
+    <label>
+        Which year did you start at IT?
+        <select th:field="*{acceptanceYear}">
+            <option th:each="year : ${#numbers.sequence(T(java.time.Year).now().getValue(), 2001)}"
+                    th:value="${year}"
+                    th:text="${year}">
+            </option>
+        </select>
+    </label>
+    <label>
+        Language
+        <select th:field="*{language}">
+            <option value="SV">
+                Swedish
+            </option>
+            <option value="EN">
+                English
+            </option>
+        </select>
+    </label>
+    <button type="submit">Save</button>
+</form>
