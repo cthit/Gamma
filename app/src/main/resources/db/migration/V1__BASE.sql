@@ -160,7 +160,6 @@ CREATE TABLE g_settings
 (
     id                          UUID PRIMARY KEY,
     updated_at                  TIMESTAMP NOT NULL,
-    last_updated_user_agreement TIMESTAMP,
     version                     INT
 );
 

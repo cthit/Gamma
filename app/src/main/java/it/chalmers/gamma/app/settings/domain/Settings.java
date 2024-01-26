@@ -8,11 +8,8 @@ import java.util.List;
 import java.util.Objects;
 
 @RecordBuilder
-public record Settings(Instant lastUpdatedUserAgreement,
-                       //The group types that are going to be used by InfoApiController
-                       List<SuperGroupType> infoSuperGroupTypes) implements SettingsBuilder.With {
+public record Settings(List<SuperGroupType> infoSuperGroupTypes) implements SettingsBuilder.With {
     public Settings {
-        Objects.requireNonNull(lastUpdatedUserAgreement);
         Objects.requireNonNull(infoSuperGroupTypes);
     }
 }

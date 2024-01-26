@@ -136,18 +136,6 @@ public class MeFacade extends Facade {
         }
     }
 
-    public void acceptUserAgreement() {
-        GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
-        if (authenticated instanceof UserAuthentication userAuthentication
-                && !userAuthentication.get().extended().acceptedUserAgreement()) {
-            try {
-                this.userRepository.acceptUserAgreement(userAuthentication.get().id());
-            } catch (UserRepository.UserNotFoundException e) {
-                throw new IllegalStateException();
-            }
-        }
-    }
-
     public void setAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
         GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
         if (authenticated instanceof UserAuthentication userAuthentication) {
@@ -197,7 +185,6 @@ public class MeFacade extends Facade {
                         String email,
                         UUID id,
                         int acceptanceYear,
-                        boolean userAgreement,
                         List<MyMembership> groups,
                         String language,
                         boolean isAdmin) {
@@ -209,7 +196,6 @@ public class MeFacade extends Facade {
                     user.extended().email().value(),
                     user.id().value(),
                     user.acceptanceYear().value(),
-                    user.extended().acceptedUserAgreement(),
                     groups,
                     user.language().name(),
                     isAdmin

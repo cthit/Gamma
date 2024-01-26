@@ -433,7 +433,6 @@ public class GroupFacadeUnitTest {
     public void Given_ValidGroups_Expect_getAllForInfoApi() {
         given(settingsRepository.getSettings())
                 .willReturn(new Settings(
-                        Instant.now(),
                         List.of(committee, board)
                 ));
 

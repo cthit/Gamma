@@ -16,8 +16,6 @@ public class SettingsEntity extends MutableEntity<SettingsId> {
 
     @Column(name = "updated_at")
     protected Instant updatedAt;
-    @Column(name = "last_updated_user_agreement")
-    protected Instant lastUpdatedUserAgreement;
     @OneToMany(mappedBy = "id.settings", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<SettingsInfoSuperGroupTypeEntity> infoSuperGroupTypeEntities;
     @Id
@@ -36,7 +34,6 @@ public class SettingsEntity extends MutableEntity<SettingsId> {
 
     public Settings toDomain() {
         return new Settings(
-                this.lastUpdatedUserAgreement,
                 this.infoSuperGroupTypeEntities
                         .stream()
                         .map(SettingsInfoSuperGroupTypeEntity::getSuperGroupType)

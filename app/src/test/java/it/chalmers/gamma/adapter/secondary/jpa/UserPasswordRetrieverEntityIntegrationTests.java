@@ -53,7 +53,6 @@ public class UserPasswordRetrieverEntityIntegrationTests extends AbstractEntityI
     @Test
     public void Given_ValidUser_Expect_getPassword_To_Work() throws UserRepository.CidAlreadyInUseException, UserRepository.EmailAlreadyInUseException {
         settingsRepository.setSettings(new Settings(
-                Instant.now(),
                 Collections.emptyList()
         ));
 
@@ -70,7 +69,6 @@ public class UserPasswordRetrieverEntityIntegrationTests extends AbstractEntityI
                         new UserExtended(
                                 new Email("smurf@chalmers.it"),
                                 0,
-                                true,
                                 false,
                                 ImageUri.defaultUserAvatar()
                         )
@@ -87,7 +85,6 @@ public class UserPasswordRetrieverEntityIntegrationTests extends AbstractEntityI
     @Test
     public void Given_InvalidUser_Expect_getPassword_To_Throw() {
         settingsRepository.setSettings(new Settings(
-                Instant.now(),
                 Collections.emptyList()
         ));
 

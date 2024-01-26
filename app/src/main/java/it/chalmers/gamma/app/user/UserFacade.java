@@ -167,7 +167,6 @@ public class UserFacade extends Facade {
                                   int acceptanceYear,
                                   String email,
                                   boolean locked,
-                                  boolean userAgreement,
                                   String language) {
 
         public UserExtendedDTO(GammaUser user) {
@@ -180,7 +179,6 @@ public class UserFacade extends Facade {
                     user.acceptanceYear().value(),
                     user.extended().email().value(),
                     user.extended().locked(),
-                    user.extended().acceptedUserAgreement(),
                     user.language().name()
             );
         }

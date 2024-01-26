@@ -41,27 +41,6 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
     }
 
     @Test
-    public void Given_Settings_Expect_setSettings_To_Work() throws SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException {
-        superGroupTypeRepository.add(committee);
-        superGroupTypeRepository.add(board);
-
-        Settings settings = new Settings(
-                Instant.now(),
-                List.of(committee, board)
-        );
-
-        settingsRepositoryAdapter.setSettings(settings);
-
-        assertThat(settingsRepositoryAdapter.getSettings())
-                .isEqualTo(settings);
-
-        settingsRepositoryAdapter.setSettings(settings.withLastUpdatedUserAgreement(Instant.now()));
-
-        assertThat(settingsJpaRepository.findAll())
-                .hasSize(1);
-    }
-
-    @Test
     public void Given_NoSettings_Expect_getSettings_To_Throw() {
         assertThatExceptionOfType(IllegalStateException.class)
                 .isThrownBy(() -> settingsRepositoryAdapter.getSettings());
@@ -70,7 +49,6 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
     @Test
     public void Given_Settings_Expect_hasSettings_To_Work() {
         Settings settings = new Settings(
-                Instant.now(),
                 Collections.emptyList()
         );
 
@@ -83,14 +61,12 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
     @Test
     public void Given_InvalidSuperGroupTypes_Expect_setSettings_To_Throw() {
         Settings validSettings = new Settings(
-                Instant.now(),
                 Collections.emptyList()
         );
 
         this.settingsRepositoryAdapter.setSettings(validSettings);
 
         Settings settings = new Settings(
-                Instant.now(),
                 List.of(committee, board)
         );
 
@@ -104,7 +80,6 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
         superGroupTypeRepository.add(board);
 
         Settings settings = new Settings(
-                Instant.ofEpochSecond(1674809530),
                 List.of(committee)
         );
 
@@ -119,7 +94,6 @@ public class SettingsEntityIntegrationTests extends AbstractEntityIntegrationTes
                 .hasSize(1);
 
         assertThat(settingsRepositoryAdapter.getSettings()).isEqualTo(new Settings(
-                Instant.ofEpochSecond(1674809530),
                 List.of(board, committee)
         ));
     }

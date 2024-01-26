@@ -27,9 +27,8 @@ public class UserEntityConverter {
     public GammaUser toDomain(UserEntity userEntity) {
         Settings settings = this.settingsRepository.getSettings();
         UserId userId = new UserId(userEntity.id);
-        boolean acceptedUserAgreement = hasAcceptedLatestUserAgreement(userEntity.userAgreementAccepted, settings);
 
-        if (!userAccessGuard.haveAccessToUser(userId, userEntity.locked, acceptedUserAgreement)) {
+        if (!userAccessGuard.haveAccessToUser(userId, userEntity.locked)) {
             return null;
         }
 
@@ -38,7 +37,6 @@ public class UserEntityConverter {
             extended = new UserExtended(
                     new Email(userEntity.email),
                     userEntity.getVersion(),
-                    acceptedUserAgreement,
                     userEntity.locked,
                     userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri)
             );
@@ -54,10 +52,6 @@ public class UserEntityConverter {
                 userEntity.language,
                 extended
         );
-    }
-
-    private boolean hasAcceptedLatestUserAgreement(Instant acceptedUserAgreement, Settings settings) {
-        return settings.lastUpdatedUserAgreement().compareTo(acceptedUserAgreement) < 0;
     }
 
 }

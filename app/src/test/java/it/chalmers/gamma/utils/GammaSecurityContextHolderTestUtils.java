@@ -36,7 +36,6 @@ public class GammaSecurityContextHolderTestUtils {
             new UserExtended(
                     new Email("smurf@chalmers.it"),
                     0,
-                    true,
                     false,
                     ImageUri.defaultUserAvatar()
             )

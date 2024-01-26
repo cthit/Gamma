@@ -123,13 +123,8 @@ public class UserRepositoryAdapter implements UserRepository {
 
         e.increaseVersion(extended.version());
 
-        //If you want to update when the user agreement has been updated, use acceptUserAgreement()
         if (e.userAgreementAccepted == null) {
-            if (d.extended().acceptedUserAgreement()) {
-                e.userAgreementAccepted = Instant.now();
-            } else {
-                e.userAgreementAccepted = Instant.ofEpochSecond(0);
-            }
+            e.userAgreementAccepted = Instant.now();
         }
 
         e.id = d.id().value();

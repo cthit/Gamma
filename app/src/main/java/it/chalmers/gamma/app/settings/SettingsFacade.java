@@ -23,17 +23,6 @@ public class SettingsFacade extends Facade {
         this.settingsRepository = settingsRepository;
     }
 
-    public void resetUserAgreement(String password) {
-        this.accessGuard.requireAll(
-                isAdmin(),
-                passwordCheck(password)
-        );
-
-        this.settingsRepository.setSettings(
-                settings -> settings.withLastUpdatedUserAgreement(Instant.now())
-        );
-    }
-
     @Transactional
     public void setInfoSuperGroupTypes(List<String> superGroupTypes) {
         this.accessGuard.require(isAdmin());

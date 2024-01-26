@@ -22,7 +22,6 @@ import java.util.*;
 public final class DomainUtils {
 
     public static final Settings defaultSettings = new Settings(
-            Instant.now().minus(1, ChronoUnit.DAYS),
             Collections.emptyList()
     );
     public static final SuperGroupType committee = new SuperGroupType("committee");
@@ -138,7 +137,6 @@ public final class DomainUtils {
                 new UserExtended(
                         new Email(cid + "@chalmers.it"),
                         0,
-                        true,
                         locked,
                         null
                 )
@@ -172,7 +170,7 @@ public final class DomainUtils {
         return group.withGroupMembers(
                 group.groupMembers()
                         .stream()
-                        .filter(groupMember -> !(groupMember.user().extended().locked() || !groupMember.user().extended().acceptedUserAgreement()))
+                        .filter(groupMember -> !(groupMember.user().extended().locked()))
                         .toList()
         );
     }

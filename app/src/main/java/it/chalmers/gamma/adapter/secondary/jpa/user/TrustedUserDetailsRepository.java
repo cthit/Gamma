@@ -32,7 +32,6 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
         UserEntity userEntity = this.userJpaRepository.findById(UUID.fromString(user.getUsername())).orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         Settings settings = this.settingsRepository.getSettings();
-        boolean acceptedUserAgreement = hasAcceptedLatestUserAgreement(userEntity.userAgreementAccepted, settings);
 
         return new GammaUser(
                 new UserId(UUID.fromString(user.getUsername())),
@@ -45,7 +44,6 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
                 new UserExtended(
                         new Email(userEntity.email),
                         userEntity.getVersion(),
-                        acceptedUserAgreement,
                         userEntity.locked,
                         userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri)
                 )
@@ -76,10 +74,6 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
         }
 
         return userEntity;
-    }
-
-    private boolean hasAcceptedLatestUserAgreement(Instant acceptedUserAgreement, Settings settings) {
-        return settings.lastUpdatedUserAgreement().compareTo(acceptedUserAgreement) < 0;
     }
 
 }

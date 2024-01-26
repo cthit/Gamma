@@ -62,7 +62,6 @@ public class SettingsRepositoryAdapter implements SettingsRepository {
                 .orElse(new SettingsEntity());
 
         settingsEntity.updatedAt = Instant.now();
-        settingsEntity.lastUpdatedUserAgreement = settings.lastUpdatedUserAgreement();
         settingsEntity.infoSuperGroupTypeEntities.clear();
         settingsEntity.infoSuperGroupTypeEntities.addAll(
                 settings.infoSuperGroupTypes()

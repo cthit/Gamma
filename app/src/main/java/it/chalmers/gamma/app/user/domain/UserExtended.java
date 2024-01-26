@@ -14,7 +14,6 @@ import it.chalmers.gamma.app.image.domain.ImageUri;
 @RecordBuilder
 public record UserExtended(Email email,
                            int version,
-                           boolean acceptedUserAgreement,
                            boolean locked,
                            ImageUri avatarUri) implements UserExtendedBuilder.With {
 

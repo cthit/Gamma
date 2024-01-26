@@ -68,7 +68,6 @@ public class UserCreationFacade extends Facade {
                                     new Email(newUser.email),
                                     0,
                                     false,
-                                    false,
                                     null
                             )),
                     new UnencryptedPassword(newUser.password)
@@ -102,7 +101,6 @@ public class UserCreationFacade extends Facade {
                                 new UserExtended(
                                         new Email(data.email),
                                         0,
-                                        false,
                                         false,
                                         null
                                 )

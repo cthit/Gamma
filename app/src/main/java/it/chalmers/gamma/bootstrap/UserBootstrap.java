@@ -46,7 +46,6 @@ public class UserBootstrap {
                                 new UserExtended(
                                         new Email(mockUser.cid() + "@student.chalmers.it"),
                                         0,
-                                        true,
                                         false,
                                         null
                                 )

@@ -25,7 +25,6 @@ public class EnsureSettingsBootstrap {
             LOGGER.info("========== ENSURE APP SETTINGS BOOTSTRAP ==========");
 
             Settings settings = new Settings(
-                    Instant.now(),
                     Collections.emptyList()
             );
             this.settingsRepository.setSettings(settings);

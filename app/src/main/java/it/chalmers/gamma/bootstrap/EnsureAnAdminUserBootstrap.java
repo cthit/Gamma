@@ -81,7 +81,6 @@ public class EnsureAnAdminUserBootstrap {
                 new UserExtended(
                         new Email(name + "@chalmers.it"),
                         0,
-                        true,
                         false,
                         null
                 )

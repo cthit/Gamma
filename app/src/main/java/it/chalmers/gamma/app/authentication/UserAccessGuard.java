@@ -53,7 +53,7 @@ public class UserAccessGuard {
         return false;
     }
 
-    public boolean haveAccessToUser(UserId userId, boolean userLocked, boolean acceptedUserAgreement) {
+    public boolean haveAccessToUser(UserId userId, boolean userLocked) {
         if (SecurityContextHolder.getContext().getAuthentication() == null
                 || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
             return false;
@@ -65,10 +65,10 @@ public class UserAccessGuard {
         }
 
         /*
-         * If the user is locked or has not accepted the latest user agreement then nothing should be returned
+         * If the user is locked then nothing should be returned
          * unless if and only if the signed-in user is an admin.
          */
-        if (userLocked || !acceptedUserAgreement) {
+        if (userLocked) {
             return isAdmin();
         }
 
