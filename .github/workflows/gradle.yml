@@ -33,7 +33,7 @@ jobs:
 
       - name: Docker Build-Tag-Push my-app
         run: |
-          ./gradlew bootImageBuild
+          ./gradlew bootBuildImage
           docker tag my-app:1.0.0-SNAPSHOT ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:latest
         working-directory: ./app
