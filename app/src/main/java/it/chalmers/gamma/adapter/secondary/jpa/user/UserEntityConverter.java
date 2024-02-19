@@ -9,8 +9,6 @@ import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-
 @Service
 public class UserEntityConverter {
 

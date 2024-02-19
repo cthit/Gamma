@@ -3,7 +3,6 @@ package it.chalmers.gamma.app.client.domain.authority;
 
 import io.soabase.recordbuilder.core.RecordBuilder;
 import it.chalmers.gamma.app.client.domain.Client;
-import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 

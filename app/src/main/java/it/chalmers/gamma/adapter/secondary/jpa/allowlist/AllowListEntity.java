@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.allowlist;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.AbstractEntity;
-import it.chalmers.gamma.app.user.domain.Cid;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

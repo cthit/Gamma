@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 

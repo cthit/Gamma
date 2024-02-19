@@ -3,8 +3,6 @@ package it.chalmers.gamma.app.authentication;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.mockito.Mockito.mockStatic;
-
 
 @ExtendWith(SpringExtension.class)
 class AccessGuardTest {

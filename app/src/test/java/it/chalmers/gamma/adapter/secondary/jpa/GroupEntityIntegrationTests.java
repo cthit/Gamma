@@ -17,8 +17,6 @@ import it.chalmers.gamma.security.user.PasswordConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import static it.chalmers.gamma.utils.GammaSecurityContextHolderTestUtils.setAuthenticatedAsAdminUser;
-
 @ActiveProfiles("test")
 @Import({GroupRepositoryAdapter.class,
         GroupEntityConverter.class,

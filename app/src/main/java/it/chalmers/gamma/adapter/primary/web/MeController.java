@@ -1,15 +1,15 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
-import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.user.MeFacade;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.UUID;
 
 @Controller
 public class MeController {

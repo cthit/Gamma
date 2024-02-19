@@ -7,7 +7,6 @@ import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.app.user.passwordreset.domain.PasswordReset;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import org.slf4j.Logger;

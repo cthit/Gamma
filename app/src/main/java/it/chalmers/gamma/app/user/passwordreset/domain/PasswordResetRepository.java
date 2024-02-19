@@ -1,9 +1,7 @@
 package it.chalmers.gamma.app.user.passwordreset.domain;
 
 import it.chalmers.gamma.app.common.Email;
-import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserIdentifier;
 
 import java.util.Optional;
 

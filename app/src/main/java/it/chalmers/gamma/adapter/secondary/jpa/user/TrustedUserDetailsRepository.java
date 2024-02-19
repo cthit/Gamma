@@ -2,8 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.settings.domain.Settings;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -11,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.time.Instant;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;

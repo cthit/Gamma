@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
 import it.chalmers.gamma.adapter.secondary.jpa.allowlist.AllowListRepositoryAdapter;
-import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
+import it.chalmers.gamma.app.user.domain.Cid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

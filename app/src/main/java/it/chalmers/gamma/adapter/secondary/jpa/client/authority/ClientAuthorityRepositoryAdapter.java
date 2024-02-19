@@ -1,21 +1,16 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client.authority;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.group.MembershipJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
-import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -25,7 +20,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service

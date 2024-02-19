@@ -6,7 +6,6 @@ import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
-import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;

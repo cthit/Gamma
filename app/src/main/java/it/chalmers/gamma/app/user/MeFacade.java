@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.user;
 
 import it.chalmers.gamma.app.Facade;
-import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;

@@ -9,21 +9,17 @@ import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.image.domain.UserAvatarRepository;
-import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
-import it.chalmers.gamma.security.authentication.GammaAuthentication;
-import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 import java.util.UUID;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.*;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedInUserMemberOfGroup;
 
 @Service
 public class ImageFacade extends Facade {

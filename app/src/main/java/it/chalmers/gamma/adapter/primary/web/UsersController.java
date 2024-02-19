@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.user.domain.UserExtended;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.springframework.stereotype.Controller;

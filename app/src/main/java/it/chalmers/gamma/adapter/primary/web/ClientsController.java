@@ -1,12 +1,11 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
-import it.chalmers.gamma.app.client.ClientFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
+import it.chalmers.gamma.app.client.ClientFacade;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;

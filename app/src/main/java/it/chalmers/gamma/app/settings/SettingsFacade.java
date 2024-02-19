@@ -7,11 +7,9 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.List;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.passwordCheck;
 
 @Service
 public class SettingsFacade extends Facade {

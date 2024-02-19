@@ -7,9 +7,6 @@ import org.postgresql.util.ServerErrorMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION;
 import static it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState.Type.NOT_UNIQUE;
 

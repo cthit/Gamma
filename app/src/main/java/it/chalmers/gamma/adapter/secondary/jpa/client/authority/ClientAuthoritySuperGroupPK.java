@@ -2,10 +2,13 @@ package it.chalmers.gamma.adapter.secondary.jpa.client.authority;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
-import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class ClientAuthoritySuperGroupPK extends PKId<ClientAuthoritySuperGroupPK.AuthoritySuperGroupPKDTO> {

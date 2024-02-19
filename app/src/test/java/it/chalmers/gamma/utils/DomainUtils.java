@@ -12,8 +12,6 @@ import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.*;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**

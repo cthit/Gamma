@@ -2,8 +2,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.allowlist;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
-import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
+import it.chalmers.gamma.app.user.domain.Cid;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;

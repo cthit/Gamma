@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client.authority;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntityConverter;
-import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.app.client.domain.authority.Authority;

@@ -1,7 +1,6 @@
 package it.chalmers.gamma;
 
 
-import it.chalmers.gamma.adapter.secondary.redis.oauth2.AuthorizationRedisRepository;
 import it.chalmers.gamma.bootstrap.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
