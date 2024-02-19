@@ -1,0 +1,5 @@
+<div data-hx-swap-oob="beforebegin:#client-authorities-anchor">
+    <article th:replace="~{pages/client-details :: client-authority-article}"></article>
+</div>
+<article th:replace="~{partial/add-authority-to-client}"></article>
+<div th:replace="common/alert :: success('Client authority created')"></div>

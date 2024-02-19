@@ -1,13 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
-import it.chalmers.gamma.adapter.secondary.jpa.client.ClientApiKeyEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.ClientApiKeyJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.client.apikey.ClientApiKeyEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.client.apikey.ClientApiKeyJpaRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;

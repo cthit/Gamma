@@ -21,51 +21,28 @@
 </style>
 <main>
     <div>
-        <div>
-            <a th:href="@{/me}">Me</a>
-        </div>
-        <div>
-            <a th:href="@{/users}">Users</a>
-        </div>
-        <div>
-            <a th:href="@{/groups}">Groups</a>
-        </div>
-        <div>
-            <a th:href="@{/super-groups}">Super groups</a>
-        </div>
-        <div>
-            <a th:href="@{/types}">Types</a>
-        </div>
-        <div>
-            <a th:href="@{/posts}">Posts</a>
-        </div>
+        <a th:href="@{/me}">Me</a>
+        <a th:href="@{/me/accepted-clients}">Your accepted clients</a>
+        <a th:href="@{/users}">Users</a>
+        <a th:href="@{/groups}">Groups</a>
+        <a th:href="@{/super-groups}">Super groups</a>
+        <a th:href="@{/types}">Types</a>
+        <a th:href="@{/posts}">Posts</a>
+        <a th:href="@{/my-clients}">My clients</a>
     </div>
     <th:block th:if="${isAdmin}">
         <h3>
             Admin views
         </h3>
         <div>
-            <div>
-                <a th:href="@{/clients}">Clients</a>
-            </div>
-            <div>
-                <a th:href="@{/api-keys}">Api keys</a>
-            </div>
-            <div>
-                <a th:href="@{/activation-codes}">Activation codes</a>
-            </div>
-            <div>
-                <a th:href="@{/admins}">Admins</a>
-            </div>
-            <div>
-                <a th:href="@{/gdpr}">Gdpr trained</a>
-            </div>
-            <div>
-                <a th:href="@{/allow-list}">Allow lists</a>
-            </div>
-            <div>
-                <a th:href="@{/settings}">Settings</a>
-            </div>
+            <a th:href="@{/clients}">Official clients</a>
+            <a th:href="@{/user-clients}">User clients</a>
+            <a th:href="@{/api-keys}">Api keys</a>
+            <a th:href="@{/activation-codes}">Activation codes</a>
+            <a th:href="@{/admins}">Admins</a>
+            <a th:href="@{/gdpr}">Gdpr trained</a>
+            <a th:href="@{/allow-list}">Allow lists</a>
+            <a th:href="@{/settings}">Settings</a>
         </div>
     </th:block>
 </main>

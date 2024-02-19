@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.user.domain.UserId;
 
 import java.util.List;
@@ -15,6 +14,7 @@ public interface ClientRepository {
     void delete(ClientUid clientId) throws ClientNotFoundException;
 
     List<Client> getAll();
+    List<Client> getAllUserClients(UserId userId);
 
     Optional<Client> get(ClientUid clientUid);
 

@@ -11,43 +11,62 @@ import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestrictionId;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.post.domain.PostId;
-import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 @Service
 public class ClientFacade extends Facade {
 
     private final ClientRepository clientRepository;
     private final SuperGroupRepository superGroupRepository;
+    private final UserRepository userRepository;
 
     public ClientFacade(AccessGuard accessGuard,
                         ClientRepository clientRepository,
-                        SuperGroupRepository superGroupRepository) {
+                        SuperGroupRepository superGroupRepository,
+                        UserRepository userRepository) {
         super(accessGuard);
         this.clientRepository = clientRepository;
         this.superGroupRepository = superGroupRepository;
+        this.userRepository = userRepository;
     }
 
-    /**
-     * @return The client secret for the client
-     */
     @Transactional
-    public ClientAndApiKeySecrets create(NewClient newClient) {
+    public ClientAndApiKeySecrets createOfficialClient(NewClient newClient) {
         this.accessGuard.require(isAdmin());
 
+        return this.create(newClient, new ClientOwnerOfficial());
+    }
+
+    @Transactional
+    public ClientAndApiKeySecrets createUserClient(NewClient newClient) {
+        this.accessGuard.require(isSignedIn());
+
+        if(newClient.restrictions != null) {
+            throw new IllegalArgumentException("user client cannot have restrictions");
+        }
+
+        if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthentication) {
+            return this.create(newClient, new ClientUserOwner(userAuthentication.get().id()));
+        }
+
+        throw new IllegalStateException();
+    }
+
+    private ClientAndApiKeySecrets create(NewClient newClient, ClientOwner clientOwner) {
         ClientSecret clientSecret = ClientSecret.generate();
         ApiKey apiKey = null;
         ApiKeyToken apiKeyToken = null;
@@ -76,6 +95,18 @@ public class ClientFacade extends Facade {
         ClientUid clientUid = ClientUid.generate();
         ClientId clientId = ClientId.generate();
 
+        ClientRestriction restrictions = null;
+        if(newClient.restrictions != null) {
+            restrictions = new ClientRestriction(
+                    ClientRestrictionId.generate(),
+                    newClient.restrictions
+                            .superGroups
+                            .stream()
+                            .map(superGroupId -> this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow())
+                            .toList()
+            );
+        }
+
         Client client = new Client(
                 clientUid,
                 clientId,
@@ -88,15 +119,8 @@ public class ClientFacade extends Facade {
                 ),
                 scopes,
                 apiKey,
-                new ClientOwnerOfficial(),
-                new ClientRestriction(
-                        ClientRestrictionId.generate(),
-                        newClient.restrictions
-                                .superGroups
-                                .stream()
-                                .map(superGroupId -> this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow())
-                                .toList()
-                )
+                clientOwner,
+                restrictions
         );
 
         this.clientRepository.save(client);
@@ -109,25 +133,24 @@ public class ClientFacade extends Facade {
         );
     }
 
-    @Transactional
-    public ClientAndApiKeySecrets createDev(NewClient newClient) {
-        accessGuard.require(isSignedIn());
+    public void delete(UUID clientUid) throws ClientFacade.ClientNotFoundException {
+        ClientUid uid = new ClientUid(clientUid);
 
-        throw new UnsupportedOperationException();
-    }
-
-    public void delete(String clientUid) throws ClientFacade.ClientNotFoundException {
-        this.accessGuard.require(isAdmin());
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
 
         try {
-            this.clientRepository.delete(ClientUid.valueOf(clientUid));
+            this.clientRepository.delete(uid);
         } catch (ClientRepository.ClientNotFoundException e) {
             throw new ClientFacade.ClientNotFoundException();
         }
     }
 
     public Optional<ClientDTO> get(UUID clientUid) {
-        return this.clientRepository.get(new ClientUid(clientUid)).map(ClientDTO::new);
+        ClientUid uid = new ClientUid(clientUid);
+
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        return this.clientRepository.get(uid).map(this::createDTO);
     }
 
     public List<ClientDTO> getAll() {
@@ -135,14 +158,29 @@ public class ClientFacade extends Facade {
 
         return this.clientRepository.getAll()
                 .stream()
-                .map(ClientDTO::new)
+                .map(this::createDTO)
                 .toList();
     }
 
-    public String resetClientSecret(String clientUid) throws ClientNotFoundException {
-        this.accessGuard.require(isAdmin());
+    public List<ClientDTO> getAllMyClients(){
+        this.accessGuard.require(isSignedIn());
 
-        Client client = this.clientRepository.get(ClientUid.valueOf(clientUid))
+        if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthentication) {
+            return this.clientRepository.getAllUserClients(userAuthentication.get().id())
+                    .stream()
+                    .map(this::createDTO)
+                    .toList();
+        }
+
+        throw new IllegalStateException();
+    }
+
+    public String resetClientSecret(UUID clientUid) throws ClientNotFoundException {
+        ClientUid uid = new ClientUid(clientUid);
+
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        Client client = this.clientRepository.get(uid)
                 .orElseThrow(ClientNotFoundException::new);
         ClientSecret newSecret = ClientSecret.generate();
 
@@ -151,6 +189,18 @@ public class ClientFacade extends Facade {
         this.clientRepository.save(newClient);
 
         return newSecret.value();
+    }
+
+    public Optional<UserFacade.UserDTO> getClientOwner(String clientId) {
+        super.accessGuard.require(isSignedIn());
+
+        Client client = this.clientRepository.get(new ClientId(clientId)).orElseThrow();
+
+        if (client.owner() instanceof ClientUserOwner(UserId userId)) {
+            return this.userRepository.get(userId).map(UserFacade.UserDTO::new);
+        }
+
+        return Optional.empty();
     }
 
     public record NewClientRestrictions(List<UUID> superGroups) {}
@@ -172,6 +222,27 @@ public class ClientFacade extends Facade {
     ) {
     }
 
+    private ClientDTO createDTO(Client client) {
+        return new ClientDTO(client.clientUid().value(),
+                client.clientId().value(),
+                client.clientRedirectUrl().value(),
+                client.prettyName().value(),
+                client.description().sv().value(),
+                client.description().en().value(),
+                client.clientApiKey().isPresent(),
+                client.restrictions().map(clientRestriction -> new ClientDTO.ClientRestrictionDTO(
+                        clientRestriction.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList()
+                )).orElse(null),
+                convert(client.owner()));
+    }
+
+    private ClientDTO.Owner convert(ClientOwner clientOwner) {
+        return switch (clientOwner) {
+            case ClientOwnerOfficial() -> new ClientDTO.OfficialOwner();
+            case ClientUserOwner(UserId userId) -> new ClientDTO.UserOwner(new UserFacade.UserDTO(this.userRepository.get(userId).orElseThrow()));
+        };
+    }
+
     public record ClientDTO(UUID clientUid,
                             String clientId,
                             String webServerRedirectUrl,
@@ -179,23 +250,17 @@ public class ClientFacade extends Facade {
                             String svDescription,
                             String enDescription,
                             boolean hasApiKey,
-                            ClientRestrictionDTO restriction) {
-
-        public ClientDTO(Client client) {
-            this(client.clientUid().value(),
-                    client.clientId().value(),
-                    client.clientRedirectUrl().value(),
-                    client.prettyName().value(),
-                    client.description().sv().value(),
-                    client.description().en().value(),
-                    client.clientApiKey().isPresent(),
-                    client.restrictions().map(clientRestriction -> new ClientRestrictionDTO(
-                            clientRestriction.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList()
-                    )).orElse(null)
-            );
-        }
+                            ClientRestrictionDTO restriction,
+                            Owner owner) {
 
         public record ClientRestrictionDTO(List<SuperGroupFacade.SuperGroupDTO> superGroups) { }
+
+        public sealed interface Owner permits OfficialOwner, UserOwner{ }
+
+        public record OfficialOwner() implements Owner { }
+
+        public record UserOwner(UserFacade.UserDTO user) implements Owner { }
+
     }
 
     public static class ClientNotFoundException extends Exception {

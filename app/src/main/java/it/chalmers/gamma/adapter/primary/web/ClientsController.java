@@ -9,10 +9,7 @@ import it.chalmers.gamma.app.user.UserFacade;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
@@ -48,12 +45,15 @@ public class ClientsController {
 
         ModelAndView mv = new ModelAndView();
         if(htmxRequest) {
-            mv.setViewName("pages/clients");
+            mv.setViewName("pages/official-clients");
         } else {
             mv.setViewName("index");
-            mv.addObject("page", "pages/clients");
+            mv.addObject("page", "pages/official-clients");
         }
-        mv.addObject("clients", clients);
+        mv.addObject("clients", clients
+                .stream()
+                .filter(client -> client.owner() instanceof ClientFacade.ClientDTO.OfficialOwner)
+                .toList());
 
         return mv;
     }
@@ -76,6 +76,7 @@ public class ClientsController {
             mv.setViewName("index");
             mv.addObject("page", "pages/client-details");
         }
+        mv.addObject("clientUid", client.get().clientUid());
         mv.addObject("client", client.get());
         mv.addObject("clientAuthorities", clientAuthorities);
         mv.addObject("userApprovals", userApprovals);
@@ -217,7 +218,7 @@ public class ClientsController {
                                      BindingResult bindingResult) {
         ModelAndView mv = new ModelAndView();
 
-        ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.create(new ClientFacade.NewClient(
+        ClientFacade.ClientAndApiKeySecrets secrets = this.clientFacade.createOfficialClient(new ClientFacade.NewClient(
            form.redirectUrl,
            form.prettyName,
            form.svDescription,
@@ -233,6 +234,7 @@ public class ClientsController {
         mv.addObject("clientUid", secrets.clientUid());
         mv.addObject("clientSecret", secrets.clientSecret());
         mv.addObject("apiKeyToken", secrets.apiKeyToken());
+        mv.addObject("name", form.prettyName);
 
         return mv;
     }
@@ -344,8 +346,7 @@ public class ClientsController {
     @PostMapping("/clients/{id}/authority")
     public ModelAndView createAuthority(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
                                         @PathVariable("id") UUID clientUid,
-                                        CreateAuthority form,
-                                        HttpServletResponse response) {
+                                        CreateAuthority form) {
 
         // TODO: Move this to one call in the facade.
         try {
@@ -354,27 +355,59 @@ public class ClientsController {
             throw new RuntimeException(e);
         }
 
-        form.superGroups.forEach(superGroup -> {
-            try {
-                this.clientAuthorityFacade.addSuperGroupToClientAuthority(clientUid, form.authority, superGroup);
-            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException |
-                     ClientAuthorityFacade.SuperGroupNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        List<SuperGroupFacade.SuperGroupDTO> superGroups = new ArrayList<>();
+        List<UserFacade.UserDTO> users = new ArrayList<>();
 
-        form.users.forEach(user -> {
-            try {
-                this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
-            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException |
-                     ClientAuthorityFacade.UserNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        if(form.superGroups != null) {
+            form.superGroups.forEach(superGroup -> {
+                try {
+                    this.clientAuthorityFacade.addSuperGroupToClientAuthority(clientUid, form.authority, superGroup);
+                } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException |
+                         ClientAuthorityFacade.SuperGroupNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
 
-       response.addHeader("HX-Trigger", "authorities-updated");
+                superGroups.add(this.superGroupFacade.get(superGroup).orElseThrow());
+            });
+        }
 
-        return new ModelAndView("common/empty");
+        if(form.users != null) {
+            form.users.forEach(user -> {
+                try {
+                    this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
+                } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException |
+                         ClientAuthorityFacade.UserNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+
+                users.add(this.userFacade.get(user).orElseThrow().user());
+            });
+        }
+
+        ModelAndView mv = new ModelAndView("partial/created-client-authority");
+
+        mv.addObject("clientUid", clientUid);
+        mv.addObject("clientAuthority", new ClientAuthorityFacade.ClientAuthorityDTO(
+            clientUid,
+                form.authority,
+                superGroups,
+                users
+        ));
+
+        return mv;
+    }
+
+    @DeleteMapping("/clients/{id}/authority/{name}")
+    public ModelAndView deleteClientAuthority(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+                                              @PathVariable("id") UUID clientUid,
+                                              @PathVariable("name") String authorityName) {
+        try {
+            this.clientAuthorityFacade.delete(clientUid, authorityName);
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new ModelAndView("partial/deleted-client-authority");
     }
 
 }

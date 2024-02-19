@@ -1,16 +1,75 @@
 <style>
-    ul {
+    main {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
         margin-left: auto;
         margin-right: auto;
     }
+
+    img {
+        display: block;
+        margin: auto auto var(--pico-spacing);
+        height: 150px;
+        object-fit: contain;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    li {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    li > * {
+        flex: 1;
+    }
+
+    li > *:nth-child(1) {
+        text-align: right;
+    }
+
+    li > *:nth-child(2) {
+        text-align: left;
+    }
 </style>
 <header th:replace="~{common/header}"></header>
+<div id="alerts">
+</div>
 <main>
     <a href="/api-keys" >Back</a>
-    <ul>
-        <li th:text="${apiKey.prettyName()}"></li>
-        <li th:text="${apiKey.svDescription()}"></li>
-        <li th:text="${apiKey.enDescription()}"></li>
-        <li th:text="${apiKey.keyType()}"></li>
-    </ul>
+    <article>
+        <header>
+            <h3 th:text="|${apiKey.prettyName()} details|"></h3>
+        </header>
+        <ul>
+            <li>
+                <b>Pretty name</b>
+                <span th:text="${apiKey.prettyName()}"></span>
+            </li>
+            <li>
+                <b>Type</b>
+                <span th:text="${apiKey.keyType()}"></span>
+            </li>
+            <li>
+                <b>Swedish description</b>
+                <span th:text="${apiKey.svDescription()}"></span>
+            </li>
+            <li>
+                <b>English description</b>
+                <span th:text="${apiKey.enDescription()}"></span>
+            </li>
+        </ul>
+        <footer>
+            <form th:action="|/api-keys/${apiKey.id()}|" th:method="delete">
+                <button class="outline contrast">Delete</button>
+            </form>
+        </footer>
+    </article>
 </main>

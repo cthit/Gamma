@@ -7,7 +7,7 @@ import org.springframework.session.web.http.DefaultCookieSerializer;
 import org.springframework.stereotype.Component;
 
 /**
- * All other cookie config can be found in application.yml and application-production.yml
+ * All other cookie config can be found in application.yml
  */
 @Component
 public class CookieConfig {

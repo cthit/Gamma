@@ -11,7 +11,7 @@ CREATE TABLE g_user
 (
     user_id                 UUID PRIMARY KEY,
     cid                     VARCHAR(12)  NOT NULL UNIQUE,
-    password                VARCHAR(255) NOT NULL,
+    password                VARCHAR(255) NOT NULL CHECK (password LIKE '{bcrypt}$%'),
     nick                    VARCHAR(50)  NOT NULL,
     first_name              VARCHAR(50)  NOT NULL,
     last_name               VARCHAR(50)  NOT NULL,
@@ -89,14 +89,14 @@ CREATE TABLE g_membership
     PRIMARY KEY (user_id, group_id, post_id)
 );
 
-CREATE TABLE g_allowlist
+CREATE TABLE g_allow_list
 (
     cid VARCHAR(10) PRIMARY KEY CHECK (LOWER(cid) = cid)
 );
 
 CREATE TABLE g_user_activation
 (
-    cid        VARCHAR(10) PRIMARY KEY REFERENCES g_allowlist,
+    cid        VARCHAR(10) PRIMARY KEY REFERENCES g_allow_list,
     token      VARCHAR(10) UNIQUE NOT NULL,
     created_at TIMESTAMP          NOT NULL DEFAULT current_timestamp
 );
@@ -105,18 +105,18 @@ CREATE TABLE g_client
 (
     client_uid    UUID PRIMARY KEY,
     client_id     VARCHAR(100) UNIQUE,
-    client_secret VARCHAR(100) NOT NULL,
+    client_secret VARCHAR(100) NOT NULL CHECK (client_secret LIKE '{bcrypt}$%'),
     redirect_uri  VARCHAR(256) NOT NULL,
     pretty_name   VARCHAR(30)  NOT NULL,
-    description   UUID REFERENCES g_text ON DELETE CASCADE
+    description   UUID REFERENCES g_text ON DELETE CASCADE,
+    official      BOOLEAN NOT NULL,
+    created_by    UUID REFERENCES g_user(user_id) ON DELETE CASCADE,
+    CHECK (
+        (official = TRUE AND created_by IS NULL) OR
+        (official = FALSE AND created_by IS NOT NULL)
+    )
 );
 
-CREATE TABLE g_client_owner
-(
-    user_id UUID REFERENCES g_user(user_id),
-    client_uid UUID REFERENCES g_client(client_uid),
-    PRIMARY KEY (user_id, client_uid)
-);
 
 CREATE TABLE g_client_scope
 (
@@ -125,7 +125,7 @@ CREATE TABLE g_client_scope
     PRIMARY KEY (client_uid, scope)
 );
 
-CREATE TABLE g_apikey
+CREATE TABLE g_api_key
 (
     api_key_id  UUID PRIMARY KEY,
     pretty_name VARCHAR(30) NOT NULL,
@@ -135,10 +135,10 @@ CREATE TABLE g_apikey
     version     INT
 );
 
-CREATE TABLE g_client_apikey
+CREATE TABLE g_client_api_key
 (
     client_uid UUID PRIMARY KEY REFERENCES g_client ON DELETE CASCADE,
-    api_key_id UUID REFERENCES g_apikey ON DELETE CASCADE
+    api_key_id UUID REFERENCES g_api_key ON DELETE CASCADE
 );
 
 CREATE TABLE g_user_approval

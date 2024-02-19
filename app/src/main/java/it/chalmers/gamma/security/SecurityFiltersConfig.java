@@ -104,13 +104,9 @@ public class SecurityFiltersConfig {
     SecurityFilterChain webSecurityFilterChain(HttpSecurity http,
                                                PasswordEncoder passwordEncoder,
                                                UserJpaRepository userJpaRepository,
-                                               SettingsRepository settingsRepository,
                                                AdminRepository adminRepository) throws Exception {
 
-        TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(
-                userJpaRepository,
-                settingsRepository
-        );
+        TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(userJpaRepository);
 
         DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
         userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
@@ -120,9 +116,9 @@ public class SecurityFiltersConfig {
                 .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET, "/img/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/css/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/js/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/webjars/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/login").anonymous()
+                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/login").anonymous()
                         .requestMatchers(HttpMethod.GET, "/activate-cid").anonymous()
                         .requestMatchers(HttpMethod.POST, "/activate-cid").anonymous()

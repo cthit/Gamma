@@ -1,19 +1,31 @@
 <style>
-    form {
+    #create-client-authority {
         display: flex;
         flex-direction: column;
         width: fit-content;
         gap: 1rem;
-    }
-
-    .padding {
-        margin-top: 1rem;
+        margin: auto;
     }
 </style>
-<form th:action="@{/clients/{id}/authority(id=${client.clientUid()})}" th:method="post" data-hx-target="this" data-hx-swap="delete">
-    <div class="padding"></div>
-    <div th:replace="common/input :: textInput(name='authority', label='Authority name', value=${null}, errorMessage=${null})"></div>
-    <button data-hx-get="/clients/authority/new-super-group" data-hx-target="closest form" data-hx-swap="afterbegin">Add super group authority</button>
-    <button data-hx-get="/clients/authority/new-user" data-hx-target="closest form" data-hx-swap="afterbegin">Add user authority</button>
-    <button type="submit">Save</button>
-</form>
+<article>
+    <h3>Create client authority</h3>
+    <form id="create-client-authority"
+          th:data-hx-post="@{/clients/{id}/authority(id=${clientUid})}"
+          data-hx-target="closest article"
+          data-hx-swap="outerHTML">
+        <div th:replace="~{common/form-csrf}"></div>
+        <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${null}, errorMessage=${null})}"></div>
+        <h4>Super groups:</h4>
+        <button class="outline contrast" data-hx-get="/clients/authority/new-super-group"
+                data-hx-target="previous h4" data-hx-swap="afterend">Add super group authority
+        </button>
+        <h4>Users:</h4>
+        <button class="outline contrast" data-hx-get="/clients/authority/new-user" data-hx-target="previous h4"
+                data-hx-swap="afterend">Add user authority
+        </button>
+    </form>
+    <footer>
+        <button class="outline" form="create-client-authority">Save</button>
+    </footer>
+</article>
+

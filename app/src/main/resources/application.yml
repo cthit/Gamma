@@ -37,19 +37,13 @@ spring:
         enabled: true
 
   thymeleaf:
-    cache: true
-    check-template: true
-    check-template-location: true
+    cache: ${PRODUCTION:false}
     enabled: true
     encoding: UTF-8
-    mode: HTML
-    prefix: classpath:/templates/
-    suffix: .html
-    servlet:
-      content-type: text/html
 
   session:
     store-type: redis
+    timeout: ${SESSION_TIMEOUT:43200}
 
   mvc:
     hiddenmethod:
@@ -60,13 +54,8 @@ server:
   port: ${SERVER_PORT:8081}
   error:
     whitelabel:
-      enabled: true
+      enabled: false
     path: /error
-
-  servlet:
-    session:
-      cookie:
-        same-site: strict
 
   http2:
     enabled: true
@@ -77,7 +66,7 @@ logging:
 
 application:
   base-uri: ${BASE_URI:http://gamma:8081}
-  production: false
+  production: ${PRODUCTION:false}
   files:
     path: uploads/
   cookie:
@@ -96,5 +85,5 @@ application:
     scopes: ${DEFAULT_SCOPES:profile,email}
 
   gotify:
-    key: "123abc"
-    url: "localhost:7000"
+    key: ${GOTIFY_KEY:"123abc"}
+    url: ${GOTIFY_URL:"localhost:7000"}

@@ -25,8 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 @Service
 public class ClientAuthorityFacade extends Facade {
@@ -35,50 +34,55 @@ public class ClientAuthorityFacade extends Facade {
 
     private final ClientAuthorityRepository clientAuthorityRepository;
     private final UserRepository userRepository;
-    private final PostRepository postRepository;
     private final SuperGroupRepository superGroupRepository;
 
     public ClientAuthorityFacade(AccessGuard accessGuard,
                                  ClientAuthorityRepository clientAuthorityRepository,
                                  UserRepository userRepository,
-                                 PostRepository postRepository,
                                  SuperGroupRepository superGroupRepository) {
         super(accessGuard);
         this.clientAuthorityRepository = clientAuthorityRepository;
         this.userRepository = userRepository;
-        this.postRepository = postRepository;
         this.superGroupRepository = superGroupRepository;
     }
 
     public void create(UUID clientUid, String name) throws ClientAuthorityRepository.ClientAuthorityAlreadyExistsException {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
 
-        this.clientAuthorityRepository.create(new ClientUid(clientUid), new AuthorityName(name));
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        this.clientAuthorityRepository.create(uid, new AuthorityName(name));
     }
 
     public void delete(UUID clientUid, String name) throws ClientAuthorityNotFoundException {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
+
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
 
         try {
-            this.clientAuthorityRepository.delete(new ClientUid(clientUid), new AuthorityName(name));
+            this.clientAuthorityRepository.delete(uid, new AuthorityName(name));
         } catch (ClientAuthorityRepository.ClientAuthorityNotFoundException e) {
             throw new ClientAuthorityNotFoundException();
         }
     }
 
     public Optional<ClientAuthorityDTO> get(UUID clientUid, String name) {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
 
-        return this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        return this.clientAuthorityRepository.get(uid, new AuthorityName(name))
                 .map(ClientAuthorityDTO::new);
     }
 
     @Transactional
     public void addSuperGroupToClientAuthority(UUID clientUid, String name, UUID superGroupId)
             throws ClientAuthorityNotFoundException, SuperGroupNotFoundException {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
 
-        Authority authority = this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        Authority authority = this.clientAuthorityRepository.get(uid, new AuthorityName(name))
                 .orElseThrow(ClientAuthorityNotFoundException::new);
 
         List<SuperGroup> superGroups = new ArrayList<>(authority.superGroups());
@@ -90,12 +94,15 @@ public class ClientAuthorityFacade extends Facade {
 
     @Transactional
     public void addUserToClientAuthority(UUID clientUid, String name, UUID userId) throws ClientAuthorityRepository.ClientAuthorityNotFoundRuntimeException, ClientAuthorityNotFoundException, UserNotFoundException {
+        ClientUid uid = new ClientUid(clientUid);
+
         this.accessGuard.requireEither(
                 isAdmin(),
-                isLocalRunner()
+                isLocalRunner(),
+                ownerOfClient(uid)
         );
 
-        Authority authority = this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
+        Authority authority = this.clientAuthorityRepository.get(uid, new AuthorityName(name))
                 .orElseThrow(ClientAuthorityNotFoundException::new);
 
         List<GammaUser> newUsersList = new ArrayList<>(authority.users());
@@ -109,9 +116,11 @@ public class ClientAuthorityFacade extends Facade {
     @Transactional
     public void removeSuperGroupFromClientAuthority(UUID clientUid, String name, UUID superGroupId)
             throws ClientAuthorityNotFoundException {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
 
-        Authority authority = this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        Authority authority = this.clientAuthorityRepository.get(uid, new AuthorityName(name))
                 .orElseThrow(ClientAuthorityNotFoundException::new);
 
         List<SuperGroup> newSuperGroups = new ArrayList<>(authority.superGroups());
@@ -126,18 +135,22 @@ public class ClientAuthorityFacade extends Facade {
     }
 
     public List<ClientAuthorityDTO> getAll(UUID clientUid) {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
 
-        var authorities = this.clientAuthorityRepository.getAllByClient(new ClientUid(clientUid));
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        var authorities = this.clientAuthorityRepository.getAllByClient(uid);
 
         return authorities.stream().map(ClientAuthorityDTO::new).toList();
     }
 
     @Transactional
     public void removeUserFromClientAuthority(UUID clientUid, String name, UUID userId) throws ClientAuthorityNotFoundException {
-        this.accessGuard.require(isAdmin());
+        ClientUid uid = new ClientUid(clientUid);
 
-        Authority authority = this.clientAuthorityRepository.get(new ClientUid(clientUid), new AuthorityName(name))
+        this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+        Authority authority = this.clientAuthorityRepository.get(uid, new AuthorityName(name))
                 .orElseThrow(ClientAuthorityNotFoundException::new);
 
         List<GammaUser> newUsers = new ArrayList<>(authority.users());

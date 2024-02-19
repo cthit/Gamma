@@ -1,10 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client;
 
-import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.client.restriction.ClientRestrictionSuperGroupEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.client.apikey.ClientApiKeyEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.client.apikey.ClientApiKeyJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
@@ -15,11 +12,9 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,15 +25,15 @@ import java.util.Optional;
 public class ClientRepositoryAdapter implements ClientRepository {
 
     private static final PersistenceErrorState authorityNotFound = new PersistenceErrorState(
-            "itclient_authority_level_restriction_authority_fkey",
+            "g_authority_level_restriction_authority_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
     private static final PersistenceErrorState userNotFound = new PersistenceErrorState(
-            "it_user_approval_user_id_fkey",
+            "g_user_approval_user_id_fkey",
             PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION
     );
     private static final PersistenceErrorState clientIdAlreadyExists = new PersistenceErrorState(
-            "itclient_client_id_key",
+            "g_client_id_key",
             PersistenceErrorState.Type.NOT_UNIQUE
     );
     private final ClientJpaRepository clientJpaRepository;
@@ -46,29 +41,23 @@ public class ClientRepositoryAdapter implements ClientRepository {
     private final ClientEntityConverter clientEntityConverter;
     private final UserApprovalJpaRepository userApprovalJpaRepository;
     private final UserJpaRepository userJpaRepository;
-    private final SuperGroupJpaRepository superGroupJpaRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public ClientRepositoryAdapter(ClientJpaRepository clientJpaRepository,
                                    ClientApiKeyJpaRepository clientApiKeyJpaRepository,
                                    ClientEntityConverter clientEntityConverter,
                                    UserApprovalJpaRepository userApprovalJpaRepository,
-                                   UserJpaRepository userJpaRepository,
-                                   SuperGroupJpaRepository superGroupJpaRepository,
-                                   PasswordEncoder passwordEncoder) {
+                                   UserJpaRepository userJpaRepository) {
         this.clientJpaRepository = clientJpaRepository;
         this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
         this.clientEntityConverter = clientEntityConverter;
         this.userApprovalJpaRepository = userApprovalJpaRepository;
         this.userJpaRepository = userJpaRepository;
-        this.superGroupJpaRepository = superGroupJpaRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public void save(Client client) {
         try {
-            this.clientJpaRepository.saveAndFlush(toEntity(client));
+            this.clientJpaRepository.saveAndFlush(clientEntityConverter.toEntity(client));
         } catch (Exception e) {
             PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 
@@ -96,6 +85,14 @@ public class ClientRepositoryAdapter implements ClientRepository {
     @Override
     public List<Client> getAll() {
         return this.clientJpaRepository.findAll()
+                .stream()
+                .map(clientEntityConverter::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Client> getAllUserClients(UserId userId) {
+        return this.clientJpaRepository.findAllByCreatedBy(userId.value())
                 .stream()
                 .map(clientEntityConverter::toDomain)
                 .toList();
@@ -147,66 +144,6 @@ public class ClientRepositoryAdapter implements ClientRepository {
                 .findByApiKey_Token(apiKeyToken.value())
                 .map(ClientApiKeyEntity::getClient)
                 .map(this.clientEntityConverter::toDomain);
-    }
-
-    private ClientEntity toEntity(Client client) {
-        ClientEntity clientEntity = this.clientJpaRepository
-                .findById(client.clientUid().value())
-                .orElse(new ClientEntity());
-
-        clientEntity.clientUid = client.clientUid().value();
-        clientEntity.clientId = client.clientId().value();
-        clientEntity.clientSecret = this.passwordEncoder.encode(client.clientSecret().value());
-        clientEntity.prettyName = client.prettyName().value();
-        clientEntity.webServerRedirectUrl = client.clientRedirectUrl().value();
-
-        if (clientEntity.description == null) {
-            clientEntity.description = new TextEntity();
-        }
-
-        clientEntity.description.apply(client.description());
-
-        clientEntity.scopes.clear();
-        clientEntity.scopes.addAll(
-                client.scopes()
-                        .stream()
-                        .map(scope -> new ClientScopeEntity(
-                                clientEntity,
-                                scope)
-                        ).toList()
-        );
-
-        client.clientApiKey().ifPresent(
-                apiKey -> {
-                    ApiKeyEntity apiKeyEntity = new ApiKeyEntity(
-                            apiKey.id().value(),
-                            apiKey.apiKeyToken().value(),
-                            apiKey.prettyName().value(),
-                            apiKey.keyType(),
-                            new TextEntity(apiKey.description())
-                    );
-
-                    clientEntity.clientsApiKey = new ClientApiKeyEntity(clientEntity, apiKeyEntity);
-                }
-        );
-
-        client.restrictions().ifPresent(
-                clientRestriction -> {
-                    clientEntity.clientRestriction = new ClientRestrictionEntity(clientRestriction.id().value(), client.clientUid().value());
-
-                    List<ClientRestrictionSuperGroupEntity> clientRestrictionSuperGroupEntities = clientRestriction.superGroups()
-                            .stream()
-                            .map(superGroup -> new ClientRestrictionSuperGroupEntity(
-                                            clientEntity.clientRestriction,
-                                            this.superGroupJpaRepository.findById(superGroup.id().value()).orElseThrow()
-                                    )
-                            ).toList();
-
-                    clientEntity.clientRestriction.setSuperGroupRestrictions(clientRestrictionSuperGroupEntities);
-                }
-        );
-
-        return clientEntity;
     }
 
 }

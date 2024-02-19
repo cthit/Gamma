@@ -1,2 +1,5 @@
-<div th:replace="~{pages/types :: type-item('beforeend:ul')}"></div>
+<div data-hx-swap-oob="beforeend:section">
+    <div th:replace="~{pages/types :: type-item}"></div>
+</div>
 <div th:replace="~{pages/types :: create-type}"></div>
+<div th:replace="common/alert :: success('Type created')"></div>

@@ -16,44 +16,47 @@
     document.body.addEventListener("htmx:afterSwap", reindexMembers);
 </script>
 
-<style>
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-left: auto;
-        margin-right: auto;
-        width: fit-content;
-    }
-</style>
-
-<form th:object="${form}" th:action="@{/groups/{groupId}(groupId=${groupId})}" th:method="put">
-    <th:block th:fragment="inner-form">
-        <input type="hidden" name="version" th:value="${form.version}" />
-        <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
-        <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
-        <label>
-            Super group
-            <select name="superGroupId">
-                <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId}"></option>
-            </select>
-        </label>
-        <div class="member-row" th:each="member, memberStat : *{members}">
-            <div th:text="${users.get(member.userId)}"></div>
-            <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}" />
+<article>
+    <header>
+        <h3>
+            Edit group details
+        </h3>
+    </header>
+    <form id="edit-group" th:object="${form}" th:action="@{/groups/{groupId}(groupId=${groupId})}" th:method="put">
+        <th:block th:fragment="inner-form">
+            <input type="hidden" name="version" th:value="${form.version}" />
+            <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
             <label>
-                Post
-                <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
-                    <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+                Super group
+                <select name="superGroupId">
+                    <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}" th:value="${superGroup.id()}" th:selected="${superGroup.id() == form.superGroupId}"></option>
                 </select>
             </label>
-            <label>
-                Unofficial post name
-                <input class="unofficialPostName" type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}" />
-            </label>
-            <button _="on click remove closest .member-row then call reindexMembers()" type="button">Delete</button>
-        </div>
-        <button type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">Add member</button>
-        <button type="submit">Save</button>
-    </th:block>
-</form>
+            <div class="member-row" th:each="member, memberStat : *{members}">
+                <div th:text="${users.get(member.userId)}"></div>
+                <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}" />
+                <label>
+                    Post
+                    <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
+                        <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+                    </select>
+                </label>
+                <label>
+                    Unofficial post name
+                    <input class="unofficialPostName" type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}" />
+                </label>
+                <button _="on click remove closest .member-row then call reindexMembers()" type="button">Delete</button>
+            </div>
+            <button type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">Add member</button>
+        </th:block>
+    </form>
+    <footer>
+        <button type="button"
+                th:data-hx-get="|/groups/${groupId}/cancel-edit|"
+                data-hx-target="closest article"
+                data-hx-swap="outerHTML">Cancel
+        </button>
+        <button form="edit-group" type="submit">Save</button>
+    </footer>
+</article>

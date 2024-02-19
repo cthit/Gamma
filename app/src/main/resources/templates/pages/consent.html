@@ -1,7 +1,11 @@
 <style>
-    main {
-        display: flex;
-        flex-direction: column;
+    button {
+        width: min-content !important;
+    }
+
+    article {
+        width: fit-content;
+        margin: auto;
     }
 </style>
 <script type="text/javascript">
@@ -16,32 +20,45 @@
 </script>
 <header th:replace="~{common/header}"></header>
 <main hx-boost="false">
-    <h2 class="text text--roboto center-vertical"
-        th:text="'Do you want to authorize ' + ${clientName} + ' to access:'"></h2>
+    <article>
+        <header>
+            <h2 th:text="'Do you want to authorize ' + ${clientName} + ' to access:'"></h2>
+        </header>
 
-    <ul>
-        <li class="text text--roboto">First and last name</li>
-        <li class="text text--roboto" th:if="${hasEmailScope}">Email</li>
-        <li class="text text--roboto">Nickname</li>
-        <li class="text text--roboto">Preferred language</li>
-        <li class="text text--roboto">Cid</li>
-        <li class="text text--roboto">Authorities</li>
-        <li class="text text--roboto">Groups that you're apart of</li>
-    </ul>
-
-    <form th:action="@{/oauth2/authorize}" th:method="post" id="confirmationForm" name="confirmationForm">
-        <input name="client_id" th:value="${clientId}" type="hidden">
-        <input name="state" th:value="${state}" type="hidden">
-
-        <div style="display: none;" th:each="scope: ${scopes}">
-            <input class="form-check-input"
-                   name="scope"
-                   th:value="${scope}"
-                   type="checkbox">
+        <div role="alert"
+             class="error"
+             th:if="${userOwner != null}">
+            <p>
+                Warning! This application you are authorizing Gamma with is not an approved, official client.
+            </p>
+            <p th:text="'It is created, and owned by ' + ${userOwner.name()}"></p>
         </div>
 
-        <button type="submit">Deny</button>
-        <button type="button" onclick="authorize();">Authorize</button>
-    </form>
+        <ul>
+            <li>First and last name</li>
+            <li th:if="${hasEmailScope}">Email</li>
+            <li>Nickname</li>
+            <li>Preferred language</li>
+            <li>Cid</li>
+            <li>Authorities</li>
+            <li>Groups that you're apart of</li>
+        </ul>
+
+        <form th:action="@{/oauth2/authorize}" th:method="post" id="confirmationForm" name="confirmationForm">
+            <input name="client_id" th:value="${clientId}" type="hidden">
+            <input name="state" th:value="${state}" type="hidden">
+
+            <th:block th:each="scope: ${scopes}">
+                <input style="visibility: hidden" class="form-check-input"
+                       name="scope"
+                       th:value="${scope}"
+                       type="checkbox">
+            </th:block>
+        </form>
+        <footer>
+            <button class="outline contrast" form="confirmationForm" type="submit">Deny</button>
+            <button class="outline contrast" type="button" onclick="authorize();">Authorize</button>
+        </footer>
+    </article>
 </main>
 

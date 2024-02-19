@@ -4,14 +4,11 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.util.response.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * If you need changes, then create a new version of the API.

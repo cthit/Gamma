@@ -2,7 +2,7 @@ package it.chalmers.gamma.adapter.primary.api.info;
 
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.util.response.NotFoundResponse;
+import it.chalmers.gamma.adapter.primary.api.utils.NotFoundResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

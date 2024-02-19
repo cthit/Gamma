@@ -1,69 +1,39 @@
 <style>
-    main {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-
-        width: fit-content;
-    }
-
-    form {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-    }
-
     table {
         margin-left: auto;
         margin-right: auto;
     }
 
-    .col {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .col div {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-    }
-
-    .htmx-swapping {
-        opacity: 0;
-        transition: opacity 1s ease-out;
+    a {
+        margin-right: 1rem;
     }
 </style>
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
-    <div class="col">
-        <th:block  th:each="superGroup : ${superGroups}">
-            <div class="row" th:fragment="super-group-row">
-                <div th:text="${superGroup.prettyName()}"></div>
-                <div th:text="${superGroup.type()}"></div>
-                <div>
+    <a href="/" >Back</a>
+    <a th:if="${isAdmin}" href="/super-groups/create">Create super group</a>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Pretty name
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Details
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="superGroup : ${superGroups}">
+                <td th:text="${superGroup.prettyName()}"></td>
+                <td th:text="${superGroup.type()}"></td>
+                <td>
                     <a th:href="${'/super-groups/' + superGroup.id()}">Details</a>
-                </div>
-                <form th:data-hx-post="@{/super-groups/{id}(id=${superGroup.id()})}" data-hx-target="closest .row" data-hx-swap="outerHTML swap:1s">
-                    <div th:replace="~{common/form-csrf}"></div>
-                    <input type="hidden" name="_method" value="delete" />
-                    <button type="submit">Delete</button>
-                </form>
-            </div>
-        </th:block>
-        <form th:if="${isAdmin}" th:fragment="create-super-group" th:hx-post="@{/super-groups}" data-hx-target="this" data-hx-swap="outerHTML">
-            <div th:replace="~{common/form-csrf}"></div>
-            <div th:replace="~{common/input :: textInput(name='name', value=${null}, errorMessage=${null}, label='Name')}"></div>
-            <div class="table-cell" th:replace="~{common/input :: textInput(name='prettyName', value=${null}, errorMessage=${null}, label='Pretty name')}"></div>
-            <label>
-                Type
-                <select name="type">
-                    <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
-                </select>
-            </label>
-            <button type="submit">Save</button>
-        </form>
-    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </main>

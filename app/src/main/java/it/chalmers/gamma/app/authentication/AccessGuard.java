@@ -1,8 +1,7 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.client.domain.ClientRepository;
-import it.chalmers.gamma.app.client.domain.Client;
+import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
@@ -15,6 +14,8 @@ import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AccessGuard {
@@ -98,6 +99,24 @@ public class AccessGuard {
                 if (apiPrincipal.getClient().isPresent()) {
                     Client client = apiPrincipal.getClient().get();
                     return clientRepository.isApprovedByUser(id, client.clientUid());
+                }
+            }
+
+            return false;
+        };
+    }
+
+    public static AccessChecker ownerOfClient(ClientUid clientUid) {
+        return (clientRepository, userRepository) -> {
+            if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userPrincipal) {
+                Optional<Client> client = clientRepository.get(clientUid);
+
+                if(client.isPresent()) {
+                    ClientOwner clientOwner = client.get().owner();
+
+                    if (clientOwner instanceof ClientUserOwner(UserId userId)) {
+                        return userId.equals(userPrincipal.get().id());
+                    }
                 }
             }
 

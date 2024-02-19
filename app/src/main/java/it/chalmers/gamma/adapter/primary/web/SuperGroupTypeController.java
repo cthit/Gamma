@@ -103,7 +103,7 @@ public class SuperGroupTypeController {
             return mv;
         }
 
-        return new ModelAndView("common/empty");
+        return new ModelAndView("partial/deleted-type");
     }
 
     public record DeleteSuperGroupType() { }

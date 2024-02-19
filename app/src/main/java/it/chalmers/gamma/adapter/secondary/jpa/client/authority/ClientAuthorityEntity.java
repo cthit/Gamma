@@ -13,9 +13,6 @@ import java.util.Set;
 public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntityPK> {
 
     @OneToMany(mappedBy = "id.clientAuthority", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    protected Set<ClientAuthorityPostEntity> postEntityList;
-
-    @OneToMany(mappedBy = "id.clientAuthority", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     protected Set<ClientAuthorityUserEntity> userEntityList;
 
     @OneToMany(mappedBy = "id.clientAuthority", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -29,7 +26,6 @@ public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntity
 
     public ClientAuthorityEntity(ClientEntity client, String name) {
         this.id = new ClientAuthorityEntityPK(client, name);
-        this.postEntityList = new HashSet<>();
         this.userEntityList = new HashSet<>();
         this.superGroupEntityList = new HashSet<>();
     }
@@ -37,10 +33,6 @@ public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntity
     @Override
     public ClientAuthorityEntityPK getId() {
         return this.id;
-    }
-
-    public List<ClientAuthorityPostEntity> getPosts() {
-        return postEntityList.stream().toList();
     }
 
     public List<ClientAuthorityUserEntity> getUsers() {

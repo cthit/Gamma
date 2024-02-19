@@ -1,5 +1,5 @@
 <script type="text/javascript">
-    function reindexMembers() {
+    function reindexAuthorities() {
         update('.authority-super-group-row', 'superGroups');
         update('.authority-user-row', 'users');
     }
@@ -12,51 +12,125 @@
         });
     }
 
-    document.body.addEventListener("htmx:afterSwap", reindexMembers);
+    document.body.addEventListener("htmx:afterSwap", reindexAuthorities);
 </script>
+<style>
+    main {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    ul.details > li {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    ul.details > li > * {
+        flex: 1;
+    }
+
+    ul.details > li > *:nth-child(1) {
+        text-align: right;
+    }
+
+    ul.details > li > *:nth-child(2) {
+        text-align: left;
+    }
+</style>
 <header th:replace="~{common/header}"></header>
+<div id="alerts"></div>
 <main>
     <a href="/clients" >Back</a>
+    <article>
+        <header>
+            <h3>Client details</h3>
+        </header>
+        <ul class="details">
+            <li>
+                <b>Pretty name:</b>
+                <span th:text="${client.prettyName()}"></span>
+            </li>
+            <li>
+                <b>Swedish description:</b>
+                <span th:text="${client.svDescription()}"></span>
+            </li>
+            <li>
+                <b>English description:</b>
+                <span th:text="${client.enDescription()}"></span>
+            </li>
+            <li>
+                <b>Client id:</b>
+                <span th:text="${client.clientId()}"></span>
+            </li>
+            <li>
+                <b>Has Api Key:</b>
+                <span th:text="|Has api key: ${client.hasApiKey()}|"></span>
+            </li>
+            <li>
+                <b>Redirect:</b>
+                <span th:text="${client.webServerRedirectUrl()}"></span>
+            </li>
+            <li th:if="${client.restriction() != null}">
+                <b>Super group restrictions:</b>
+                <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></span>
+            </li>
+        </ul>
+    </article>
 
-    <ul>
-        <li th:text="${client.prettyName()}"></li>
-        <li th:text="${client.svDescription()}"></li>
-        <li th:text="${client.enDescription()}"></li>
-        <li th:text="${client.clientId()}"></li>
-        <li th:text="|Has api key: ${client.hasApiKey()}|"></li>
-        <li th:text="${client.webServerRedirectUrl()}"></li>
-        <li th:if="${client.restriction() != null}">
-            Super group restrictions
-            <ul>
-                <li th:each="restrictionSuperGroup : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName()}"></li>
+    <article>
+        <header>
+            <h3>User approvals</h3>
+        </header>
+        <p th:if="${userApprovals.size() == 0}">
+            No users have approved this client yet
+        </p>
+        <ul th:if="${userApprovals.size() > 0}">
+            <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
+        </ul>
+    </article>
+
+    <th:block th:each="clientAuthority : ${clientAuthorities}">
+        <article th:fragment="client-authority-article">
+            <header>
+                <h3 th:text="${clientAuthority.authorityName()}"></h3>
+            </header>
+            <h5>
+                Super groups:
+            </h5>
+            <p th:if="${clientAuthority.superGroups().size() == 0}">
+                No super groups
+            </p>
+            <ul th:if="${clientAuthority.superGroups().size() > 0}">
+                <li th:each="superGroup : ${clientAuthority.superGroups()}" th:text="${superGroup.prettyName()}"></li>
             </ul>
-        </li>
-    </ul>
-    <h2>Authorities</h2>
-    <th:block th:fragment="client-authorities" >
-        <div th:data-hx-get="@{/clients/{id}/authorities(id=${client.clientUid})}" data-hx-target="this" data-hx-swap="outerHTML" data-hx-trigger="authorities-updated from:body">
-            <ul>
-                <li th:each="clientAuthority : ${clientAuthorities}">
-                    <p th:text="${clientAuthority.authorityName()}"></p>
-                    <p>
-                        Super groups
-                    </p>
-                    <ul>
-                       <li th:each="superGroup : ${clientAuthority.superGroups()}" th:text="${superGroup.prettyName()}"></li>
-                    </ul>
-                    <p>
-                        Users
-                    </p>
-                    <ul>
-                        <li th:each="user : ${clientAuthority.users()}" th:text="${user.nick()}"></li>
-                    </ul>
-                </li>
+            <h5>
+                Users:
+            </h5>
+            <p th:if="${clientAuthority.users().size() == 0}">
+                No users
+            </p>
+            <ul th:if="${clientAuthority.users().size() > 0}">
+                <li th:each="user : ${clientAuthority.users()}" th:text="${user.nick()}"></li>
             </ul>
-        </div>
-        <button th:data-hx-get="@{/clients/{id}/new-authority(id=${client.clientUid()})}" data-hx-target="this" data-hx-swap="outerHTML">Add authority</button>
+            <footer>
+                <form th:data-hx-post="|/clients/${clientUid}/authority/${clientAuthority.authorityName()}|"
+                      data-hx-target="closest article"
+                      data-hx-swap="delete">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button class="outline contrast">Delete</button>
+                </form>
+            </footer>
+        </article>
     </th:block>
-    <h2>User approvals</h2>
-    <ul>
-        <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
-    </ul>
+
+    <div id="client-authorities-anchor" style="visibility: hidden"></div>
+
+    <article th:replace="~{partial/add-authority-to-client}"></article>
+
 </main>

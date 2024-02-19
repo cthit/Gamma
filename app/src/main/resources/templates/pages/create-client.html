@@ -1,12 +1,23 @@
 <style>
-    form {
+    main {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        gap: 1rem;
+
+        margin-left: auto;
+        margin-right: auto;
+
+        justify-items: center;
+    }
+
+    .restriction-row {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
     }
 </style>
 <script type="text/javascript">
-    function reindexMembers() {
+    function reindexRestrictions() {
         update('.restriction');
     }
 
@@ -18,25 +29,32 @@
         });
     }
 
-    document.body.addEventListener("htmx:afterSwap", reindexMembers);
+    document.body.addEventListener("htmx:afterSwap", reindexRestrictions);
 </script>
 <header th:replace="~{common/header}"></header>
 <main>
     <a href="/clients" >Back</a>
-    <form th:object="${form}" th:action="@{/clients}" th:method="post">
-        <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
-        <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
-        <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
-        <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
-        <label>
-            Generate api key
-            <input type="checkbox" th:field="*{generateApiKey}"/>
-        </label>
-        <label>
-            Include email scope
-            <input type="checkbox" th:field="*{emailScope}"/>
-        </label>
-        <button data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin">Add restriction</button>
-        <button type="submit">Create</button>
-    </form>
+    <article>
+        <header>
+            <h3>Create client</h3>
+        </header>
+        <form id="create-clients" th:object="${form}" th:action="@{/clients}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
+            <label>
+                Generate api key
+                <input type="checkbox" th:field="*{generateApiKey}"/>
+            </label>
+            <label>
+                Include email scope
+                <input type="checkbox" th:field="*{emailScope}"/>
+            </label>
+            <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin">Add restriction</button>
+        </form>
+        <footer>
+            <button class="outline" form="create-clients" type="submit">Create</button>
+        </footer>
+    </article>
 </main>

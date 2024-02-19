@@ -1,67 +1,63 @@
 <style>
-    .table {
-        display: table;
-
-        width: 100%;
-        max-width: 1280px;
-
-        margin-left: auto;
-        margin-right: auto;
+    .td-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 
-    .table-row {
-        display: table-row;
-        height: 50px;
-    }
-
-    .table-cell {
-        display: table-cell;
-    }
-
-    .htmx-swapping {
-        opacity: 0;
-        transition: opacity 1s ease-out;
+    .td-buttons > button {
+        margin: 0;
     }
 </style>
-
+<div id="alerts"></div>
 <header th:replace="~{common/header}"></header>
 <main>
      <a href="/" >Back</a>
-    <div class="table">
-        <div class="table-row">
-            <div class="table-cell">Swedish name</div>
-            <div class="table-cell">English name</div>
-            <div class="table-cell">Email prefix</div>
-        </div>
-        <th:block th:each="post : ${posts}">
-            <div class="table-row" th:fragment="post-row">
-                <div class="table-cell" th:text="${post.svName()}"></div>
-                <div class="table-cell" th:text="${post.enName()}"></div>
-                <div class="table-cell" th:text="${post.emailPrefix()}"></div>
-                <div class="table-cell">
-                    <button th:data-hx-get="@{/posts/{postId}/edit(postId=${post.id()})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">Edit</button>
-                    <form th:data-hx-post="@{/posts/{postId}(postId=${post.id()})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML swap:1s">
+    <table th:fragment="table">
+        <thead>
+            <tr>
+                <th>Swedish name</th>
+                <th>English name</th>
+                <th>Email prefix</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="post : ${posts}">
+                <tr th:fragment="post-row"
+                    th:data-post-id="${post.id()}">
+                    <td th:text="${post.svName()}"></td>
+                    <td th:text="${post.enName()}"></td>
+                    <td th:text="${post.emailPrefix()}"></td>
+                    <td class="td-buttons">
+                        <form th:id="|delete-${post.id()}|" th:data-hx-post="@{/posts/{postId}(postId=${post.id()})}" th:data-hx-target="${'tr[data-post-id=&quot;' + post.id() + '&quot;]'}" data-hx-swap="outerHTML">
+                            <div th:replace="~{common/form-csrf}"></div>
+                            <input type="hidden" name="_method" value="delete" />
+                        </form>
+                        <button class="outline contrast" th:data-hx-get="@{/posts/{postId}/edit(postId=${post.id()})}"
+                                data-hx-target="main" data-hx-swap="afterend">Edit
+                        </button>
+                        <button th:form="|delete-${post.id()}|" class="outline contrast" type="submit">Delete</button>
+                    </td>
+                </tr>
+            </th:block>
+            <tr th:fragment="create-post-row" th:if="${isAdmin}" id="create-row">
+                <td>
+                    <div th:replace="~{common/input :: distantTextInput(name='svName', value=${null}, errorMessage=${null}, label='Swedish name', form='create-post')}"></div>
+                </td>
+                <td>
+                    <div th:replace="~{common/input :: distantTextInput(name='enName', value=${null}, errorMessage=${null}, label='English name', form='create-post')}"></div>
+                </td>
+                <td>
+                    <div th:replace="~{common/input :: distantTextInput(name='emailPrefix', value=${null}, errorMessage=${null}, label='Email prefix', form='create-post')}"></div>
+                </td>
+                <td>
+                    <button form="create-post" type="submit">Save</button>
+                    <form th:if="${isAdmin}" th:fragment="create-post" id="create-post" th:data-hx-post="@{/posts}" data-hx-target="closest tr" data-hx-swap="outerHTML">
                         <div th:replace="~{common/form-csrf}"></div>
-                        <input type="hidden" name="_method" value="delete" />
-                        <button type="submit">Delete</button>
                     </form>
-                </div>
-            </div>
-        </th:block>
-        <form th:if="${isAdmin}" th:fragment="create-post" class="table-row" th:data-hx-post="@{/posts}" data-hx-target="this" data-hx-swap="outerHTML">
-            <div th:replace="~{common/form-csrf}"></div>
-            <div class="table-cell">
-                <div th:replace="~{common/input :: textInput(name='svName', value=${null}, errorMessage=${null}, label='Swedish name')}"></div>
-            </div>
-            <div class="table-cell">
-                <div class="table-cell" th:replace="~{common/input :: textInput(name='enName', value=${null}, errorMessage=${null}, label='English name')}"></div>
-            </div>
-            <div class="table-cell">
-                <div class="table-cell" th:replace="~{common/input :: textInput(name='emailPrefix', value=${null}, errorMessage=${null}, label='Email prefix')}"></div>
-            </div>
-            <div class="table-cell">
-                <button type="submit">Save</button>
-            </div>
-        </form>
-    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </main>

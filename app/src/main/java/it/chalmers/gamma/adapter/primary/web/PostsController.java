@@ -69,8 +69,6 @@ public class PostsController {
 
     @PutMapping(value = "/posts/{id}", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView updateEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") UUID postId, UpdatePost form) {
-        System.out.println(form);
-
         try {
             postFacade.update(new PostFacade.UpdatePost(
                     postId,
@@ -85,7 +83,7 @@ public class PostsController {
 
         ModelAndView mv = new ModelAndView();
 
-        mv.setViewName("pages/posts :: post-row");
+        mv.setViewName("partial/edited-post");
         mv.addObject("post", new PostFacade.PostDTO(
                 postId,
                 form.version + 1,
@@ -93,8 +91,6 @@ public class PostsController {
                 form.enName,
                 form.emailPrefix
         ));
-
-        System.out.println(mv);
 
         return mv;
     }
@@ -107,7 +103,7 @@ public class PostsController {
     ) { }
 
     @PostMapping("/posts")
-    public ModelAndView updateEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, CreatePost form) {
+    public ModelAndView createEditPost(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, CreatePost form) {
         UUID postId = postFacade.create(new PostFacade.NewPost(
                 form.svName,
                 form.enName,
@@ -144,7 +140,7 @@ public class PostsController {
             throw new RuntimeException(e);
         }
 
-        return "common/empty";
+        return "partial/deleted-post";
     }
 
 }

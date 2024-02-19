@@ -91,7 +91,7 @@ public final class Client {
         return Optional.ofNullable(this.restriction);
     }
 
-    public ClientOwner access() {
+    public ClientOwner owner() {
         return owner;
     }
 

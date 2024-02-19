@@ -34,29 +34,21 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientAuthorityRepositoryAdapter.class);
     private static final PersistenceErrorState notFoundError = new PersistenceErrorState(null, PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
     private final ClientAuthorityJpaRepository repository;
-    private final ClientAuthorityPostJpaRepository authorityPostRepository;
-    private final ClientAuthoritySuperGroupJpaRepository authoritySuperGroupRepository;
-    private final ClientAuthorityUserJpaRepository authorityUserRepository;
-    private final MembershipJpaRepository membershipJpaRepository;
     private final UserJpaRepository userJpaRepository;
     private final SuperGroupJpaRepository superGroupJpaRepository;
     private final ClientJpaRepository clientJpaRepository;
-    private final PostJpaRepository postJpaRepository;
     private final ClientAuthorityEntityConverter clientAuthorityEntityConverter;
-    private final SuperGroupEntityConverter superGroupEntityConverter;
 
-    public ClientAuthorityRepositoryAdapter(ClientAuthorityJpaRepository repository, ClientAuthorityPostJpaRepository authorityPostRepository, ClientAuthoritySuperGroupJpaRepository authoritySuperGroupRepository, ClientAuthorityUserJpaRepository authorityUserRepository, MembershipJpaRepository membershipJpaRepository, UserJpaRepository userJpaRepository, SuperGroupJpaRepository superGroupJpaRepository, ClientJpaRepository clientJpaRepository, PostJpaRepository postJpaRepository, ClientAuthorityEntityConverter clientAuthorityEntityConverter, SuperGroupEntityConverter superGroupEntityConverter) {
+    public ClientAuthorityRepositoryAdapter(ClientAuthorityJpaRepository repository,
+                                            UserJpaRepository userJpaRepository,
+                                            SuperGroupJpaRepository superGroupJpaRepository,
+                                            ClientJpaRepository clientJpaRepository,
+                                            ClientAuthorityEntityConverter clientAuthorityEntityConverter) {
         this.repository = repository;
-        this.authorityPostRepository = authorityPostRepository;
-        this.authoritySuperGroupRepository = authoritySuperGroupRepository;
-        this.authorityUserRepository = authorityUserRepository;
-        this.membershipJpaRepository = membershipJpaRepository;
         this.userJpaRepository = userJpaRepository;
         this.superGroupJpaRepository = superGroupJpaRepository;
         this.clientJpaRepository = clientJpaRepository;
-        this.postJpaRepository = postJpaRepository;
         this.clientAuthorityEntityConverter = clientAuthorityEntityConverter;
-        this.superGroupEntityConverter = superGroupEntityConverter;
     }
 
     @Override
@@ -138,11 +130,7 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
         ClientAuthorityEntity clientAuthorityEntity = this.repository.findById(new ClientAuthorityEntityPK(this.clientJpaRepository.findById(authority.client().clientUid().value()).orElseThrow(), authority.name().value())).orElseThrow(ClientAuthorityNotFoundRuntimeException::new);
 
         List<ClientAuthorityUserEntity> users = authority.users().stream().map(user -> new ClientAuthorityUserEntity(toEntity(user), clientAuthorityEntity)).toList();
-        List<ClientAuthorityPostEntity> posts = authority.posts().stream().map(post -> new ClientAuthorityPostEntity(toEntity(post.superGroup()), toEntity(post.post()), clientAuthorityEntity)).toList();
         List<ClientAuthoritySuperGroupEntity> superGroups = authority.superGroups().stream().map(superGroup -> new ClientAuthoritySuperGroupEntity(toEntity(superGroup), clientAuthorityEntity)).toList();
-
-        clientAuthorityEntity.postEntityList.clear();
-        clientAuthorityEntity.postEntityList.addAll(posts);
 
         clientAuthorityEntity.userEntityList.clear();
         clientAuthorityEntity.userEntityList.addAll(users);
@@ -156,10 +144,6 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
 
     private UserEntity toEntity(GammaUser user) {
         return this.userJpaRepository.getById(user.id().getValue());
-    }
-
-    private PostEntity toEntity(Post post) {
-        return this.postJpaRepository.getById(post.id().getValue());
     }
 
     private SuperGroupEntity toEntity(SuperGroup superGroup) {

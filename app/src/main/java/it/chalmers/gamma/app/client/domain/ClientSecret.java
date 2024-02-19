@@ -11,9 +11,8 @@ public record ClientSecret(String value) {
     }
 
     public static ClientSecret generate() {
-        //TODO Should I really have a {noop} here? that's spring specific.
-        String value = "{noop}" + TokenUtils.generateToken(
-                75,
+        String value = TokenUtils.generateToken(
+                50,
                 TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS

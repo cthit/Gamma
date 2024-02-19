@@ -30,6 +30,7 @@
 </style>
 <header th:replace="~{common/header}"></header>
 <main>
+    <a href="/groups">Back</a>
     <form th:object="${form}" th:action="@{/groups}" th:method="post">
         <div th:replace="~{partial/edit-group :: inner-form}"></div>
     </form>

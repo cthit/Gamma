@@ -1,18 +1,27 @@
-<form class="table-row" th:data-hx-post="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">
-    <input type="hidden" name="_method" value="put" />
+<form th:id="|edit-${post.id()}|"
+      th:data-hx-post="@{/posts/{postId}(postId=${post.id})}"
+      th:data-hx-target="${'tr[data-post-id=&quot;' + post.id() + '&quot;]'}"
+      data-hx-swap="outerHTML">
     <div th:replace="~{common/form-csrf}"></div>
-    <input type="hidden" name="version" th:value="${post.version()}" />
-    <div class="table-cell">
-        <div th:replace="~{common/input :: textInput(name='svName', value=${post.svName()}, errorMessage=${null}, label=${null})}"></div>
-    </div>
-    <div class="table-cell">
-        <div class="table-cell" th:replace="~{common/input :: textInput(name='enName', value=${post.enName()}, errorMessage=${null}, label=${null})}"></div>
-    </div>
-    <div class="table-cell">
-        <div class="table-cell" th:replace="~{common/input :: textInput(name='emailPrefix', value=${post.emailPrefix()}, errorMessage=${null}, label=${null})}"></div>
-    </div>
-    <div class="table-cell">
-        <button type="button" th:data-hx-get="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest .table-row" data-hx-swap="outerHTML">Cancel</button>
-        <button type="submit">Save</button>
-    </div>
+    <input type="hidden" name="_method" value="put"/>
+    <input type="hidden" name="version" th:value="${post.version()}"/>
 </form>
+<table>
+    <tbody>
+        <tr th:data-post-id="${post.id()}" th:data-hx-swap-oob="${'outerHTML:tr[data-post-id=&quot;' + post.id() + '&quot;]'}">
+            <td>
+                <div th:replace="~{common/input :: distantTextInput(name='svName', value=${post.svName()}, errorMessage=${null}, label=${null}, form=|edit-${post.id()}|)}"></div>
+            </td>
+            <td>
+                <div th:replace="~{common/input :: distantTextInput(name='enName', value=${post.enName()}, errorMessage=${null}, label=${null}, form=|edit-${post.id()}|)}"></div>
+            </td>
+            <td>
+                <div th:replace="~{common/input :: distantTextInput(name='emailPrefix', value=${post.emailPrefix()}, errorMessage=${null}, label=${null}, form=|edit-${post.id()}|)}"></div>
+            </td>
+            <td>
+                <button type="button" th:data-hx-get="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest tr" data-hx-swap="outerHTML">Cancel</button>
+                <button th:form="|edit-${post.id()}|" type="submit">Save</button>
+            </td>
+        </tr>
+    </tbody>
+</table>

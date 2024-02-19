@@ -66,6 +66,7 @@ public class UsersController {
 
                 mv.addObject("userId", u.user().id());
                 mv.addObject("name", name);
+                mv.addObject("nick", u.user().nick());
                 mv.addObject("cid", u.user().cid());
                 mv.addObject("acceptanceYear", u.user().acceptanceYear());
                 mv.addObject("groups", u.groups()
@@ -88,6 +89,7 @@ public class UsersController {
 
                 mv.addObject("userId", u.user().id());
                 mv.addObject("name", name);
+                mv.addObject("nick", u.user().nick());
                 mv.addObject("cid", u.user().cid());
                 mv.addObject("acceptanceYear", u.user().acceptanceYear());
                 mv.addObject("groups", u.groups()
@@ -222,7 +224,7 @@ public class UsersController {
 
         ModelAndView mv = new ModelAndView();
 
-        mv.setViewName("pages/user-details :: userinfo");
+        mv.setViewName("partial/edited-user");
         mv.addObject("name", name);
         mv.addObject("cid", user.get().user().cid());
         mv.addObject("acceptanceYear", form.acceptanceYear);

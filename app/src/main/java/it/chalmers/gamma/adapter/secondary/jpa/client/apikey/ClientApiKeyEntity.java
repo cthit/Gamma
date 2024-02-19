@@ -1,13 +1,14 @@
-package it.chalmers.gamma.adapter.secondary.jpa.client;
+package it.chalmers.gamma.adapter.secondary.jpa.client.apikey;
 
 import it.chalmers.gamma.adapter.secondary.jpa.apikey.ApiKeyEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import jakarta.persistence.*;
 
 import java.util.UUID;
 
 @Entity
-@Table(name = "g_client_apikey")
+@Table(name = "g_client_api_key")
 public class ClientApiKeyEntity extends ImmutableEntity<UUID> {
 
     @Id
@@ -26,9 +27,9 @@ public class ClientApiKeyEntity extends ImmutableEntity<UUID> {
 
     }
 
-    protected ClientApiKeyEntity(ClientEntity clientEntity, ApiKeyEntity apiKeyEntity) {
+    public ClientApiKeyEntity(ClientEntity clientEntity, ApiKeyEntity apiKeyEntity) {
         this.client = clientEntity;
-        this.clientUid = clientEntity.clientUid;
+        this.clientUid = clientEntity.getId();
         this.apiKey = apiKeyEntity;
     }
 

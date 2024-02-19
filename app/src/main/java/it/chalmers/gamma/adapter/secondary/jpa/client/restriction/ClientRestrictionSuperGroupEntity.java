@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client.restriction;
 
-import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import jakarta.persistence.EmbeddedId;

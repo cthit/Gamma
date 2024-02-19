@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class GammaRegisteredClientRepository implements RegisteredClientRepository {
 
+    public static final String IS_OFFICIAL = "_is_official";
+
     private final ClientRepository clientRepository;
 
     public GammaRegisteredClientRepository(ClientRepository clientRepository) {
@@ -49,6 +51,7 @@ public class GammaRegisteredClientRepository implements RegisteredClientReposito
                         ClientSettings
                                 .builder()
                                 .requireAuthorizationConsent(true)
+                                .setting(IS_OFFICIAL, client.owner() instanceof ClientOwnerOfficial)
                                 .build()
                 );
 

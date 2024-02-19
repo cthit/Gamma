@@ -2,7 +2,7 @@
 /build/
 !gradle/wrapper/gradle-wrapper.jar
 /uploads/
-
+*.run.xml
 /src/main/resources/secrets.properties
 
 ### STS ###

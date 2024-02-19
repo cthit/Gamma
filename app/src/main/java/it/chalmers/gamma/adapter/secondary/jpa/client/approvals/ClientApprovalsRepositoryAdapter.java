@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.client;
+package it.chalmers.gamma.adapter.secondary.jpa.client.approvals;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;

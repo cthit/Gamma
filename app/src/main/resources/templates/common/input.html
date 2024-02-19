@@ -33,6 +33,24 @@
           th:errors="*{__${field}__}"></span>
 </th:block>
 
+<th:block th:fragment="distantTextInput(name, label, errorMessage, value, form)"
+          th:assert="${name != null}">
+    <label th:if="${label != null}"
+           th:for="${name}"
+           th:text="${label}">
+    </label>
+    <input
+            type="text"
+            th:id="${name}"
+            th:name="${name}"
+            th:value="${value}"
+            th:form="${form}"
+    />
+    <span th:if="${errorMessage}"
+          th:text="${errorMessage}">
+    </span>
+</th:block>
+
 <th:block th:fragment="emailTextInput (name, label, errorMessage)">
     <label th:for="${name}" th:text="${label}"></label>
     <input type="email" th:id="${name}" th:name="${name}" th:aria-labelledby="${name}"/>

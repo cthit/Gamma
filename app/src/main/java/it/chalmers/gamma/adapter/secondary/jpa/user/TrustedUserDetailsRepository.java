@@ -19,19 +19,15 @@ import java.util.UUID;
 public class TrustedUserDetailsRepository implements UserDetailsService {
 
     private final UserJpaRepository userJpaRepository;
-    private final SettingsRepository settingsRepository;
 
-    public TrustedUserDetailsRepository(UserJpaRepository userJpaRepository, SettingsRepository settingsRepository) {
+    public TrustedUserDetailsRepository(UserJpaRepository userJpaRepository) {
         this.userJpaRepository = userJpaRepository;
-        this.settingsRepository = settingsRepository;
     }
 
     public GammaUser getGammaUserByUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         UserEntity userEntity = this.userJpaRepository.findById(UUID.fromString(user.getUsername())).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        Settings settings = this.settingsRepository.getSettings();
 
         return new GammaUser(
                 new UserId(UUID.fromString(user.getUsername())),

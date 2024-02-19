@@ -1,5 +1,6 @@
-package it.chalmers.gamma.adapter.secondary.jpa.client;
+package it.chalmers.gamma.adapter.secondary.jpa.client.scope;
 
+import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.client.domain.Scope;
 import jakarta.persistence.EmbeddedId;
@@ -16,7 +17,7 @@ public class ClientScopeEntity extends ImmutableEntity<ClientScopePK> {
     protected ClientScopeEntity() {
     }
 
-    protected ClientScopeEntity(ClientEntity clientEntity, Scope scope) {
+    public ClientScopeEntity(ClientEntity clientEntity, Scope scope) {
         this.id = new ClientScopePK(clientEntity, scope);
     }
 

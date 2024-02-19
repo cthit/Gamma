@@ -9,45 +9,78 @@
         display: contents;
     }
 
-    li {
+    ul {
+        padding-left: 0;
+    }
+
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    div.list-item {
         display: flex;
         flex-direction: row;
+        gap: 0.5rem;
         align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
+    }
+
+    div.list-item > * {
+        flex: 1;
+    }
+
+    div.list-item > *:nth-child(1) {
+        text-align: right;
+    }
+
+    div.list-item > *:nth-child(2) {
+        text-align: left;
+        height: 53px;
     }
 
     button {
         height: fit-content;
     }
 
-    .htmx-swapping {
-        opacity: 0;
-        transition: opacity 1s ease-out;
+    footer {
+        align-items: end;
     }
 </style>
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
-    <ul>
-        <th:block th:each="type : ${types}" th:with="swap=${null}">
-            <li th:fragment="type-item(swap)" th:attr="data-hx-swap-oob=${swap != null} ? ${swap} : null">
-                <p th:text="${type}"></p>
-                <form th:id=|${type}-delete-form| th:fragment="delete-type" th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest li" data-hx-swap="outerHTML swap:1s">
-                    <div th:replace="~{common/form-csrf}"></div>
-                    <input type="hidden" name="_method" value="delete" />
-                    <button type="submit">Delete</button>
-                </form>
-            </li>
-        </th:block>
-    </ul>
-    <form th:if="${isAdmin}" th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
-        <div th:replace="~{common/form-csrf}"></div>
-        <div class="table-cell">
-            <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
-        </div>
-        <div class="table-cell">
-            <button type="submit">Save</button>
-        </div>
-    </form>
+    <div id="alerts"></div>
+    <a href="/" >Back</a>
+    <article>
+        <header>
+            <h4>
+                Super group types
+            </h4>
+        </header>
+        <section>
+            <th:block th:each="type : ${types}">
+                <div class="list-item" th:fragment="type-item">
+                    <span th:text="${type}"></span>
+                    <span>
+                        <form th:id=|${type}-delete-form| th:fragment="delete-type" th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest div" data-hx-swap="outerHTML">
+                            <div th:replace="~{common/form-csrf}"></div>
+                            <input type="hidden" name="_method" value="delete" />
+                            <button class="outline contrast" type="submit">Delete</button>
+                        </form>
+                    </span>
+                </div>
+            </th:block>
+        </section>
+        <footer>
+            <form th:if="${isAdmin}" th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <div class="table-cell">
+                    <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
+                </div>
+                <div class="table-cell">
+                    <button type="submit">Save</button>
+                </div>
+            </form>
+        </footer>
+    </article>
 </main>

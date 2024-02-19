@@ -3,10 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -96,8 +93,20 @@ public class ApiKeyController {
         mv.setViewName("pages/api-key-credentials");
         mv.addObject("apiKeyId", apiKeyCredentials.apiKeyId());
         mv.addObject("apiKeyToken", apiKeyCredentials.token());
+        mv.addObject("name", form.prettyName);
 
         return mv;
+    }
+
+    @DeleteMapping("/api-keys/{id}")
+    public ModelAndView deleteApiKey(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, @PathVariable("id") UUID id) {
+        try {
+            this.apiKeyFacade.delete(id);
+        } catch (ApiKeyFacade.ApiKeyNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new ModelAndView("redirect:/api-keys");
     }
 
 }

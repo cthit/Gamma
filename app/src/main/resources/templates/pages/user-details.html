@@ -19,27 +19,78 @@
     img {
         height: 100px;
         object-fit: contain;
+        margin: auto;
+        display: block;
     }
 
+    li {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    li > * {
+        flex: 1;
+    }
+
+    li > *:nth-child(1) {
+        text-align: right;
+    }
+
+    li > *:nth-child(2) {
+        text-align: left;
+    }
 </style>
 <header th:replace="~{common/header}"></header>
+<div id="alerts"></div>
 <main>
     <a href="/users" >Back</a>
-    <img th:src="@{/images/user/avatar/{id}(id=${userId})}" alt="User avatar"/>
-    <div th:fragment="userinfo" class="userinfo">
-        <ul>
-            <li th:text="${name}"></li>
-            <li th:text="${cid}"></li>
-            <li th:text="${acceptanceYear}"></li>
-            <li th:if="${isAdmin}" th:text="${email}"></li>
-            <li th:if="${isAdmin}" th:text="${locked}"></li>
-        </ul>
-        <button th:if="${isAdmin}" data-hx-target="closest .userinfo" th:data-hx-get="@{|/users/${userId}/edit|}" data-hx-swap="outerHTML">Edit user</button>
-    </div>
+    <article th:fragment="userinfo">
+        <header>User details</header>
+        <img th:src="@{/images/user/avatar/{id}(id=${userId})}" alt="User avatar"/>
+        <div class="userinfo">
+            <ul>
+                <li>
+                    <b>Name:</b>
+                    <span th:text="${name}"></span>
+                </li>
+                <li>
+                    <b>Cid:</b>
+                    <span th:text="${cid}"></span>
+                </li>
+                <li>
+                    <b>Acceptance year</b>
+                    <span th:text="${acceptanceYear}"></span>
+                </li>
+                <li th:if="${isAdmin}">
+                    <b>Email:</b>
+                    <span th:text="${email}"></span>
+                </li>
+                <li th:if="${isAdmin}">
+                    <b>Is locked:</b>
+                    <span th:text="${locked}"></span>
+                </li>
+            </ul>
+        </div>
+        <footer>
+            <button th:if="${isAdmin}"
+                    class="outline contrast"
+                    data-hx-target="closest article"
+                    th:data-hx-get="@{|/users/${userId}/edit|}"
+                    data-hx-swap="outerHTML">Edit user
+            </button>
+        </footer>
+    </article>
 
-    <ul>
-        <li th:each="group : ${groups}">
-            <div th:text="${group}"></div>
-        </li>
-    </ul>
+    <article>
+        <header th:text="|${nick}:s groups|"></header>
+        <p th:if="${groups.size() == 0}">
+            Is not a part of any groups
+        </p>
+        <ul th:if="${groups.size() > 0}">
+            <li th:each="group : ${groups}">
+                <div th:text="${group}"></div>
+            </li>
+        </ul>
+    </article>
 </main>

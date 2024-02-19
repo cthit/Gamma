@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.client;
+package it.chalmers.gamma.adapter.secondary.jpa.client.apikey;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

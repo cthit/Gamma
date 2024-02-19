@@ -1,27 +1,32 @@
 <style>
-    form {
+    main {
         display: flex;
         flex-direction: column;
         gap: 1rem;
 
         margin-left: auto;
         margin-right: auto;
-
-        width: fit-content;
     }
 </style>
 <header th:replace="~{common/header}"></header>
 <main>
-    <form th:object="${form}" th:action="@{/api-keys}" th:method="post">
-        <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
-        <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
-        <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
-        <label>
-            Key type
-            <select th:field="*{keyType}">
-                <option th:each="type : ${keyTypes}" th:text="${type}" th:value="${type}"></option>
-            </select>
-        </label>
-        <button type="submit">Create api key</button>
-    </form>
+    <article>
+        <header>
+            <h3>Create api key</h3>
+        </header>
+        <form id="create-api-key" th:object="${form}" th:action="@{/api-keys}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+            <label>
+                Key type
+                <select th:field="*{keyType}">
+                    <option th:each="type : ${keyTypes}" th:text="${type}" th:value="${type}"></option>
+                </select>
+            </label>
+        </form>
+        <footer>
+            <button form="create-api-key" type="submit">Create api key</button>
+        </footer>
+    </article>
 </main>

@@ -4,13 +4,13 @@
     <a th:if="${isAdmin}" href="/users/create">Create user</a>
     <table>
         <thead>
-        <tr>
-            <th>First name</th>
-            <th>Nick</th>
-            <th>Last name</th>
-            <th>Acceptance year</th>
-            <th>Details</th>
-        </tr>
+            <tr>
+                <th>First name</th>
+                <th>Nick</th>
+                <th>Last name</th>
+                <th>Acceptance year</th>
+                <th>Details</th>
+            </tr>
         </thead>
         <tbody>
             <tr th:each="user : ${users}">

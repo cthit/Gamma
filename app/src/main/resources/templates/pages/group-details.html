@@ -11,50 +11,93 @@
     }
 
     img {
-        height: 200px;
+        display: block;
+        margin: auto auto var(--pico-spacing);
+        height: 150px;
         object-fit: contain;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-left: auto;
+        margin-right: auto;
+        width: fit-content;
+    }
+
+    button {
+        width: fit-content;
     }
 </style>
 <header th:replace="~{common/header}"></header>
 <main>
     <a href="/groups">Back</a>
-    <th:block th:with="groupId=${group.id()}">
-        <div th:fragment="group-avatar">
-            <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
-            <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
-                  enctype="multipart/form-data"
-                  data-hx-target="closest div"
-                  data-hx-swap="outerHTML">
-                <div th:replace="~{common/form-csrf}"></div>
-                <input type="hidden" name="_method" value="put" />
-                <input type='file' name='file'>
-                <button>Upload avatar</button>
-            </form>
-        </div>
-        <div th:fragment="group-banner">
-            <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
-            <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
-                  enctype="multipart/form-data"
-                  data-hx-target="closest div"
-                  data-hx-swap="outerHTML">
-                <div th:replace="~{common/form-csrf}"></div>
-                <input type="hidden" name="_method" value="put" />
-                <input type='file' name='file'>
-                <button>Upload banner</button>
-            </form>
-        </div>
-    </th:block>
-    <ul>
-        <li th:text="${group.name()}"></li>
-        <li th:text="${group.prettyName()}"></li>
-        <li th:text="${group.superGroup().prettyName()}"></li>
-    </ul>
-    <ul>
-        <li th:each="member : ${members}" th:text="${member}"></li>
-    </ul>
 
-    <button th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
-            data-hx-target="main"
-            data-hx-swap="innerHTML">Edit
-    </button>
+    <article th:fragment="group-details-article">
+        <header>
+            <h3>Group details</h3>
+        </header>
+        <ul>
+            <li th:text="${group.name()}"></li>
+            <li th:text="${group.prettyName()}"></li>
+            <li th:text="${group.superGroup().prettyName()}"></li>
+        </ul>
+        <ul>
+            <li th:each="member : ${members}" th:text="${member}"></li>
+        </ul>
+
+        <footer>
+            <button th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
+                    data-hx-target="closest article"
+                    data-hx-swap="outerHTML">Edit
+            </button>
+        </footer>
+    </article>
+
+    <th:block th:with="groupId=${group.id()}">
+        <article th:fragment="group-avatar">
+            <header>
+                Group avatar
+            </header>
+            <div>
+                <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+                <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
+                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      enctype="multipart/form-data"
+                      data-hx-target="closest article"
+                      data-hx-swap="outerHTML"
+                      id="edit-group-avatar">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="put" />
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                </form>
+            </div>
+            <footer>
+                <button class="outline" form="edit-group-avatar" disabled>Upload avatar</button>
+            </footer>
+        </article>
+
+        <article th:fragment="group-banner">
+            <header>
+                <h3>Group banner</h3>
+            </header>
+            <div>
+                <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+                <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
+                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      enctype="multipart/form-data"
+                      data-hx-target="closest article"
+                      data-hx-swap="outerHTML"
+                      id="edit-group-banner">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="put" />
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                </form>
+            </div>
+            <footer>
+                <button class="outline" form="edit-group-banner" disabled>Upload banner</button>
+            </footer>
+        </article>
+    </th:block>
 </main>

@@ -17,7 +17,7 @@ public record ApiKeyToken(String value) {
 
     public static ApiKeyToken generate() {
         String value = TokenUtils.generateToken(
-                150,
+                50,
                 TokenUtils.CharacterTypes.LOWERCASE,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS

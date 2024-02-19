@@ -1,4 +1,4 @@
-yarn-error.log
-frontend/node_modules/
 .idea/*
 .DS-Store
+uploads/
+.run

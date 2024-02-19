@@ -14,7 +14,7 @@ public class SuperGroupTypeEntity extends AbstractEntity<String> {
     @Id
     @Column(name = "super_group_type_name")
     private String name;
-
+    
     protected SuperGroupTypeEntity() {
     }
 

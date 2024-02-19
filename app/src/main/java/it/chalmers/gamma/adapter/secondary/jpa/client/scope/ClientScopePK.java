@@ -1,5 +1,6 @@
-package it.chalmers.gamma.adapter.secondary.jpa.client;
+package it.chalmers.gamma.adapter.secondary.jpa.client.scope;
 
+import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PKId;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.Scope;
@@ -32,7 +33,7 @@ public class ClientScopePK extends PKId<ClientScopePK.ClientScopePKDTO> {
         );
     }
 
-    protected record ClientScopePKDTO(ClientUid clientUid,
+    public record ClientScopePKDTO(ClientUid clientUid,
                                       Scope scope) {
     }
 

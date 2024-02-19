@@ -16,16 +16,13 @@ public class ClientAuthorityEntityConverter {
     private final ClientEntityConverter clientEntityConverter;
     private final UserEntityConverter userEntityConverter;
     private final SuperGroupEntityConverter superGroupEntityConverter;
-    private final PostEntityConverter postEntityConverter;
 
     public ClientAuthorityEntityConverter(ClientEntityConverter clientEntityConverter,
                                           UserEntityConverter userEntityConverter,
-                                          SuperGroupEntityConverter superGroupEntityConverter,
-                                          PostEntityConverter postEntityConverter) {
+                                          SuperGroupEntityConverter superGroupEntityConverter) {
         this.clientEntityConverter = clientEntityConverter;
         this.userEntityConverter = userEntityConverter;
         this.superGroupEntityConverter = superGroupEntityConverter;
-        this.postEntityConverter = postEntityConverter;
     }
 
     public Authority toDomain(ClientAuthorityEntity clientAuthorityEntity) {
@@ -36,13 +33,6 @@ public class ClientAuthorityEntityConverter {
         return new Authority(
                 this.clientEntityConverter.toDomain(id.client),
                 AuthorityName.valueOf(id.name),
-                clientAuthorityEntity.getPosts()
-                        .stream()
-                        .map(authorityPostEntity -> new Authority.SuperGroupPost(
-                                this.superGroupEntityConverter.toDomain(authorityPostEntity.getId().postFK.getSuperGroupEntity()),
-                                this.postEntityConverter.toDomain(authorityPostEntity.getId().postFK.getPostEntity())
-                        ))
-                        .toList(),
                 clientAuthorityEntity.getSuperGroups()
                         .stream()
                         .map(ClientAuthoritySuperGroupEntity::getSuperGroup)

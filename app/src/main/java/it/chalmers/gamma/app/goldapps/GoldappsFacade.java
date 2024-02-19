@@ -9,6 +9,8 @@ import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.GammaUser;
+import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,21 +21,14 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 public class GoldappsFacade extends Facade {
 
     private final GroupRepository groupRepository;
+    private final GdprTrainedRepository gdprTrainedRepository;
 
     public GoldappsFacade(AccessGuard accessGuard,
-                          GroupRepository groupRepository) {
+                          GroupRepository groupRepository,
+                          GdprTrainedRepository gdprTrainedRepository) {
         super(accessGuard);
         this.groupRepository = groupRepository;
-    }
-
-    public List<GoldappsSuperGroupDTO> getSuperGroupsByTypes(List<String> superGroupTypes) {
-        this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
-
-        // grupper
-        // grupper som är activa
-
-
-        return null;
+        this.gdprTrainedRepository = gdprTrainedRepository;
     }
 
     /**
@@ -42,6 +37,8 @@ public class GoldappsFacade extends Facade {
      */
     public List<GoldappsSuperGroupDTO> getActiveSuperGroups(List<String> superGroupTypes) {
         this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
+
+        List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
 
         Map<SuperGroupId, SuperGroupWithMembers> superGroupMap = new HashMap<>();
 
@@ -52,8 +49,7 @@ public class GoldappsFacade extends Facade {
                     List<GoldappsUserPostDTO> activeGroupMember = group.groupMembers()
                             .stream()
                             .filter(groupMember -> !groupMember.user().extended().locked())
-                            //TODO:
-//                            .filter(groupMember -> groupMember.user().extended().gdprTrained())
+                            .filter(groupMember -> gdprTrained.contains(groupMember.user().id()))
                             .map(GoldappsUserPostDTO::new)
                             .toList();
 
@@ -89,6 +85,8 @@ public class GoldappsFacade extends Facade {
     public List<GoldappsUserDTO> getActiveUsers(List<String> superGroupTypes) {
         this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
 
+        List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+
         return this.groupRepository.getAll()
                 .stream()
                 .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
@@ -96,8 +94,7 @@ public class GoldappsFacade extends Facade {
                 .map(GroupMember::user)
                 .distinct()
                 .filter(user -> !user.extended().locked())
-                //TODO:
-//                .filter(user -> user.extended().gdprTrained())
+                .filter(groupMember -> gdprTrained.contains(groupMember.id()))
                 .map(GoldappsUserDTO::new)
                 .toList();
     }

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client.restriction;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.group.GroupEntity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

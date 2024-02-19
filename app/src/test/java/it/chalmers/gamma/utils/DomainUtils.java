@@ -194,13 +194,6 @@ public final class DomainUtils {
         return new Authority(
                 authority.client(),
                 authority.name(),
-                authority.posts()
-                        .stream()
-                        .map(superGroupPost -> new Authority.SuperGroupPost(
-                                superGroupPost.superGroup().withVersion(1),
-                                superGroupPost.post().withVersion(1)
-                        ))
-                        .toList(),
                 authority.superGroups()
                         .stream()
                         .map(superGroup -> superGroup.withVersion(1))

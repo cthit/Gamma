@@ -1,4 +1,4 @@
 package it.chalmers.gamma.app.client.domain;
 
-public interface ClientOwner {
+public sealed interface ClientOwner permits ClientUserOwner, ClientOwnerOfficial {
 }

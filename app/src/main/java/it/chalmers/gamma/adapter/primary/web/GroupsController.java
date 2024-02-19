@@ -75,7 +75,27 @@ public class GroupsController {
         return mv;
     }
 
-    //TODO: Investigate if this can be a record...
+    @GetMapping("/groups/{id}/cancel-edit")
+    public ModelAndView getCancelEditGroup(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") UUID id) {
+        Optional<GroupFacade.GroupWithMembersDTO> group = this.groupFacade.getWithMembers(id);
+
+        if (group.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("pages/group-details :: group-details-article");
+
+        mv.addObject("group", group.get());
+        mv.addObject("members", group.get().groupMembers()
+                .stream()
+                .map(groupMember -> groupMember.user().nick() + " - " + groupMember.post().enName() + " - " + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""))
+                .toList()
+        );
+
+        return mv;
+    }
+
     public static final class GroupForm {
         private int version;
         private String name;

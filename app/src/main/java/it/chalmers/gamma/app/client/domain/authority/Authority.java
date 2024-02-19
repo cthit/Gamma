@@ -13,18 +13,14 @@ import java.util.Objects;
 @RecordBuilder
 public record Authority(Client client,
                         AuthorityName name,
-                        List<SuperGroupPost> posts,
                         List<SuperGroup> superGroups,
                         List<GammaUser> users) implements AuthorityBuilder.With {
 
     public Authority {
         Objects.requireNonNull(client);
         Objects.requireNonNull(name);
-        Objects.requireNonNull(posts);
         Objects.requireNonNull(superGroups);
         Objects.requireNonNull(users);
     }
 
-    public record SuperGroupPost(SuperGroup superGroup, Post post) {
-    }
 }

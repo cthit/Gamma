@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 
 @Entity
-@Table(name = "g_allowlist")
+@Table(name = "g_allow_list")
 public class AllowListEntity extends AbstractEntity<String> {
 
     @Id

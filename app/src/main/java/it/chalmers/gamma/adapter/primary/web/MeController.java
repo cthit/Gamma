@@ -15,12 +15,9 @@ import java.util.UUID;
 public class MeController {
 
     private final MeFacade meFacade;
-    private final ImageFacade imageFacade;
 
-    public MeController(MeFacade meFacade,
-                        ImageFacade imageFacade) {
+    public MeController(MeFacade meFacade) {
         this.meFacade = meFacade;
-        this.imageFacade = imageFacade;
     }
 
     @GetMapping("/me")
@@ -85,7 +82,7 @@ public class MeController {
         //TODO: Use only getMe
         MeFacade.MeDTO me = this.meFacade.getMe();
 
-        mv.setViewName("pages/me :: userinfo");
+        mv.setViewName("partial/edited-me");
         mv.addObject("me", new MeFacade.MeDTO(
                 form.nick,
                 form.firstName,
@@ -98,6 +95,19 @@ public class MeController {
                 form.language,
                 me.isAdmin()
         ));
+
+        return mv;
+    }
+
+    @GetMapping("/me/cancel-edit")
+    public ModelAndView getCancelEdit(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+        ModelAndView mv = new ModelAndView();
+
+        //TODO: Use only getMe
+        MeFacade.MeDTO me = this.meFacade.getMe();
+
+        mv.setViewName("pages/me :: userinfo");
+        mv.addObject("me", me);
 
         return mv;
     }
@@ -131,7 +141,7 @@ public class MeController {
 
         ModelAndView mv = new ModelAndView();
 
-        mv.setViewName("pages/me :: userinfo");
+        mv.setViewName("partial/edited-me-password");
         mv.addObject("me", me);
 
         return mv;
@@ -149,7 +159,7 @@ public class MeController {
 
         ModelAndView mv = new ModelAndView();
 
-        mv.setViewName("pages/me :: me-avatar");
+        mv.setViewName("partial/edited-me-avatar");
         mv.addObject("random", Math.random());
         mv.addObject("meId", me.id());
 

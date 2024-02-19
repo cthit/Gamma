@@ -1,4 +1,4 @@
-package it.chalmers.gamma.util.response;
+package it.chalmers.gamma.adapter.primary.api.utils;
 
 import it.chalmers.gamma.util.ClassNameGeneratorUtils;
 import org.springframework.http.HttpStatus;

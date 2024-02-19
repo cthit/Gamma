@@ -1,25 +1,20 @@
 <style>
     header {
-        background-color: #1f1f1f;
-        padding: 1rem;
-
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-
-        margin-bottom: 2rem;
-    }
-
-    header a {
-        border: none;
-        text-decoration: none;
     }
 
     header div {
         display: flex;
         flex-direction: row;
         gap: 1rem;
+        align-items: center;
+    }
+
+    header > a > h1 {
+        margin-bottom: 0;
     }
 </style>
 <header>
@@ -32,7 +27,7 @@
         <th:block sec:authorize="isAuthenticated()">
             <div th:text="|Hey, ${#authentication.getDetails().get().nick().value()}!|"></div>
             <form th:action="@{/logout}" th:method="post" >
-                <button>
+                <button class="outline contrast">
                     Logout
                 </button>
             </form>

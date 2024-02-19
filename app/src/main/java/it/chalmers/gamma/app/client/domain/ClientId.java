@@ -14,7 +14,7 @@ public record ClientId(String value) {
     }
 
     public static ClientId generate() {
-        String id = TokenUtils.generateToken(75, TokenUtils.CharacterTypes.LOWERCASE,
+        String id = TokenUtils.generateToken(30,
                 TokenUtils.CharacterTypes.UPPERCASE,
                 TokenUtils.CharacterTypes.NUMBERS
         );

@@ -6,10 +6,11 @@
 
         margin-left: auto;
         margin-right: auto;
-        width: fit-content;
     }
 
     img {
+        display: block;
+        margin: auto auto var(--pico-spacing);
         height: 150px;
         object-fit: contain;
     }
@@ -20,42 +21,101 @@
         gap: 1rem;
     }
 
+    li {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+
+    li > * {
+        flex: 1;
+    }
+
+    li > *:nth-child(1) {
+        text-align: right;
+    }
+
+    li > *:nth-child(2) {
+        text-align: left;
+    }
 </style>
+<div id="alerts">
+</div>
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/" >Back</a>
-    <th:block  th:with="meId = ${me.id()}">
+    <a href="/">Back</a>
+    <article th:fragment="userinfo">
+        <header>
+            Your information
+        </header>
+        <ul>
+            <li>
+                <b>First name:</b>
+                <span th:text="${me.firstName()}"></span>
+            </li>
+            <li>
+                <b>Last name:</b>
+                <span th:text="${me.lastName()}"></span>
+            </li>
+            <li>
+                <b>Nick</b>
+                <span th:text="${me.nick()}"></span>
+            </li>
+            <li>
+                <b>Email:</b>
+                <span th:text="${me.email()}"></span>
+            </li>
+            <li>
+                <b>Acceptance year:</b>
+                <span th:text="${me.acceptanceYear()}"></span>
+            </li>
+            <li>
+                <b>Cid:</b>
+                <span th:text="${me.cid()}"></span>
+            </li>
+            <li>
+                <b>Preferred language:</b>
+                <span th:text="${me.language()}"></span>
+            </li>
+            <li th:if="${me.isAdmin()}">
+                <b>Is admin?</b>
+                <span>Yes</span>
+            </li>
+        </ul>
+        <footer>
+            <button class="outline contrast" th:data-hx-get="@{/me/edit}" data-hx-target="closest <article/>" data-hx-swap="outerHTML">Edit</button>
+            <button class="outline contrast" th:data-hx-get="@{/me/edit-password}" data-hx-target="closest <article/>" data-hx-swap="outerHTML">Change password</button>
+        </footer>
+    </article>
+    <article>
+        <header>
+            My groups
+        </header>
+        <th:block th:if="${me.groups().size() == 0}">
+            You are not part of any groups
+        </th:block>
+        <ul th:if="${me.groups().size() > 0}">
+            <li th:each="group : ${me.groups()}" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></li>
+        </ul>
+    </article>
+    <article th:with="meId = ${me.id()}">
+        <header>
+            Your avatar
+        </header>
         <div th:fragment="me-avatar">
             <img th:src="@{|/images/user/avatar/${meId}?r=${random}|}" alt="Me avatar" />
-            <form th:data-hx-post="@{/me/avatar}"
+            <form id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
+                  _="on htmx:beforeRequest add @disabled to the next <button/> "
                   enctype="multipart/form-data"
                   data-hx-target="closest div"
                   data-hx-swap="outerHTML">
                 <div th:replace="~{common/form-csrf}"></div>
                 <input type="hidden" name="_method" value="put" />
-                <input type='file' name='file'>
-                <button>Upload avatar</button>
+                <input _='on change remove @disabled from the next <button/>'  type='file' name='file'>
             </form>
         </div>
-    </th:block>
-    <div th:fragment="userinfo" class="userinfo">
-        <ul>
-            <li th:text="${me.firstName()}"></li>
-            <li th:text="${me.lastName()}"></li>
-            <li th:text="${me.nick()}"></li>
-            <li th:text="${me.email()}"></li>
-            <li th:text="${me.acceptanceYear()}"></li>
-            <li th:text="${me.cid()}"></li>
-            <li th:text="${me.language()}"></li>
-            <li th:text="|isAdmin? ${me.isAdmin()}|"></li>
-        </ul>
-        <button th:data-hx-get="@{/me/edit}" data-hx-target="closest .userinfo" data-hx-swap="innerHTML">Edit</button>
-        <button th:data-hx-get="@{/me/edit-password}" data-hx-target="closest .userinfo" data-hx-swap="innerHTML">Change password</button>
-    </div>
-    <h2>
-        My groups
-    </h2>
-    <ul>
-        <li th:each="group : ${me.groups()}" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></li>
-    </ul>
+        <footer>
+            <button disabled class="outline" form="update-me-avatar">Upload avatar</button>
+        </footer>
+    </article>
 </main>

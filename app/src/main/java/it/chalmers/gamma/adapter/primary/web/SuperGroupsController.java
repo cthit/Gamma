@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import org.springframework.stereotype.Controller;
@@ -15,9 +16,12 @@ import java.util.UUID;
 public class SuperGroupsController {
 
     private final SuperGroupFacade superGroupFacade;
+    private final GroupFacade groupFacade;
 
-    public SuperGroupsController(SuperGroupFacade superGroupFacade) {
+    public SuperGroupsController(SuperGroupFacade superGroupFacade,
+                                 GroupFacade groupFacade) {
         this.superGroupFacade = superGroupFacade;
+        this.groupFacade = groupFacade;
     }
 
     @GetMapping("/super-groups")
@@ -33,7 +37,6 @@ public class SuperGroupsController {
         }
 
         mv.addObject("superGroups", superGroups);
-        mv.addObject("types", this.superGroupFacade.getAllTypes());
 
         return mv;
     }
@@ -55,6 +58,7 @@ public class SuperGroupsController {
         }
 
         mv.addObject("superGroup", superGroup.get());
+        mv.addObject("usages", this.groupFacade.getAllBySuperGroup(superGroup.get().id()));
 
         return mv;
     }
@@ -94,6 +98,27 @@ public class SuperGroupsController {
         return mv;
     }
 
+    @GetMapping("/super-groups/{id}/cancel-edit")
+    public ModelAndView getCancelSuperGroupEdit(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, @PathVariable("id") UUID id) {
+        Optional<SuperGroupFacade.SuperGroupDTO> superGroup = this.superGroupFacade.get(id);
+
+        if(superGroup.isEmpty()) {
+            throw new RuntimeException();
+        }
+
+        ModelAndView mv = new ModelAndView();
+        if(htmxRequest) {
+            mv.setViewName("pages/super-group-details :: super-group-info");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/super-group-details");
+        }
+
+        mv.addObject("superGroup", superGroup.get());
+
+        return mv;
+    }
+
     @PutMapping("/super-groups/{id}")
     public ModelAndView updateSuperGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
                             @PathVariable("id") UUID id,
@@ -116,7 +141,7 @@ public class SuperGroupsController {
         }
 
         ModelAndView mv = new ModelAndView();
-        mv.setViewName("pages/super-group-details");
+        mv.setViewName("pages/super-group-details :: super-group-info");
         mv.addObject("superGroup", new SuperGroupFacade.SuperGroupDTO(
                 id,
                 form.version + 1,
@@ -128,34 +153,6 @@ public class SuperGroupsController {
         ));
 
         return mv;
-    }
-
-    public record CreateSuperGroup(String name, String prettyName, String type) {
-
-    }
-
-    @PostMapping("/super-groups")
-    public ModelAndView createSuperGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-                                         CreateSuperGroup form) {
-        try {
-            UUID superGroupId = this.superGroupFacade.createSuperGroup(new SuperGroupFacade.NewSuperGroup(
-                    form.name,
-                    form.prettyName,
-                    form.type,
-                    "",
-                    ""
-            ));
-
-            ModelAndView mv = new ModelAndView();
-
-            mv.setViewName("partial/created-super-group");
-            mv.addObject("superGroup", new SuperGroupFacade.SuperGroupDTO(superGroupId, 0, form.name, form.prettyName, form.type, "", ""));
-            mv.addObject("types", this.superGroupFacade.getAllTypes());
-
-            return mv;
-        } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @DeleteMapping("/super-groups/{id}")
@@ -170,4 +167,49 @@ public class SuperGroupsController {
         return new ModelAndView("common/empty");
     }
 
+    public record CreateSuperGroupForm(String name, String prettyName, String type, String svDescription, String enDescription) {
+
+    }
+
+    @GetMapping("/super-groups/create")
+    public ModelAndView getCreateSuperGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+        ModelAndView mv = new ModelAndView();
+
+        if(htmxRequest) {
+            mv.setViewName("pages/create-super-group");
+        } else {
+            mv.setViewName("index");
+            mv.addObject("page", "pages/create-super-group");
+        }
+
+        mv.addObject("form", new CreateSuperGroupForm(
+                "",
+                "",
+                "",
+                "",
+                ""
+        ));
+        mv.addObject("types", this.superGroupFacade.getAllTypes());
+
+
+        return mv;
+    }
+
+    @PostMapping("/super-groups")
+    public ModelAndView createSuperGroup(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+                                         CreateSuperGroupForm form) {
+        try {
+            UUID superGroupId = this.superGroupFacade.createSuperGroup(new SuperGroupFacade.NewSuperGroup(
+                    form.name,
+                    form.prettyName,
+                    form.type,
+                    form.svDescription,
+                    form.enDescription
+            ));
+
+            return new ModelAndView("redirect:/super-groups/" + superGroupId);
+        } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
