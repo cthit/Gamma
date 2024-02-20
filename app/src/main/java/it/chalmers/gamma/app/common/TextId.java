@@ -5,16 +5,16 @@ import java.util.UUID;
 
 public record TextId(UUID value) implements Id<UUID> {
 
-    public TextId {
-        Objects.requireNonNull(value);
-    }
+  public TextId {
+    Objects.requireNonNull(value);
+  }
 
-    public static TextId generate() {
-        return new TextId(UUID.randomUUID());
-    }
+  public static TextId generate() {
+    return new TextId(UUID.randomUUID());
+  }
 
-    @Override
-    public UUID getValue() {
-        return this.value;
-    }
+  @Override
+  public UUID getValue() {
+    return this.value;
+  }
 }

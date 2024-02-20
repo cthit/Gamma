@@ -1,415 +1,337 @@
 {
-  "users": [
-    {
-      "id": "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f",
-      "firstName": "Wyatt",
-      "lastName": "MacMakin",
-      "cid": "wmacmak",
-      "nick": "Chokladkaka",
-      "acceptanceYear": 2014,
-      "admin": true
-    },
-    {
-      "id": "bc605869-9a4d-46ec-8a29-d00819d4c195",
-      "firstName": "Mellie",
-      "lastName": "Juorio",
-      "cid": "mjuorio",
-      "nick": "Kladdkaka",
-      "acceptanceYear": 2016
-    },
-    {
-      "id": "ec8987d7-4087-461d-bed5-9365086b6e3b",
-      "firstName": "Lane",
-      "lastName": "Twell",
-      "cid": "tltwell",
-      "nick": "Mylta",
-      "acceptanceYear": 2012
-    },
-    {
-      "id": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
-      "firstName": "Hy",
-      "lastName": "Borg-Bartolo",
-      "cid": "hborgba",
-      "nick": "Strössel",
-      "acceptanceYear": 2017
-    },
-    {
-      "id": "858e5acc-c289-40d3-9422-d6d317f40299",
-      "firstName": "Sorcha",
-      "lastName": "Vanni",
-      "cid": "svanni",
-      "nick": "Våffla",
-      "acceptanceYear": 2016
-    },
-    {
-      "id": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
-      "firstName": "Hobey",
-      "lastName": "Spaarritt",
-      "cid": "hsparritt",
-      "nick": "Fruktsallad",
-      "acceptanceYear": 2007
-    },
-    {
-      "id": "4efb340f-540c-4b15-a362-d402aab10195",
-      "firstName": "Wolfy",
-      "lastName": "Bulloch",
-      "cid": "wbulloch",
-      "nick": "Crème brûlée",
-      "acceptanceYear": 2018
-    },
-    {
-      "id": "08e4abb5-e4d6-413b-94f2-6e1aa63716e7",
-      "firstName": "Dolly",
-      "lastName": "Mathy",
-      "cid": "dmathy",
-      "nick": "Glassbomb",
-      "acceptanceYear": 2017
-    },
-    {
-      "id": "43af2838-43b9-4665-b3d7-9c615f5038fb",
-      "firstName": "Matelda",
-      "lastName": "Novotne",
-      "cid": "mnovotne",
-      "nick": "Chokladpudding",
-      "acceptanceYear": 2011
-    },
-    {
-      "id": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-      "firstName": "Farra",
-      "lastName": "Longshaw",
-      "cid": "flongshaw",
-      "nick": "Äppelmos",
-      "acceptanceYear": 2013
-    },
-    {
-      "id": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
-      "firstName": "Dorri",
-      "lastName": "Barneville",
-      "cid": "dbarnevi",
-      "nick": "Chokladtryffel",
-      "acceptanceYear": 2002
-    },
-    {
-      "id": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
-      "firstName": "Alberik",
-      "lastName": "Nunson",
-      "cid": "anunson",
-      "nick": "O’hoj",
-      "acceptanceYear": 2004
-    },
-    {
-      "id": "e6a76e6a-3499-4611-ae28-e1281ffa6e80",
-      "firstName": "Joyce",
-      "lastName": "Hanhard",
-      "cid": "jhanhard",
-      "nick": "Marängsviss",
-      "acceptanceYear": 2016
+  "users": [ {
+    "id": "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f",
+    "firstName": "Wyatt",
+    "lastName": "MacMakin",
+    "cid": "wmacmak",
+    "nick": "Chokladkaka",
+    "acceptanceYear": 2014,
+    "admin": true
+  }, {
+    "id": "bc605869-9a4d-46ec-8a29-d00819d4c195",
+    "firstName": "Mellie",
+    "lastName": "Juorio",
+    "cid": "mjuorio",
+    "nick": "Kladdkaka",
+    "acceptanceYear": 2016
+  }, {
+    "id": "ec8987d7-4087-461d-bed5-9365086b6e3b",
+    "firstName": "Lane",
+    "lastName": "Twell",
+    "cid": "tltwell",
+    "nick": "Mylta",
+    "acceptanceYear": 2012
+  }, {
+    "id": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
+    "firstName": "Hy",
+    "lastName": "Borg-Bartolo",
+    "cid": "hborgba",
+    "nick": "Strössel",
+    "acceptanceYear": 2017
+  }, {
+    "id": "858e5acc-c289-40d3-9422-d6d317f40299",
+    "firstName": "Sorcha",
+    "lastName": "Vanni",
+    "cid": "svanni",
+    "nick": "Våffla",
+    "acceptanceYear": 2016
+  }, {
+    "id": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
+    "firstName": "Hobey",
+    "lastName": "Spaarritt",
+    "cid": "hsparritt",
+    "nick": "Fruktsallad",
+    "acceptanceYear": 2007
+  }, {
+    "id": "4efb340f-540c-4b15-a362-d402aab10195",
+    "firstName": "Wolfy",
+    "lastName": "Bulloch",
+    "cid": "wbulloch",
+    "nick": "Crème brûlée",
+    "acceptanceYear": 2018
+  }, {
+    "id": "08e4abb5-e4d6-413b-94f2-6e1aa63716e7",
+    "firstName": "Dolly",
+    "lastName": "Mathy",
+    "cid": "dmathy",
+    "nick": "Glassbomb",
+    "acceptanceYear": 2017
+  }, {
+    "id": "43af2838-43b9-4665-b3d7-9c615f5038fb",
+    "firstName": "Matelda",
+    "lastName": "Novotne",
+    "cid": "mnovotne",
+    "nick": "Chokladpudding",
+    "acceptanceYear": 2011
+  }, {
+    "id": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+    "firstName": "Farra",
+    "lastName": "Longshaw",
+    "cid": "flongshaw",
+    "nick": "Äppelmos",
+    "acceptanceYear": 2013
+  }, {
+    "id": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
+    "firstName": "Dorri",
+    "lastName": "Barneville",
+    "cid": "dbarnevi",
+    "nick": "Chokladtryffel",
+    "acceptanceYear": 2002
+  }, {
+    "id": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
+    "firstName": "Alberik",
+    "lastName": "Nunson",
+    "cid": "anunson",
+    "nick": "O’hoj",
+    "acceptanceYear": 2004
+  }, {
+    "id": "e6a76e6a-3499-4611-ae28-e1281ffa6e80",
+    "firstName": "Joyce",
+    "lastName": "Hanhard",
+    "cid": "jhanhard",
+    "nick": "Marängsviss",
+    "acceptanceYear": 2016
+  } ],
+  "groups": [ {
+    "id": "047ac437-a789-4cc5-bb6e-ba50efd7c509",
+    "name": "digit",
+    "prettyName": "digIT",
+    "superGroupId": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
+    "members": [ {
+      "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "root"
+    }, {
+      "userId": "ec8987d7-4087-461d-bed5-9365086b6e3b",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "cache-chef"
+    }, {
+      "userId": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "dev-ooops"
+    } ]
+  }, {
+    "id": "2abe2264-fd61-4899-ba46-851279d85229",
+    "name": "digit",
+    "prettyName": "digIT",
+    "superGroupId": "aed27030-ad90-4526-855c-1e909b1dcecb",
+    "members": [ {
+      "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "root"
+    }, {
+      "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "cache-chef"
+    }, {
+      "userId": "4efb340f-540c-4b15-a362-d402aab10195",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "dev-ooops"
+    } ]
+  }, {
+    "id": "a2f06d3a-7432-4655-a778-69c9142912f1",
+    "name": "styrit",
+    "prettyName": "styrIT",
+    "superGroupId": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
+    "members": [ {
+      "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "Ordf"
+    }, {
+      "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "Kassör"
+    }, {
+      "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "IT-ansvarig"
+    }, {
+      "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
+      "postId": "524db9a7-e8be-403e-a07c-a41803ea5ee7",
+      "unofficialPostName": "VO"
+    } ]
+  }, {
+    "id": "834651d1-34c1-4bac-b148-6546368a8454",
+    "name": "styrit",
+    "prettyName": "styrIT",
+    "superGroupId": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
+    "members": [ {
+      "userId": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "Ordf"
+    }, {
+      "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "Kassör"
+    }, {
+      "userId": "ec8987d7-4087-461d-bed5-9365086b6e3b",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "IT-ansvarig"
+    }, {
+      "userId": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
+      "postId": "524db9a7-e8be-403e-a07c-a41803ea5ee7",
+      "unofficialPostName": "VO"
+    } ]
+  }, {
+    "id": "672db849-8afb-4160-9f12-7f8c1d379fcc",
+    "name": "drawit",
+    "prettyName": "DrawIT",
+    "superGroupId": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
+    "members": [ {
+      "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "Ordf"
+    }, {
+      "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "Kassör"
+    }, {
+      "userId": "4efb340f-540c-4b15-a362-d402aab10195",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "Knapansvarig"
+    } ]
+  }, {
+    "id": "9b239de9-88a3-4992-96d1-b8dea2a637ec",
+    "name": "drawit",
+    "prettyName": "DrawIT",
+    "superGroupId": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
+    "members": [ {
+      "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "Ordf"
+    }, {
+      "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "Kassör"
+    }, {
+      "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "Knapansvarig"
+    } ]
+  }, {
+    "id": "5f26a10c-e668-4ec1-b072-a7dd8f11735c",
+    "name": "prit",
+    "prettyName": "P.R.I.T.",
+    "superGroupId": "326807b4-ae68-4626-8382-919a15a8e23c",
+    "members": [ {
+      "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "ChefChef"
+    }, {
+      "userId": "e6a76e6a-3499-4611-ae28-e1281ffa6e80",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "Ka$$Chef"
+    }, {
+      "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "BösChef"
+    } ]
+  }, {
+    "id": "1ed91274-13c8-4d6d-ab75-37c9d732b51b",
+    "name": "prit",
+    "prettyName": "P.R.I.T.",
+    "superGroupId": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
+    "members": [ {
+      "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+      "unofficialPostName": "ChefChef"
+    }, {
+      "userId": "ec8987d7-4087-461d-bed5-9365086b6e3b",
+      "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
+      "unofficialPostName": "Ka$$Chef"
+    }, {
+      "userId": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+      "unofficialPostName": "BösChef"
+    } ]
+  }, {
+    "id": "ee4153d5-830d-445f-acb3-ec09c53e7c0c",
+    "name": "kandidatmiddagen",
+    "prettyName": "Kandidatmiddagen",
+    "superGroupId": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
+    "members": [ {
+      "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8"
+    }, {
+      "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58"
+    }, {
+      "userId": "4efb340f-540c-4b15-a362-d402aab10195",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58"
+    }, {
+      "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
+      "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58"
+    } ]
+  } ],
+  "superGroups": [ {
+    "id": "aed27030-ad90-4526-855c-1e909b1dcecb",
+    "name": "digit",
+    "prettyName": "digIT",
+    "type": "COMMITTEE"
+  }, {
+    "id": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
+    "name": "styrit",
+    "prettyName": "styrIT",
+    "type": "BOARD"
+  }, {
+    "id": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
+    "name": "drawit",
+    "prettyName": "DrawIT",
+    "type": "SOCIETY"
+  }, {
+    "id": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
+    "name": "prit",
+    "prettyName": "P.R.I.T.",
+    "type": "COMMITTEE"
+  }, {
+    "id": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
+    "name": "didit",
+    "prettyName": "didIT",
+    "type": "ALUMNI"
+  }, {
+    "id": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
+    "name": "emeritus",
+    "prettyName": "EmerITus",
+    "type": "ALUMNI"
+  }, {
+    "id": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
+    "name": "dragit",
+    "prettyName": "DragIT",
+    "type": "ALUMNI"
+  }, {
+    "id": "326807b4-ae68-4626-8382-919a15a8e23c",
+    "name": "sprit",
+    "prettyName": "S.P.R.I.T.",
+    "type": "ALUMNI"
+  }, {
+    "id": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
+    "name": "kandidatmiddagen",
+    "prettyName": "Kandidatmiddagen",
+    "type": "FUNCTIONARIES"
+  } ],
+  "posts": [ {
+    "id": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
+    "postName": {
+      "sv": "Ordförande",
+      "en": "Chairman"
     }
-  ],
-  "groups": [
-    {
-      "id": "047ac437-a789-4cc5-bb6e-ba50efd7c509",
-      "name": "digit",
-      "prettyName": "digIT",
-      "superGroupId": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
-      "members": [
-        {
-          "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "root"
-        },
-        {
-          "userId": "ec8987d7-4087-461d-bed5-9365086b6e3b",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "cache-chef"
-        },
-        {
-          "userId": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "dev-ooops"
-        }
-      ]
-    },
-    {
-      "id": "2abe2264-fd61-4899-ba46-851279d85229",
-      "name": "digit",
-      "prettyName": "digIT",
-      "superGroupId": "aed27030-ad90-4526-855c-1e909b1dcecb",
-      "members": [
-        {
-          "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "root"
-        },
-        {
-          "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "cache-chef"
-        },
-        {
-          "userId": "4efb340f-540c-4b15-a362-d402aab10195",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "dev-ooops"
-        }
-      ]
-    },
-    {
-      "id": "a2f06d3a-7432-4655-a778-69c9142912f1",
-      "name": "styrit",
-      "prettyName": "styrIT",
-      "superGroupId": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
-      "members": [
-        {
-          "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "Ordf"
-        },
-        {
-          "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "Kassör"
-        },
-        {
-          "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "IT-ansvarig"
-        },
-        {
-          "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
-          "postId": "524db9a7-e8be-403e-a07c-a41803ea5ee7",
-          "unofficialPostName": "VO"
-        }
-      ]
-    },
-    {
-      "id": "834651d1-34c1-4bac-b148-6546368a8454",
-      "name": "styrit",
-      "prettyName": "styrIT",
-      "superGroupId": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
-      "members": [
-        {
-          "userId": "4fcf6566-45d8-4d5d-b7d4-4f6f52bb0ac2",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "Ordf"
-        },
-        {
-          "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "Kassör"
-        },
-        {
-          "userId": "ec8987d7-4087-461d-bed5-9365086b6e3b",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "IT-ansvarig"
-        },
-        {
-          "userId": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
-          "postId": "524db9a7-e8be-403e-a07c-a41803ea5ee7",
-          "unofficialPostName": "VO"
-        }
-      ]
-    },
-    {
-      "id": "672db849-8afb-4160-9f12-7f8c1d379fcc",
-      "name": "drawit",
-      "prettyName": "DrawIT",
-      "superGroupId": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
-      "members": [
-        {
-          "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "Ordf"
-        },
-        {
-          "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "Kassör"
-        },
-        {
-          "userId": "4efb340f-540c-4b15-a362-d402aab10195",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "Knapansvarig"
-        }
-      ]
-    },
-    {
-      "id": "9b239de9-88a3-4992-96d1-b8dea2a637ec",
-      "name": "drawit",
-      "prettyName": "DrawIT",
-      "superGroupId": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
-      "members": [
-        {
-          "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "Ordf"
-        },
-        {
-          "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "Kassör"
-        },
-        {
-          "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "Knapansvarig"
-        }
-      ]
-    },
-    {
-      "id": "5f26a10c-e668-4ec1-b072-a7dd8f11735c",
-      "name": "prit",
-      "prettyName": "P.R.I.T.",
-      "superGroupId": "326807b4-ae68-4626-8382-919a15a8e23c",
-      "members": [
-        {
-          "userId": "0a799f6d-c65a-4d20-8588-2ff5375d6cce",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "ChefChef"
-        },
-        {
-          "userId": "e6a76e6a-3499-4611-ae28-e1281ffa6e80",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "Ka$$Chef"
-        },
-        {
-          "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "BösChef"
-        }
-      ]
-    },
-    {
-      "id": "1ed91274-13c8-4d6d-ab75-37c9d732b51b",
-      "name": "prit",
-      "prettyName": "P.R.I.T.",
-      "superGroupId": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
-      "members": [
-        {
-          "userId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-          "unofficialPostName": "ChefChef"
-        },
-        {
-          "userId": "ec8987d7-4087-461d-bed5-9365086b6e3b",
-          "postId": "844067b3-e95d-4a28-a586-7388f155b8fb",
-          "unofficialPostName": "Ka$$Chef"
-        },
-        {
-          "userId": "0c67c90b-dfdf-473a-98e3-b551e2f2f0f1",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-          "unofficialPostName": "BösChef"
-        }
-      ]
-    },
-    {
-      "id": "ee4153d5-830d-445f-acb3-ec09c53e7c0c",
-      "name": "kandidatmiddagen",
-      "prettyName": "Kandidatmiddagen",
-      "superGroupId": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
-      "members": [
-        {
-          "userId": "858e5acc-c289-40d3-9422-d6d317f40299",
-          "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8"
-        },
-        {
-          "userId": "9ad8946d-cfef-4f6f-8b48-cfb536d0c9eb",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58"
-        },
-        {
-          "userId": "4efb340f-540c-4b15-a362-d402aab10195",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58"
-        },
-        {
-          "userId": "4542ab3d-7996-4097-ae4a-4fe61eaf2f20",
-          "postId": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58"
-        }
-      ]
+  }, {
+    "id": "844067b3-e95d-4a28-a586-7388f155b8fb",
+    "postName": {
+      "sv": "Kassör",
+      "en": "Treasurer"
     }
-  ],
-  "superGroups": [
-    {
-      "id": "aed27030-ad90-4526-855c-1e909b1dcecb",
-      "name": "digit",
-      "prettyName": "digIT",
-      "type": "COMMITTEE"
-    },
-    {
-      "id": "2157ee72-04cd-4029-8d57-77142d3ef5fa",
-      "name": "styrit",
-      "prettyName": "styrIT",
-      "type": "BOARD"
-    },
-    {
-      "id": "b8dbca3a-52e7-4299-9499-e58ec93a0c2c",
-      "name": "drawit",
-      "prettyName": "DrawIT",
-      "type": "SOCIETY"
-    },
-    {
-      "id": "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1",
-      "name": "prit",
-      "prettyName": "P.R.I.T.",
-      "type": "COMMITTEE"
-    },
-    {
-      "id": "364a359a-f9eb-4d81-bb99-25cc5adf176d",
-      "name": "didit",
-      "prettyName": "didIT",
-      "type": "ALUMNI"
-    },
-    {
-      "id": "30c2ee3b-b761-46d0-9029-215a9b484f7a",
-      "name": "emeritus",
-      "prettyName": "EmerITus",
-      "type": "ALUMNI"
-    },
-    {
-      "id": "5a427d4d-adb7-4de7-9c87-a569014c7b58",
-      "name": "dragit",
-      "prettyName": "DragIT",
-      "type": "ALUMNI"
-    },
-    {
-      "id": "326807b4-ae68-4626-8382-919a15a8e23c",
-      "name": "sprit",
-      "prettyName": "S.P.R.I.T.",
-      "type": "ALUMNI"
-    },
-    {
-      "id": "712e21f5-f3c6-49fc-a9e7-5b7ec3ff31ab",
-      "name": "kandidatmiddagen",
-      "prettyName": "Kandidatmiddagen",
-      "type": "FUNCTIONARIES"
+  }, {
+    "id": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
+    "postName": {
+      "sv": "Ledamot",
+      "en": "Member"
     }
-  ],
-  "posts": [
-    {
-      "id": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8",
-      "postName": {
-        "sv": "Ordförande",
-        "en": "Chairman"
-      }
-    },
-    {
-      "id": "844067b3-e95d-4a28-a586-7388f155b8fb",
-      "postName": {
-        "sv": "Kassör",
-        "en": "Treasurer"
-      }
-    },
-    {
-      "id": "08efcf3a-1805-4b5f-a60e-da6ce0d33f58",
-      "postName": {
-        "sv": "Ledamot",
-        "en": "Member"
-      }
-    },
-    {
-      "id": "524db9a7-e8be-403e-a07c-a41803ea5ee7",
-      "postName": {
-        "sv": "Vice Ordförande",
-        "en": "Vice-chairman"
-      }
+  }, {
+    "id": "524db9a7-e8be-403e-a07c-a41803ea5ee7",
+    "postName": {
+      "sv": "Vice Ordförande",
+      "en": "Vice-chairman"
     }
-  ]
+  } ]
 }

@@ -4,44 +4,42 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Transient;
-import org.springframework.data.domain.Persistable;
-
 import java.util.Objects;
+import org.springframework.data.domain.Persistable;
 
 @MappedSuperclass
 public abstract class AbstractEntity<ID> implements Persistable<ID> {
 
-    @Transient
-    private boolean persisted = false;
+  @Transient private boolean persisted = false;
 
-    @PostPersist
-    @PostLoad
-    void setPersisted() {
-        persisted = true;
+  @PostPersist
+  @PostLoad
+  void setPersisted() {
+    persisted = true;
+  }
+
+  @Override
+  public boolean isNew() {
+    return !persisted;
+  }
+
+  @Override
+  public final int hashCode() {
+    assert (getId() != null);
+
+    return Objects.hash(getId().hashCode());
+  }
+
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
 
-    @Override
-    public boolean isNew() {
-        return !persisted;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
 
-    @Override
-    public final int hashCode() {
-        assert (getId() != null);
-
-        return Objects.hash(getId().hashCode());
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return Objects.equals(this.getId(), ((AbstractEntity<?>) o).getId());
-    }
+    return Objects.equals(this.getId(), ((AbstractEntity<?>) o).getId());
+  }
 }

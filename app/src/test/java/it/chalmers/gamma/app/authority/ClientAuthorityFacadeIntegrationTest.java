@@ -20,50 +20,51 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @ActiveProfiles("test")
 @DataJpaTest
-@Import({ClientAuthorityFacade.class,
-        ClientAuthorityRepositoryAdapter.class,
-        SuperGroupRepositoryAdapter.class,
-        SuperGroupEntityConverter.class,
-        ClientAuthorityEntityConverter.class,
-        SuperGroupEntityConverter.class,
-        UserEntityConverter.class,
-        UserAccessGuard.class,
-        PostEntityConverter.class,
-        UserRepositoryAdapter.class,
-        PasswordConfiguration.class,
-        PostRepositoryAdapter.class,
-        SuperGroupRepositoryAdapter.class,
-        SettingsRepositoryAdapter.class
+@Import({
+  ClientAuthorityFacade.class,
+  ClientAuthorityRepositoryAdapter.class,
+  SuperGroupRepositoryAdapter.class,
+  SuperGroupEntityConverter.class,
+  ClientAuthorityEntityConverter.class,
+  SuperGroupEntityConverter.class,
+  UserEntityConverter.class,
+  UserAccessGuard.class,
+  PostEntityConverter.class,
+  UserRepositoryAdapter.class,
+  PasswordConfiguration.class,
+  PostRepositoryAdapter.class,
+  SuperGroupRepositoryAdapter.class,
+  SettingsRepositoryAdapter.class
 })
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class ClientAuthorityFacadeIntegrationTest {
-/*
-    @MockBean
-    private AccessGuard accessGuard;
-    @Autowired
-    private ClientAuthorityFacade clientAuthorityFacade;
-    @Autowired
-    private SettingsRepository settingsRepository;
+  /*
+      @MockBean
+      private AccessGuard accessGuard;
+      @Autowired
+      private ClientAuthorityFacade clientAuthorityFacade;
+      @Autowired
+      private SettingsRepository settingsRepository;
 
-    @BeforeEach
-    public void clearSecurityContext() {
-        SecurityContextHolder.clearContext();
-    }
+      @BeforeEach
+      public void clearSecurityContext() {
+          SecurityContextHolder.clearContext();
+      }
 
 
-    @BeforeEach
-    public void setSettings() {
-        this.settingsRepository.setSettings(defaultSettings);
-    }
+      @BeforeEach
+      public void setSettings() {
+          this.settingsRepository.setSettings(defaultSettings);
+      }
 
-    @Test
-    public void Given_ValidAuthorityLevel_Expect_addUserToAuthorityLevel_With_InvalidUser_To_Throw()
-            throws ClientAuthorityRepository.AuthorityLevelAlreadyExistsException {
-        clientAuthorityFacade.create("hello");
+      @Test
+      public void Given_ValidAuthorityLevel_Expect_addUserToAuthorityLevel_With_InvalidUser_To_Throw()
+              throws ClientAuthorityRepository.AuthorityLevelAlreadyExistsException {
+          clientAuthorityFacade.create("hello");
 
-        assertThatExceptionOfType(ClientAuthorityFacade.UserNotFoundException.class)
-                .isThrownBy(() -> clientAuthorityFacade.addUserToAuthorityLevel("hello", UUID.randomUUID()));
-    }
-*/
+          assertThatExceptionOfType(ClientAuthorityFacade.UserNotFoundException.class)
+                  .isThrownBy(() -> clientAuthorityFacade.addUserToAuthorityLevel("hello", UUID.randomUUID()));
+      }
+  */
 }

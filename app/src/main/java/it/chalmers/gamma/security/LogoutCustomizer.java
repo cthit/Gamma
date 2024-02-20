@@ -7,12 +7,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 public class LogoutCustomizer implements Customizer<LogoutConfigurer<HttpSecurity>> {
 
-    @Override
-    public void customize(LogoutConfigurer<HttpSecurity> logout) {
-        logout
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .deleteCookies("gamma");
-    }
-
+  @Override
+  public void customize(LogoutConfigurer<HttpSecurity> logout) {
+    logout
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutSuccessUrl("/login")
+        .deleteCookies("gamma");
+  }
 }

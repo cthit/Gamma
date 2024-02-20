@@ -5,23 +5,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class AuthenticationExtractor {
 
-    private AuthenticationExtractor() {
+  private AuthenticationExtractor() {}
+
+  public static GammaAuthentication getAuthentication() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication == null) {
+      return null;
     }
 
-    public static GammaAuthentication getAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication == null) {
-            return null;
-        }
-
-        if (authentication.getPrincipal() instanceof GammaAuthentication gammaAuthentication) {
-            return gammaAuthentication;
-        } else if (authentication.getDetails() instanceof GammaAuthentication gammaAuthentication) {
-            return gammaAuthentication;
-        } else {
-            return null;
-        }
+    if (authentication.getPrincipal() instanceof GammaAuthentication gammaAuthentication) {
+      return gammaAuthentication;
+    } else if (authentication.getDetails() instanceof GammaAuthentication gammaAuthentication) {
+      return gammaAuthentication;
+    } else {
+      return null;
     }
-
+  }
 }

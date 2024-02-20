@@ -32,119 +32,129 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 @Configuration
 public class SecurityFiltersConfig {
 
-    @Order(1)
-    @Bean
-    public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http, UserInfoMapper userInfoMapper) throws Exception {
-        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+  @Order(1)
+  @Bean
+  public SecurityFilterChain authorizationServerSecurityFilterChain(
+      HttpSecurity http, UserInfoMapper userInfoMapper) throws Exception {
+    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
-        http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-                .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-                        .consentPage("/oauth2/consent")
-                )
-                .oidc(oidcConfigurer -> oidcConfigurer
-                        .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))
-                );
+    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
+        .authorizationEndpoint(
+            authorizationEndpoint -> authorizationEndpoint.consentPage("/oauth2/consent"))
+        .oidc(
+            oidcConfigurer ->
+                oidcConfigurer.userInfoEndpoint(
+                    userInfo -> userInfo.userInfoMapper(userInfoMapper)));
 
-        http
-                .exceptionHandling((exceptions) -> exceptions
-                        .defaultAuthenticationEntryPointFor(
-                                new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
-                                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)
-                        )
-                )
-                .oauth2ResourceServer((resourceServer) -> resourceServer
-                        .jwt(Customizer.withDefaults()));
+    http.exceptionHandling(
+            (exceptions) ->
+                exceptions.defaultAuthenticationEntryPointFor(
+                    new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
+                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+        .oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
 
-        return http.build();
-    }
+    return http.build();
+  }
 
+  @Order(2)
+  @Bean
+  SecurityFilterChain externalSecurityFilterChain(
+      HttpSecurity http, ApiKeyRepository apiKeyRepository, ClientRepository clientRepository)
+      throws Exception {
 
-    @Order(2)
-    @Bean
-    SecurityFilterChain externalSecurityFilterChain(HttpSecurity http,
-                                                    ApiKeyRepository apiKeyRepository,
-                                                    ClientRepository clientRepository)
-            throws Exception {
+    ApiAuthenticationProvider apiAuthenticationProvider =
+        new ApiAuthenticationProvider(apiKeyRepository, clientRepository);
 
-        ApiAuthenticationProvider apiAuthenticationProvider = new ApiAuthenticationProvider(apiKeyRepository, clientRepository);
+    RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api/.+", null);
+    http.securityMatcher(regexRequestMatcher)
+        .addFilterBefore(
+            new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
+            BasicAuthenticationFilter.class)
+        .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        // Since only backends will call this
+        .csrf(csrf -> csrf.disable());
+    return http.build();
+  }
 
-        RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api/.+", null);
-        http
-                .securityMatcher(regexRequestMatcher)
-                .addFilterBefore(new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)), BasicAuthenticationFilter.class)
-                .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                //Since only backends will call this
-                .csrf(csrf -> csrf.disable());
-        return http.build();
-    }
+  @Order(3)
+  @Bean
+  SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
+    http.securityMatcher("\\/images.+")
+        .authorizeHttpRequests(authorization -> authorization.anyRequest().permitAll())
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf -> csrf.disable());
+    return http.build();
+  }
 
-    @Order(3)
-    @Bean
-    SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .securityMatcher("\\/images.+")
-                .authorizeHttpRequests(authorization ->
-                        authorization.anyRequest().permitAll()
-                )
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .csrf(csrf -> csrf.disable());
-        return http.build();
-    }
+  /** Sets up the security for web interface */
+  @Order(4)
+  @Bean
+  SecurityFilterChain webSecurityFilterChain(
+      HttpSecurity http,
+      PasswordEncoder passwordEncoder,
+      UserJpaRepository userJpaRepository,
+      AdminRepository adminRepository)
+      throws Exception {
 
-    /**
-     * Sets up the security for web interface
-     */
-    @Order(4)
-    @Bean
-    SecurityFilterChain webSecurityFilterChain(HttpSecurity http,
-                                               PasswordEncoder passwordEncoder,
-                                               UserJpaRepository userJpaRepository,
-                                               AdminRepository adminRepository) throws Exception {
+    TrustedUserDetailsRepository trustedUserDetails =
+        new TrustedUserDetailsRepository(userJpaRepository);
 
-        TrustedUserDetailsRepository trustedUserDetails = new TrustedUserDetailsRepository(userJpaRepository);
+    DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
+    userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
+    userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
-        DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
-        userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
-        userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+    http.addFilterAfter(
+            new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
+            UsernamePasswordAuthenticationFilter.class)
+        .authorizeHttpRequests(
+            authorize ->
+                authorize
+                    .requestMatchers(HttpMethod.GET, "/img/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/js/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/webjars/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/login")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.POST, "/login")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.GET, "/activate-cid")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.POST, "/activate-cid")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.GET, "/email-sent")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.GET, "/register")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.POST, "/register")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.GET, "/forgot-password")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.POST, "/forgot-password")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.GET, "/forgot-password/finalize")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.POST, "/forgot-password/finalize")
+                    .anonymous()
+                    .requestMatchers(HttpMethod.GET, "/robots.txt")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .formLogin(new LoginCustomizer())
+        .logout(new LogoutCustomizer())
+        .authenticationProvider(userAuthenticationProvider)
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+        .cors(Customizer.withDefaults())
+        .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()));
 
-        http
-                .addFilterAfter(new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository), UsernamePasswordAuthenticationFilter.class)
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/img/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/js/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/webjars/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/login").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/activate-cid").anonymous()
-                        .requestMatchers(HttpMethod.POST, "/activate-cid").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/email-sent").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/register").anonymous()
-                        .requestMatchers(HttpMethod.POST, "/register").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/forgot-password").anonymous()
-                        .requestMatchers(HttpMethod.POST, "/forgot-password").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/forgot-password/finalize").anonymous()
-                        .requestMatchers(HttpMethod.POST, "/forgot-password/finalize").anonymous()
-                        .requestMatchers(HttpMethod.GET, "/robots.txt").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(new LoginCustomizer())
-                .logout(new LogoutCustomizer())
-                .authenticationProvider(userAuthenticationProvider)
-                .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-                .cors(Customizer.withDefaults())
-                .csrf((csrf) -> csrf
-                        .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler())
-                );
-
-        return http.build();
-    }
-
-
+    return http.build();
+  }
 }

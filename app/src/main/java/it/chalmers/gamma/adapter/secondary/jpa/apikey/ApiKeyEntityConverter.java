@@ -9,14 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApiKeyEntityConverter {
 
-    public ApiKey toDomain(ApiKeyEntity entity) {
-        return new ApiKey(
-                new ApiKeyId(entity.getId()),
-                new PrettyName(entity.getPrettyName()),
-                entity.getDescription().toDomain(),
-                entity.getKeyType(),
-                new ApiKeyToken(entity.getToken())
-        );
-    }
-
+  public ApiKey toDomain(ApiKeyEntity entity) {
+    return new ApiKey(
+        new ApiKeyId(entity.getId()),
+        new PrettyName(entity.getPrettyName()),
+        entity.getDescription().toDomain(),
+        entity.getKeyType(),
+        new ApiKeyToken(entity.getToken()));
+  }
 }

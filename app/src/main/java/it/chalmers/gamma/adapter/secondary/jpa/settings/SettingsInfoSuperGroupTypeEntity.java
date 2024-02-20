@@ -9,25 +9,24 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "g_settings_info_api_super_group_types")
-public class SettingsInfoSuperGroupTypeEntity extends ImmutableEntity<SettingsInfoSuperGroupTypePK> {
+public class SettingsInfoSuperGroupTypeEntity
+    extends ImmutableEntity<SettingsInfoSuperGroupTypePK> {
 
-    @EmbeddedId
-    private SettingsInfoSuperGroupTypePK id;
+  @EmbeddedId private SettingsInfoSuperGroupTypePK id;
 
-    protected SettingsInfoSuperGroupTypeEntity() {
-    }
+  protected SettingsInfoSuperGroupTypeEntity() {}
 
-    protected SettingsInfoSuperGroupTypeEntity(SettingsEntity settingsEntity, SuperGroupTypeEntity superGroupTypeEntity) {
-        this.id = new SettingsInfoSuperGroupTypePK(settingsEntity, superGroupTypeEntity);
-    }
+  protected SettingsInfoSuperGroupTypeEntity(
+      SettingsEntity settingsEntity, SuperGroupTypeEntity superGroupTypeEntity) {
+    this.id = new SettingsInfoSuperGroupTypePK(settingsEntity, superGroupTypeEntity);
+  }
 
-    @Override
-    public SettingsInfoSuperGroupTypePK getId() {
-        return this.id;
-    }
+  @Override
+  public SettingsInfoSuperGroupTypePK getId() {
+    return this.id;
+  }
 
-    public SuperGroupType getSuperGroupType() {
-        return this.id.getValue().superGroupType();
-    }
-
+  public SuperGroupType getSuperGroupType() {
+    return this.id.getValue().superGroupType();
+  }
 }

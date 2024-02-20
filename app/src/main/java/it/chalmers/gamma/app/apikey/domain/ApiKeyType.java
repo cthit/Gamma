@@ -6,14 +6,14 @@ import it.chalmers.gamma.adapter.primary.api.goldapps.GoldappsV1ApiController;
 import it.chalmers.gamma.adapter.primary.api.info.InfoV1ApiController;
 
 public enum ApiKeyType {
-    CLIENT(ClientApiV1Controller.URI),
-    GOLDAPPS(GoldappsV1ApiController.URI),
-    INFO(InfoV1ApiController.URI),
-    ALLOW_LIST(AllowListV1ApiController.URI);
+  CLIENT(ClientApiV1Controller.URI),
+  GOLDAPPS(GoldappsV1ApiController.URI),
+  INFO(InfoV1ApiController.URI),
+  ALLOW_LIST(AllowListV1ApiController.URI);
 
-    public final String URI;
+  public final String URI;
 
-    ApiKeyType(String uri) {
-        this.URI = uri;
-    }
+  ApiKeyType(String uri) {
+    this.URI = uri;
+  }
 }

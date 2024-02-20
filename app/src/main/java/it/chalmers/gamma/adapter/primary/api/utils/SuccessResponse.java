@@ -6,22 +6,20 @@ import org.springframework.http.ResponseEntity;
 
 public class SuccessResponse extends ResponseEntity<SuccessResponse.SuccessResponseData> {
 
-    public SuccessResponse() {
-        super(HttpStatus.OK);
-    }
+  public SuccessResponse() {
+    super(HttpStatus.OK);
+  }
 
-    public SuccessResponse(HttpStatus status) {
-        super(status);
-    }
+  public SuccessResponse(HttpStatus status) {
+    super(status);
+  }
 
-    @Override
-    public SuccessResponseData getBody() {
-        return new SuccessResponseData(
-                ClassNameGeneratorUtils.classToScreamingSnakeCase(this.getClass()),
-                this.getStatusCode().value()
-        );
-    }
+  @Override
+  public SuccessResponseData getBody() {
+    return new SuccessResponseData(
+        ClassNameGeneratorUtils.classToScreamingSnakeCase(this.getClass()),
+        this.getStatusCode().value());
+  }
 
-    public record SuccessResponseData(String name, int code) { }
-
+  public record SuccessResponseData(String name, int code) {}
 }

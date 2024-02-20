@@ -1,35 +1,31 @@
 package it.chalmers.gamma.app.user.activation.domain;
 
 import it.chalmers.gamma.app.user.domain.Cid;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface UserActivationRepository {
 
-    /**
-     * Creates an activation token that is connected to the cid.
-     * If there already is a token generated, then a new one will be generated.
-     *
-     * @param cid A cid that has been allowed
-     * @return A token that can be used to create an account with the given cid
-     */
-    UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException;
+  /**
+   * Creates an activation token that is connected to the cid. If there already is a token
+   * generated, then a new one will be generated.
+   *
+   * @param cid A cid that has been allowed
+   * @return A token that can be used to create an account with the given cid
+   */
+  UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException;
 
-    Optional<UserActivation> get(Cid cid);
+  Optional<UserActivation> get(Cid cid);
 
-    List<UserActivation> getAll();
+  List<UserActivation> getAll();
 
-    Cid getByToken(UserActivationToken token) throws TokenNotActivatedException;
+  Cid getByToken(UserActivationToken token) throws TokenNotActivatedException;
 
-    void removeActivation(Cid cid) throws CidNotActivatedException;
+  void removeActivation(Cid cid) throws CidNotActivatedException;
 
-    class TokenNotActivatedException extends RuntimeException {
-    }
+  class TokenNotActivatedException extends RuntimeException {}
 
-    class CidNotActivatedException extends RuntimeException {
-    }
+  class CidNotActivatedException extends RuntimeException {}
 
-    class CidNotAllowedException extends Exception {
-    }
+  class CidNotAllowedException extends Exception {}
 }

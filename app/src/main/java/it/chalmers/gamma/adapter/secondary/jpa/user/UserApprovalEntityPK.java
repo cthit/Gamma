@@ -11,40 +11,33 @@ import jakarta.persistence.ManyToOne;
 @Embeddable
 public class UserApprovalEntityPK extends PKId<UserApprovalEntityPK.UserApprovalPKDTO> {
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private UserEntity user;
 
-    @ManyToOne
-    @JoinColumn(name = "client_uid")
-    private ClientEntity client;
+  @ManyToOne
+  @JoinColumn(name = "client_uid")
+  private ClientEntity client;
 
-    protected UserApprovalEntityPK() {
-    }
+  protected UserApprovalEntityPK() {}
 
-    public UserApprovalEntityPK(UserEntity user, ClientEntity client) {
-        this.user = user;
-        this.client = client;
-    }
+  public UserApprovalEntityPK(UserEntity user, ClientEntity client) {
+    this.user = user;
+    this.client = client;
+  }
 
-    public UserEntity getUserEntity() {
-        return this.user;
-    }
+  public UserEntity getUserEntity() {
+    return this.user;
+  }
 
-    public ClientEntity getClientEntity() {
-        return this.client;
-    }
+  public ClientEntity getClientEntity() {
+    return this.client;
+  }
 
-    @Override
-    public UserApprovalPKDTO getValue() {
-        return new UserApprovalPKDTO(
-                new UserId(this.user.getId()),
-                new ClientUid(this.client.getId())
-        );
-    }
+  @Override
+  public UserApprovalPKDTO getValue() {
+    return new UserApprovalPKDTO(new UserId(this.user.getId()), new ClientUid(this.client.getId()));
+  }
 
-    protected record UserApprovalPKDTO(UserId userId, ClientUid clientUid) {
-
-
-    }
+  protected record UserApprovalPKDTO(UserId userId, ClientUid clientUid) {}
 }

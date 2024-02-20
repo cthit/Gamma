@@ -1,6 +1,5 @@
 package it.chalmers.gamma;
 
-
 import it.chalmers.gamma.bootstrap.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -10,40 +9,40 @@ import org.springframework.stereotype.Component;
 @Component
 public class BootstrapRunner {
 
-    @Bean
-    public CommandLineRunner runBootStrap(ApiKeyBootstrap apiKeyBootstrap,
-                                          ClientBootstrap clientBootstrap,
-                                          EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
-                                          EnsureSettingsBootstrap ensureSettingsBootstrap,
-                                          GroupBootstrap groupBootstrap,
-                                          MiscBootstrap miscBootstrap,
-                                          PostBootstrap postBootstrap,
-                                          SuperGroupBootstrap superGroupBootstrap,
-                                          UserBootstrap userBootstrap) {
-        return (args) -> {
-            try {
-                SecurityContextHolder.createEmptyContext();
-                SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
+  @Bean
+  public CommandLineRunner runBootStrap(
+      ApiKeyBootstrap apiKeyBootstrap,
+      ClientBootstrap clientBootstrap,
+      EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
+      EnsureSettingsBootstrap ensureSettingsBootstrap,
+      GroupBootstrap groupBootstrap,
+      MiscBootstrap miscBootstrap,
+      PostBootstrap postBootstrap,
+      SuperGroupBootstrap superGroupBootstrap,
+      UserBootstrap userBootstrap) {
+    return (args) -> {
+      try {
+        SecurityContextHolder.createEmptyContext();
+        SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
 
-                miscBootstrap.runImageBootstrap();
+        miscBootstrap.runImageBootstrap();
 
-                ensureSettingsBootstrap.ensureAppSettings();
+        ensureSettingsBootstrap.ensureAppSettings();
 
-                ensureAnAdminUserBootstrap.ensureAnAdminUser();
+        ensureAnAdminUserBootstrap.ensureAnAdminUser();
 
-                userBootstrap.createUsers();
-                postBootstrap.createPosts();
-                superGroupBootstrap.createSuperGroups();
-                groupBootstrap.createGroups();
+        userBootstrap.createUsers();
+        postBootstrap.createPosts();
+        superGroupBootstrap.createSuperGroups();
+        groupBootstrap.createGroups();
 
-                clientBootstrap.runOauthClient();
-                apiKeyBootstrap.ensureApiKeys();
+        clientBootstrap.runOauthClient();
+        apiKeyBootstrap.ensureApiKeys();
 
-                SecurityContextHolder.clearContext();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        };
-    }
-
+        SecurityContextHolder.clearContext();
+      } catch (Throwable throwable) {
+        throwable.printStackTrace();
+      }
+    };
+  }
 }

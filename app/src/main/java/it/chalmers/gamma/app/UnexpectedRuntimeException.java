@@ -1,5 +1,3 @@
 package it.chalmers.gamma.app;
 
-public class UnexpectedRuntimeException extends RuntimeException {
-
-}
+public class UnexpectedRuntimeException extends RuntimeException {}

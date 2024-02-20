@@ -1,4 +1,3 @@
 package it.chalmers.gamma.adapter.secondary.jpa;
 
-public @interface EntityIntegrationTest {
-}
+public @interface EntityIntegrationTest {}

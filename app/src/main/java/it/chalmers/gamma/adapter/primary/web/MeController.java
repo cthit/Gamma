@@ -14,157 +14,143 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class MeController {
 
-    private final MeFacade meFacade;
+  private final MeFacade meFacade;
 
-    public MeController(MeFacade meFacade) {
-        this.meFacade = meFacade;
+  public MeController(MeFacade meFacade) {
+    this.meFacade = meFacade;
+  }
+
+  @GetMapping("/me")
+  public ModelAndView getMe(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+
+    if (htmxRequest) {
+      mv.setViewName("pages/me");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/me");
     }
 
-    @GetMapping("/me")
-    public ModelAndView getMe(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
-        ModelAndView mv = new ModelAndView();
+    MeFacade.MeDTO me = this.meFacade.getMe();
 
-        if(htmxRequest) {
-            mv.setViewName("pages/me");
-        } else {
-            mv.setViewName("index");
-            mv.addObject("page", "pages/me");
-        }
+    mv.addObject("me", me);
+    mv.addObject("random", Math.random());
 
-        MeFacade.MeDTO me = this.meFacade.getMe();
+    return mv;
+  }
 
-        mv.addObject("me", me);
-        mv.addObject("random", Math.random());
+  public record EditMe(
+      String nick, String firstName, String lastName, String email, String language) {}
 
-        return mv;
+  @GetMapping("/me/edit")
+  public ModelAndView getEditMe(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+    MeFacade.MeDTO me = this.meFacade.getMe();
+
+    ModelAndView mv = new ModelAndView();
+
+    EditMe form = new EditMe(me.nick(), me.firstName(), me.lastName(), me.email(), me.language());
+
+    mv.setViewName("partial/edit-me");
+    mv.addObject("form", form);
+
+    return mv;
+  }
+
+  @PutMapping("/me")
+  public ModelAndView editMe(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, EditMe form) {
+    this.meFacade.updateMe(
+        new MeFacade.UpdateMe(form.nick, form.firstName, form.lastName, form.email, form.language));
+
+    ModelAndView mv = new ModelAndView();
+
+    // TODO: Use only getMe
+    MeFacade.MeDTO me = this.meFacade.getMe();
+
+    mv.setViewName("partial/edited-me");
+    mv.addObject(
+        "me",
+        new MeFacade.MeDTO(
+            form.nick,
+            form.firstName,
+            form.lastName,
+            me.cid(),
+            form.email,
+            me.id(),
+            me.acceptanceYear(),
+            me.groups(),
+            form.language,
+            me.isAdmin()));
+
+    return mv;
+  }
+
+  @GetMapping("/me/cancel-edit")
+  public ModelAndView getCancelEdit(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+
+    // TODO: Use only getMe
+    MeFacade.MeDTO me = this.meFacade.getMe();
+
+    mv.setViewName("pages/me :: userinfo");
+    mv.addObject("me", me);
+
+    return mv;
+  }
+
+  public record EditPasswordForm(
+      String currentPassword, String newPassword, String confirmNewPassword) {}
+
+  @GetMapping("/me/edit-password")
+  public ModelAndView getEditPassword(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+
+    mv.setViewName("partial/edit-me-password");
+    mv.addObject("form", new EditPasswordForm("", "", ""));
+
+    return mv;
+  }
+
+  @PutMapping("/me/edit-password")
+  public ModelAndView editPassword(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      EditPasswordForm form) {
+    // TODO: Move validation to facade
+    if (!form.newPassword.equals(form.confirmNewPassword)) {}
+
+    this.meFacade.updatePassword(
+        new MeFacade.UpdatePassword(form.currentPassword, form.newPassword));
+
+    MeFacade.MeDTO me = this.meFacade.getMe();
+
+    ModelAndView mv = new ModelAndView();
+
+    mv.setViewName("partial/edited-me-password");
+    mv.addObject("me", me);
+
+    return mv;
+  }
+
+  @PutMapping("/me/avatar")
+  public ModelAndView editAvatar(@RequestParam MultipartFile file) {
+    try {
+      this.meFacade.setAvatar(new ImageFile(file));
+    } catch (ImageService.ImageCouldNotBeSavedException e) {
+      throw new RuntimeException(e);
     }
 
-    public record EditMe(String nick,
-                         String firstName,
-                         String lastName,
-                         String email,
-                         String language) {
-    }
+    MeFacade.MeDTO me = this.meFacade.getMe();
 
-    @GetMapping("/me/edit")
-    public ModelAndView getEditMe(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
-        MeFacade.MeDTO me = this.meFacade.getMe();
+    ModelAndView mv = new ModelAndView();
 
-        ModelAndView mv = new ModelAndView();
+    mv.setViewName("partial/edited-me-avatar");
+    mv.addObject("random", Math.random());
+    mv.addObject("meId", me.id());
 
-        EditMe form = new EditMe(
-                me.nick(),
-                me.firstName(),
-                me.lastName(),
-                me.email(),
-                me.language()
-        );
-
-        mv.setViewName("partial/edit-me");
-        mv.addObject("form", form);
-
-        return mv;
-    }
-
-    @PutMapping("/me")
-    public ModelAndView editMe(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-                               EditMe form) {
-        this.meFacade.updateMe(new MeFacade.UpdateMe(
-                form.nick,
-                form.firstName,
-                form.lastName,
-                form.email,
-                form.language
-        ));
-
-        ModelAndView mv = new ModelAndView();
-
-        //TODO: Use only getMe
-        MeFacade.MeDTO me = this.meFacade.getMe();
-
-        mv.setViewName("partial/edited-me");
-        mv.addObject("me", new MeFacade.MeDTO(
-                form.nick,
-                form.firstName,
-                form.lastName,
-                me.cid(),
-                form.email,
-                me.id(),
-                me.acceptanceYear(),
-                me.groups(),
-                form.language,
-                me.isAdmin()
-        ));
-
-        return mv;
-    }
-
-    @GetMapping("/me/cancel-edit")
-    public ModelAndView getCancelEdit(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
-        ModelAndView mv = new ModelAndView();
-
-        //TODO: Use only getMe
-        MeFacade.MeDTO me = this.meFacade.getMe();
-
-        mv.setViewName("pages/me :: userinfo");
-        mv.addObject("me", me);
-
-        return mv;
-    }
-
-    public record EditPasswordForm(String currentPassword, String newPassword, String confirmNewPassword) {}
-
-    @GetMapping("/me/edit-password")
-    public ModelAndView getEditPassword(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
-        ModelAndView mv = new ModelAndView();
-
-        mv.setViewName("partial/edit-me-password");
-        mv.addObject("form", new EditPasswordForm("", "", ""));
-
-        return mv;
-    }
-
-    @PutMapping("/me/edit-password")
-    public ModelAndView editPassword(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-                                     EditPasswordForm form) {
-        //TODO: Move validation to facade
-        if (!form.newPassword.equals(form.confirmNewPassword)) {
-
-        }
-
-        this.meFacade.updatePassword(new MeFacade.UpdatePassword(
-                form.currentPassword,
-                form.newPassword
-        ));
-
-        MeFacade.MeDTO me = this.meFacade.getMe();
-
-        ModelAndView mv = new ModelAndView();
-
-        mv.setViewName("partial/edited-me-password");
-        mv.addObject("me", me);
-
-        return mv;
-    }
-
-    @PutMapping("/me/avatar")
-    public ModelAndView editAvatar(@RequestParam MultipartFile file) {
-        try {
-            this.meFacade.setAvatar(new ImageFile(file));
-        } catch (ImageService.ImageCouldNotBeSavedException e) {
-            throw new RuntimeException(e);
-        }
-
-        MeFacade.MeDTO me = this.meFacade.getMe();
-
-        ModelAndView mv = new ModelAndView();
-
-        mv.setViewName("partial/edited-me-avatar");
-        mv.addObject("random", Math.random());
-        mv.addObject("meId", me.id());
-
-        return mv;
-    }
-
-
+    return mv;
+  }
 }

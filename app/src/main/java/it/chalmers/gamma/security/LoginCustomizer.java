@@ -6,11 +6,8 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 
 public class LoginCustomizer implements Customizer<FormLoginConfigurer<HttpSecurity>> {
 
-    @Override
-    public void customize(FormLoginConfigurer<HttpSecurity> login) {
-        login
-                .loginPage("/login")
-                .usernameParameter("username")
-                .passwordParameter("password");
-    }
+  @Override
+  public void customize(FormLoginConfigurer<HttpSecurity> login) {
+    login.loginPage("/login").usernameParameter("username").passwordParameter("password");
+  }
 }

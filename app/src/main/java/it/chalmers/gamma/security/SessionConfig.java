@@ -11,23 +11,22 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 @EnableRedisHttpSession
 public class SessionConfig {
 
-    @Value("${spring.data.redis.host}")
-    private String redisHost;
+  @Value("${spring.data.redis.host}")
+  private String redisHost;
 
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
+  @Value("${spring.data.redis.port}")
+  private int redisPort;
 
-    @Value("${spring.data.redis.password}")
-    private String redisPassword;
+  @Value("${spring.data.redis.password}")
+  private String redisPassword;
 
-    @Bean
-    public LettuceConnectionFactory connectionFactory() {
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(redisPort);
-        redisStandaloneConfiguration.setPassword(redisPassword);
+  @Bean
+  public LettuceConnectionFactory connectionFactory() {
+    RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+    redisStandaloneConfiguration.setHostName(redisHost);
+    redisStandaloneConfiguration.setPort(redisPort);
+    redisStandaloneConfiguration.setPassword(redisPassword);
 
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-    }
-
+    return new LettuceConnectionFactory(redisStandaloneConfiguration);
+  }
 }

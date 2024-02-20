@@ -10,11 +10,9 @@ buildscript {
 plugins {
     id "java"
     id "application"
-    id "checkstyle"
-    id "pmd"
-    id "nebula.lint" version "16.7.0"
     id 'org.springframework.boot' version '3.2.0'
     id 'io.spring.dependency-management' version '1.1.4'
+    id "com.diffplug.spotless" version "6.25.0"
 }
 
 java {
@@ -95,7 +93,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-test:3.1.2",
             "org.springframework.security:spring-security-test:6.1.2",
             "org.testcontainers:junit-jupiter:1.18.3",
-            "org.testcontainers:postgresql:1.18.3",
+            "org.testcontainers:postgresql:1.18.3"
     )
 }
 
@@ -113,23 +111,27 @@ repositories {
     mavenCentral()
 }
 
-checkstyle {
-    toolVersion = "8.11"
-    ignoreFailures = false
-    maxWarnings = 0
-    configFile = project(":").file("config/checkstyle/checkstyle.xml")
-    configProperties = ["suppressionFile": project(":").file("config/checkstyle/suppressions.xml")]
-}
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
+        formatAnnotations()
+    }
 
-pmd {
-    toolVersion = "6.21.0"
-    consoleOutput = false
-    ignoreFailures = false
-    ruleSets = []
-    ruleSetConfig = resources.text.fromFile("./config/pmd/ruleset.xml")
-}
+    sql {
+        target 'src/**/*.sql'
 
-// Is not perfect, but gives you an idea of what needs to be changed
-//gradleLint {
-//    rules = ["dependency-parentheses", "archaic-wrapper"]
-//}
+        dbeaver()
+    }
+
+    yaml {
+        target 'src/**/*.yml'
+        jackson()
+    }
+
+    json {
+        target 'src/**/*.json'
+        jackson()
+    }
+}

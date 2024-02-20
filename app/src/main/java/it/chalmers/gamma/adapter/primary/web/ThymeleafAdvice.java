@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 @ControllerAdvice
 public class ThymeleafAdvice {
 
-    @ModelAttribute("isAdmin")
-    public boolean isAdmin() {
-        if(AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuthenticated) {
-            return userAuthenticated.isAdmin();
-        } else {
-            return false;
-        }
+  @ModelAttribute("isAdmin")
+  public boolean isAdmin() {
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthenticated) {
+      return userAuthenticated.isAdmin();
+    } else {
+      return false;
     }
-
+  }
 }
-

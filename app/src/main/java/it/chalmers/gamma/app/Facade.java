@@ -4,10 +4,9 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 
 public abstract class Facade {
 
-    protected AccessGuard accessGuard;
+  protected AccessGuard accessGuard;
 
-    public Facade(AccessGuard accessGuard) {
-        this.accessGuard = accessGuard;
-    }
-
+  public Facade(AccessGuard accessGuard) {
+    this.accessGuard = accessGuard;
+  }
 }

@@ -8,7 +8,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import java.time.Instant;
 import java.util.UUID;
 
@@ -16,39 +15,34 @@ import java.util.UUID;
 @Table(name = "g_password_reset")
 public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
 
-    @Id
-    @Column(name = "user_id", columnDefinition = "uuid")
-    protected UUID userId;
+  @Id
+  @Column(name = "user_id", columnDefinition = "uuid")
+  protected UUID userId;
 
-    @Column(name = "created_at")
-    protected Instant createdAt;
+  @Column(name = "created_at")
+  protected Instant createdAt;
 
-    @Column(name = "token")
-    protected String token;
+  @Column(name = "token")
+  protected String token;
 
-    protected UserPasswordResetEntity() {
-    }
+  protected UserPasswordResetEntity() {}
 
-    public UserPasswordResetEntity(UUID userId, Instant createdAt, String token) {
-        this.userId = userId;
-        this.createdAt = createdAt;
-        this.token = token;
-    }
+  public UserPasswordResetEntity(UUID userId, Instant createdAt, String token) {
+    this.userId = userId;
+    this.createdAt = createdAt;
+    this.token = token;
+  }
 
-    @Override
-    public UserId getId() {
-        return new UserId(this.userId);
-    }
+  @Override
+  public UserId getId() {
+    return new UserId(this.userId);
+  }
 
-    public PasswordReset toDomain() {
-        return new PasswordReset(
-                this.getId(),
-                new PasswordResetToken(this.token),
-                this.createdAt
-        );
-    }
+  public PasswordReset toDomain() {
+    return new PasswordReset(this.getId(), new PasswordResetToken(this.token), this.createdAt);
+  }
 
-    public String getToken() {
-        return this.token;
-    }
+  public String getToken() {
+    return this.token;
+  }
 }

@@ -9,34 +9,32 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Embeddable
-public class ClientRestrictionSuperGroupPK extends PKId<ClientRestrictionSuperGroupPK.ClientRestrictionPKDTO> {
+public class ClientRestrictionSuperGroupPK
+    extends PKId<ClientRestrictionSuperGroupPK.ClientRestrictionPKDTO> {
 
-    @ManyToOne
-    @JoinColumn(name = "restriction_id")
-    private ClientRestrictionEntity clientRestriction;
+  @ManyToOne
+  @JoinColumn(name = "restriction_id")
+  private ClientRestrictionEntity clientRestriction;
 
-    @JoinColumn(name = "super_group_id")
-    @ManyToOne
-    protected SuperGroupEntity superGroupEntity;
+  @JoinColumn(name = "super_group_id")
+  @ManyToOne
+  protected SuperGroupEntity superGroupEntity;
 
-    protected ClientRestrictionSuperGroupPK() {
-    }
+  protected ClientRestrictionSuperGroupPK() {}
 
-    protected ClientRestrictionSuperGroupPK(ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
-        this.clientRestriction = clientRestrictionEntity;
-        this.superGroupEntity = superGroupEntity;
-    }
+  protected ClientRestrictionSuperGroupPK(
+      ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
+    this.clientRestriction = clientRestrictionEntity;
+    this.superGroupEntity = superGroupEntity;
+  }
 
-    @Override
-    public ClientRestrictionPKDTO getValue() {
-        return new ClientRestrictionPKDTO(
-                new ClientRestrictionId(this.clientRestriction.restrictionId),
-                new SuperGroupId(this.superGroupEntity.getId())
-        );
-    }
+  @Override
+  public ClientRestrictionPKDTO getValue() {
+    return new ClientRestrictionPKDTO(
+        new ClientRestrictionId(this.clientRestriction.restrictionId),
+        new SuperGroupId(this.superGroupEntity.getId()));
+  }
 
-    public record ClientRestrictionPKDTO(ClientRestrictionId clientRestrictionId,
-                                            SuperGroupId superGroupId) {
-    }
-
+  public record ClientRestrictionPKDTO(
+      ClientRestrictionId clientRestrictionId, SuperGroupId superGroupId) {}
 }

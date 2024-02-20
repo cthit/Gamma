@@ -7,6 +7,4 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public abstract class AbstractEntityIntegrationTests {
-
-}
+public abstract class AbstractEntityIntegrationTests {}

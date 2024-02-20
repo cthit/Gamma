@@ -1,89 +1,76 @@
+---
 spring:
   datasource:
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:example}
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}
-
+    username: "${DB_USER:postgres}"
+    password: "${DB_PASSWORD:example}"
+    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}"
   flyway:
     baseline-on-migrate: true
-    locations: classpath:/db/migration
-
+    locations: "classpath:/db/migration"
   output:
     ansi:
-      enabled: ALWAYS
-
+      enabled: "ALWAYS"
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: "org.hibernate.dialect.PostgreSQLDialect"
     properties:
       hibernate:
         globally_quoted_identifiers: true
         temp:
           use_jdbc_metadata_defaults: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: "validate"
     open-in-view: false
-
   servlet:
     multipart:
-      max-file-size: 2MB
-      max-request-size: 2MB
-
+      max-file-size: "2MB"
+      max-request-size: "2MB"
   data:
     redis:
-      host: ${REDIS_HOST:0.0.0.0}
-      password: ${REDIS_PASSWORD:}
-      port: ${REDIS_PORT:6379}
+      host: "${REDIS_HOST:0.0.0.0}"
+      password: "${REDIS_PASSWORD:}"
+      port: "${REDIS_PORT:6379}"
       repositories:
         enabled: true
-
   thymeleaf:
-    cache: ${PRODUCTION:false}
+    cache: "${PRODUCTION:false}"
     enabled: true
-    encoding: UTF-8
-
+    encoding: "UTF-8"
   session:
-    store-type: redis
-    timeout: ${SESSION_TIMEOUT:43200}
-
+    store-type: "redis"
+    timeout: "${SESSION_TIMEOUT:43200}"
   mvc:
     hiddenmethod:
       filter:
-        enabled: on
-
+        enabled: true
 server:
-  port: ${SERVER_PORT:8081}
+  port: "${SERVER_PORT:8081}"
   error:
     whitelabel:
       enabled: false
-    path: /error
-
+    path: "/error"
   http2:
     enabled: true
-
 logging:
   level:
-    root: ${ROOT_DEBUG_LEVEL:INFO}
-
+    root: "${ROOT_DEBUG_LEVEL:INFO}"
 application:
-  base-uri: ${BASE_URI:http://gamma:8081}
-  production: ${PRODUCTION:false}
+  base-uri: "${BASE_URI:http://gamma:8081}"
+  production: "${PRODUCTION:false}"
   files:
-    path: uploads/
+    path: "uploads/"
   cookie:
-    domain: ${COOKIE_DOMAIN:gamma}
-    path: ${COOKIE_PATH:/}
+    domain: "${COOKIE_DOMAIN:gamma}"
+    path: "${COOKIE_PATH:/}"
     validity-time: 31536000
-  mocking: ${IS_MOCKING:true}
-  admin-setup: ${ADMIN_SETUP:true}
-
+  mocking: "${IS_MOCKING:true}"
+  admin-setup: "${ADMIN_SETUP:true}"
   default-oauth2-client:
-    client-name: ${DEFAULT_CLIENT_NAME:test-client}
-    client-id: ${DEFAULT_CLIENT_ID:test}
-    client-secret: ${DEFAULT_CLIENT_SECRET:secret}
-    redirect-url: ${DEFAULT_REDIRECT_URL:http://client:3001/login/oauth2/code/gamma}
-    api-key: ${DEFAULT_API_KEY:test-api-key-secret-code}
-    scopes: ${DEFAULT_SCOPES:profile,email}
-
+    client-name: "${DEFAULT_CLIENT_NAME:test-client}"
+    client-id: "${DEFAULT_CLIENT_ID:test}"
+    client-secret: "${DEFAULT_CLIENT_SECRET:secret}"
+    redirect-url: "${DEFAULT_REDIRECT_URL:http://client:3001/login/oauth2/code/gamma}"
+    api-key: "${DEFAULT_API_KEY:test-api-key-secret-code}"
+    scopes: "${DEFAULT_SCOPES:profile,email}"
   gotify:
-    key: ${GOTIFY_KEY:"123abc"}
-    url: ${GOTIFY_URL:"localhost:7000"}
+    key: "${GOTIFY_KEY:\"123abc\"}"
+    url: "${GOTIFY_URL:\"localhost:7000\"}"

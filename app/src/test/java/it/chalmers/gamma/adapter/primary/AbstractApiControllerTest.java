@@ -14,25 +14,22 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
-@SpringBootTest(classes = GammaApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    classes = GammaApplication.class,
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractApiControllerTest {
 
-    @LocalServerPort
-    protected int port;
+  @LocalServerPort protected int port;
 
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
-        RestAssured.defaultParser = Parser.JSON;
-        RestAssured.config = RestAssured.config()
-                .sessionConfig(new SessionConfig()
-                        .sessionIdName("gamma")
-                )
-                .csrfConfig(new CsrfConfig("/login")
-                        .csrfHeaderName("X-XSRF-TOKEN")
-                );
-        RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
-    }
-
+  @BeforeEach
+  public void setUp() {
+    RestAssured.port = port;
+    RestAssured.defaultParser = Parser.JSON;
+    RestAssured.config =
+        RestAssured.config()
+            .sessionConfig(new SessionConfig().sessionIdName("gamma"))
+            .csrfConfig(new CsrfConfig("/login").csrfHeaderName("X-XSRF-TOKEN"));
+    RestAssured.filters(new RequestLoggingFilter(), new ResponseLoggingFilter());
+  }
 }

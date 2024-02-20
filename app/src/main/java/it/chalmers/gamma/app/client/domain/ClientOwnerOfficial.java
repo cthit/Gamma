@@ -1,5 +1,3 @@
 package it.chalmers.gamma.app.client.domain;
 
-public record ClientOwnerOfficial() implements ClientOwner {
-
-}
+public record ClientOwnerOfficial() implements ClientOwner {}

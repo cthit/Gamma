@@ -10,6 +10,7 @@ import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationToken;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -23,77 +24,85 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationService.class);
-    private final GammaAuthorizationRepository gammaAuthorizationRepository;
-    private final ClientRepository clientRepository;
-    private final GroupRepository groupRepository;
+  private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationService.class);
+  private final GammaAuthorizationRepository gammaAuthorizationRepository;
+  private final ClientRepository clientRepository;
+  private final GroupRepository groupRepository;
 
+  public GammaAuthorizationService(
+      GammaAuthorizationRepository gammaAuthorizationRepository,
+      ClientRepository clientRepository,
+      GroupRepository groupRepository) {
+    this.gammaAuthorizationRepository = gammaAuthorizationRepository;
+    this.clientRepository = clientRepository;
+    this.groupRepository = groupRepository;
+  }
 
-    public GammaAuthorizationService(GammaAuthorizationRepository gammaAuthorizationRepository,
-                                     ClientRepository clientRepository,
-                                     GroupRepository groupRepository) {
-        this.gammaAuthorizationRepository = gammaAuthorizationRepository;
-        this.clientRepository = clientRepository;
-        this.groupRepository = groupRepository;
+  @Override
+  public void save(OAuth2Authorization authorization) {
+    UsernamePasswordAuthenticationToken authenticationToken =
+        authorization.getAttribute("java.security.Principal");
+
+    // The first oauth2 request has no tokens, so lets stop that
+    // if the signed-in user does not have the proper authority.
+    if (hasNoTokens(authorization) && authenticationToken.getPrincipal() instanceof User user) {
+      Client client =
+          this.clientRepository
+              .get(ClientUid.valueOf(authorization.getRegisteredClientId()))
+              .orElseThrow();
+
+      // If the client has no restrictions, then any user can sign in.
+      if (client.restrictions().isPresent()
+          && userPassesRestriction(client.restrictions().get(), user)) {
+        throw new AccessDeniedException("User does not have the necessary authority");
+      }
     }
 
-    @Override
-    public void save(OAuth2Authorization authorization) {
-        UsernamePasswordAuthenticationToken authenticationToken =
-                authorization.getAttribute("java.security.Principal");
+    gammaAuthorizationRepository.save(authorization);
+  }
 
-        // The first oauth2 request has no tokens, so lets stop that
-        // if the signed-in user does not have the proper authority.
-        if(hasNoTokens(authorization) && authenticationToken.getPrincipal() instanceof User user) {
-            Client client = this.clientRepository.get(ClientUid.valueOf(authorization.getRegisteredClientId()))
-                    .orElseThrow();
+  private boolean userPassesRestriction(ClientRestriction restriction, User user) {
+    UserId userId = UserId.valueOf(user.getUsername());
 
-            // If the client has no restrictions, then any user can sign in.
-            if(client.restrictions().isPresent() && userPassesRestriction(client.restrictions().get(), user)) {
-                throw new AccessDeniedException("User does not have the necessary authority");
-            }
-        }
+    List<UserMembership> memberships = this.groupRepository.getAllByUser(userId);
+    List<SuperGroupId> userSuperGroups =
+        memberships.stream()
+            .map(UserMembership::group)
+            .map(group -> group.superGroup().id())
+            .distinct()
+            .toList();
 
-        gammaAuthorizationRepository.save(authorization);
-    }
+    return restriction.superGroups().stream()
+        .anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()));
+  }
 
-    private boolean userPassesRestriction(ClientRestriction restriction, User user) {
-        UserId userId = UserId.valueOf(user.getUsername());
+  private boolean hasNoTokens(OAuth2Authorization authorization) {
+    return authorization.getToken(OAuth2AuthorizationCode.class) == null
+        && authorization.getToken(OAuth2AccessToken.class) == null
+        && authorization.getToken(OidcIdToken.class) == null;
+  }
 
-        List<UserMembership> memberships = this.groupRepository.getAllByUser(userId);
-        List<SuperGroupId> userSuperGroups = memberships.stream().map(UserMembership::group).map(group -> group.superGroup().id()).distinct().toList();
+  // TODO: Tokens are not removed?
+  @Override
+  public void remove(OAuth2Authorization authorization) {
+    LOGGER.info("Remove: " + authorization.toString());
+    gammaAuthorizationRepository.remove(authorization);
+  }
 
-        return restriction.superGroups().stream().anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()));
-    }
+  @Override
+  public OAuth2Authorization findById(String id) {
+    return gammaAuthorizationRepository.findById(id).orElseThrow();
+  }
 
-    private boolean hasNoTokens(OAuth2Authorization authorization) {
-        return authorization.getToken(OAuth2AuthorizationCode.class) == null && authorization.getToken(OAuth2AccessToken.class) == null && authorization.getToken(OidcIdToken.class) == null;
-    }
+  @Override
+  public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
+    return gammaAuthorizationRepository
+        .findByToken(GammaAuthorizationToken.valueOf(token, tokenType))
+        .orElseThrow();
+  }
 
-    //TODO: Tokens are not removed?
-    @Override
-    public void remove(OAuth2Authorization authorization) {
-        LOGGER.info("Remove: " + authorization.toString());
-        gammaAuthorizationRepository.remove(authorization);
-    }
-
-    @Override
-    public OAuth2Authorization findById(String id) {
-        return gammaAuthorizationRepository
-                .findById(id)
-                .orElseThrow();
-    }
-
-    @Override
-    public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
-        return gammaAuthorizationRepository.findByToken(GammaAuthorizationToken.valueOf(token, tokenType)).orElseThrow();
-    }
-
-    public static class UserIsNotAuthorizedException extends RuntimeException {}
-
+  public static class UserIsNotAuthorizedException extends RuntimeException {}
 }

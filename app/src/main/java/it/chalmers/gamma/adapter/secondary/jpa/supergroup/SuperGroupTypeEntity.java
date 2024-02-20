@@ -11,19 +11,18 @@ import jakarta.persistence.Table;
 @Table(name = "g_super_group_type")
 public class SuperGroupTypeEntity extends AbstractEntity<String> {
 
-    @Id
-    @Column(name = "super_group_type_name")
-    private String name;
-    
-    protected SuperGroupTypeEntity() {
-    }
+  @Id
+  @Column(name = "super_group_type_name")
+  private String name;
 
-    public SuperGroupTypeEntity(SuperGroupType superGroupType) {
-        this.name = superGroupType.getValue();
-    }
+  protected SuperGroupTypeEntity() {}
 
-    @Override
-    public String getId() {
-        return this.name;
-    }
+  public SuperGroupTypeEntity(SuperGroupType superGroupType) {
+    this.name = superGroupType.getValue();
+  }
+
+  @Override
+  public String getId() {
+    return this.name;
+  }
 }

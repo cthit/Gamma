@@ -10,23 +10,21 @@ import jakarta.persistence.Table;
 @Table(name = "g_client_authority_super_group")
 public class ClientAuthoritySuperGroupEntity extends ImmutableEntity<ClientAuthoritySuperGroupPK> {
 
-    @EmbeddedId
-    protected ClientAuthoritySuperGroupPK id;
+  @EmbeddedId protected ClientAuthoritySuperGroupPK id;
 
-    protected ClientAuthoritySuperGroupEntity() {
-    }
+  protected ClientAuthoritySuperGroupEntity() {}
 
-    public ClientAuthoritySuperGroupEntity(SuperGroupEntity superGroup, ClientAuthorityEntity clientAuthorityEntity) {
-        this.id = new ClientAuthoritySuperGroupPK(superGroup, clientAuthorityEntity);
-    }
+  public ClientAuthoritySuperGroupEntity(
+      SuperGroupEntity superGroup, ClientAuthorityEntity clientAuthorityEntity) {
+    this.id = new ClientAuthoritySuperGroupPK(superGroup, clientAuthorityEntity);
+  }
 
-    @Override
-    public ClientAuthoritySuperGroupPK getId() {
-        return this.id;
-    }
+  @Override
+  public ClientAuthoritySuperGroupPK getId() {
+    return this.id;
+  }
 
-    protected SuperGroupEntity getSuperGroup() {
-        return this.id.superGroupEntity;
-    }
-
+  protected SuperGroupEntity getSuperGroup() {
+    return this.id.superGroupEntity;
+  }
 }

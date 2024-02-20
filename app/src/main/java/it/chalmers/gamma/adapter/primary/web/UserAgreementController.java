@@ -8,9 +8,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class UserAgreementController {
 
-    @GetMapping("/get-user-agreement")
-    public ModelAndView getUserAgreement(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
-        return new ModelAndView("partial/user-agreement");
-    }
-
+  @GetMapping("/get-user-agreement")
+  public ModelAndView getUserAgreement(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+    return new ModelAndView("partial/user-agreement");
+  }
 }

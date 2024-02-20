@@ -6,18 +6,14 @@ import org.springframework.data.redis.core.RedisHash;
 @RedisHash(value = "token", timeToLive = 3600)
 public class AuthorizationTokenMapperValue {
 
-    @Id
-    String tokenKey;
+  @Id String tokenKey;
 
-    String authorizationKey;
+  String authorizationKey;
 
-    public AuthorizationTokenMapperValue() {
-    }
+  public AuthorizationTokenMapperValue() {}
 
-    public AuthorizationTokenMapperValue(String authorizationKey, String type, String token) {
-        this.tokenKey = type + ":" + token;
-        this.authorizationKey = authorizationKey;
-    }
-
+  public AuthorizationTokenMapperValue(String authorizationKey, String type, String token) {
+    this.tokenKey = type + ":" + token;
+    this.authorizationKey = authorizationKey;
+  }
 }
-

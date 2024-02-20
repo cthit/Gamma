@@ -8,20 +8,19 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "g_client_restriction_super_group")
-public class ClientRestrictionSuperGroupEntity extends ImmutableEntity<ClientRestrictionSuperGroupPK> {
+public class ClientRestrictionSuperGroupEntity
+    extends ImmutableEntity<ClientRestrictionSuperGroupPK> {
 
-    @EmbeddedId
-    private ClientRestrictionSuperGroupPK id;
+  @EmbeddedId private ClientRestrictionSuperGroupPK id;
 
-    protected ClientRestrictionSuperGroupEntity() {
-    }
+  protected ClientRestrictionSuperGroupEntity() {}
 
-    public ClientRestrictionSuperGroupEntity(ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
-        this.id = new ClientRestrictionSuperGroupPK(clientRestrictionEntity, superGroupEntity);
-    }
+  public ClientRestrictionSuperGroupEntity(
+      ClientRestrictionEntity clientRestrictionEntity, SuperGroupEntity superGroupEntity) {
+    this.id = new ClientRestrictionSuperGroupPK(clientRestrictionEntity, superGroupEntity);
+  }
 
-    public ClientRestrictionSuperGroupPK getId() {
-        return this.id;
-    }
-
+  public ClientRestrictionSuperGroupPK getId() {
+    return this.id;
+  }
 }

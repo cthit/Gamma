@@ -5,12 +5,10 @@ import org.springframework.security.web.authentication.AuthenticationFilter;
 
 public class ApiAuthenticationFilter extends AuthenticationFilter {
 
-    public ApiAuthenticationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager, new ApiAuthenticationConverter());
+  public ApiAuthenticationFilter(AuthenticationManager authenticationManager) {
+    super(authenticationManager, new ApiAuthenticationConverter());
 
-        // Do nothing on successful authentication since we need to authenticate on every request
-        setSuccessHandler((request, response, authentication) -> {
-        });
-    }
-
+    // Do nothing on successful authentication since we need to authenticate on every request
+    setSuccessHandler((request, response, authentication) -> {});
+  }
 }

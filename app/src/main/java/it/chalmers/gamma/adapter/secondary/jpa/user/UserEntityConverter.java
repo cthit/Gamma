@@ -12,44 +12,41 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserEntityConverter {
 
-    private final UserAccessGuard userAccessGuard;
-    private final SettingsRepository settingsRepository;
+  private final UserAccessGuard userAccessGuard;
+  private final SettingsRepository settingsRepository;
 
-    public UserEntityConverter(UserAccessGuard userAccessGuard,
-                               SettingsRepository SettingsRepository) {
-        this.userAccessGuard = userAccessGuard;
-        this.settingsRepository = SettingsRepository;
+  public UserEntityConverter(
+      UserAccessGuard userAccessGuard, SettingsRepository SettingsRepository) {
+    this.userAccessGuard = userAccessGuard;
+    this.settingsRepository = SettingsRepository;
+  }
+
+  @Nullable public GammaUser toDomain(UserEntity userEntity) {
+    Settings settings = this.settingsRepository.getSettings();
+    UserId userId = new UserId(userEntity.id);
+
+    if (!userAccessGuard.haveAccessToUser(userId, userEntity.locked)) {
+      return null;
     }
 
-    @Nullable
-    public GammaUser toDomain(UserEntity userEntity) {
-        Settings settings = this.settingsRepository.getSettings();
-        UserId userId = new UserId(userEntity.id);
-
-        if (!userAccessGuard.haveAccessToUser(userId, userEntity.locked)) {
-            return null;
-        }
-
-        UserExtended extended = null;
-        if (userAccessGuard.accessToExtended(userId)) {
-            extended = new UserExtended(
-                    new Email(userEntity.email),
-                    userEntity.getVersion(),
-                    userEntity.locked,
-                    userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri)
-            );
-        }
-
-        return new GammaUser(
-                userId,
-                new Cid(userEntity.cid),
-                new Nick(userEntity.nick),
-                new FirstName(userEntity.firstName),
-                new LastName(userEntity.lastName),
-                new AcceptanceYear(userEntity.acceptanceYear),
-                userEntity.language,
-                extended
-        );
+    UserExtended extended = null;
+    if (userAccessGuard.accessToExtended(userId)) {
+      extended =
+          new UserExtended(
+              new Email(userEntity.email),
+              userEntity.getVersion(),
+              userEntity.locked,
+              userEntity.userAvatar == null ? null : new ImageUri(userEntity.userAvatar.avatarUri));
     }
 
+    return new GammaUser(
+        userId,
+        new Cid(userEntity.cid),
+        new Nick(userEntity.nick),
+        new FirstName(userEntity.firstName),
+        new LastName(userEntity.lastName),
+        new AcceptanceYear(userEntity.acceptanceYear),
+        userEntity.language,
+        extended);
+  }
 }

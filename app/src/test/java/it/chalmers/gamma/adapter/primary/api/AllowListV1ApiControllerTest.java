@@ -1,4 +1,3 @@
 package it.chalmers.gamma.adapter.primary.api;
 
-public class AllowListV1ApiControllerTest {
-}
+public class AllowListV1ApiControllerTest {}

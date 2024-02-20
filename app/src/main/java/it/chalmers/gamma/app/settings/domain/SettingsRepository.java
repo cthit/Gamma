@@ -2,16 +2,15 @@ package it.chalmers.gamma.app.settings.domain;
 
 public interface SettingsRepository {
 
-    boolean hasSettings();
+  boolean hasSettings();
 
-    Settings getSettings();
+  Settings getSettings();
 
-    void setSettings(UpdateSettings updateSettings);
+  void setSettings(UpdateSettings updateSettings);
 
-    void setSettings(Settings settings);
+  void setSettings(Settings settings);
 
-    interface UpdateSettings {
-        Settings updateSettings(Settings settings);
-    }
-
+  interface UpdateSettings {
+    Settings updateSettings(Settings settings);
+  }
 }

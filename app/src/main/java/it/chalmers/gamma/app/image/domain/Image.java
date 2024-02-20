@@ -1,4 +1,3 @@
 package it.chalmers.gamma.app.image.domain;
 
-public interface Image {
-}
+public interface Image {}

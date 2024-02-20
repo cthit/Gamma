@@ -10,24 +10,20 @@ import jakarta.persistence.Table;
 @Table(name = "g_client_authority_user")
 public class ClientAuthorityUserEntity extends ImmutableEntity<ClientAuthorityUserPK> {
 
-    @EmbeddedId
-    private ClientAuthorityUserPK id;
+  @EmbeddedId private ClientAuthorityUserPK id;
 
-    protected ClientAuthorityUserEntity() {
+  protected ClientAuthorityUserEntity() {}
 
-    }
+  public ClientAuthorityUserEntity(UserEntity user, ClientAuthorityEntity clientAuthorityEntity) {
+    this.id = new ClientAuthorityUserPK(user, clientAuthorityEntity);
+  }
 
-    public ClientAuthorityUserEntity(UserEntity user, ClientAuthorityEntity clientAuthorityEntity) {
-        this.id = new ClientAuthorityUserPK(user, clientAuthorityEntity);
-    }
+  @Override
+  public ClientAuthorityUserPK getId() {
+    return this.id;
+  }
 
-    @Override
-    public ClientAuthorityUserPK getId() {
-        return this.id;
-    }
-
-    public UserEntity getUserEntity() {
-        return this.id.getUserEntity();
-    }
-
+  public UserEntity getUserEntity() {
+    return this.id.getUserEntity();
+  }
 }

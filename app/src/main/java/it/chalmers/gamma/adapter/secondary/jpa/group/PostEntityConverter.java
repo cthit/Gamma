@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class PostEntityConverter {
 
-    public Post toDomain(PostEntity postEntity) {
-        return new Post(
-                new PostId(postEntity.id),
-                postEntity.getVersion(),
-                postEntity.postName.toDomain(),
-                new EmailPrefix(postEntity.emailPrefix)
-        );
-    }
-
+  public Post toDomain(PostEntity postEntity) {
+    return new Post(
+        new PostId(postEntity.id),
+        postEntity.getVersion(),
+        postEntity.postName.toDomain(),
+        new EmailPrefix(postEntity.emailPrefix));
+  }
 }

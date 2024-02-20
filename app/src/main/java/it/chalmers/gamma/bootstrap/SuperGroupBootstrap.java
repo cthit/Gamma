@@ -11,55 +11,63 @@ import org.springframework.stereotype.Component;
 @Component
 public class SuperGroupBootstrap {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SuperGroupBootstrap.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SuperGroupBootstrap.class);
 
-    private final MockData mockData;
-    private final SuperGroupTypeRepository superGroupTypeRepository;
-    private final SuperGroupRepository superGroupRepository;
-    private final BootstrapSettings bootstrapSettings;
+  private final MockData mockData;
+  private final SuperGroupTypeRepository superGroupTypeRepository;
+  private final SuperGroupRepository superGroupRepository;
+  private final BootstrapSettings bootstrapSettings;
 
-    public SuperGroupBootstrap(MockData mockData,
-                               SuperGroupTypeRepository superGroupTypeRepository,
-                               SuperGroupRepository superGroupRepository,
-                               BootstrapSettings bootstrapSettings) {
-        this.mockData = mockData;
-        this.superGroupTypeRepository = superGroupTypeRepository;
-        this.superGroupRepository = superGroupRepository;
-        this.bootstrapSettings = bootstrapSettings;
+  public SuperGroupBootstrap(
+      MockData mockData,
+      SuperGroupTypeRepository superGroupTypeRepository,
+      SuperGroupRepository superGroupRepository,
+      BootstrapSettings bootstrapSettings) {
+    this.mockData = mockData;
+    this.superGroupTypeRepository = superGroupTypeRepository;
+    this.superGroupRepository = superGroupRepository;
+    this.bootstrapSettings = bootstrapSettings;
+  }
+
+  public void createSuperGroups() {
+    if (!this.bootstrapSettings.mocking() || !this.superGroupRepository.getAll().isEmpty()) {
+      return;
     }
 
-    public void createSuperGroups() {
-        if (!this.bootstrapSettings.mocking() || !this.superGroupRepository.getAll().isEmpty()) {
-            return;
-        }
+    LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
 
-        LOGGER.info("========== SUPERGROUP BOOTSTRAP ==========");
-
-        mockData.superGroups().stream().map(MockData.MockSuperGroup::type).distinct().forEach(type -> {
-            try {
+    mockData.superGroups().stream()
+        .map(MockData.MockSuperGroup::type)
+        .distinct()
+        .forEach(
+            type -> {
+              try {
                 this.superGroupTypeRepository.add(new SuperGroupType(type));
-            } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
+              } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
                 LOGGER.error("Error creating supergroup type: " + type + ";");
-            }
-        });
+              }
+            });
 
-        LOGGER.info("Supergroup types created");
+    LOGGER.info("Supergroup types created");
 
-        mockData.superGroups().forEach(mockSuperGroup -> {
-            this.superGroupRepository.save(new SuperGroup(
-                    new SuperGroupId(mockSuperGroup.id()),
-                    0,
-                    new Name(mockSuperGroup.name()),
-                    new PrettyName(mockSuperGroup.prettyName()),
-                    new SuperGroupType(mockSuperGroup.type()),
-                    new Text())
-            );
-            // LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group already exists, skipping...");
-        });
+    mockData
+        .superGroups()
+        .forEach(
+            mockSuperGroup -> {
+              this.superGroupRepository.save(
+                  new SuperGroup(
+                      new SuperGroupId(mockSuperGroup.id()),
+                      0,
+                      new Name(mockSuperGroup.name()),
+                      new PrettyName(mockSuperGroup.prettyName()),
+                      new SuperGroupType(mockSuperGroup.type()),
+                      new Text()));
+              // LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group
+              // already exists, skipping...");
+            });
 
-        LOGGER.info("Supergroups created");
+    LOGGER.info("Supergroups created");
 
-        LOGGER.info("==========                      ==========");
-    }
-
+    LOGGER.info("==========                      ==========");
+  }
 }

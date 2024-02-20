@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.goldapps;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
+
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
@@ -11,151 +13,133 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
-import org.springframework.stereotype.Service;
-
 import java.util.*;
-
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GoldappsFacade extends Facade {
 
-    private final GroupRepository groupRepository;
-    private final GdprTrainedRepository gdprTrainedRepository;
+  private final GroupRepository groupRepository;
+  private final GdprTrainedRepository gdprTrainedRepository;
 
-    public GoldappsFacade(AccessGuard accessGuard,
-                          GroupRepository groupRepository,
-                          GdprTrainedRepository gdprTrainedRepository) {
-        super(accessGuard);
-        this.groupRepository = groupRepository;
-        this.gdprTrainedRepository = gdprTrainedRepository;
+  public GoldappsFacade(
+      AccessGuard accessGuard,
+      GroupRepository groupRepository,
+      GdprTrainedRepository gdprTrainedRepository) {
+    super(accessGuard);
+    this.groupRepository = groupRepository;
+    this.gdprTrainedRepository = gdprTrainedRepository;
+  }
+
+  /**
+   * Get all super groups that have the provided types and members that are a part of groups that
+   * has each supergroup
+   */
+  public List<GoldappsSuperGroupDTO> getActiveSuperGroups(List<String> superGroupTypes) {
+    this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
+
+    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+
+    Map<SuperGroupId, SuperGroupWithMembers> superGroupMap = new HashMap<>();
+
+    this.groupRepository.getAll().stream()
+        .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
+        .forEach(
+            group -> {
+              List<GoldappsUserPostDTO> activeGroupMember =
+                  group.groupMembers().stream()
+                      .filter(groupMember -> !groupMember.user().extended().locked())
+                      .filter(groupMember -> gdprTrained.contains(groupMember.user().id()))
+                      .map(GoldappsUserPostDTO::new)
+                      .toList();
+
+              SuperGroupId superGroupId = group.superGroup().id();
+              if (!superGroupMap.containsKey(superGroupId)) {
+                superGroupMap.put(
+                    superGroupId,
+                    new SuperGroupWithMembers(
+                        group.superGroup(), new HashSet<>(activeGroupMember)));
+              } else {
+                superGroupMap.get(superGroupId).members.addAll(activeGroupMember);
+              }
+            });
+
+    return superGroupMap.values().stream()
+        .map(
+            superGroupWithMembers ->
+                new GoldappsSuperGroupDTO(
+                    superGroupWithMembers.superGroup,
+                    new ArrayList<>(superGroupWithMembers.members)))
+        .toList();
+  }
+
+  /**
+   * Returns the users that are active right now. Takes in a list of super group types to help
+   * determine what kinds of groups that are deemed active. User must also be not locked, and have
+   * participated in gdpr training.
+   */
+  public List<GoldappsUserDTO> getActiveUsers(List<String> superGroupTypes) {
+    this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
+
+    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+
+    return this.groupRepository.getAll().stream()
+        .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
+        .flatMap(group -> group.groupMembers().stream())
+        .map(GroupMember::user)
+        .distinct()
+        .filter(user -> !user.extended().locked())
+        .filter(groupMember -> gdprTrained.contains(groupMember.id()))
+        .map(GoldappsUserDTO::new)
+        .toList();
+  }
+
+  public record GoldappsPostDTO(UUID postId, String svText, String enText, String emailPrefix) {
+    public GoldappsPostDTO(Post post) {
+      this(
+          post.id().value(),
+          post.name().sv().value(),
+          post.name().en().value(),
+          post.emailPrefix().value());
     }
+  }
 
-    /**
-     * Get all super groups that have the provided types
-     * and members that are a part of groups that has each supergroup
-     */
-    public List<GoldappsSuperGroupDTO> getActiveSuperGroups(List<String> superGroupTypes) {
-        this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
-
-        List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
-
-        Map<SuperGroupId, SuperGroupWithMembers> superGroupMap = new HashMap<>();
-
-        this.groupRepository.getAll()
-                .stream()
-                .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
-                .forEach(group -> {
-                    List<GoldappsUserPostDTO> activeGroupMember = group.groupMembers()
-                            .stream()
-                            .filter(groupMember -> !groupMember.user().extended().locked())
-                            .filter(groupMember -> gdprTrained.contains(groupMember.user().id()))
-                            .map(GoldappsUserPostDTO::new)
-                            .toList();
-
-                    SuperGroupId superGroupId = group.superGroup().id();
-                    if (!superGroupMap.containsKey(superGroupId)) {
-                        superGroupMap.put(
-                                superGroupId,
-                                new SuperGroupWithMembers(
-                                        group.superGroup(),
-                                        new HashSet<>(activeGroupMember)
-                                ));
-                    } else {
-                        superGroupMap.get(superGroupId).members.addAll(activeGroupMember);
-                    }
-                });
-
-        return superGroupMap
-                .values()
-                .stream()
-                .map(superGroupWithMembers -> new GoldappsSuperGroupDTO(
-                        superGroupWithMembers.superGroup,
-                        new ArrayList<>(superGroupWithMembers.members)
-                ))
-                .toList();
+  public record GoldappsUserPostDTO(GoldappsPostDTO post, GoldappsUserDTO user) {
+    public GoldappsUserPostDTO(GroupMember groupMember) {
+      this(new GoldappsPostDTO(groupMember.post()), new GoldappsUserDTO(groupMember.user()));
     }
+  }
 
-    /**
-     * Returns the users that are active right now.
-     * Takes in a list of super group types to help determine
-     * what kinds of groups that are deemed active.
-     * User must also be not locked, and have participated in gdpr training.
-     */
-    public List<GoldappsUserDTO> getActiveUsers(List<String> superGroupTypes) {
-        this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
-
-        List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
-
-        return this.groupRepository.getAll()
-                .stream()
-                .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
-                .flatMap(group -> group.groupMembers().stream())
-                .map(GroupMember::user)
-                .distinct()
-                .filter(user -> !user.extended().locked())
-                .filter(groupMember -> gdprTrained.contains(groupMember.id()))
-                .map(GoldappsUserDTO::new)
-                .toList();
+  public record GoldappsUserDTO(
+      String email, String cid, String firstName, String lastName, String nick) {
+    public GoldappsUserDTO(GammaUser user) {
+      this(
+          user.extended().email().value(),
+          user.cid().value(),
+          user.firstName().value(),
+          user.lastName().value(),
+          user.nick().value());
     }
+  }
 
-    public record GoldappsPostDTO(UUID postId,
-                                  String svText,
-                                  String enText,
-                                  String emailPrefix) {
-        public GoldappsPostDTO(Post post) {
-            this(post.id().value(),
-                    post.name().sv().value(),
-                    post.name().en().value(),
-                    post.emailPrefix().value());
-        }
+  public record GoldappsSuperGroupDTO(
+      String name, String prettyName, String type, List<GoldappsUserPostDTO> members) {
+    public GoldappsSuperGroupDTO(SuperGroup superGroup, List<GoldappsUserPostDTO> members) {
+      this(
+          superGroup.name().value(),
+          superGroup.prettyName().value(),
+          superGroup.type().value(),
+          members);
     }
+  }
 
-    public record GoldappsUserPostDTO(GoldappsPostDTO post,
-                                      GoldappsUserDTO user) {
-        public GoldappsUserPostDTO(GroupMember groupMember) {
-            this(new GoldappsPostDTO(groupMember.post()),
-                    new GoldappsUserDTO(groupMember.user()));
-        }
+  private static class SuperGroupWithMembers {
+    private final SuperGroup superGroup;
+    private final Set<GoldappsUserPostDTO> members;
+
+    private SuperGroupWithMembers(SuperGroup superGroup, Set<GoldappsUserPostDTO> members) {
+      this.superGroup = superGroup;
+      this.members = members;
     }
-
-    public record GoldappsUserDTO(String email,
-                                  String cid,
-                                  String firstName,
-                                  String lastName,
-                                  String nick) {
-        public GoldappsUserDTO(GammaUser user) {
-            this(user.extended().email().value(),
-                    user.cid().value(),
-                    user.firstName().value(),
-                    user.lastName().value(),
-                    user.nick().value());
-        }
-    }
-
-    public record GoldappsSuperGroupDTO(String name,
-                                        String prettyName,
-                                        String type,
-                                        List<GoldappsUserPostDTO> members) {
-        public GoldappsSuperGroupDTO(SuperGroup superGroup, List<GoldappsUserPostDTO> members) {
-            this(superGroup.name().value(),
-                    superGroup.prettyName().value(),
-                    superGroup.type().value(),
-                    members
-            );
-        }
-
-    }
-
-    private static class SuperGroupWithMembers {
-        private final SuperGroup superGroup;
-        private final Set<GoldappsUserPostDTO> members;
-
-        private SuperGroupWithMembers(SuperGroup superGroup, Set<GoldappsUserPostDTO> members) {
-            this.superGroup = superGroup;
-            this.members = members;
-        }
-    }
-
-
+  }
 }

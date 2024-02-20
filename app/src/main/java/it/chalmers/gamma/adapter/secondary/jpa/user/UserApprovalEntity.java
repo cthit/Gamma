@@ -10,27 +10,24 @@ import jakarta.persistence.Table;
 @Table(name = "g_user_approval")
 public class UserApprovalEntity extends ImmutableEntity<UserApprovalEntityPK> {
 
-    @EmbeddedId
-    private UserApprovalEntityPK id;
+  @EmbeddedId private UserApprovalEntityPK id;
 
-    public UserApprovalEntity() {
-    }
+  public UserApprovalEntity() {}
 
-    public UserApprovalEntity(UserEntity user, ClientEntity client) {
-        this.id = new UserApprovalEntityPK(user, client);
-    }
+  public UserApprovalEntity(UserEntity user, ClientEntity client) {
+    this.id = new UserApprovalEntityPK(user, client);
+  }
 
-    @Override
-    public UserApprovalEntityPK getId() {
-        return this.id;
-    }
+  @Override
+  public UserApprovalEntityPK getId() {
+    return this.id;
+  }
 
-    public UserEntity getUserEntity() {
-        return this.id.getUserEntity();
-    }
+  public UserEntity getUserEntity() {
+    return this.id.getUserEntity();
+  }
 
-    public ClientEntity getClientEntity() {
-        return this.id.getClientEntity();
-    }
+  public ClientEntity getClientEntity() {
+    return this.id.getClientEntity();
+  }
 }
-

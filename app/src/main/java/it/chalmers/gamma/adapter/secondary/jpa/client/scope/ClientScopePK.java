@@ -9,32 +9,25 @@ import jakarta.persistence.*;
 @Embeddable
 public class ClientScopePK extends PKId<ClientScopePK.ClientScopePKDTO> {
 
-    @ManyToOne
-    @JoinColumn(name = "client_uid")
-    private ClientEntity client;
+  @ManyToOne
+  @JoinColumn(name = "client_uid")
+  private ClientEntity client;
 
-    @Column(name = "scope")
-    @Enumerated(EnumType.STRING)
-    private Scope scope;
+  @Column(name = "scope")
+  @Enumerated(EnumType.STRING)
+  private Scope scope;
 
-    protected ClientScopePK() {
-    }
+  protected ClientScopePK() {}
 
-    protected ClientScopePK(ClientEntity clientEntity, Scope scope) {
-        this.client = clientEntity;
-        this.scope = scope;
-    }
+  protected ClientScopePK(ClientEntity clientEntity, Scope scope) {
+    this.client = clientEntity;
+    this.scope = scope;
+  }
 
-    @Override
-    public ClientScopePKDTO getValue() {
-        return new ClientScopePKDTO(
-                new ClientUid(this.client.getId()),
-                this.scope
-        );
-    }
+  @Override
+  public ClientScopePKDTO getValue() {
+    return new ClientScopePKDTO(new ClientUid(this.client.getId()), this.scope);
+  }
 
-    public record ClientScopePKDTO(ClientUid clientUid,
-                                      Scope scope) {
-    }
-
+  public record ClientScopePKDTO(ClientUid clientUid, Scope scope) {}
 }

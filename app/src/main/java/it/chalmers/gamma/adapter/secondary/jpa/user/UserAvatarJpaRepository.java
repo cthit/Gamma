@@ -1,10 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.UUID;
-
 @Repository
-public interface UserAvatarJpaRepository extends JpaRepository<UserAvatarEntity, UUID> {
-}
+public interface UserAvatarJpaRepository extends JpaRepository<UserAvatarEntity, UUID> {}

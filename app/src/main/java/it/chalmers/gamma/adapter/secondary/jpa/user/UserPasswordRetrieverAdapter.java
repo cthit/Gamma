@@ -8,16 +8,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserPasswordRetrieverAdapter implements UserPasswordRetriever {
 
-    private final UserJpaRepository userJpaRepository;
+  private final UserJpaRepository userJpaRepository;
 
-    public UserPasswordRetrieverAdapter(UserJpaRepository userJpaRepository) {
-        this.userJpaRepository = userJpaRepository;
-    }
+  public UserPasswordRetrieverAdapter(UserJpaRepository userJpaRepository) {
+    this.userJpaRepository = userJpaRepository;
+  }
 
-    @Override
-    public Password getPassword(UserId id) {
-        UserEntity userEntity = this.userJpaRepository.findById(id.value())
-                .orElseThrow(UserNotFoundException::new);
-        return new Password(userEntity.password);
-    }
+  @Override
+  public Password getPassword(UserId id) {
+    UserEntity userEntity =
+        this.userJpaRepository.findById(id.value()).orElseThrow(UserNotFoundException::new);
+    return new Password(userEntity.password);
+  }
 }

@@ -15,139 +15,176 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Transactional
 @Service
 public class ClientAuthorityRepositoryAdapter implements ClientAuthorityRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClientAuthorityRepositoryAdapter.class);
-    private static final PersistenceErrorState notFoundError = new PersistenceErrorState(null, PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
-    private final ClientAuthorityJpaRepository repository;
-    private final UserJpaRepository userJpaRepository;
-    private final SuperGroupJpaRepository superGroupJpaRepository;
-    private final ClientJpaRepository clientJpaRepository;
-    private final ClientAuthorityEntityConverter clientAuthorityEntityConverter;
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(ClientAuthorityRepositoryAdapter.class);
+  private static final PersistenceErrorState notFoundError =
+      new PersistenceErrorState(null, PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
+  private final ClientAuthorityJpaRepository repository;
+  private final UserJpaRepository userJpaRepository;
+  private final SuperGroupJpaRepository superGroupJpaRepository;
+  private final ClientJpaRepository clientJpaRepository;
+  private final ClientAuthorityEntityConverter clientAuthorityEntityConverter;
 
-    public ClientAuthorityRepositoryAdapter(ClientAuthorityJpaRepository repository,
-                                            UserJpaRepository userJpaRepository,
-                                            SuperGroupJpaRepository superGroupJpaRepository,
-                                            ClientJpaRepository clientJpaRepository,
-                                            ClientAuthorityEntityConverter clientAuthorityEntityConverter) {
-        this.repository = repository;
-        this.userJpaRepository = userJpaRepository;
-        this.superGroupJpaRepository = superGroupJpaRepository;
-        this.clientJpaRepository = clientJpaRepository;
-        this.clientAuthorityEntityConverter = clientAuthorityEntityConverter;
+  public ClientAuthorityRepositoryAdapter(
+      ClientAuthorityJpaRepository repository,
+      UserJpaRepository userJpaRepository,
+      SuperGroupJpaRepository superGroupJpaRepository,
+      ClientJpaRepository clientJpaRepository,
+      ClientAuthorityEntityConverter clientAuthorityEntityConverter) {
+    this.repository = repository;
+    this.userJpaRepository = userJpaRepository;
+    this.superGroupJpaRepository = superGroupJpaRepository;
+    this.clientJpaRepository = clientJpaRepository;
+    this.clientAuthorityEntityConverter = clientAuthorityEntityConverter;
+  }
+
+  @Override
+  public void create(ClientUid clientUid, AuthorityName authorityName)
+      throws ClientAuthorityAlreadyExistsException {
+    if (repository.existsById(toAuthorityEntityPK(clientUid, authorityName))) {
+      throw new ClientAuthorityAlreadyExistsException(authorityName.value());
     }
 
-    @Override
-    public void create(ClientUid clientUid, AuthorityName authorityName) throws ClientAuthorityAlreadyExistsException {
-        if (repository.existsById(toAuthorityEntityPK(clientUid, authorityName))) {
-            throw new ClientAuthorityAlreadyExistsException(authorityName.value());
-        }
+    repository.saveAndFlush(
+        new ClientAuthorityEntity(
+            this.clientJpaRepository.findById(clientUid.value()).orElseThrow(),
+            authorityName.getValue()));
+  }
 
-        repository.saveAndFlush(new ClientAuthorityEntity(this.clientJpaRepository.findById(clientUid.value()).orElseThrow(), authorityName.getValue()));
+  @Override
+  public void delete(ClientUid clientUid, AuthorityName authorityName)
+      throws ClientAuthorityNotFoundException {
+    try {
+      repository.deleteById(toAuthorityEntityPK(clientUid, authorityName));
+    } catch (EmptyResultDataAccessException e) {
+      throw new ClientAuthorityNotFoundException();
     }
+  }
 
-    @Override
-    public void delete(ClientUid clientUid, AuthorityName authorityName) throws ClientAuthorityNotFoundException {
-        try {
-            repository.deleteById(toAuthorityEntityPK(clientUid, authorityName));
-        } catch (EmptyResultDataAccessException e) {
-            throw new ClientAuthorityNotFoundException();
-        }
+  @Override
+  public void save(Authority authority) throws ClientAuthorityNotFoundRuntimeException {
+    ClientAuthorityEntity entity = toEntity(authority);
+
+    try {
+      this.repository.saveAndFlush(entity);
+    } catch (Exception e) {
+      PersistenceErrorState state = PersistenceErrorHelper.getState(e);
+
+      if (state.equals(notFoundError)) {
+        throw new NotCompleteClientAuthorityException();
+      }
+
+      throw e;
     }
+  }
 
-    @Override
-    public void save(Authority authority) throws ClientAuthorityNotFoundRuntimeException {
-        ClientAuthorityEntity entity = toEntity(authority);
+  @Override
+  public List<Authority> getAllByClient(ClientUid clientUid) {
+    return this.repository.findAllById_Client_Id(clientUid.value()).stream()
+        .map(this.clientAuthorityEntityConverter::toDomain)
+        .toList();
+  }
 
-        try {
-            this.repository.saveAndFlush(entity);
-        } catch (Exception e) {
-            PersistenceErrorState state = PersistenceErrorHelper.getState(e);
+  @Override
+  public List<Authority> getAllByUser(ClientUid clientUid, UserId userId) {
 
-            if (state.equals(notFoundError)) {
-                throw new NotCompleteClientAuthorityException();
-            }
+    throw new UnsupportedOperationException();
+    //        Set<UserAuthority> names = new HashSet<>();
+    //
+    //
+    // this.authorityUserRepository.findAllById_UserEntity_Id(userId.value()).forEach(authorityUserEntity -> names.add(new UserAuthority(authorityUserEntity.getId().getValue().authorityName(), AuthorityType.AUTHORITY)));
+    //
+    //        Set<SuperGroup> userSuperGroups = new HashSet<>();
+    //
+    //
+    // this.membershipJpaRepository.findAllById_User_Id(userId.value()).forEach(membershipEntity ->
+    // {
+    //            names.add(new UserAuthority(new
+    // AuthorityName(membershipEntity.getId().getGroup().getName()), AuthorityType.GROUP));
+    //
+    //            SuperGroupEntity superGroupEntity =
+    // membershipEntity.getId().getGroup().getSuperGroup();
+    //            userSuperGroups.add(this.superGroupEntityConverter.toDomain(superGroupEntity));
+    //
+    //            PostEntity postEntity = membershipEntity.getId().getPost();
+    //
+    //
+    // this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(superGroupEntity.getId(), postEntity.getId()).forEach(authorityPostEntity -> names.add(new UserAuthority(authorityPostEntity.getId().getValue().authorityName(), AuthorityType.AUTHORITY)));
+    //        });
+    //
+    //        userSuperGroups.forEach(superGroup -> names.add(new UserAuthority(new
+    // AuthorityName(superGroup.name().value()), AuthorityType.SUPERGROUP)));
+    //
+    //        userSuperGroups.forEach(superGroupId ->
+    // names.addAll(this.authoritySuperGroupRepository.findAllById_SuperGroupEntity_Id(superGroupId.id().value()).stream().map(AuthoritySuperGroupEntity::getId).map(AuthoritySuperGroupPK::getValue).map(AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO::authorityName).map(clientAuthority -> new UserAuthority(clientAuthority, AuthorityType.AUTHORITY)).toList()));
+    //
+    //        return new ArrayList<>(names);
+  }
 
-            throw e;
-        }
-    }
+  @Override
+  public Optional<Authority> get(ClientUid clientUid, AuthorityName authorityName) {
+    return this.repository
+        .findById(toAuthorityEntityPK(clientUid, authorityName))
+        .map(this.clientAuthorityEntityConverter::toDomain);
+  }
 
-    @Override
-    public List<Authority> getAllByClient(ClientUid clientUid) {
-        return this.repository.findAllById_Client_Id(clientUid.value()).stream().map(this.clientAuthorityEntityConverter::toDomain).toList();
-    }
+  private ClientAuthorityEntity toEntity(Authority authority)
+      throws ClientAuthorityNotFoundRuntimeException {
+    String name = authority.name().getValue();
 
-    @Override
-    public List<Authority> getAllByUser(ClientUid clientUid, UserId userId) {
+    ClientAuthorityEntity clientAuthorityEntity =
+        this.repository
+            .findById(
+                new ClientAuthorityEntityPK(
+                    this.clientJpaRepository
+                        .findById(authority.client().clientUid().value())
+                        .orElseThrow(),
+                    authority.name().value()))
+            .orElseThrow(ClientAuthorityNotFoundRuntimeException::new);
 
-            throw new UnsupportedOperationException();
-//        Set<UserAuthority> names = new HashSet<>();
-//
-//        this.authorityUserRepository.findAllById_UserEntity_Id(userId.value()).forEach(authorityUserEntity -> names.add(new UserAuthority(authorityUserEntity.getId().getValue().authorityName(), AuthorityType.AUTHORITY)));
-//
-//        Set<SuperGroup> userSuperGroups = new HashSet<>();
-//
-//        this.membershipJpaRepository.findAllById_User_Id(userId.value()).forEach(membershipEntity -> {
-//            names.add(new UserAuthority(new AuthorityName(membershipEntity.getId().getGroup().getName()), AuthorityType.GROUP));
-//
-//            SuperGroupEntity superGroupEntity = membershipEntity.getId().getGroup().getSuperGroup();
-//            userSuperGroups.add(this.superGroupEntityConverter.toDomain(superGroupEntity));
-//
-//            PostEntity postEntity = membershipEntity.getId().getPost();
-//
-//            this.authorityPostRepository.findAllById_SuperGroupEntity_Id_AndId_PostEntity_Id(superGroupEntity.getId(), postEntity.getId()).forEach(authorityPostEntity -> names.add(new UserAuthority(authorityPostEntity.getId().getValue().authorityName(), AuthorityType.AUTHORITY)));
-//        });
-//
-//        userSuperGroups.forEach(superGroup -> names.add(new UserAuthority(new AuthorityName(superGroup.name().value()), AuthorityType.SUPERGROUP)));
-//
-//        userSuperGroups.forEach(superGroupId -> names.addAll(this.authoritySuperGroupRepository.findAllById_SuperGroupEntity_Id(superGroupId.id().value()).stream().map(AuthoritySuperGroupEntity::getId).map(AuthoritySuperGroupPK::getValue).map(AuthoritySuperGroupPK.AuthoritySuperGroupPKDTO::authorityName).map(clientAuthority -> new UserAuthority(clientAuthority, AuthorityType.AUTHORITY)).toList()));
-//
-//        return new ArrayList<>(names);
-    }
+    List<ClientAuthorityUserEntity> users =
+        authority.users().stream()
+            .map(user -> new ClientAuthorityUserEntity(toEntity(user), clientAuthorityEntity))
+            .toList();
+    List<ClientAuthoritySuperGroupEntity> superGroups =
+        authority.superGroups().stream()
+            .map(
+                superGroup ->
+                    new ClientAuthoritySuperGroupEntity(
+                        toEntity(superGroup), clientAuthorityEntity))
+            .toList();
 
-    @Override
-    public Optional<Authority> get(ClientUid clientUid, AuthorityName authorityName) {
-        return this.repository.findById(toAuthorityEntityPK(clientUid, authorityName)).map(this.clientAuthorityEntityConverter::toDomain);
-    }
+    clientAuthorityEntity.userEntityList.clear();
+    clientAuthorityEntity.userEntityList.addAll(users);
 
-    private ClientAuthorityEntity toEntity(Authority authority) throws ClientAuthorityNotFoundRuntimeException {
-        String name = authority.name().getValue();
+    clientAuthorityEntity.superGroupEntityList.clear();
+    clientAuthorityEntity.superGroupEntityList.addAll(superGroups);
 
-        ClientAuthorityEntity clientAuthorityEntity = this.repository.findById(new ClientAuthorityEntityPK(this.clientJpaRepository.findById(authority.client().clientUid().value()).orElseThrow(), authority.name().value())).orElseThrow(ClientAuthorityNotFoundRuntimeException::new);
+    return clientAuthorityEntity;
+  }
 
-        List<ClientAuthorityUserEntity> users = authority.users().stream().map(user -> new ClientAuthorityUserEntity(toEntity(user), clientAuthorityEntity)).toList();
-        List<ClientAuthoritySuperGroupEntity> superGroups = authority.superGroups().stream().map(superGroup -> new ClientAuthoritySuperGroupEntity(toEntity(superGroup), clientAuthorityEntity)).toList();
+  private UserEntity toEntity(GammaUser user) {
+    return this.userJpaRepository.getById(user.id().getValue());
+  }
 
-        clientAuthorityEntity.userEntityList.clear();
-        clientAuthorityEntity.userEntityList.addAll(users);
+  private SuperGroupEntity toEntity(SuperGroup superGroup) {
+    return this.superGroupJpaRepository.getById(superGroup.id().getValue());
+  }
 
-        clientAuthorityEntity.superGroupEntityList.clear();
-        clientAuthorityEntity.superGroupEntityList.addAll(superGroups);
-
-        return clientAuthorityEntity;
-    }
-
-
-    private UserEntity toEntity(GammaUser user) {
-        return this.userJpaRepository.getById(user.id().getValue());
-    }
-
-    private SuperGroupEntity toEntity(SuperGroup superGroup) {
-        return this.superGroupJpaRepository.getById(superGroup.id().getValue());
-    }
-
-    private ClientAuthorityEntityPK toAuthorityEntityPK(ClientUid clientUid, AuthorityName authorityName) {
-        return new ClientAuthorityEntityPK(this.clientJpaRepository.findById(clientUid.value()).orElseThrow(), authorityName.value());
-    }
-
+  private ClientAuthorityEntityPK toAuthorityEntityPK(
+      ClientUid clientUid, AuthorityName authorityName) {
+    return new ClientAuthorityEntityPK(
+        this.clientJpaRepository.findById(clientUid.value()).orElseThrow(), authorityName.value());
+  }
 }

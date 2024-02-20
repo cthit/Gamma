@@ -4,41 +4,36 @@ import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface GroupRepository {
 
-    void save(Group group)
-            throws GroupNameAlreadyExistsException, SuperGroupNotFoundRuntimeException,
-            UserNotFoundRuntimeException, PostNotFoundRuntimeException;
+  void save(Group group)
+      throws GroupNameAlreadyExistsException,
+          SuperGroupNotFoundRuntimeException,
+          UserNotFoundRuntimeException,
+          PostNotFoundRuntimeException;
 
-    void delete(GroupId groupId) throws GroupNotFoundException;
+  void delete(GroupId groupId) throws GroupNotFoundException;
 
-    List<Group> getAll();
+  List<Group> getAll();
 
-    List<Group> getAllBySuperGroup(SuperGroupId superGroupId);
+  List<Group> getAllBySuperGroup(SuperGroupId superGroupId);
 
-    List<Group> getAllByPost(PostId postId);
+  List<Group> getAllByPost(PostId postId);
 
-    List<UserMembership> getAllByUser(UserId userId);
+  List<UserMembership> getAllByUser(UserId userId);
 
-    Optional<Group> get(GroupId groupId);
+  Optional<Group> get(GroupId groupId);
 
-    class GroupNotFoundException extends Exception {
-    }
+  class GroupNotFoundException extends Exception {}
 
-    class GroupNameAlreadyExistsException extends Exception {
-    }
+  class GroupNameAlreadyExistsException extends Exception {}
 
-    class SuperGroupNotFoundRuntimeException extends RuntimeException {
-    }
+  class SuperGroupNotFoundRuntimeException extends RuntimeException {}
 
-    class UserNotFoundRuntimeException extends RuntimeException {
-    }
+  class UserNotFoundRuntimeException extends RuntimeException {}
 
-    class PostNotFoundRuntimeException extends RuntimeException {
-    }
-
+  class PostNotFoundRuntimeException extends RuntimeException {}
 }

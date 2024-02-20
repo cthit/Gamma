@@ -5,15 +5,13 @@ import java.util.Optional;
 
 public interface PostRepository {
 
-    void save(Post post);
+  void save(Post post);
 
-    void delete(PostId postId) throws PostNotFoundException;
+  void delete(PostId postId) throws PostNotFoundException;
 
-    List<Post> getAll();
+  List<Post> getAll();
 
-    Optional<Post> get(PostId postId);
+  Optional<Post> get(PostId postId);
 
-    class PostNotFoundException extends Exception {
-    }
-
+  class PostNotFoundException extends Exception {}
 }

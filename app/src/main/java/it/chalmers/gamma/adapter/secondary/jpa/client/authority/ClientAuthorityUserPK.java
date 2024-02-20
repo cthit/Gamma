@@ -13,39 +13,31 @@ import jakarta.persistence.ManyToOne;
 @Embeddable
 public class ClientAuthorityUserPK extends PKId<ClientAuthorityUserPK.AuthorityUserPKRecord> {
 
-    @JoinColumn(name = "user_id")
-    @ManyToOne
-    private UserEntity userEntity;
+  @JoinColumn(name = "user_id")
+  @ManyToOne
+  private UserEntity userEntity;
 
-    @Embedded
-    protected ClientAuthorityEntityPK clientAuthority;
+  @Embedded protected ClientAuthorityEntityPK clientAuthority;
 
-    protected ClientAuthorityUserPK() {
+  protected ClientAuthorityUserPK() {}
 
-    }
+  public ClientAuthorityUserPK(UserEntity userEntity, ClientAuthorityEntity clientAuthority) {
+    this.userEntity = userEntity;
+    this.clientAuthority = clientAuthority.getId();
+  }
 
-    public ClientAuthorityUserPK(UserEntity userEntity, ClientAuthorityEntity clientAuthority) {
-        this.userEntity = userEntity;
-        this.clientAuthority = clientAuthority.getId();
-    }
+  @Override
+  public AuthorityUserPKRecord getValue() {
+    return new AuthorityUserPKRecord(
+        new UserId(this.userEntity.getId()),
+        new AuthorityName(this.clientAuthority.name),
+        new ClientUid(this.clientAuthority.client.getId()));
+  }
 
-    @Override
-    public AuthorityUserPKRecord getValue() {
-        return new AuthorityUserPKRecord(
-                new UserId(this.userEntity.getId()),
-                new AuthorityName(this.clientAuthority.name),
-                new ClientUid(this.clientAuthority.client.getId())
-        );
-    }
+  public UserEntity getUserEntity() {
+    return this.userEntity;
+  }
 
-    public UserEntity getUserEntity() {
-        return this.userEntity;
-    }
-
-    protected record AuthorityUserPKRecord(
-            UserId userId,
-            AuthorityName authorityName,
-            ClientUid clientUid
-    ) {
-    }
+  protected record AuthorityUserPKRecord(
+      UserId userId, AuthorityName authorityName, ClientUid clientUid) {}
 }

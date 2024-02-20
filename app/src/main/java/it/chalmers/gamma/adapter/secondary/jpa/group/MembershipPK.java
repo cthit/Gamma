@@ -12,51 +12,45 @@ import jakarta.persistence.ManyToOne;
 @Embeddable
 public class MembershipPK extends PKId<MembershipPK.MembershipPKDTO> {
 
-    @JoinColumn(name = "post_id")
-    @ManyToOne
-    private PostEntity post;
+  @JoinColumn(name = "post_id")
+  @ManyToOne
+  private PostEntity post;
 
-    @JoinColumn(name = "group_id")
-    @ManyToOne
-    private GroupEntity group;
+  @JoinColumn(name = "group_id")
+  @ManyToOne
+  private GroupEntity group;
 
-    @JoinColumn(name = "user_id")
-    @ManyToOne
-    private UserEntity user;
+  @JoinColumn(name = "user_id")
+  @ManyToOne
+  private UserEntity user;
 
-    protected MembershipPK() {
+  protected MembershipPK() {}
 
-    }
+  public MembershipPK(PostEntity post, GroupEntity group, UserEntity user) {
+    this.post = post;
+    this.group = group;
+    this.user = user;
+  }
 
-    public MembershipPK(PostEntity post,
-                        GroupEntity group,
-                        UserEntity user) {
-        this.post = post;
-        this.group = group;
-        this.user = user;
-    }
+  public PostEntity getPost() {
+    return post;
+  }
 
-    public PostEntity getPost() {
-        return post;
-    }
+  public GroupEntity getGroup() {
+    return group;
+  }
 
-    public GroupEntity getGroup() {
-        return group;
-    }
+  public UserEntity getUser() {
+    return user;
+  }
 
-    public UserEntity getUser() {
-        return user;
-    }
+  @Override
+  public MembershipPK.MembershipPKDTO getValue() {
+    return new MembershipPKDTO(
+        new PostId(this.post.getId()),
+        new GroupId(this.group.getId()),
+        new UserId(this.user.getId()));
+  }
 
-    @Override
-    public MembershipPK.MembershipPKDTO getValue() {
-        return new MembershipPKDTO(
-                new PostId(this.post.getId()),
-                new GroupId(this.group.getId()),
-                new UserId(this.user.getId())
-        );
-    }
-
-    public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) {
-    }
+  public record MembershipPKDTO(PostId postId, GroupId groupId, UserId userId) {}
 }

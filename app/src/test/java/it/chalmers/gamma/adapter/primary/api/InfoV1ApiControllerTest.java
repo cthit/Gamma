@@ -1,28 +1,25 @@
 package it.chalmers.gamma.adapter.primary.api;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @ActiveProfiles("test-with-mock")
 class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
 
-    @Autowired
-    private SettingsRepository settingsRepository;
+  @Autowired private SettingsRepository settingsRepository;
 
-    @Autowired
-    private ApiKeyRepository apiKeyRepository;
+  @Autowired private ApiKeyRepository apiKeyRepository;
 
-
-    private static final String expected = """
+  private static final String expected =
+      """
     {
       "groups": [
         {
@@ -61,36 +58,34 @@ class InfoV1ApiControllerTest extends AbstractExternalApiControllerTest {
     }
     """;
 
-    @Test
-    public void groups() {
-        System.out.println(apiKeyRepository.getAll());
+  @Test
+  public void groups() {
+    System.out.println(apiKeyRepository.getAll());
 
-        settingsRepository.setSettings(
-                settings -> settings.withInfoSuperGroupTypes(
-                        List.of(new SuperGroupType("committee"))
-                ));
+    settingsRepository.setSettings(
+        settings -> settings.withInfoSuperGroupTypes(List.of(new SuperGroupType("committee"))));
 
-        var response = given()
-                .filter(apiAuthFilter("INFO-super-secret-code"))
-                .and()
-                .get("/external/info/v1/groups")
-                .andReturn();
-
-        assertThat(response.print()).isEqualTo(expected.replaceAll("\\s+",""));
-
+    var response =
         given()
-                .filter(apiAuthFilter("bad-key"))
-                .and()
-                .get("/external/info/v1/groups")
-                .then()
-                .statusCode(401);
+            .filter(apiAuthFilter("INFO-super-secret-code"))
+            .and()
+            .get("/external/info/v1/groups")
+            .andReturn();
 
-        given()
-                .filter(apiAuthFilter("ALLOW-LIST-super-secret-code"))
-                .and()
-                .get("/external/info/v1/groups")
-                .then()
-                .statusCode(403);
-    }
+    assertThat(response.print()).isEqualTo(expected.replaceAll("\\s+", ""));
 
+    given()
+        .filter(apiAuthFilter("bad-key"))
+        .and()
+        .get("/external/info/v1/groups")
+        .then()
+        .statusCode(401);
+
+    given()
+        .filter(apiAuthFilter("ALLOW-LIST-super-secret-code"))
+        .and()
+        .get("/external/info/v1/groups")
+        .then()
+        .statusCode(403);
+  }
 }

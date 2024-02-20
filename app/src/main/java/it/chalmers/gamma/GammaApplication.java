@@ -8,8 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan
 public class GammaApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(GammaApplication.class, args);
-    }
-
+  public static void main(String[] args) {
+    SpringApplication.run(GammaApplication.class, args);
+  }
 }

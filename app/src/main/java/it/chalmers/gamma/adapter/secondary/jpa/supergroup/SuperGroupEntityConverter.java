@@ -10,21 +10,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class SuperGroupEntityConverter {
 
-    public final SuperGroupJpaRepository superGroupJpaRepository;
+  public final SuperGroupJpaRepository superGroupJpaRepository;
 
-    public SuperGroupEntityConverter(SuperGroupJpaRepository superGroupJpaRepository) {
-        this.superGroupJpaRepository = superGroupJpaRepository;
-    }
+  public SuperGroupEntityConverter(SuperGroupJpaRepository superGroupJpaRepository) {
+    this.superGroupJpaRepository = superGroupJpaRepository;
+  }
 
-    public SuperGroup toDomain(SuperGroupEntity entity) {
-        return new SuperGroup(
-                new SuperGroupId(entity.id),
-                entity.getVersion(),
-                new Name(entity.name),
-                new PrettyName(entity.prettyName),
-                new SuperGroupType(entity.superGroupType.getId()),
-                entity.description.toDomain()
-        );
-    }
-
+  public SuperGroup toDomain(SuperGroupEntity entity) {
+    return new SuperGroup(
+        new SuperGroupId(entity.id),
+        entity.getVersion(),
+        new Name(entity.name),
+        new PrettyName(entity.prettyName),
+        new SuperGroupType(entity.superGroupType.getId()),
+        entity.description.toDomain());
+  }
 }

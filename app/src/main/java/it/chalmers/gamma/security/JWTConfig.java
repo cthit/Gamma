@@ -10,11 +10,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Configuration
 public class JWTConfig {
 
-    @Bean
-    public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
-        return NimbusJwtDecoder
-                .withPublicKey(rsaKey.toRSAPublicKey())
-                .build();
-    }
-
+  @Bean
+  public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
+    return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey()).build();
+  }
 }

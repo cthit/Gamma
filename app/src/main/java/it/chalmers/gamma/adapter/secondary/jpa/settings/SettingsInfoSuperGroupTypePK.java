@@ -7,34 +7,31 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import jakarta.persistence.*;
 
 @Embeddable
-public class SettingsInfoSuperGroupTypePK extends PKId<SettingsInfoSuperGroupTypePK.SettingsInfoSuperGroupTypePKDTO> {
+public class SettingsInfoSuperGroupTypePK
+    extends PKId<SettingsInfoSuperGroupTypePK.SettingsInfoSuperGroupTypePKDTO> {
 
-    @ManyToOne
-    @JoinColumn(name = "settings_id")
-    private SettingsEntity settings;
+  @ManyToOne
+  @JoinColumn(name = "settings_id")
+  private SettingsEntity settings;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "super_group_type_name")
-    private SuperGroupTypeEntity superGroupType;
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "super_group_type_name")
+  private SuperGroupTypeEntity superGroupType;
 
-    protected SettingsInfoSuperGroupTypePK() {
-    }
+  protected SettingsInfoSuperGroupTypePK() {}
 
-    protected SettingsInfoSuperGroupTypePK(SettingsEntity settingsEntity, SuperGroupTypeEntity superGroupTypeEntity) {
-        this.settings = settingsEntity;
-        this.superGroupType = superGroupTypeEntity;
-    }
+  protected SettingsInfoSuperGroupTypePK(
+      SettingsEntity settingsEntity, SuperGroupTypeEntity superGroupTypeEntity) {
+    this.settings = settingsEntity;
+    this.superGroupType = superGroupTypeEntity;
+  }
 
-    @Override
-    public SettingsInfoSuperGroupTypePKDTO getValue() {
-        return new SettingsInfoSuperGroupTypePKDTO(
-                settings.getId(),
-                new SuperGroupType(superGroupType.getId())
-        );
-    }
+  @Override
+  public SettingsInfoSuperGroupTypePKDTO getValue() {
+    return new SettingsInfoSuperGroupTypePKDTO(
+        settings.getId(), new SuperGroupType(superGroupType.getId()));
+  }
 
-    protected record SettingsInfoSuperGroupTypePKDTO(SettingsId settingsId, SuperGroupType superGroupType) {
-    }
-
-
+  protected record SettingsInfoSuperGroupTypePKDTO(
+      SettingsId settingsId, SuperGroupType superGroupType) {}
 }

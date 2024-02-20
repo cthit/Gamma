@@ -5,25 +5,23 @@ import java.util.Optional;
 
 public interface ApiKeyRepository {
 
-    void create(ApiKey apiKey) throws ApiKeyAlreadyExistRuntimeException;
+  void create(ApiKey apiKey) throws ApiKeyAlreadyExistRuntimeException;
 
-    void delete(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
+  void delete(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
 
-    ApiKeyToken resetApiKeyToken(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
+  ApiKeyToken resetApiKeyToken(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
 
-    List<ApiKey> getAll();
+  List<ApiKey> getAll();
 
-    Optional<ApiKey> getById(ApiKeyId apiKeyId);
+  Optional<ApiKey> getById(ApiKeyId apiKeyId);
 
-    Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken);
+  Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken);
 
-    class ApiKeyNotFoundException extends Exception {
-    }
+  class ApiKeyNotFoundException extends Exception {}
 
-    /**
-     * Either the api key id or token already exists. Runtime exception since id and token is generated.
-     */
-    class ApiKeyAlreadyExistRuntimeException extends RuntimeException {
-    }
-
+  /**
+   * Either the api key id or token already exists. Runtime exception since id and token is
+   * generated.
+   */
+  class ApiKeyAlreadyExistRuntimeException extends RuntimeException {}
 }

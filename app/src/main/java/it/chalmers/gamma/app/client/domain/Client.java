@@ -5,156 +5,164 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public final class Client {
-    private final ClientUid clientUid;
-    private final ClientId clientId;
-    private final ClientSecret clientSecret;
-    private final ClientRedirectUrl clientRedirectUrl;
-    private final PrettyName prettyName;
-    private final Text description;
-    private final List<Scope> scopes;
-    private final ApiKey clientApiKey;
-    private final ClientOwner owner;
-    private final ClientRestriction restriction;
+  private final ClientUid clientUid;
+  private final ClientId clientId;
+  private final ClientSecret clientSecret;
+  private final ClientRedirectUrl clientRedirectUrl;
+  private final PrettyName prettyName;
+  private final Text description;
+  private final List<Scope> scopes;
+  private final ApiKey clientApiKey;
+  private final ClientOwner owner;
+  private final ClientRestriction restriction;
 
-    public Client(ClientUid clientUid,
-                  ClientId clientId,
-                  ClientSecret clientSecret,
-                  ClientRedirectUrl clientRedirectUrl,
-                  PrettyName prettyName,
-                  Text description,
-                  List<Scope> scopes,
-                  ApiKey clientApiKey,
-                  ClientOwner owner,
-                  ClientRestriction restriction) {
-        Objects.requireNonNull(clientId);
-        Objects.requireNonNull(clientRedirectUrl);
-        Objects.requireNonNull(prettyName);
-        Objects.requireNonNull(description);
-        Objects.requireNonNull(scopes);
-        Objects.requireNonNull(owner);
+  public Client(
+      ClientUid clientUid,
+      ClientId clientId,
+      ClientSecret clientSecret,
+      ClientRedirectUrl clientRedirectUrl,
+      PrettyName prettyName,
+      Text description,
+      List<Scope> scopes,
+      ApiKey clientApiKey,
+      ClientOwner owner,
+      ClientRestriction restriction) {
+    Objects.requireNonNull(clientId);
+    Objects.requireNonNull(clientRedirectUrl);
+    Objects.requireNonNull(prettyName);
+    Objects.requireNonNull(description);
+    Objects.requireNonNull(scopes);
+    Objects.requireNonNull(owner);
 
-        if (clientApiKey != null && clientApiKey.keyType() != ApiKeyType.CLIENT) {
-            throw new IllegalArgumentException("If a client has a ApiKey, then the type must be ApiKeyType.CLIENT");
-        }
-
-        this.clientUid = clientUid;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.clientRedirectUrl = clientRedirectUrl;
-        this.prettyName = prettyName;
-        this.description = description;
-        this.scopes = scopes;
-        this.clientApiKey = clientApiKey;
-        this.owner = owner;
-        this.restriction = restriction;
+    if (clientApiKey != null && clientApiKey.keyType() != ApiKeyType.CLIENT) {
+      throw new IllegalArgumentException(
+          "If a client has a ApiKey, then the type must be ApiKeyType.CLIENT");
     }
 
-    public ClientUid clientUid() {
-        return clientUid;
-    }
+    this.clientUid = clientUid;
+    this.clientId = clientId;
+    this.clientSecret = clientSecret;
+    this.clientRedirectUrl = clientRedirectUrl;
+    this.prettyName = prettyName;
+    this.description = description;
+    this.scopes = scopes;
+    this.clientApiKey = clientApiKey;
+    this.owner = owner;
+    this.restriction = restriction;
+  }
 
-    public ClientId clientId() {
-        return clientId;
-    }
+  public ClientUid clientUid() {
+    return clientUid;
+  }
 
-    public ClientSecret clientSecret() {
-        return clientSecret;
-    }
+  public ClientId clientId() {
+    return clientId;
+  }
 
-    public ClientRedirectUrl clientRedirectUrl() {
-        return clientRedirectUrl;
-    }
+  public ClientSecret clientSecret() {
+    return clientSecret;
+  }
 
-    public PrettyName prettyName() {
-        return prettyName;
-    }
+  public ClientRedirectUrl clientRedirectUrl() {
+    return clientRedirectUrl;
+  }
 
-    public Text description() {
-        return description;
-    }
+  public PrettyName prettyName() {
+    return prettyName;
+  }
 
-    public List<Scope> scopes() {
-        return scopes;
-    }
+  public Text description() {
+    return description;
+  }
 
-    public Optional<ApiKey> clientApiKey() {
-        return Optional.ofNullable(this.clientApiKey);
-    }
+  public List<Scope> scopes() {
+    return scopes;
+  }
 
-    public Optional<ClientRestriction> restrictions() {
-        return Optional.ofNullable(this.restriction);
-    }
+  public Optional<ApiKey> clientApiKey() {
+    return Optional.ofNullable(this.clientApiKey);
+  }
 
-    public ClientOwner owner() {
-        return owner;
-    }
+  public Optional<ClientRestriction> restrictions() {
+    return Optional.ofNullable(this.restriction);
+  }
 
-    public Client withClientSecret(ClientSecret clientSecret) {
-        return new Client(
-                this.clientUid,
-                this.clientId,
-                clientSecret,
-                this.clientRedirectUrl,
-                this.prettyName,
-                this.description,
-                this.scopes,
-                this.clientApiKey,
-                this.owner,
-                this.restriction
-        );
-    }
+  public ClientOwner owner() {
+    return owner;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Client client = (Client) o;
-        return clientUid.equals(client.clientUid)
-                && clientId.equals(client.clientId)
-                && clientSecret.equals(client.clientSecret)
-                && clientRedirectUrl.equals(client.clientRedirectUrl)
-                && prettyName.equals(client.prettyName)
-                && description.equals(client.description)
-                && scopes.equals(client.scopes)
-                && Objects.equals(clientApiKey, client.clientApiKey)
-                && owner == client.owner
-                && restriction == client.restriction;
-    }
+  public Client withClientSecret(ClientSecret clientSecret) {
+    return new Client(
+        this.clientUid,
+        this.clientId,
+        clientSecret,
+        this.clientRedirectUrl,
+        this.prettyName,
+        this.description,
+        this.scopes,
+        this.clientApiKey,
+        this.owner,
+        this.restriction);
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(clientUid,
-                clientId,
-                clientSecret,
-                clientRedirectUrl,
-                prettyName,
-                description,
-                scopes,
-                clientApiKey,
-                owner,
-                restriction
-        );
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Client client = (Client) o;
+    return clientUid.equals(client.clientUid)
+        && clientId.equals(client.clientId)
+        && clientSecret.equals(client.clientSecret)
+        && clientRedirectUrl.equals(client.clientRedirectUrl)
+        && prettyName.equals(client.prettyName)
+        && description.equals(client.description)
+        && scopes.equals(client.scopes)
+        && Objects.equals(clientApiKey, client.clientApiKey)
+        && owner == client.owner
+        && restriction == client.restriction;
+  }
 
-    @Override
-    public String toString() {
-        return "Client{" +
-                "clientUid=" + clientUid +
-                ", clientId=" + clientId +
-                ", clientRedirectUrl=" + clientRedirectUrl +
-                ", prettyName=" + prettyName +
-                ", description=" + description +
-                ", scopes=" + scopes +
-                ", clientApiKey=" + clientApiKey +
-                ", access=" + owner +
-                ", restriction=" + restriction +
-                '}';
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(
+        clientUid,
+        clientId,
+        clientSecret,
+        clientRedirectUrl,
+        prettyName,
+        description,
+        scopes,
+        clientApiKey,
+        owner,
+        restriction);
+  }
+
+  @Override
+  public String toString() {
+    return "Client{"
+        + "clientUid="
+        + clientUid
+        + ", clientId="
+        + clientId
+        + ", clientRedirectUrl="
+        + clientRedirectUrl
+        + ", prettyName="
+        + prettyName
+        + ", description="
+        + description
+        + ", scopes="
+        + scopes
+        + ", clientApiKey="
+        + clientApiKey
+        + ", access="
+        + owner
+        + ", restriction="
+        + restriction
+        + '}';
+  }
 }
-

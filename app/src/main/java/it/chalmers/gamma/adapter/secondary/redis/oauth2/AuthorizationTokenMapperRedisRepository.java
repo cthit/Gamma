@@ -4,5 +4,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorizationTokenMapperRedisRepository extends CrudRepository<AuthorizationTokenMapperValue, String> {
-}
+public interface AuthorizationTokenMapperRedisRepository
+    extends CrudRepository<AuthorizationTokenMapperValue, String> {}

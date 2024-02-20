@@ -2,44 +2,41 @@ package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.user.domain.UserId;
-
 import java.util.List;
 import java.util.Optional;
 
 public interface ClientRepository {
 
-    void save(Client client)
-            throws AuthorityNotFoundRuntimeException, UserNotFoundRuntimeException, ClientIdAlreadyExistsRuntimeException;
+  void save(Client client)
+      throws AuthorityNotFoundRuntimeException,
+          UserNotFoundRuntimeException,
+          ClientIdAlreadyExistsRuntimeException;
 
-    void delete(ClientUid clientId) throws ClientNotFoundException;
+  void delete(ClientUid clientId) throws ClientNotFoundException;
 
-    List<Client> getAll();
-    List<Client> getAllUserClients(UserId userId);
+  List<Client> getAll();
 
-    Optional<Client> get(ClientUid clientUid);
+  List<Client> getAllUserClients(UserId userId);
 
-    Optional<Client> get(ClientId clientId);
+  Optional<Client> get(ClientUid clientUid);
 
-    void addClientApproval(UserId userId, ClientUid clientUid);
+  Optional<Client> get(ClientId clientId);
 
-    boolean isApprovedByUser(UserId userId, ClientUid clientUid);
+  void addClientApproval(UserId userId, ClientUid clientUid);
 
-    List<Client> getClientsByUserApproved(UserId id);
+  boolean isApprovedByUser(UserId userId, ClientUid clientUid);
 
-    void deleteUserApproval(ClientUid clientUid, UserId userId);
+  List<Client> getClientsByUserApproved(UserId id);
 
-    Optional<Client> getByApiKey(ApiKeyToken apiKeyToken);
+  void deleteUserApproval(ClientUid clientUid, UserId userId);
 
-    class ClientNotFoundException extends Exception {
-    }
+  Optional<Client> getByApiKey(ApiKeyToken apiKeyToken);
 
-    class ClientIdAlreadyExistsRuntimeException extends RuntimeException {
-    }
+  class ClientNotFoundException extends Exception {}
 
-    class AuthorityNotFoundRuntimeException extends RuntimeException {
-    }
+  class ClientIdAlreadyExistsRuntimeException extends RuntimeException {}
 
-    class UserNotFoundRuntimeException extends RuntimeException {
-    }
+  class AuthorityNotFoundRuntimeException extends RuntimeException {}
 
+  class UserNotFoundRuntimeException extends RuntimeException {}
 }
