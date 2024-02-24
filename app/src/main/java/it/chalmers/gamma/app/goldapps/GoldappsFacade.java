@@ -8,6 +8,8 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.Post;
+import it.chalmers.gamma.app.settings.domain.Settings;
+import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.GammaUser;
@@ -21,29 +23,34 @@ public class GoldappsFacade extends Facade {
 
   private final GroupRepository groupRepository;
   private final GdprTrainedRepository gdprTrainedRepository;
+  private final SettingsRepository settingsRepository;
 
   public GoldappsFacade(
       AccessGuard accessGuard,
       GroupRepository groupRepository,
-      GdprTrainedRepository gdprTrainedRepository) {
+      GdprTrainedRepository gdprTrainedRepository,
+      SettingsRepository settingsRepository) {
     super(accessGuard);
     this.groupRepository = groupRepository;
     this.gdprTrainedRepository = gdprTrainedRepository;
+    this.settingsRepository = settingsRepository;
   }
 
   /**
    * Get all super groups that have the provided types and members that are a part of groups that
    * has each supergroup
    */
-  public List<GoldappsSuperGroupDTO> getActiveSuperGroups(List<String> superGroupTypes) {
+  public List<GoldappsSuperGroupDTO> getActiveSuperGroups() {
     this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
+
+    Settings settings = this.settingsRepository.getSettings();
 
     List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
 
     Map<SuperGroupId, SuperGroupWithMembers> superGroupMap = new HashMap<>();
 
     this.groupRepository.getAll().stream()
-        .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
+        .filter(group -> settings.infoSuperGroupTypes().contains(group.superGroup().type()))
         .forEach(
             group -> {
               List<GoldappsUserPostDTO> activeGroupMember =
@@ -78,13 +85,15 @@ public class GoldappsFacade extends Facade {
    * determine what kinds of groups that are deemed active. User must also be not locked, and have
    * participated in gdpr training.
    */
-  public List<GoldappsUserDTO> getActiveUsers(List<String> superGroupTypes) {
+  public List<GoldappsUserDTO> getActiveUsers() {
     this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
+
+    Settings settings = this.settingsRepository.getSettings();
 
     List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
 
     return this.groupRepository.getAll().stream()
-        .filter(group -> superGroupTypes.contains(group.superGroup().type().value()))
+        .filter(group -> settings.infoSuperGroupTypes().contains(group.superGroup().type()))
         .flatMap(group -> group.groupMembers().stream())
         .map(GroupMember::user)
         .distinct()

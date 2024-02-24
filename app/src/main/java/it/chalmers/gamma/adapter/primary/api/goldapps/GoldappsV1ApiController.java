@@ -4,7 +4,6 @@ import it.chalmers.gamma.app.goldapps.GoldappsFacade;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -24,12 +23,12 @@ public class GoldappsV1ApiController {
   }
 
   @GetMapping("/supergroups")
-  public List<GoldappsFacade.GoldappsSuperGroupDTO> getSuperGroups(@RequestParam String types) {
-    return this.goldappsFacade.getActiveSuperGroups(List.of(types.split(";")));
+  public List<GoldappsFacade.GoldappsSuperGroupDTO> getSuperGroups() {
+    return this.goldappsFacade.getActiveSuperGroups();
   }
 
   @GetMapping("/users")
-  public List<GoldappsFacade.GoldappsUserDTO> getUsers(@RequestParam String types) {
-    return this.goldappsFacade.getActiveUsers(List.of(types.split(";")));
+  public List<GoldappsFacade.GoldappsUserDTO> getUsers() {
+    return this.goldappsFacade.getActiveUsers();
   }
 }

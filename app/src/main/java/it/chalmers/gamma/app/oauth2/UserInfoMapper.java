@@ -1,6 +1,5 @@
 package it.chalmers.gamma.app.oauth2;
 
-import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -19,15 +18,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
-  private final ClientAuthorityRepository clientAuthorityRepository;
   private final UserRepository userRepository;
   private final String baseUrl;
 
   public UserInfoMapper(
-      ClientAuthorityRepository clientAuthorityRepository,
-      UserRepository userRepository,
-      @Value("${application.base-uri}") String baseUrl) {
-    this.clientAuthorityRepository = clientAuthorityRepository;
+      UserRepository userRepository, @Value("${application.base-uri}") String baseUrl) {
     this.userRepository = userRepository;
     this.baseUrl = baseUrl;
   }
@@ -64,17 +59,6 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
         claims.put("cid", me.cid().value());
 
         // Separate record here to guarantee that the props doesn't change
-        record UserInfoAuthority(String authority, String type) {}
-
-        //                claims.put(
-        //                        "authorities",
-        //                        this.clientAuthorityRepository.getByUser(me.id())
-        //                                .stream()
-        //                                .map(userAuthority -> new
-        // UserInfoAuthority(userAuthority.authorityName().value(),
-        // userAuthority.authorityType().name()))
-        //                                .toList()
-        //                );
       } else if (scope.getAuthority().equals(EMAIL_SCOPE)) {
         claims.put("email", me.extended().email().value());
       }

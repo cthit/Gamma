@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SuperGroupJpaRepository extends JpaRepository<SuperGroupEntity, UUID> {
-
   List<SuperGroupEntity> findAllBySuperGroupType_Name(String type);
 }

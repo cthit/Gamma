@@ -22,7 +22,7 @@ CREATE
             LANGUAGE VARCHAR(15) NULL,
             user_agreement_accepted TIMESTAMP NOT NULL DEFAULT NOW(),
             acceptance_year INTEGER,
-            version INT, -- TODO: Maybe move to its own table? Along with a reason why it is locked
+            version INT,
             locked BOOLEAN DEFAULT FALSE
         );
 
@@ -258,30 +258,6 @@ CREATE
                     client_uid,
                     authority_name
                 )
-        );
-
-CREATE
-    TABLE
-        g_client_authority_post(
-            super_group_id UUID REFERENCES g_super_group,
-            post_id UUID REFERENCES g_post,
-            client_uid UUID,
-            authority_name VARCHAR(30),
-            PRIMARY KEY(
-                post_id,
-                super_group_id,
-                client_uid,
-                authority_name
-            ),
-            FOREIGN KEY(
-                client_uid,
-                authority_name
-            ) REFERENCES g_client_authority(
-                client_uid,
-                authority_name
-            ) ON
-            DELETE
-                CASCADE
         );
 
 CREATE

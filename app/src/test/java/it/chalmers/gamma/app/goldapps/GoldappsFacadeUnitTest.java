@@ -41,7 +41,7 @@ class GoldappsFacadeUnitTest {
     given(groupRepository.getAll()).willReturn(testCase.groups);
 
     List<GoldappsFacade.GoldappsSuperGroupDTO> activeSuperGroups =
-        goldappsFacade.getActiveSuperGroups(List.of("committee", "board"));
+        goldappsFacade.getActiveSuperGroups();
 
     assertThat(false).isTrue();
   }
@@ -55,8 +55,7 @@ class GoldappsFacadeUnitTest {
     given(groupRepository.getAll())
         .willReturn(testCase.groups.stream().map(DomainUtils::asSaved).toList());
 
-    List<GoldappsFacade.GoldappsUserDTO> activeUsers =
-        goldappsFacade.getActiveUsers(List.of("committee", "board"));
+    List<GoldappsFacade.GoldappsUserDTO> activeUsers = goldappsFacade.getActiveUsers();
 
     assertThat(activeUsers).hasSameElementsAs(expectedActiveUsers);
 

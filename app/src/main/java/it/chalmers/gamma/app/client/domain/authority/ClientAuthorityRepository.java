@@ -18,7 +18,7 @@ public interface ClientAuthorityRepository {
 
   List<Authority> getAllByClient(ClientUid clientUid);
 
-  List<Authority> getAllByUser(ClientUid clientUid, UserId userId);
+  List<AuthorityName> getAllByUser(ClientUid clientUid, UserId userId);
 
   Optional<Authority> get(ClientUid clientUid, AuthorityName authorityName);
 

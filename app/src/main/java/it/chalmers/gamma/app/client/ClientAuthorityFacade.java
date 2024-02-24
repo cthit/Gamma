@@ -4,6 +4,7 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
@@ -16,6 +17,8 @@ import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,6 +176,39 @@ public class ClientAuthorityFacade extends Facade {
     }
 
     this.clientAuthorityRepository.save(authority.withUsers(newUsers));
+  }
+
+  public List<String> getClientAuthorities() {
+    this.accessGuard.require(isClientApi());
+
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof ApiAuthentication apiAuthentication) {
+      Client client = apiAuthentication.getClient().orElseThrow();
+
+      return this.clientAuthorityRepository.getAllByClient(client.clientUid()).stream()
+          .map(Authority::name)
+          .map(AuthorityName::value)
+          .toList();
+    }
+
+    throw new RuntimeException();
+  }
+
+  public List<String> getUserAuthorities(UUID userId) {
+    this.accessGuard.require(isClientApi());
+
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof ApiAuthentication apiAuthentication) {
+      Client client = apiAuthentication.getClient().orElseThrow();
+
+      return this.clientAuthorityRepository
+          .getAllByUser(client.clientUid(), new UserId(userId))
+          .stream()
+          .map(AuthorityName::value)
+          .toList();
+    }
+
+    throw new RuntimeException();
   }
 
   public record ClientAuthorityDTO(

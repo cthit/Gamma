@@ -27,9 +27,9 @@ public class GroupRepositoryAdapter implements GroupRepository {
 
   private static final PersistenceErrorState SUPER_GROUP_NOT_FOUND =
       new PersistenceErrorState(
-          "fkit_group_super_group_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
+          "g_group_super_group_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
   private static final PersistenceErrorState GROUP_NAME_ALREADY_EXISTS =
-      new PersistenceErrorState("fkit_group_e_name_key", PersistenceErrorState.Type.NOT_UNIQUE);
+      new PersistenceErrorState("g_group_e_name_key", PersistenceErrorState.Type.NOT_UNIQUE);
   private static final PersistenceErrorState USER_NOT_FOUND =
       new PersistenceErrorState(
           "membership_user_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
