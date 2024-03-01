@@ -53,7 +53,6 @@ public class GroupEntityConverter {
     Optional<ImageUri> avatarUri = Optional.empty();
     Optional<ImageUri> bannerUri = Optional.empty();
 
-    // TODO: Remove Optional from Group (and User)
     if (entity.groupImages != null) {
       avatarUri = Optional.ofNullable(entity.groupImages.avatarUri).map(ImageUri::new);
       bannerUri = Optional.ofNullable(entity.groupImages.bannerUri).map(ImageUri::new);

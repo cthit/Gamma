@@ -53,9 +53,13 @@ public class UserResetPasswordFacade extends Facade {
   }
 
   public void finishResetPasswordProcess(
-      String emailString, String inputTokenRaw, String newPassword)
+      String emailString, String inputTokenRaw, String newPassword, String confirmPassword)
       throws PasswordResetProcessException {
     this.accessGuard.require(isNotSignedIn());
+
+    if (!newPassword.equals(confirmPassword)) {
+      throw new IllegalArgumentException("please properly confirm password");
+    }
 
     Email email = new Email(emailString);
 

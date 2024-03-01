@@ -74,11 +74,6 @@ public class RegisterAccountController {
   public ModelAndView registerAccount(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       CreateAccountForm form) {
-    // TODO: Move validation to facade
-    if (!form.password.equals(form.confirmPassword)) {}
-
-    if (!form.acceptUserAgreement) {}
-
     try {
       this.userCreationFacade.createUserWithCode(
           new UserCreationFacade.NewUser(
@@ -90,7 +85,9 @@ public class RegisterAccountController {
               form.acceptanceYear,
               form.cid,
               form.language),
-          form.code);
+          form.code,
+          form.confirmPassword,
+          form.acceptUserAgreement);
     } catch (UserCreationFacade.SomePropertyNotUniqueException e) {
       throw new RuntimeException(e);
     }

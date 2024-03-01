@@ -48,8 +48,7 @@ public class ForgotPasswordController {
       this.userResetPasswordFacade.startResetPasswordProcess(form.email);
       mv.setViewName("redirect:forgot-password/finalize");
     } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
-      // TODO: proper logging
-      System.out.println("attempted to reset password");
+      mv.setViewName("redirect:forgot-password/finalize");
     } catch (IllegalArgumentException e) {
       if (htmxRequest) {
         mv.setViewName("pages/forgot-password");
@@ -91,12 +90,9 @@ public class ForgotPasswordController {
   public ModelAndView finalizeForgotPassword(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       FinalizeForgotPassword form) {
-    // TODO: Move validation to facade
-    if (!form.password.equals(form.confirmPassword)) {}
-
     try {
       this.userResetPasswordFacade.finishResetPasswordProcess(
-          form.email, form.token, form.password);
+          form.email, form.token, form.password, form.confirmPassword);
     } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
       throw new RuntimeException(e);
     }

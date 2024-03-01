@@ -107,7 +107,6 @@ public class MeController {
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
 
-    // TODO: Use only getMe
     MeFacade.MeDTO me = this.meFacade.getMe();
 
     mv.setViewName("pages/me :: userinfo");

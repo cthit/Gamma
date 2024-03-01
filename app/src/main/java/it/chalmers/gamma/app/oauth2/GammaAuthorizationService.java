@@ -85,10 +85,8 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
         && authorization.getToken(OidcIdToken.class) == null;
   }
 
-  // TODO: Tokens are not removed?
   @Override
   public void remove(OAuth2Authorization authorization) {
-    LOGGER.info("Remove: " + authorization.toString());
     gammaAuthorizationRepository.remove(authorization);
   }
 

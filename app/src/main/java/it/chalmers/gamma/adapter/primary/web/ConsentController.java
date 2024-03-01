@@ -36,9 +36,8 @@ public class ConsentController {
 
     RegisteredClient client = this.registeredClientRepository.findByClientId(clientId);
 
-    // TODO: Do something better than this.
     if (client == null) {
-      return null;
+      throw new RuntimeException();
     }
 
     ModelAndView mv = new ModelAndView();

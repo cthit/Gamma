@@ -77,12 +77,20 @@ public class UserCreationFacade extends Facade {
   }
 
   @Transactional
-  public void createUserWithCode(NewUser data, String token) throws SomePropertyNotUniqueException {
+  public void createUserWithCode(
+      NewUser data, String token, String confirmPassword, boolean acceptsUserAgreement)
+      throws SomePropertyNotUniqueException {
     this.accessGuard.require(isNotSignedIn());
 
-    Cid tokenCid = this.userActivationRepository.getByToken(new UserActivationToken(token));
+    if (!data.password.equals(confirmPassword)) {
+      throw new IllegalArgumentException("password not confirmed");
+    }
 
-    // TODO: Check if email is not student@chalmers.se
+    if (!acceptsUserAgreement) {
+      throw new IllegalArgumentException("must accept user agreement");
+    }
+
+    Cid tokenCid = this.userActivationRepository.getByToken(new UserActivationToken(token));
 
     if (tokenCid.value().equals(data.cid)) {
       Cid cid = new Cid(data.cid);

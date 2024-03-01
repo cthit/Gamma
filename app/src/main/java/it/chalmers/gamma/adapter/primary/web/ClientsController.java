@@ -348,7 +348,6 @@ public class ClientsController {
       @PathVariable("id") UUID clientUid,
       CreateAuthority form) {
 
-    // TODO: Move this to one call in the facade.
     try {
       this.clientAuthorityFacade.create(clientUid, form.authority);
     } catch (ClientAuthorityRepository.ClientAuthorityAlreadyExistsException e) {

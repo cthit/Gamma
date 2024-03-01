@@ -326,7 +326,6 @@ public class GroupsController {
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       final GroupForm form,
       final BindingResult bindingResult) {
-    // TODO: Do this in one facade call
     try {
       UUID groupId =
           this.groupFacade.create(

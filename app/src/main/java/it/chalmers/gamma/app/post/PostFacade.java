@@ -33,7 +33,10 @@ public class PostFacade extends Facade {
   public UUID create(NewPost newPost) {
     PostId postId = PostId.generate();
 
-    // TODO: Post text should not be able to be empty
+    if (newPost.svText.isEmpty() || newPost.enText.isEmpty()) {
+      throw new IllegalArgumentException("Post names must not be empty");
+    }
+
     this.postRepository.save(
         new Post(
             postId,
