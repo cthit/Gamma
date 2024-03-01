@@ -8,63 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark" />
     <link rel="shortcut icon" type="image/svg" th:href="@{/img/itlogo.svg}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.green.min.css" />
-    <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.js}"></script>
-    <script th:src="@{/webjars/hyperscript.org/0.9.12/dist/_hyperscript.js}"></script>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/webjars/picocss__pico/2.0.3/css/pico.green.min.css}" />
+
+    <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.min.js}"></script>
+    <script th:src="@{/webjars/hyperscript.org/0.9.12/dist/_hyperscript.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
-    <style>
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        article > footer {
-            display: flex;
-            flex-direction: row;
-            gap: 1rem;
-            justify-content: flex-end;
-        }
-
-        article > footer > * {
-            margin-bottom: 0;
-        }
-
-        div[role='alert'] {
-            margin-bottom: var(--pico-spacing);
-            padding: var(--pico-form-element-spacing-vertical) var(--pico-form-element-spacing-horizontal);
-            border-radius: var(--pico-border-radius);
-        }
-
-        div[role='alert'].error {
-            background-color: #FAEEEB;
-        }
-
-        div[role='alert'].error > * {
-            color: #D93526;
-        }
-
-        div[role='alert'].success {
-            background-color: #D7FBC1;
-        }
-
-        div[role='alert'].success > * {
-            color: #398712;
-        }
-
-        #alerts {
-            position: fixed;
-            right: 1rem;
-            bottom: 1rem;
-
-            display: flex;
-            flex-direction: column;
-
-            max-width: 300px;
-        }
-    </style>
+    <script th:src="@{/js/reorder.js}"></script>
 </head>
-<body class="container-fluid" hx-boost="true" hx-history="false" >
+<body class="container" hx-boost="true" hx-history="false">
     <th:block th:replace="~{__${page}__}"></th:block>
 </body>
 </html>

@@ -59,11 +59,14 @@ public class SecurityFiltersConfig {
   @Order(2)
   @Bean
   SecurityFilterChain externalSecurityFilterChain(
-      HttpSecurity http, ApiKeyRepository apiKeyRepository, ClientRepository clientRepository)
+      HttpSecurity http,
+      ApiKeyRepository apiKeyRepository,
+      ClientRepository clientRepository,
+      PasswordEncoder passwordEncoder)
       throws Exception {
 
     ApiAuthenticationProvider apiAuthenticationProvider =
-        new ApiAuthenticationProvider(apiKeyRepository, clientRepository);
+        new ApiAuthenticationProvider(apiKeyRepository, clientRepository, passwordEncoder);
 
     RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api/.+", null);
     http.securityMatcher(regexRequestMatcher)
@@ -118,6 +121,8 @@ public class SecurityFiltersConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/js/**")
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/css/**")
+                    .permitAll()
                     .requestMatchers(HttpMethod.GET, "/webjars/**")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/login")
@@ -153,7 +158,10 @@ public class SecurityFiltersConfig {
             sessionManagement ->
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .cors(Customizer.withDefaults())
-        .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()));
+        .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
+        .headers(
+            headers ->
+                headers.contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")));
 
     return http.build();
   }

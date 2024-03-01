@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 public record Password(String value) {
 
-  private static final Pattern passwordStartPattern = Pattern.compile("^\\{.+}.+");
+  private static final Pattern passwordStartPattern = Pattern.compile("^\\{bcrypt}.+");
 
   public Password {
     if (value == null) {

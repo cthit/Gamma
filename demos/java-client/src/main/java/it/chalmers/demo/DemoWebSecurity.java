@@ -14,12 +14,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 public class DemoWebSecurity{
 
-    private final GammaAuthoritiesMapper gammaAuthoritiesMapper;
-
-    public DemoWebSecurity(GammaAuthoritiesMapper gammaAuthoritiesMapper) {
-        this.gammaAuthoritiesMapper = gammaAuthoritiesMapper;
-    }
-
     @Bean
     SecurityFilterChain defaultSecurityChain(HttpSecurity http) throws Exception {
         http

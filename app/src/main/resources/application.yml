@@ -61,16 +61,9 @@ application:
   cookie:
     domain: "${COOKIE_DOMAIN:gamma}"
     path: "${COOKIE_PATH:/}"
-    validity-time: 31536000
+    validity-time: 2628000
   mocking: "${IS_MOCKING:true}"
   admin-setup: "${ADMIN_SETUP:true}"
-  default-oauth2-client:
-    client-name: "${DEFAULT_CLIENT_NAME:test-client}"
-    client-id: "${DEFAULT_CLIENT_ID:test}"
-    client-secret: "${DEFAULT_CLIENT_SECRET:secret}"
-    redirect-url: "${DEFAULT_REDIRECT_URL:http://client:3001/login/oauth2/code/gamma}"
-    api-key: "${DEFAULT_API_KEY:test-api-key-secret-code}"
-    scopes: "${DEFAULT_SCOPES:profile,email}"
   gotify:
     key: "${GOTIFY_KEY:\"123abc\"}"
     url: "${GOTIFY_URL:\"localhost:7000\"}"

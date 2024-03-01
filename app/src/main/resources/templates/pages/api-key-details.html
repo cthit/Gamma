@@ -1,44 +1,3 @@
-<style>
-    main {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    img {
-        display: block;
-        margin: auto auto var(--pico-spacing);
-        height: 150px;
-        object-fit: contain;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    li {
-        display: flex;
-        flex-direction: row;
-        gap: 0.5rem;
-    }
-
-    li > * {
-        flex: 1;
-    }
-
-    li > *:nth-child(1) {
-        text-align: right;
-    }
-
-    li > *:nth-child(2) {
-        text-align: left;
-    }
-</style>
 <header th:replace="~{common/header}"></header>
 <div id="alerts">
 </div>
@@ -67,7 +26,7 @@
             </li>
         </ul>
         <footer>
-            <form th:action="|/api-keys/${apiKey.id()}|" th:method="delete">
+            <form data-hx-confirm="Are you sure you want to delete this api key?" th:action="|/api-keys/${apiKey.id()}|" th:method="delete">
                 <button class="outline contrast">Delete</button>
             </form>
         </footer>

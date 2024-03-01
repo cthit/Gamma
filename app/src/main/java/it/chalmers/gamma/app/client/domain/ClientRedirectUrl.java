@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.client.domain;
 
+import org.springframework.web.util.HtmlUtils;
+
 public record ClientRedirectUrl(String value) {
 
   public ClientRedirectUrl {
@@ -7,6 +9,6 @@ public record ClientRedirectUrl(String value) {
       throw new NullPointerException();
     }
 
-    // TODO: add more validation
+    value = HtmlUtils.htmlEscape(value, "UTF-8");
   }
 }

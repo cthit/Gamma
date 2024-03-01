@@ -34,7 +34,7 @@ jobs:
       - name: Docker Build-Tag-Push my-app
         run: |
           ./gradlew bootBuildImage
-          docker tag gamma:1.0.0-SNAPSHOT ghcr.io/cthit/gamma:latest
+          docker tag gamma:2.0.0-SNAPSHOT ghcr.io/cthit/gamma:latest
           docker push ghcr.io/cthit/gamma:latest
         working-directory: ./app
 

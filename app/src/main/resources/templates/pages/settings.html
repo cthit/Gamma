@@ -1,55 +1,30 @@
-<script>
-    function reindexTypes() {
-        update('select');
-    }
-
-    function update(n) {
-        const inputFields = document.querySelectorAll(n);
-        inputFields.forEach(function(input, index) {
-            input.name =  'superGroupTypesForInfo[' + index + ']';
-            input.id = 'superGroupTypesForInfo' + index;
-        });
-    }
-
-    document.body.addEventListener("htmx:afterSwap", reindexTypes);
-</script>
-<style>
-    main {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    form {
-        display: contents;
-    }
-
-    .super-group-type {
-        display: flex;
-        flex-direction: row;
-        gap: 1rem;
-    }
-
-    article {
-        width: max-content;
-    }
-</style>
 <header th:replace="~{common/header}"></header>
 <main>
     <a href="/" >Back</a>
     <h1>Settings</h1>
-    <form th:object="${form}" th:action="@{/settings}" th:method="put">
+    <form th:object="${form}"
+          th:action="@{/settings}"
+          th:method="put"
+          _="on htmx:afterSwap call updateNames('superGroupTypesForInfo', 'select')">
         <article>
             <header>
                 Types for Info API
             </header>
-            <div class="super-group-type" th:each="type : ${form.superGroupTypesForInfo}">
+            <div class="super-group-type"
+                 th:each="type : ${form.superGroupTypesForInfo}">
                 <select>
                     <option disabled selected th:value="${type}" th:text="${type}"></option>
                 </select>
-                <button class="outline contrast" type="button" _="on click remove closest .super-group-type then call reindexTypes()">Remove</button>
+                <button class="outline contrast"
+                        type="button"
+                        _="on click remove closest .super-group-type then call updateNames('superGroupTypesForInfo', 'select')">
+                    Remove
+                </button>
             </div>
             <footer>
-                <button class="outline contrast" type="button" data-hx-get="/settings/new-super-group" data-hx-target="this" data-hx-swap="beforebegin">Add type</button>
+                <button class="outline contrast" type="button" data-hx-get="/settings/new-super-group"
+                        data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
+                </button>
                 <button class="outline contrast" type="submit">Save</button>
             </footer>
         </article>

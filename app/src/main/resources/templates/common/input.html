@@ -1,7 +1,3 @@
-<!--[@thymesVar id="label" type="java.lang.String" text="Label" description="Label for input"]-->
-<!--[@thymesVar id="name" type="java.lang.String" text="Name" description="Name for input"]-->
-<!--[@thymesVar id="errorMessage" type="java.lang.String" text="Error Message" description="Error Message for input"]-->
-<!--[@thymesVar id="value" type="java.lang.String" text="Value" description="Start value for the input"]-->
 <th:block th:fragment="textInput(name, label, errorMessage, value)"
           th:assert="${name != null}">
     <label th:if="${label != null}"
@@ -28,9 +24,11 @@
     <input
             type="text"
             th:field="*{__${field}__}"
+            th:attr="aria-invalid=${#fields.hasErrors(field) ? 'true' : null},
+                    aria-describedby=${#fields.hasErrors(field) ? field : null}"
     />
-    <span th:if="${#fields.hasErrors(field)}"
-          th:errors="*{__${field}__}"></span>
+    <small th:id="${field}" th:if="${#fields.hasErrors(field)}" th:errors="*{__${field}__}">
+    </small>
 </th:block>
 
 <th:block th:fragment="distantTextInput(name, label, errorMessage, value, form)"
@@ -72,9 +70,11 @@
     <input
             type="password"
             th:field="*{__${field}__}"
+            th:attr="aria-invalid=${#fields.hasErrors(field) ? 'true' : null},
+                    aria-describedby=${#fields.hasErrors(field) ? field : null}"
     />
-    <span th:if="${#fields.hasErrors(field)}"
-          th:errors="*{__${field}__}"></span>
+    <small th:id="${field}" th:if="${#fields.hasErrors(field)}" th:errors="*{__${field}__}">
+    </small>
 </th:block>
 
 <th:block th:fragment="emailInput2(field, label)"

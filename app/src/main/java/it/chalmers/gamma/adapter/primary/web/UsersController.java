@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -136,7 +138,11 @@ public class UsersController {
 
   @PostMapping("/users")
   public ModelAndView createUser(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, CreateUser form) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      CreateUser form,
+      final BindingResult bindingResult) {
+    ModelAndView mv = new ModelAndView();
+
     try {
       UUID userId =
           this.userCreationFacade.createUser(
@@ -150,9 +156,25 @@ public class UsersController {
                   form.cid,
                   form.language));
 
-      return new ModelAndView("redirect:/users/" + userId);
-    } catch (UserCreationFacade.SomePropertyNotUniqueException e) {
-      throw new RuntimeException(e);
+      mv.setViewName("redirect:/users/" + userId);
+
+      return mv;
+    } catch (IllegalArgumentException
+        | UserCreationFacade.CidNotUniqueException
+        | UserCreationFacade.EmailNotUniqueException e) {
+      bindingResult.addError(new ObjectError("global", e.getMessage()));
+
+      if (htmxRequest) {
+        mv.setViewName("pages/create-user");
+      } else {
+        mv.setViewName("index");
+        mv.addObject("page", "pages/create-user");
+      }
+
+      mv.addObject("form", form);
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+
+      return mv;
     }
   }
 
@@ -192,16 +214,30 @@ public class UsersController {
   public ModelAndView editUser(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       @PathVariable("id") UUID userId,
-      EditUser form) {
-    this.userFacade.updateUser(
-        new UserFacade.UpdateUser(
-            userId,
-            form.nick,
-            form.firstName,
-            form.lastName,
-            form.email,
-            form.language,
-            form.acceptanceYear));
+      EditUser form,
+      BindingResult bindingResult) {
+    ModelAndView mv = new ModelAndView();
+
+    try {
+      this.userFacade.updateUser(
+          new UserFacade.UpdateUser(
+              userId,
+              form.nick,
+              form.firstName,
+              form.lastName,
+              form.email,
+              form.language,
+              form.acceptanceYear));
+    } catch (IllegalArgumentException e) {
+      bindingResult.addError(new ObjectError("global", e.getMessage()));
+
+      mv.setViewName("partial/edit-user");
+      mv.addObject("userId", userId);
+      mv.addObject("form", form);
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+
+      return mv;
+    }
 
     Optional<UserFacade.UserExtendedWithGroupsDTO> user = this.userFacade.getAsAdmin(userId);
 
@@ -210,8 +246,6 @@ public class UsersController {
     }
 
     String name = form.firstName() + " '" + form.nick() + "' " + form.lastName();
-
-    ModelAndView mv = new ModelAndView();
 
     mv.setViewName("partial/edited-user");
     mv.addObject("name", name);
@@ -222,5 +256,15 @@ public class UsersController {
     mv.addObject("userId", userId);
 
     return mv;
+  }
+
+  @DeleteMapping("/users/{id}")
+  public ModelAndView deleteUser(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID userId) {
+
+    this.userFacade.deleteUser(userId);
+
+    return new ModelAndView("redirect:/users");
   }
 }

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,16 +35,19 @@ public class ClientFacade extends Facade {
   private final ClientRepository clientRepository;
   private final SuperGroupRepository superGroupRepository;
   private final UserRepository userRepository;
+  private final PasswordEncoder passwordEncoder;
 
   public ClientFacade(
       AccessGuard accessGuard,
       ClientRepository clientRepository,
       SuperGroupRepository superGroupRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      PasswordEncoder passwordEncoder) {
     super(accessGuard);
     this.clientRepository = clientRepository;
     this.superGroupRepository = superGroupRepository;
     this.userRepository = userRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   @Transactional
@@ -70,12 +74,13 @@ public class ClientFacade extends Facade {
   }
 
   private ClientAndApiKeySecrets create(NewClient newClient, ClientOwner clientOwner) {
-    ClientSecret clientSecret = ClientSecret.generate();
+    ClientSecret.GeneratedClientSecret generatedClientSecret =
+        ClientSecret.generate(passwordEncoder);
     ApiKey apiKey = null;
-    ApiKeyToken apiKeyToken = null;
+    ApiKeyToken.GeneratedApiKeyToken generatedApiKeyToken = null;
 
     if (newClient.generateApiKey) {
-      apiKeyToken = ApiKeyToken.generate();
+      generatedApiKeyToken = ApiKeyToken.generate(passwordEncoder);
 
       apiKey =
           new ApiKey(
@@ -85,7 +90,7 @@ public class ClientFacade extends Facade {
                   "Api nyckel för klienten: " + newClient.prettyName,
                   "Api key for client: " + newClient.prettyName),
               ApiKeyType.CLIENT,
-              apiKeyToken);
+              generatedApiKeyToken.apiKeyToken());
     }
 
     List<Scope> scopes = new ArrayList<>();
@@ -115,7 +120,7 @@ public class ClientFacade extends Facade {
         new Client(
             clientUid,
             clientId,
-            clientSecret,
+            generatedClientSecret.clientSecret(),
             new ClientRedirectUrl(newClient.redirectUrl),
             new PrettyName(newClient.prettyName),
             new Text(newClient.svDescription, newClient.enDescription),
@@ -129,8 +134,8 @@ public class ClientFacade extends Facade {
     return new ClientAndApiKeySecrets(
         clientUid.value(),
         clientId.value(),
-        clientSecret.value(),
-        apiKeyToken == null ? null : apiKeyToken.value());
+        generatedClientSecret.rawSecret(),
+        generatedApiKeyToken == null ? null : generatedApiKeyToken.rawToken());
   }
 
   public void delete(UUID clientUid) throws ClientFacade.ClientNotFoundException {
@@ -178,13 +183,13 @@ public class ClientFacade extends Facade {
     this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
 
     Client client = this.clientRepository.get(uid).orElseThrow(ClientNotFoundException::new);
-    ClientSecret newSecret = ClientSecret.generate();
+    ClientSecret.GeneratedClientSecret generated = ClientSecret.generate(passwordEncoder);
 
-    Client newClient = client.withClientSecret(newSecret);
+    Client newClient = client.withClientSecret(generated.clientSecret());
 
     this.clientRepository.save(newClient);
 
-    return newSecret.value();
+    return generated.rawSecret();
   }
 
   public Optional<UserFacade.UserDTO> getClientOwner(String clientId) {

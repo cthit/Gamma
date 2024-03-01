@@ -9,8 +9,6 @@ public interface ApiKeyRepository {
 
   void delete(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
 
-  ApiKeyToken resetApiKeyToken(ApiKeyId apiKeyId) throws ApiKeyNotFoundException;
-
   List<ApiKey> getAll();
 
   Optional<ApiKey> getById(ApiKeyId apiKeyId);
@@ -20,7 +18,7 @@ public interface ApiKeyRepository {
   class ApiKeyNotFoundException extends Exception {}
 
   /**
-   * Either the api key id or token already exists. Runtime exception since id and token is
+   * Either the api key id or rawToken already exists. Runtime exception since id and rawToken is
    * generated.
    */
   class ApiKeyAlreadyExistRuntimeException extends RuntimeException {}

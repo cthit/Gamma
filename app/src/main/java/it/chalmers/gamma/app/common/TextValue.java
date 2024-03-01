@@ -1,11 +1,16 @@
 package it.chalmers.gamma.app.common;
 
+import java.util.Objects;
+import org.springframework.web.util.HtmlUtils;
+
 public record TextValue(String value) {
 
   public TextValue {
-    if (value == null) {
-      throw new NullPointerException("Text value cannot be null");
-    } else if (value.length() > 2048) {
+    Objects.requireNonNull(value);
+
+    value = HtmlUtils.htmlEscape(value, "UTF-8");
+
+    if (value.length() > 2048) {
       throw new IllegalArgumentException("Text value max length is 2048");
     }
   }

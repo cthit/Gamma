@@ -42,7 +42,7 @@ public class EnsureAnAdminUserBootstrap {
       return;
     }
 
-    if (adminRepository.getAll().size() > 0) {
+    if (!adminRepository.getAll().isEmpty()) {
       LOGGER.info(
           "There is already at least one user that is admin. Not creating a new admin user...");
       return;

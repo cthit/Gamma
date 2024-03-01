@@ -11,16 +11,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ApiKeyFacade extends Facade {
 
   private final ApiKeyRepository apiKeyRepository;
+  private final PasswordEncoder passwordEncoder;
 
-  public ApiKeyFacade(AccessGuard accessGuard, ApiKeyRepository apiKeyRepository) {
+  public ApiKeyFacade(
+      AccessGuard accessGuard, ApiKeyRepository apiKeyRepository, PasswordEncoder passwordEncoder) {
     super(accessGuard);
     this.apiKeyRepository = apiKeyRepository;
+    this.passwordEncoder = passwordEncoder;
   }
 
   public String[] getApiKeyTypes() {
@@ -48,15 +52,15 @@ public class ApiKeyFacade extends Facade {
     }
 
     ApiKeyId apiKeyId = ApiKeyId.generate();
-    ApiKeyToken apiKeyToken = ApiKeyToken.generate();
+    ApiKeyToken.GeneratedApiKeyToken generated = ApiKeyToken.generate(passwordEncoder);
     apiKeyRepository.create(
         new ApiKey(
             apiKeyId,
             new PrettyName(newApiKey.prettyName),
             new Text(newApiKey.svDescription, newApiKey.enDescription),
             type,
-            apiKeyToken));
-    return new CreatedApiKey(apiKeyId.value(), apiKeyToken.value());
+            generated.apiKeyToken()));
+    return new CreatedApiKey(apiKeyId.value(), generated.rawToken());
   }
 
   public void delete(UUID apiKeyId) throws ApiKeyNotFoundException {
@@ -79,18 +83,6 @@ public class ApiKeyFacade extends Facade {
     this.accessGuard.require(isAdmin());
 
     return this.apiKeyRepository.getAll().stream().map(ApiKeyDTO::new).toList();
-  }
-
-  public String resetApiKeyToken(UUID apiKeyId) throws ApiKeyNotFoundException {
-    this.accessGuard.require(isAdmin());
-
-    ApiKeyToken token;
-    try {
-      token = this.apiKeyRepository.resetApiKeyToken(new ApiKeyId(apiKeyId));
-    } catch (ApiKeyRepository.ApiKeyNotFoundException e) {
-      throw new ApiKeyNotFoundException();
-    }
-    return token.value();
   }
 
   public record NewApiKey(

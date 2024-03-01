@@ -11,7 +11,7 @@ public record GammaAuthorizationToken(String value, Type type) {
       case "state" -> new GammaAuthorizationToken(value, Type.STATE);
       case "oidc" -> new GammaAuthorizationToken(value, Type.OIDC);
       default ->
-          throw new IllegalArgumentException("Invalid token type: " + auth2TokenType.getValue());
+          throw new IllegalArgumentException("Invalid rawToken type: " + auth2TokenType.getValue());
     };
   }
 

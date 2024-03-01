@@ -1,14 +1,3 @@
-<style>
-    .td-buttons {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    .td-buttons > button {
-        margin: 0;
-    }
-</style>
 <div id="alerts"></div>
 <header th:replace="~{common/header}"></header>
 <main>
@@ -19,7 +8,7 @@
                 <th>Swedish name</th>
                 <th>English name</th>
                 <th>Email prefix</th>
-                <th></th>
+                <th th:if="${isAdmin}"></th>
             </tr>
         </thead>
         <tbody>
@@ -29,8 +18,8 @@
                     <td th:text="${post.svName()}"></td>
                     <td th:text="${post.enName()}"></td>
                     <td th:text="${post.emailPrefix()}"></td>
-                    <td class="td-buttons">
-                        <form th:id="|delete-${post.id()}|" th:data-hx-post="@{/posts/{postId}(postId=${post.id()})}" th:data-hx-target="${'tr[data-post-id=&quot;' + post.id() + '&quot;]'}" data-hx-swap="outerHTML">
+                    <td th:if="${isAdmin}" class="td-buttons">
+                        <form data-hx-confirm="Are you sure you want to delete this post?" th:id="|delete-${post.id()}|" th:data-hx-post="@{/posts/{postId}(postId=${post.id()})}" th:data-hx-target="${'tr[data-post-id=&quot;' + post.id() + '&quot;]'}" data-hx-swap="outerHTML">
                             <div th:replace="~{common/form-csrf}"></div>
                             <input type="hidden" name="_method" value="delete" />
                         </form>

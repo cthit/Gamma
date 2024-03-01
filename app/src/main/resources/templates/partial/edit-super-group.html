@@ -15,7 +15,7 @@
         </select>
     </form>
     <footer>
-        <button type="button" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|">Cancel</button>
+        <button type="button" data-hx-target="closest article" data-hx-swap="outerHTML" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|">Cancel</button>
         <button form="edit-super-group" type="submit">Save</button>
     </footer>
 </article>

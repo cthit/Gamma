@@ -39,7 +39,7 @@ public class InfoV1ApiController {
     return new GroupsResponse(this.groupFacade.getAllForInfoApi());
   }
 
-  record GroupsResponse(List<GroupFacade.GroupWithMembersDTO> groups) {}
+  public record GroupsResponse(List<GroupFacade.GroupWithMembersDTO> groups) {}
 
   private static class UserNotFoundResponse extends NotFoundResponse {}
 }

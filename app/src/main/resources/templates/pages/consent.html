@@ -1,23 +1,4 @@
-<style>
-    button {
-        width: min-content !important;
-    }
-
-    article {
-        width: fit-content;
-        margin: auto;
-    }
-</style>
-<script type="text/javascript">
-    function authorize() {
-        const checkboxes = document.querySelectorAll("input[type='checkbox']");
-        for (const checkbox of checkboxes) {
-            checkbox.checked = true;
-        }
-
-        document.confirmationForm.submit();
-    }
-</script>
+<script th:src="@{/js/authorize.js}"></script>
 <header th:replace="~{common/header}"></header>
 <main hx-boost="false">
     <article>
@@ -49,7 +30,7 @@
             <input name="state" th:value="${state}" type="hidden">
 
             <th:block th:each="scope: ${scopes}">
-                <input style="visibility: hidden" class="form-check-input"
+                <input class="form-check-input"
                        name="scope"
                        th:value="${scope}"
                        type="checkbox">
@@ -57,7 +38,7 @@
         </form>
         <footer>
             <button class="outline contrast" form="confirmationForm" type="submit">Deny</button>
-            <button class="outline contrast" type="button" onclick="authorize();">Authorize</button>
+            <button class="outline contrast" type="button" id="authorizeButton">Authorize</button>
         </footer>
     </article>
 </main>

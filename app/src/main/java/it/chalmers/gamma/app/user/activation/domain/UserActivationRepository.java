@@ -7,11 +7,11 @@ import java.util.Optional;
 public interface UserActivationRepository {
 
   /**
-   * Creates an activation token that is connected to the cid. If there already is a token
+   * Creates an activation rawToken that is connected to the cid. If there already is a rawToken
    * generated, then a new one will be generated.
    *
    * @param cid A cid that has been allowed
-   * @return A token that can be used to create an account with the given cid
+   * @return A rawToken that can be used to create an account with the given cid
    */
   UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException;
 

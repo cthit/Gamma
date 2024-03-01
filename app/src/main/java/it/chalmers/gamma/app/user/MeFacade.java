@@ -109,9 +109,14 @@ public class MeFacade extends Facade {
     }
   }
 
-  public void updatePassword(UpdatePassword updatePassword) {
+  public void updatePassword(UpdatePassword updatePassword)
+      throws NewPasswordNotConfirmedException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
+      if (!updatePassword.newPassword.equals(updatePassword.confirmNewPassword)) {
+        throw new NewPasswordNotConfirmedException();
+      }
+
       GammaUser me = userAuthentication.gammaUser();
       if (this.userRepository.checkPassword(
           me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
@@ -213,5 +218,7 @@ public class MeFacade extends Facade {
   public record UpdateMe(
       String nick, String firstName, String lastName, String email, String language) {}
 
-  public record UpdatePassword(String oldPassword, String newPassword) {}
+  public record UpdatePassword(String oldPassword, String newPassword, String confirmNewPassword) {}
+
+  public static final class NewPasswordNotConfirmedException extends Exception {}
 }

@@ -3,7 +3,7 @@ package it.chalmers.gamma.adapter.secondary.redis.oauth2;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-@RedisHash(value = "token", timeToLive = 3600)
+@RedisHash(value = "rawToken", timeToLive = 3600)
 public class AuthorizationTokenMapperValue {
 
   @Id String tokenKey;

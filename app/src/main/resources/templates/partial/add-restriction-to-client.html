@@ -2,5 +2,5 @@
     <select class="restriction">
         <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"></option>
     </select>
-    <button class="outline contrast" _="on click remove closest .restriction-row then call reindexRestrictions()" type="button">Delete</button>
+    <button class="outline contrast" _="on click remove closest .restriction-row then call updateNames('restrictions', '.restriction')" type="button">Delete</button>
 </div>

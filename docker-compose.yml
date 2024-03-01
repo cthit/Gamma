@@ -15,7 +15,7 @@ services:
 
   backend:
     # ./gradlew bootBuildImage
-    image: gamma:1.0.0-SNAPSHOT
+    image: gamma:2.0.0-SNAPSHOT
     environment:
       # Default admin user name = admin
       # Default admin password  = password

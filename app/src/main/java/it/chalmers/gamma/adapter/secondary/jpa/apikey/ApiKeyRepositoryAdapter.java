@@ -64,16 +64,6 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
   }
 
   @Override
-  public ApiKeyToken resetApiKeyToken(ApiKeyId apiKeyId) throws ApiKeyNotFoundException {
-    ApiKeyToken newToken = ApiKeyToken.generate();
-    ApiKeyEntity entity =
-        this.repository.findById(apiKeyId.value()).orElseThrow(ApiKeyNotFoundException::new);
-    entity.setApiKeyToken(newToken.value());
-    this.repository.saveAndFlush(entity);
-    return newToken;
-  }
-
-  @Override
   public List<ApiKey> getAll() {
     return this.repository.findAll().stream()
         .map(this.apiKeyEntityConverter::toDomain)
@@ -87,6 +77,7 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
 
   @Override
   public Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken) {
+    System.out.println(apiKeyToken.value());
     return this.repository
         .findByToken(apiKeyToken.value())
         .map(this.apiKeyEntityConverter::toDomain);

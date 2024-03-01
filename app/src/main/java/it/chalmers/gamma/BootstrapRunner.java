@@ -12,7 +12,6 @@ public class BootstrapRunner {
   @Bean
   public CommandLineRunner runBootStrap(
       ApiKeyBootstrap apiKeyBootstrap,
-      ClientBootstrap clientBootstrap,
       EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
       EnsureSettingsBootstrap ensureSettingsBootstrap,
       GroupBootstrap groupBootstrap,
@@ -36,7 +35,6 @@ public class BootstrapRunner {
         superGroupBootstrap.createSuperGroups();
         groupBootstrap.createGroups();
 
-        clientBootstrap.runOauthClient();
         apiKeyBootstrap.ensureApiKeys();
 
         SecurityContextHolder.clearContext();

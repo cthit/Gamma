@@ -4,6 +4,9 @@ import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.user.MeFacade;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -60,13 +63,25 @@ public class MeController {
 
   @PutMapping("/me")
   public ModelAndView editMe(
-      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest, EditMe form) {
-    this.meFacade.updateMe(
-        new MeFacade.UpdateMe(form.nick, form.firstName, form.lastName, form.email, form.language));
-
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      EditMe form,
+      final BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
-    // TODO: Use only getMe
+    try {
+      this.meFacade.updateMe(
+          new MeFacade.UpdateMe(
+              form.nick, form.firstName, form.lastName, form.email, form.language));
+    } catch (IllegalArgumentException e) {
+      bindingResult.addError(new ObjectError("global", e.getMessage()));
+
+      mv.setViewName("partial/edit-me");
+      mv.addObject("form", form);
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+
+      return mv;
+    }
+
     MeFacade.MeDTO me = this.meFacade.getMe();
 
     mv.setViewName("partial/edited-me");
@@ -118,12 +133,25 @@ public class MeController {
   @PutMapping("/me/edit-password")
   public ModelAndView editPassword(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-      EditPasswordForm form) {
-    // TODO: Move validation to facade
-    if (!form.newPassword.equals(form.confirmNewPassword)) {}
+      EditPasswordForm form,
+      final BindingResult bindingResult) {
 
-    this.meFacade.updatePassword(
-        new MeFacade.UpdatePassword(form.currentPassword, form.newPassword));
+    try {
+      this.meFacade.updatePassword(
+          new MeFacade.UpdatePassword(
+              form.currentPassword, form.newPassword, form.confirmNewPassword));
+    } catch (MeFacade.NewPasswordNotConfirmedException e) {
+      bindingResult.addError(
+          new FieldError("form", "confirmNewPassword", "Passwords were not the same"));
+
+      ModelAndView mv = new ModelAndView();
+
+      mv.setViewName("partial/edit-me-password");
+      mv.addObject("form", new MeFacade.UpdatePassword("", "", ""));
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+
+      return mv;
+    }
 
     MeFacade.MeDTO me = this.meFacade.getMe();
 

@@ -9,8 +9,8 @@ spring:
             client:
                 registration:
                     gamma:
-                        client-id: test
-                        client-secret: secret
+                        client-id: "MRELEFSLYGYU3AE3BIX1FI4825LULK"
+                        client-secret: "aOntr42pGaO3QxK1Ydgn4pCVZAQh463Qc24EKqnU6KGS5lbN4ZY5iAY7noE2uQXnhrTv1jpxPDumI8hteuG78UkLxnf46BLPLLSklw524cI2YLiVmmScW2Ui4A7bjVCj"
                         client-authentication-method: client_secret_basic
                         authorization-grant-type: authorization_code
                         scope: openid,profile,email

@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.user.domain.Cid;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +15,15 @@ import org.springframework.stereotype.Service;
 public class AllowListFacade extends Facade {
 
   private final AllowListRepository allowListRepository;
+  private final UserRepository userRepository;
 
-  public AllowListFacade(AccessGuard accessGuard, AllowListRepository allowListRepository) {
+  public AllowListFacade(
+      AccessGuard accessGuard,
+      AllowListRepository allowListRepository,
+      UserRepository userRepository) {
     super(accessGuard);
     this.allowListRepository = allowListRepository;
+    this.userRepository = userRepository;
   }
 
   public List<String> getAllowList() {
@@ -26,10 +32,17 @@ public class AllowListFacade extends Facade {
     return this.allowListRepository.getAllowList().stream().map(Cid::value).toList();
   }
 
-  public void allow(String cid) throws AllowListRepository.AlreadyAllowedException {
+  public void allow(String cidRaw)
+      throws AllowListRepository.AlreadyAllowedException, AlreadyAUserException {
+    Cid cid = new Cid(cidRaw);
+
     this.accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.ALLOW_LIST));
 
-    this.allowListRepository.allow(new Cid(cid));
+    if (this.userRepository.get(cid).isPresent()) {
+      throw new AlreadyAUserException();
+    }
+
+    this.allowListRepository.allow(cid);
   }
 
   public void removeFromAllowList(String cid) throws AllowListRepository.NotOnAllowListException {
@@ -42,5 +55,11 @@ public class AllowListFacade extends Facade {
     this.accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.ALLOW_LIST));
 
     return this.allowListRepository.isAllowed(new Cid(cid));
+  }
+
+  public static final class AlreadyAUserException extends Exception {
+    public AlreadyAUserException() {
+      super("Cid is already a user");
+    }
   }
 }

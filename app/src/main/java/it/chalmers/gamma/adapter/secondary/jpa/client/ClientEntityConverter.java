@@ -87,7 +87,7 @@ public class ClientEntityConverter {
 
     clientEntity.clientUid = client.clientUid().value();
     clientEntity.clientId = client.clientId().value();
-    clientEntity.clientSecret = this.passwordEncoder.encode(client.clientSecret().value());
+    clientEntity.clientSecret = client.clientSecret().value();
     clientEntity.prettyName = client.prettyName().value();
     clientEntity.webServerRedirectUrl = client.clientRedirectUrl().value();
 

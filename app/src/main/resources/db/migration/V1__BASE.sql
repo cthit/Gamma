@@ -114,7 +114,7 @@ CREATE
                     post_id UUID REFERENCES g_post ON
                     DELETE
                         CASCADE,
-                        unofficial_post_name VARCHAR(100),
+                        unofficial_post_name VARCHAR(50),
                         PRIMARY KEY(
                             user_id,
                             group_id,

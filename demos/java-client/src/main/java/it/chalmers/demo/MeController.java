@@ -17,15 +17,7 @@ public class MeController {
 
     @GetMapping("/me")
     public Object user(Authentication authentication) {
-        System.out.println("WHAT");
-        System.out.println(authentication);
         return authentication;
-    }
-
-    @GetMapping("/lol")
-    public String lol() {
-        System.out.println("what");
-        return "lol";
     }
 
 }

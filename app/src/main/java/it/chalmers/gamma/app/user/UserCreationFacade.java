@@ -9,7 +9,6 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
-import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
@@ -23,19 +22,16 @@ public class UserCreationFacade extends Facade {
   private static final String MAIL_POSTFIX = "student.chalmers.se";
   private static final Logger LOGGER = LoggerFactory.getLogger(UserCreationFacade.class);
   private final MailService mailService;
-  private final AllowListRepository allowListRepository;
   private final UserActivationRepository userActivationRepository;
   private final UserRepository userRepository;
 
   public UserCreationFacade(
       AccessGuard accessGuard,
       MailService mailService,
-      AllowListRepository allowListRepository,
       UserActivationRepository userActivationRepository,
       UserRepository userRepository) {
     super(accessGuard);
     this.mailService = mailService;
-    this.allowListRepository = allowListRepository;
     this.userActivationRepository = userActivationRepository;
     this.userRepository = userRepository;
   }
@@ -54,7 +50,7 @@ public class UserCreationFacade extends Facade {
     }
   }
 
-  public UUID createUser(NewUser newUser) throws SomePropertyNotUniqueException {
+  public UUID createUser(NewUser newUser) throws EmailNotUniqueException, CidNotUniqueException {
     this.accessGuard.require(isAdmin());
 
     UserId userId = UserId.generate();
@@ -73,9 +69,10 @@ public class UserCreationFacade extends Facade {
           new UnencryptedPassword(newUser.password));
 
       return userId.value();
-    } catch (UserRepository.CidAlreadyInUseException
-        | UserRepository.EmailAlreadyInUseException e) {
-      throw new SomePropertyNotUniqueException();
+    } catch (UserRepository.CidAlreadyInUseException e) {
+      throw new CidNotUniqueException();
+    } catch (UserRepository.EmailAlreadyInUseException e) {
+      throw new EmailNotUniqueException();
     }
   }
 
@@ -128,5 +125,21 @@ public class UserCreationFacade extends Facade {
       String cid,
       String language) {}
 
-  public class SomePropertyNotUniqueException extends Exception {}
+  public static class SomePropertyNotUniqueException extends Exception {
+    public SomePropertyNotUniqueException() {
+      super("Please double check your details");
+    }
+  }
+
+  public static class CidNotUniqueException extends Exception {
+    public CidNotUniqueException() {
+      super("Cid is already in use");
+    }
+  }
+
+  public static class EmailNotUniqueException extends Exception {
+    public EmailNotUniqueException() {
+      super("Email is already in use");
+    }
+  }
 }

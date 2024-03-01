@@ -21,10 +21,10 @@ public class UserRepositoryAdapter implements UserRepository {
   private final PasswordEncoder passwordEncoder;
 
   private final PersistenceErrorState cidNotUnique =
-      new PersistenceErrorState("ituser_cid_key", PersistenceErrorState.Type.NOT_UNIQUE);
+      new PersistenceErrorState("g_user_cid_key", PersistenceErrorState.Type.NOT_UNIQUE);
 
   private final PersistenceErrorState emailNotUnique =
-      new PersistenceErrorState("ituser_email_key", PersistenceErrorState.Type.NOT_UNIQUE);
+      new PersistenceErrorState("g_user_email_key", PersistenceErrorState.Type.NOT_UNIQUE);
 
   public UserRepositoryAdapter(
       UserJpaRepository repository,

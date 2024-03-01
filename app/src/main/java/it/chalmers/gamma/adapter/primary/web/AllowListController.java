@@ -5,9 +5,7 @@ import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import jakarta.annotation.Nullable;
 import java.util.List;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -47,7 +45,9 @@ public class AllowListController {
       AllowCidForm request) {
     try {
       allowListFacade.allow(request.cid);
-    } catch (AllowListRepository.AlreadyAllowedException | IllegalArgumentException e) {
+    } catch (AllowListRepository.AlreadyAllowedException
+        | IllegalArgumentException
+        | AllowListFacade.AlreadyAUserException e) {
       return getAllowList(htmxRequest, e.getMessage());
     }
 
@@ -55,4 +55,14 @@ public class AllowListController {
   }
 
   public record AllowCidForm(String cid) {}
+
+  @DeleteMapping(value = "/allow-list/{cid}")
+  public ModelAndView removeCidFromAllowList(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("cid") String cid) {
+
+    this.allowListFacade.removeFromAllowList(cid);
+
+    return new ModelAndView("common/empty");
+  }
 }
