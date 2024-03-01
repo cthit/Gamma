@@ -8,6 +8,7 @@ import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -101,7 +102,8 @@ public class SecurityFiltersConfig {
       HttpSecurity http,
       PasswordEncoder passwordEncoder,
       UserJpaRepository userJpaRepository,
-      AdminRepository adminRepository)
+      AdminRepository adminRepository,
+      @Value("${application.production}") boolean production)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
@@ -162,6 +164,12 @@ public class SecurityFiltersConfig {
         .headers(
             headers ->
                 headers.contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")));
+
+    if(production) {
+      http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+    } else {
+      http.requiresChannel(channel -> channel.anyRequest().requiresInsecure());
+    }
 
     return http.build();
   }
