@@ -1,0 +1,11 @@
+{
+    "SendCid": ["Send email", "Skicka email"],
+    "GetActivationCode": ["Get activation code", "Hämta aktiveringskod"],
+    "CreateAccount": ["Create account", "Skapa konto"],
+    "YouAlreadyHaveAnAccount": ["Another account??", "Ett till konto??"],
+    "YouAlreadyHaveAnAccountDescription": [
+        "You really want another account??",
+        "Vill du verkligen ha ett till konto??"
+    ],
+    "NahImGood": ["Nah Im good", "Neee jag är nöjd tack"]
+}

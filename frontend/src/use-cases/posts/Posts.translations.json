@@ -1,0 +1,30 @@
+{
+    "AddNewPost": ["Add new post", "Lägg till ny post"],
+    "SwedishInput": ["Swedish post name", "Svenska post namnet"],
+    "EnglishInput": ["English post name", "Engelska post namnet"],
+    "CreatePost": ["Create post", "Skapa post"],
+    "PostAdded": ["Post added", "Post tillagd"],
+    "PostAlreadyExists": ["Post already exists", "Posten finns redan"],
+    "Posts": ["Posts", "Poster"],
+    "Usages": ["Group usages", "Gruppanvändningar"],
+    "NoUsages": [
+        "This post isn't used by any group",
+        "Denna post används inte av någon grupp"
+    ],
+    "FailedCreatingPost": [
+        "Failed to create post",
+        "Misslyckades att skapa post"
+    ],
+    "PostDeletionFailed1": [
+        "Something went wrong when trying to delete the post",
+        "Någonting gick fel när posten"
+    ],
+    "PostDeletionFailed2": ["", "försökte raderas"],
+    "PostUpdateFailed1": [
+        "Something went wrong when trying to update the post",
+        "Någonting gick fel när posten"
+    ],
+    "PostUpdateFailed2": ["", "försökte uppdateras"],
+    "DeletePost": ["Delete post", "Radera post"],
+    "EmailPrefix": ["Email prefix", "Mail prefix"]
+}

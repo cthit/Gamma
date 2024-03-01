@@ -1,0 +1,39 @@
+{
+    "Cid": ["Cid", "Cid"],
+    "FirstName": ["First name", "Förnamn"],
+    "LastName": ["Last name", "Efternamn"],
+    "Nick": ["Nick", "Nick"],
+    "Email": ["Email", "Email"],
+    "AcceptanceYear": ["Acceptance Year", "Antagningsår"],
+    "CreatedAt": ["Account created at", "Konto skapat"],
+    "LastModifiedAt": ["Account last modified at", "Konto senast uppdaterat"],
+    "Edit": ["Edit account", "Redigera konto"],
+    "ChangePassword": ["Change Password", "Ändra Lösenord"],
+    "Language": ["Language", "Språk"],
+    "LanguageLowerLabel": ["Your preferred language", "Din föredragna språk"],
+    "AcceptanceYearLowerLabel": ["When you started IT", "När du började IT"],
+    "Password": ["Your password", "Ditt lösenord"],
+    "AreYouReallySure": [
+        "Are you really sure you want to permanently delete your own account. This action is irreversibel.",
+        "Är du säker att du verkligen vill radera ditt konto permanent? Denna återgärd är oåterkallelig."
+    ],
+    "YouMustEnterPassword": [
+        "You need to confirm your password to be able to delete your account",
+        "Du måste bekräfta ditt lösenord för att kunna radera ditt konto"
+    ],
+    "YourGroups": ["Your groups", "Dina grupper"],
+    "ChangeAvatar": ["Change avatar image", "Ändra avatar bild"],
+    "Phone": ["Phone number", "Telefonnummer"],
+    "DeleteMe": ["Delete my account", "Radera mitt konto"],
+    "UpdateMe": [
+        "You have updated your account",
+        "Du har uppdaterat ditt konto"
+    ],
+    "UpdateMeFailed": [
+        "Something went wrong when updating your account",
+        "Någonting gick fel när du försökte uppdatera ditt konto"
+    ],
+    "EditMe": ["Edit your information", "Redigera dina uppgifter"],
+    "YourInformation": ["Your information", "Din information"],
+    "YourApprovals": ["Your client approvals", "Dina klient godkännanden"]
+}

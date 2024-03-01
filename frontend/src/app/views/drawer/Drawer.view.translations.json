@@ -1,0 +1,14 @@
+{
+    "Home": ["Home", "Hem"],
+    "Me": ["Me", "Jag"],
+    "Users": ["Users", "Användare"],
+    "Groups": ["Groups", "Grupper"],
+    "SuperGroups": ["Super groups", "Supergrupper"],
+    "Posts": ["Group posts", "Gruppposter"],
+    "Whitelist": ["Whitelist", "Whitelist"],
+    "GDPR": ["GDPR", "GDPR"],
+    "ActivationCodes": ["Activation code", "Aktiveringskoder"],
+    "Clients": ["Clients", "Klienter"],
+    "ApiKeys": ["API keys", "API nycklar"],
+    "Authorities": ["Authorities", "Rättigheter"]
+}
