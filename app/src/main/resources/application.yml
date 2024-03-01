@@ -62,7 +62,7 @@ application:
     domain: "${COOKIE_DOMAIN:gamma}"
     path: "${COOKIE_PATH:/}"
     validity-time: 2628000
-  mocking: "${IS_MOCKING:true}"
+  mocking: "${IS_MOCKING:false}"
   admin-setup: "${ADMIN_SETUP:true}"
   gotify:
     key: "${GOTIFY_KEY:\"123abc\"}"
