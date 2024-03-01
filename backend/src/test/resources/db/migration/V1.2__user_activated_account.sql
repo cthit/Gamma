@@ -1,2 +1,0 @@
-ALTER TABLE ituser
-ADD activated BOOLEAN DEFAULT FALSE
