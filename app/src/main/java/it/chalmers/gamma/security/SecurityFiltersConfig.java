@@ -165,12 +165,6 @@ public class SecurityFiltersConfig {
             headers ->
                 headers.contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")));
 
-    if(production) {
-      http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
-    } else {
-      http.requiresChannel(channel -> channel.anyRequest().requiresInsecure());
-    }
-
     return http.build();
   }
 }
