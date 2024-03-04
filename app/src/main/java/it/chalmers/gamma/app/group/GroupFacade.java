@@ -55,7 +55,6 @@ public class GroupFacade extends Facade {
     this.settingsRepository = settingsRepository;
   }
 
-  @Transactional
   public UUID create(NewGroup newGroup) throws GroupAlreadyExistsException {
     accessGuard.require(isAdmin());
 
@@ -107,7 +106,6 @@ public class GroupFacade extends Facade {
     }
   }
 
-  @Transactional
   public void setMembers(UUID groupId, List<ShallowMember> newMembers)
       throws GroupNotFoundRuntimeException {
     accessGuard.require(isAdmin());
