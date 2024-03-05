@@ -2,6 +2,8 @@ package it.chalmers.gamma.adapter.primary.api.info;
 
 import it.chalmers.gamma.adapter.primary.api.utils.NotFoundResponse;
 import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.settings.SettingsFacade;
+import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import java.util.List;
 import java.util.UUID;
@@ -21,12 +23,15 @@ public class InfoV1ApiController {
 
   public static final String URI = "/api/info/v1";
 
-  private final GroupFacade groupFacade;
+  private final SuperGroupFacade superGroupFacade;
   private final UserFacade userFacade;
+  private final SettingsFacade settingsFacade;
 
-  public InfoV1ApiController(GroupFacade groupFacade, UserFacade userFacade) {
-    this.groupFacade = groupFacade;
+  public InfoV1ApiController(
+      SuperGroupFacade superGroupFacade, UserFacade userFacade, SettingsFacade settingsFacade) {
+    this.superGroupFacade = superGroupFacade;
     this.userFacade = userFacade;
+    this.settingsFacade = settingsFacade;
   }
 
   @GetMapping("/users/{id}")
@@ -34,9 +39,10 @@ public class InfoV1ApiController {
     return this.userFacade.get(id).orElseThrow(UserNotFoundResponse::new);
   }
 
-  @GetMapping("/groups")
-  public GroupsResponse getGroups() {
-    return new GroupsResponse(this.groupFacade.getAllForInfoApi());
+  @GetMapping("/blob")
+  public List<SuperGroupFacade.SuperGroupTypeDTO> getGroups() {
+    return this.superGroupFacade.getAllTypesWithSuperGroups(
+        this.settingsFacade.getInfoApiSuperGroupTypes());
   }
 
   public record GroupsResponse(List<GroupFacade.GroupWithMembersDTO> groups) {}

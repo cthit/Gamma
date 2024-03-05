@@ -3,7 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.settings.domain.Settings;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.lang.Nullable;
@@ -22,7 +21,6 @@ public class UserEntityConverter {
   }
 
   @Nullable public GammaUser toDomain(UserEntity userEntity) {
-    Settings settings = this.settingsRepository.getSettings();
     UserId userId = new UserId(userEntity.id);
 
     if (!userAccessGuard.haveAccessToUser(userId, userEntity.locked)) {

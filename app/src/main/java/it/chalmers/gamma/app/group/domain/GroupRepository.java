@@ -27,6 +27,8 @@ public interface GroupRepository {
 
   Optional<Group> get(GroupId groupId);
 
+  List<GroupMember> getAllMembersBySuperGroup(SuperGroupId superGroupId);
+
   class GroupNotFoundException extends Exception {}
 
   class GroupNameAlreadyExistsException extends Exception {}

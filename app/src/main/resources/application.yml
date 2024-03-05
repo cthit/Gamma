@@ -50,7 +50,7 @@ server:
     path: "/error"
   http2:
     enabled: true
-  forward-headers-strategy: native
+  forward-headers-strategy: "native"
 logging:
   level:
     root: "${ROOT_DEBUG_LEVEL:INFO}"

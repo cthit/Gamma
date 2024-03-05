@@ -1,17 +1,17 @@
 package it.chalmers.gamma.app.supergroup;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.Name;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,14 +19,17 @@ public class SuperGroupFacade extends Facade {
 
   private final SuperGroupRepository superGroupRepository;
   private final SuperGroupTypeRepository superGroupTypeRepository;
+  private final GroupRepository groupRepository;
 
   public SuperGroupFacade(
       AccessGuard accessGuard,
       SuperGroupRepository superGroupRepository,
-      SuperGroupTypeRepository superGroupTypeRepository) {
+      SuperGroupTypeRepository superGroupTypeRepository,
+      GroupRepository groupRepository) {
     super(accessGuard);
     this.superGroupRepository = superGroupRepository;
     this.superGroupTypeRepository = superGroupTypeRepository;
+    this.groupRepository = groupRepository;
   }
 
   public void addType(String type)
@@ -49,6 +52,33 @@ public class SuperGroupFacade extends Facade {
 
     return this.superGroupTypeRepository.getAll().stream().map(SuperGroupType::value).toList();
   }
+
+  public List<SuperGroupTypeDTO> getAllTypesWithSuperGroups(List<String> superGroupTypes) {
+    accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.INFO), isApi(ApiKeyType.GOLDAPPS));
+
+    List<SuperGroupTypeDTO> output = new ArrayList<>();
+
+    for (SuperGroupType type : superGroupTypes.stream().map(SuperGroupType::new).toList()) {
+      List<SuperGroupWithMembersDTO> superGroupsOutput = new ArrayList<>();
+      for (SuperGroup superGroup : this.superGroupRepository.getAllByType(type)) {
+        List<GroupFacade.GroupMemberDTO> members =
+            this.groupRepository.getAllMembersBySuperGroup(superGroup.id()).stream()
+                .map(GroupFacade.GroupMemberDTO::new)
+                .toList();
+
+        superGroupsOutput.add(new SuperGroupWithMembersDTO(new SuperGroupDTO(superGroup), members));
+      }
+
+      output.add(new SuperGroupTypeDTO(type.value(), superGroupsOutput));
+    }
+
+    return output;
+  }
+
+  public record SuperGroupWithMembersDTO(
+      SuperGroupDTO superGroup, List<GroupFacade.GroupMemberDTO> members) {}
+
+  public record SuperGroupTypeDTO(String type, List<SuperGroupWithMembersDTO> superGroups) {}
 
   public UUID createSuperGroup(NewSuperGroup newSuperGroup)
       throws SuperGroupRepository.SuperGroupAlreadyExistsException {

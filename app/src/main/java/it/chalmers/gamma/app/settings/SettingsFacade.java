@@ -1,8 +1,10 @@
 package it.chalmers.gamma.app.settings;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
@@ -31,7 +33,7 @@ public class SettingsFacade extends Facade {
   }
 
   public List<String> getInfoApiSuperGroupTypes() {
-    this.accessGuard.require(isAdmin());
+    this.accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.INFO));
 
     return this.settingsRepository.getSettings().infoSuperGroupTypes().stream()
         .map(SuperGroupType::value)
