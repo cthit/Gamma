@@ -58,7 +58,7 @@ application:
   base-uri: "${BASE_URI:http://gamma:8081}"
   production: "${PRODUCTION:false}"
   files:
-    path: "uploads/"
+    path: "${UPLOAD_FOLDER:./uploads/}"
   cookie:
     domain: "${COOKIE_DOMAIN:gamma}"
     path: "${COOKIE_PATH:/}"
