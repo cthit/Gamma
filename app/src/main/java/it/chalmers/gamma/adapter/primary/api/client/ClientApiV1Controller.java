@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** If you need changes, then create a new version of the API. */
 @RestController
 @RequestMapping(ClientApiV1Controller.URI)
 public class ClientApiV1Controller {

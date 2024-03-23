@@ -13,7 +13,6 @@ public class BootstrapRunner {
   public CommandLineRunner runBootStrap(
       ApiKeyBootstrap apiKeyBootstrap,
       EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
-      EnsureSettingsBootstrap ensureSettingsBootstrap,
       GroupBootstrap groupBootstrap,
       MiscBootstrap miscBootstrap,
       PostBootstrap postBootstrap,
@@ -25,8 +24,6 @@ public class BootstrapRunner {
         SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
 
         miscBootstrap.runImageBootstrap();
-
-        ensureSettingsBootstrap.ensureAppSettings();
 
         ensureAnAdminUserBootstrap.ensureAnAdminUser();
 

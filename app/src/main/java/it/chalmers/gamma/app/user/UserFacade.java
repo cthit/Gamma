@@ -11,7 +11,6 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -26,19 +25,16 @@ public class UserFacade extends Facade {
 
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
-  private final SettingsRepository settingsRepository;
   private final ClientApprovalsRepository clientApprovalsRepository;
 
   public UserFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
       GroupRepository groupRepository,
-      SettingsRepository settingsRepository,
       ClientApprovalsRepository clientApprovalsRepository) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
-    this.settingsRepository = settingsRepository;
     this.clientApprovalsRepository = clientApprovalsRepository;
   }
 

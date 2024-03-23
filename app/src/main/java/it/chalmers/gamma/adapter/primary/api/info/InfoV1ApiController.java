@@ -1,8 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.info;
 
 import it.chalmers.gamma.adapter.primary.api.utils.NotFoundResponse;
-import it.chalmers.gamma.app.group.GroupFacade;
-import it.chalmers.gamma.app.settings.SettingsFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import java.util.List;
@@ -14,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Going to be used by chalmers.it to display groups and their members. A separate API since user
- * info are going to be returned, and that should be used with caution. If you need changes, then
- * create a new version of the API.
+ * info are going to be returned, and that should be used with caution.
  */
 @RestController
 @RequestMapping(InfoV1ApiController.URI)
@@ -25,13 +22,10 @@ public class InfoV1ApiController {
 
   private final SuperGroupFacade superGroupFacade;
   private final UserFacade userFacade;
-  private final SettingsFacade settingsFacade;
 
-  public InfoV1ApiController(
-      SuperGroupFacade superGroupFacade, UserFacade userFacade, SettingsFacade settingsFacade) {
+  public InfoV1ApiController(SuperGroupFacade superGroupFacade, UserFacade userFacade) {
     this.superGroupFacade = superGroupFacade;
     this.userFacade = userFacade;
-    this.settingsFacade = settingsFacade;
   }
 
   @GetMapping("/users/{id}")
@@ -41,11 +35,8 @@ public class InfoV1ApiController {
 
   @GetMapping("/blob")
   public List<SuperGroupFacade.SuperGroupTypeDTO> getGroups() {
-    return this.superGroupFacade.getAllTypesWithSuperGroups(
-        this.settingsFacade.getInfoApiSuperGroupTypes());
+    return this.superGroupFacade.getAllTypesWithSuperGroups();
   }
-
-  public record GroupsResponse(List<GroupFacade.GroupWithMembersDTO> groups) {}
 
   private static class UserNotFoundResponse extends NotFoundResponse {}
 }

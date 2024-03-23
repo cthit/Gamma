@@ -180,30 +180,6 @@ CREATE
 
 CREATE
     TABLE
-        g_api_key(
-            api_key_id UUID PRIMARY KEY,
-            pretty_name VARCHAR(30) NOT NULL,
-            description UUID REFERENCES g_text ON
-            DELETE
-                CASCADE,
-                token VARCHAR(150) UNIQUE,
-                KEY_TYPE VARCHAR(30) NOT NULL,
-                version INT
-        );
-
-CREATE
-    TABLE
-        g_client_api_key(
-            client_uid UUID PRIMARY KEY REFERENCES g_client ON
-            DELETE
-                CASCADE,
-                api_key_id UUID REFERENCES g_api_key ON
-                DELETE
-                    CASCADE
-        );
-
-CREATE
-    TABLE
         g_user_approval(
             user_id UUID REFERENCES g_user ON
             DELETE
@@ -230,21 +206,47 @@ CREATE
 
 CREATE
     TABLE
-        g_settings(
-            id UUID PRIMARY KEY,
-            updated_at TIMESTAMP NOT NULL,
-            version INT
+        g_api_key(
+            api_key_id UUID PRIMARY KEY,
+            pretty_name VARCHAR(30) NOT NULL,
+            token VARCHAR(150) UNIQUE,
+            KEY_TYPE VARCHAR(30) NOT NULL,
+            version INT,
+            description UUID REFERENCES g_text ON
+            DELETE
+                CASCADE
         );
 
 CREATE
     TABLE
-        g_settings_info_api_super_group_types(
-            settings_id UUID REFERENCES g_settings,
+        g_api_key_settings(
+            settings_id UUID PRIMARY KEY,
+            version INT,
+            api_key_id UUID REFERENCES g_api_key(api_key_id) ON
+            DELETE
+                CASCADE
+        );
+
+CREATE
+    TABLE
+        g_api_key_to_super_group_type(
+            settings_id UUID REFERENCES g_api_key_settings(settings_id),
             super_group_type_name VARCHAR(30) REFERENCES g_super_group_type,
             PRIMARY KEY(
                 settings_id,
                 super_group_type_name
             )
+        );
+
+CREATE
+    TABLE
+        g_client_api_key(
+            client_uid UUID PRIMARY KEY REFERENCES g_client ON
+            DELETE
+                CASCADE,
+                api_key_id UUID REFERENCES g_api_key ON
+                DELETE
+                    CASCADE
         );
 
 CREATE

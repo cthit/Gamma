@@ -128,12 +128,12 @@ public class UserAccessGuard {
     return false;
   }
 
-  /** Api Key with type INFO or GOLDAPPS have access to user information. */
+  /** Api Key with type INFO or ACCOUNT_SCAFFOLD have access to user information. */
   private boolean apiKeyWithAccess() {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthenticationPrincipal) {
       ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
-      return apiKeyType.equals(ApiKeyType.INFO) || apiKeyType.equals(ApiKeyType.GOLDAPPS);
+      return apiKeyType.equals(ApiKeyType.INFO) || apiKeyType.equals(ApiKeyType.ACCOUNT_SCAFFOLD);
     }
 
     return false;

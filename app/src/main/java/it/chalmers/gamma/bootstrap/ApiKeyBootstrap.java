@@ -1,11 +1,9 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.domain.*;
-import it.chalmers.gamma.app.common.PrettyName;
-import it.chalmers.gamma.app.common.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,21 +11,16 @@ public class ApiKeyBootstrap {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ApiKeyBootstrap.class);
 
-  private final ApiKeyRepository apiKeyRepository;
+  private final ApiKeyFacade apiKeyFacade;
   private final BootstrapSettings bootstrapSettings;
-  private final PasswordEncoder passwordEncoder;
 
-  public ApiKeyBootstrap(
-      ApiKeyRepository apiKeyRepository,
-      BootstrapSettings bootstrapSettings,
-      PasswordEncoder passwordEncoder) {
-    this.apiKeyRepository = apiKeyRepository;
+  public ApiKeyBootstrap(BootstrapSettings bootstrapSettings, ApiKeyFacade apiKeyFacade) {
+    this.apiKeyFacade = apiKeyFacade;
     this.bootstrapSettings = bootstrapSettings;
-    this.passwordEncoder = passwordEncoder;
   }
 
   public void ensureApiKeys() {
-    if (!this.bootstrapSettings.mocking() || !this.apiKeyRepository.getAll().isEmpty()) {
+    if (!this.bootstrapSettings.mocking() || !this.apiKeyFacade.getAll().isEmpty()) {
       return;
     }
 
@@ -36,23 +29,19 @@ public class ApiKeyBootstrap {
 
     for (ApiKeyType apiKeyType : ApiKeyType.values()) {
       if (apiKeyType != ApiKeyType.CLIENT) {
-        ApiKeyToken.GeneratedApiKeyToken generated = ApiKeyToken.generate(passwordEncoder);
-        ApiKeyId id = ApiKeyId.generate();
-        this.apiKeyRepository.create(
-            new ApiKey(
-                id,
-                new PrettyName(apiKeyType.name() + "-mock"),
-                new Text(),
-                apiKeyType,
-                generated.apiKeyToken()));
+
+        var secrets =
+            this.apiKeyFacade.create(
+                new ApiKeyFacade.NewApiKey(
+                    apiKeyType.name().toLowerCase() + "-mock", "", "", apiKeyType.name()));
 
         LOGGER.info(
             "Api key of type "
                 + apiKeyType.name()
-                + " has been generated with code: "
-                + generated.rawToken()
-                + " and id: "
-                + id.value());
+                + " has been generated with id: "
+                + secrets.apiKeyId()
+                + " and code: "
+                + secrets.token());
       }
     }
 

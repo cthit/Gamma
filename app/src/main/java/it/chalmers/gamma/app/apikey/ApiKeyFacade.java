@@ -1,12 +1,15 @@
 package it.chalmers.gamma.app.apikey;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.*;
+import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,12 +21,17 @@ import org.springframework.stereotype.Component;
 public class ApiKeyFacade extends Facade {
 
   private final ApiKeyRepository apiKeyRepository;
+  private final ApiKeySettingsRepository apiKeySettingsRepository;
   private final PasswordEncoder passwordEncoder;
 
   public ApiKeyFacade(
-      AccessGuard accessGuard, ApiKeyRepository apiKeyRepository, PasswordEncoder passwordEncoder) {
+      AccessGuard accessGuard,
+      ApiKeyRepository apiKeyRepository,
+      ApiKeySettingsRepository apiKeySettingsRepository,
+      PasswordEncoder passwordEncoder) {
     super(accessGuard);
     this.apiKeyRepository = apiKeyRepository;
+    this.apiKeySettingsRepository = apiKeySettingsRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -41,8 +49,9 @@ public class ApiKeyFacade extends Facade {
 
   public record CreatedApiKey(UUID apiKeyId, String token) {}
 
+  @Transactional
   public CreatedApiKey create(NewApiKey newApiKey) {
-    this.accessGuard.require(isAdmin());
+    this.accessGuard.requireEither(isAdmin(), isLocalRunner());
 
     ApiKeyType type = ApiKeyType.valueOf(newApiKey.keyType);
 
@@ -60,6 +69,13 @@ public class ApiKeyFacade extends Facade {
             new Text(newApiKey.svDescription, newApiKey.enDescription),
             type,
             generated.apiKeyToken()));
+
+    if (type == ApiKeyType.INFO) {
+      this.apiKeySettingsRepository.createEmptyInfoSettings(apiKeyId);
+    } else if (type == ApiKeyType.ACCOUNT_SCAFFOLD) {
+      this.apiKeySettingsRepository.createEmptyAccountScaffoldSettings(apiKeyId);
+    }
+
     return new CreatedApiKey(apiKeyId.value(), generated.rawToken());
   }
 
@@ -80,7 +96,7 @@ public class ApiKeyFacade extends Facade {
   }
 
   public List<ApiKeyDTO> getAll() {
-    this.accessGuard.require(isAdmin());
+    this.accessGuard.requireEither(isAdmin(), isLocalRunner());
 
     return this.apiKeyRepository.getAll().stream().map(ApiKeyDTO::new).toList();
   }

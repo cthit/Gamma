@@ -9,7 +9,8 @@ import it.chalmers.gamma.app.image.domain.ImageUri;
  *
  * <p>Usually, records in Gamma always have to be valid, but UserExtended is an exception. To limit
  * the amount of data that can accidentally be leaked, UserExtended can be partial complete. For
- * example, Goldapps needs to have access to email and gdprTrained, but not the rest of the data.
+ * example, account-scaffold api needs to have access to email and gdprTrained, but not the rest of
+ * the data.
  */
 @RecordBuilder
 public record UserExtended(Email email, int version, boolean locked, ImageUri avatarUri)

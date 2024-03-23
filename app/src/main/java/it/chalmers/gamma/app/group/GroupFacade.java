@@ -4,18 +4,15 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.UnexpectedRuntimeException;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.*;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -38,21 +35,18 @@ public class GroupFacade extends Facade {
   private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final SuperGroupRepository superGroupRepository;
-  private final SettingsRepository settingsRepository;
 
   public GroupFacade(
       AccessGuard accessGuard,
       GroupRepository groupRepository,
       UserRepository userRepository,
       PostRepository postRepository,
-      SuperGroupRepository superGroupRepository,
-      SettingsRepository settingsRepository) {
+      SuperGroupRepository superGroupRepository) {
     super(accessGuard);
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
     this.superGroupRepository = superGroupRepository;
-    this.settingsRepository = settingsRepository;
   }
 
   public UUID create(NewGroup newGroup) throws GroupAlreadyExistsException {
@@ -166,18 +160,6 @@ public class GroupFacade extends Facade {
     accessGuard.requireEither(isSignedIn());
 
     return this.groupRepository.get(new GroupId(id)).map(GroupDTO::new);
-  }
-
-  public List<GroupWithMembersDTO> getAllForInfoApi() {
-    accessGuard.require(isApi(ApiKeyType.INFO));
-
-    List<SuperGroupType> allowedSuperGroupType =
-        this.settingsRepository.getSettings().infoSuperGroupTypes();
-
-    return this.groupRepository.getAll().stream()
-        .filter(group -> allowedSuperGroupType.contains(group.superGroup().type()))
-        .map(GroupWithMembersDTO::new)
-        .toList();
   }
 
   public List<GroupWithMembersDTO> getAllBySuperGroup(UUID superGroupId) {

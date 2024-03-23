@@ -3,7 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 import it.chalmers.gamma.app.authentication.UserAccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.image.domain.ImageUri;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -12,12 +11,9 @@ import org.springframework.stereotype.Service;
 public class UserEntityConverter {
 
   private final UserAccessGuard userAccessGuard;
-  private final SettingsRepository settingsRepository;
 
-  public UserEntityConverter(
-      UserAccessGuard userAccessGuard, SettingsRepository SettingsRepository) {
+  public UserEntityConverter(UserAccessGuard userAccessGuard) {
     this.userAccessGuard = userAccessGuard;
-    this.settingsRepository = SettingsRepository;
   }
 
   @Nullable public GammaUser toDomain(UserEntity userEntity) {

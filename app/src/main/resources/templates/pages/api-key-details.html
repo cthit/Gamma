@@ -31,4 +31,7 @@
             </form>
         </footer>
     </article>
+    <th:block th:if="${apiKey.keyType().equals('ACCOUNT_SCAFFOLD') || apiKey.keyType().equals('INFO')}">
+        <article th:replace="~{partial/api-key-super-group-types}"></article>
+    </th:block>
 </main>

@@ -4,6 +4,7 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -11,6 +12,8 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.Name;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +23,19 @@ public class SuperGroupFacade extends Facade {
   private final SuperGroupRepository superGroupRepository;
   private final SuperGroupTypeRepository superGroupTypeRepository;
   private final GroupRepository groupRepository;
+  private final ApiKeySettingsRepository apiKeySettingsRepository;
 
   public SuperGroupFacade(
       AccessGuard accessGuard,
       SuperGroupRepository superGroupRepository,
       SuperGroupTypeRepository superGroupTypeRepository,
-      GroupRepository groupRepository) {
+      GroupRepository groupRepository,
+      ApiKeySettingsRepository apiKeySettingsRepository) {
     super(accessGuard);
     this.superGroupRepository = superGroupRepository;
     this.superGroupTypeRepository = superGroupTypeRepository;
     this.groupRepository = groupRepository;
+    this.apiKeySettingsRepository = apiKeySettingsRepository;
   }
 
   public void addType(String type)
@@ -53,12 +59,24 @@ public class SuperGroupFacade extends Facade {
     return this.superGroupTypeRepository.getAll().stream().map(SuperGroupType::value).toList();
   }
 
-  public List<SuperGroupTypeDTO> getAllTypesWithSuperGroups(List<String> superGroupTypes) {
-    accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.INFO), isApi(ApiKeyType.GOLDAPPS));
+  public List<SuperGroupTypeDTO> getAllTypesWithSuperGroups() {
+    accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.INFO));
+
+    List<SuperGroupType> superGroupTypes;
+
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof ApiAuthentication apiAuthentication) {
+      superGroupTypes =
+          this.apiKeySettingsRepository
+              .getInfoSettings(apiAuthentication.get().id())
+              .superGroupTypes();
+    } else {
+      superGroupTypes = this.superGroupTypeRepository.getAll();
+    }
 
     List<SuperGroupTypeDTO> output = new ArrayList<>();
 
-    for (SuperGroupType type : superGroupTypes.stream().map(SuperGroupType::new).toList()) {
+    for (SuperGroupType type : superGroupTypes) {
       List<SuperGroupWithMembersDTO> superGroupsOutput = new ArrayList<>();
       for (SuperGroup superGroup : this.superGroupRepository.getAllByType(type)) {
         List<GroupFacade.GroupMemberDTO> members =

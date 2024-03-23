@@ -1,63 +1,67 @@
-package it.chalmers.gamma.app.goldapps;
+package it.chalmers.gamma.app.accountscaffold;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyAccountScaffoldSettings;
+import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.Post;
-import it.chalmers.gamma.app.settings.domain.Settings;
-import it.chalmers.gamma.app.settings.domain.SettingsRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
+import it.chalmers.gamma.security.authentication.ApiAuthentication;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GoldappsFacade extends Facade {
+public class AccountScaffoldFacade extends Facade {
 
   private final GroupRepository groupRepository;
   private final GdprTrainedRepository gdprTrainedRepository;
-  private final SettingsRepository settingsRepository;
+  private final ApiKeySettingsRepository apiKeySettingsRepository;
 
-  public GoldappsFacade(
+  public AccountScaffoldFacade(
       AccessGuard accessGuard,
       GroupRepository groupRepository,
       GdprTrainedRepository gdprTrainedRepository,
-      SettingsRepository settingsRepository) {
+      ApiKeySettingsRepository apiKeySettingsRepository) {
     super(accessGuard);
     this.groupRepository = groupRepository;
     this.gdprTrainedRepository = gdprTrainedRepository;
-    this.settingsRepository = settingsRepository;
+    this.apiKeySettingsRepository = apiKeySettingsRepository;
   }
 
   /**
    * Get all super groups that have the provided types and members that are a part of groups that
    * has each supergroup
    */
-  public List<GoldappsSuperGroupDTO> getActiveSuperGroups() {
-    this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
-
-    Settings settings = this.settingsRepository.getSettings();
+  public List<AccountScaffoldSuperGroupDTO> getActiveSuperGroups() {
+    this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
 
     List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
-
     Map<SuperGroupId, SuperGroupWithMembers> superGroupMap = new HashMap<>();
 
+    ApiAuthentication apiAuthentication =
+        (ApiAuthentication) AuthenticationExtractor.getAuthentication();
+    ApiKeyAccountScaffoldSettings settings =
+        this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
+
     this.groupRepository.getAll().stream()
-        .filter(group -> settings.infoSuperGroupTypes().contains(group.superGroup().type()))
+        .filter(group -> settings.superGroupTypes().contains(group.superGroup().type()))
         .forEach(
             group -> {
-              List<GoldappsUserPostDTO> activeGroupMember =
+              List<AccountScaffoldUserPostDTO> activeGroupMember =
                   group.groupMembers().stream()
                       .filter(groupMember -> !groupMember.user().extended().locked())
                       .filter(groupMember -> gdprTrained.contains(groupMember.user().id()))
-                      .map(GoldappsUserPostDTO::new)
+                      .map(AccountScaffoldUserPostDTO::new)
                       .toList();
 
               SuperGroupId superGroupId = group.superGroup().id();
@@ -74,7 +78,7 @@ public class GoldappsFacade extends Facade {
     return superGroupMap.values().stream()
         .map(
             superGroupWithMembers ->
-                new GoldappsSuperGroupDTO(
+                new AccountScaffoldSuperGroupDTO(
                     superGroupWithMembers.superGroup,
                     new ArrayList<>(superGroupWithMembers.members)))
         .toList();
@@ -85,26 +89,30 @@ public class GoldappsFacade extends Facade {
    * determine what kinds of groups that are deemed active. User must also be not locked, and have
    * participated in gdpr training.
    */
-  public List<GoldappsUserDTO> getActiveUsers() {
-    this.accessGuard.require(isApi(ApiKeyType.GOLDAPPS));
-
-    Settings settings = this.settingsRepository.getSettings();
+  public List<AccountScaffoldUserDTO> getActiveUsers() {
+    this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
 
     List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
 
+    ApiAuthentication apiAuthentication =
+        (ApiAuthentication) AuthenticationExtractor.getAuthentication();
+    ApiKeyAccountScaffoldSettings settings =
+        this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
+
     return this.groupRepository.getAll().stream()
-        .filter(group -> settings.infoSuperGroupTypes().contains(group.superGroup().type()))
+        .filter(group -> settings.superGroupTypes().contains(group.superGroup().type()))
         .flatMap(group -> group.groupMembers().stream())
         .map(GroupMember::user)
         .distinct()
         .filter(user -> !user.extended().locked())
         .filter(groupMember -> gdprTrained.contains(groupMember.id()))
-        .map(GoldappsUserDTO::new)
+        .map(AccountScaffoldUserDTO::new)
         .toList();
   }
 
-  public record GoldappsPostDTO(UUID postId, String svText, String enText, String emailPrefix) {
-    public GoldappsPostDTO(Post post) {
+  public record AccountScaffoldPostDTO(
+      UUID postId, String svText, String enText, String emailPrefix) {
+    public AccountScaffoldPostDTO(Post post) {
       this(
           post.id().value(),
           post.name().sv().value(),
@@ -113,15 +121,18 @@ public class GoldappsFacade extends Facade {
     }
   }
 
-  public record GoldappsUserPostDTO(GoldappsPostDTO post, GoldappsUserDTO user) {
-    public GoldappsUserPostDTO(GroupMember groupMember) {
-      this(new GoldappsPostDTO(groupMember.post()), new GoldappsUserDTO(groupMember.user()));
+  public record AccountScaffoldUserPostDTO(
+      AccountScaffoldPostDTO post, AccountScaffoldUserDTO user) {
+    public AccountScaffoldUserPostDTO(GroupMember groupMember) {
+      this(
+          new AccountScaffoldPostDTO(groupMember.post()),
+          new AccountScaffoldUserDTO(groupMember.user()));
     }
   }
 
-  public record GoldappsUserDTO(
+  public record AccountScaffoldUserDTO(
       String email, String cid, String firstName, String lastName, String nick) {
-    public GoldappsUserDTO(GammaUser user) {
+    public AccountScaffoldUserDTO(GammaUser user) {
       this(
           user.extended().email().value(),
           user.cid().value(),
@@ -131,9 +142,10 @@ public class GoldappsFacade extends Facade {
     }
   }
 
-  public record GoldappsSuperGroupDTO(
-      String name, String prettyName, String type, List<GoldappsUserPostDTO> members) {
-    public GoldappsSuperGroupDTO(SuperGroup superGroup, List<GoldappsUserPostDTO> members) {
+  public record AccountScaffoldSuperGroupDTO(
+      String name, String prettyName, String type, List<AccountScaffoldUserPostDTO> members) {
+    public AccountScaffoldSuperGroupDTO(
+        SuperGroup superGroup, List<AccountScaffoldUserPostDTO> members) {
       this(
           superGroup.name().value(),
           superGroup.prettyName().value(),
@@ -144,9 +156,9 @@ public class GoldappsFacade extends Facade {
 
   private static class SuperGroupWithMembers {
     private final SuperGroup superGroup;
-    private final Set<GoldappsUserPostDTO> members;
+    private final Set<AccountScaffoldUserPostDTO> members;
 
-    private SuperGroupWithMembers(SuperGroup superGroup, Set<GoldappsUserPostDTO> members) {
+    private SuperGroupWithMembers(SuperGroup superGroup, Set<AccountScaffoldUserPostDTO> members) {
       this.superGroup = superGroup;
       this.members = members;
     }

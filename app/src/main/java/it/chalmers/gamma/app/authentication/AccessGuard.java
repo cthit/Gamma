@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.authentication;
 
+import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.group.domain.Group;
@@ -66,6 +67,16 @@ public class AccessGuard {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
         return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
+      }
+
+      return false;
+    };
+  }
+
+  public static AccessChecker isSpecificApi(ApiKeyId apiKeyId) {
+    return (clientRepository, userRepository) -> {
+      if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
+        return apiPrincipal.get().id().equals(apiKeyId);
       }
 
       return false;

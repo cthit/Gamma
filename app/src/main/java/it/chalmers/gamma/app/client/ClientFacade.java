@@ -193,7 +193,7 @@ public class ClientFacade extends Facade {
   }
 
   public Optional<UserFacade.UserDTO> getClientOwner(String clientId) {
-    super.accessGuard.require(isSignedIn());
+    accessGuard.require(isSignedIn());
 
     Client client = this.clientRepository.get(new ClientId(clientId)).orElseThrow();
 
