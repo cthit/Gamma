@@ -30,7 +30,7 @@ public class UserAccessGuard {
   }
 
   public boolean accessToExtended(UserId userId) {
-    return isMe(userId) || isAdmin() || isLocalRunnerAuthenticated();
+    return isMe(userId) || isAdmin() || isLocalRunnerAuthenticated() || isApiKeyWithExtendedAccess();
   }
 
   public boolean isMe(UserId userId) {
@@ -85,7 +85,7 @@ public class UserAccessGuard {
       return true;
     }
 
-    if (apiKeyWithAccess()) {
+    if (isApiKeyWithAccess()) {
       return true;
     }
 
@@ -129,7 +129,7 @@ public class UserAccessGuard {
   }
 
   /** Api Key with type INFO or ACCOUNT_SCAFFOLD have access to user information. */
-  private boolean apiKeyWithAccess() {
+  private boolean isApiKeyWithAccess() {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthenticationPrincipal) {
       ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
@@ -138,4 +138,17 @@ public class UserAccessGuard {
 
     return false;
   }
+
+  private boolean isApiKeyWithExtendedAccess() {
+    if (AuthenticationExtractor.getAuthentication()
+            instanceof ApiAuthentication apiAuthenticationPrincipal) {
+      ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
+      return apiKeyType.equals(ApiKeyType.ACCOUNT_SCAFFOLD);
+    }
+
+    return false;
+  }
+
+
+
 }
