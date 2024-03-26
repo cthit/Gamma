@@ -11,9 +11,9 @@
         </thead>
         <tbody>
         <tr th:each="activaitonCode : ${activationCodes}">
-            <td th:text="${apiKey.cid()}"></td>
-            <td th:text="${apiKey.token()}"></td>
-            <td th:text="${apiKey.createdAt()}"></td>
+            <td th:text="${activaitonCode.cid()}"></td>
+            <td th:text="${activaitonCode.token()}"></td>
+            <td th:text="${activaitonCode.createdAt()}"></td>
         </tr>
         </tbody>
     </table>
