@@ -1,0 +1,5 @@
+<th:block th:fragment="text" th:if="${#fields.hasErrors('global')}">
+    <p class="error">
+        <span th:each="err : ${#fields.errors('global')}" th:text="${err}"></span>
+    </p>
+</th:block>

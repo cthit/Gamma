@@ -1,0 +1,17 @@
+<header>
+    <a href="/">
+        <h1>
+            Gamma
+        </h1>
+    </a>
+    <div>
+        <th:block sec:authorize="isAuthenticated()">
+            <div th:text="|Hey, ${#authentication.getDetails().gammaUser().nick().value()}!|"></div>
+            <form th:action="@{/logout}" th:method="post" >
+                <button class="outline contrast">
+                    Logout
+                </button>
+            </form>
+        </th:block>
+    </div>
+</header>

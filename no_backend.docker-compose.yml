@@ -1,32 +1,23 @@
-version: "2"
+version: "3"
 services:
-    db:
-        image: postgres:10
-        restart: always
-        environment:
-            POSTGRES_PASSWORD: example
-        ports:
-            - 5432:5432
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432
 
-    adminer:
-        image: adminer
-        restart: always
-        ports:
-            - 8080:8080
+  redis:
+    image: redis:5.0
+    restart: always
+    ports:
+      - 6379:6379
 
-    frontend:
-        image: frontend:development
-        build:
-            context: ./frontend/
-            dockerfile: dev.dockerfile
-        ports:
-            - 3000:3000
-        volumes:
-            - ./frontend/src:/usr/src/app/src
-            - ./frontend/public:/usr/src/app/public
-        network_mode: host
-    redis:
-      image: redis:5.0
-      restart: always
-      ports:
-        - 6379:6379
+  gotify:
+    image: cthit/gotify
+    environment:
+      GOTIFY_PRE-SHARED-KEY: 123abc
+      GOTIFY_MOCK-MODE: "true"
+    ports:
+      - 8080:7000

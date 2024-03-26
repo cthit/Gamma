@@ -1,0 +1,55 @@
+<header th:replace="~{common/header}"></header>
+<div id="alerts"></div>
+<main>
+    <a href="/users" >Back</a>
+    <article th:fragment="userinfo">
+        <header>User details</header>
+        <img th:src="@{/images/user/avatar/{id}(id=${userId})}" alt="User avatar"/>
+        <div class="userinfo">
+            <ul>
+                <li>
+                    <b>Name:</b>
+                    <span th:text="${name}"></span>
+                </li>
+                <li>
+                    <b>Cid:</b>
+                    <span th:text="${cid}"></span>
+                </li>
+                <li>
+                    <b>Acceptance year</b>
+                    <span th:text="${acceptanceYear}"></span>
+                </li>
+                <li th:if="${isAdmin}">
+                    <b>Email:</b>
+                    <span th:text="${email}"></span>
+                </li>
+                <li th:if="${isAdmin}">
+                    <b>Is locked:</b>
+                    <span th:text="${locked}"></span>
+                </li>
+            </ul>
+        </div>
+        <footer th:if="${isAdmin}">
+            <button class="outline contrast"
+                    data-hx-target="closest article"
+                    th:data-hx-get="@{|/users/${userId}/edit|}"
+                    data-hx-swap="outerHTML">Edit user
+            </button>
+            <form th:data-hx-confirm="|Are you sure you wish to delete ${name}?|" th:action="|/users/${userId}|" th:method="delete">
+                <button class="outline contrast">Delete user</button>
+            </form>
+        </footer>
+    </article>
+
+    <article>
+        <header th:text="|${nick}:s groups|"></header>
+        <p th:if="${groups.size() == 0}">
+            Is not a part of any groups
+        </p>
+        <ul th:if="${groups.size() > 0}">
+            <li th:each="group : ${groups}">
+                <div th:text="${group}"></div>
+            </li>
+        </ul>
+    </article>
+</main>

@@ -1,0 +1,39 @@
+<link rel="stylesheet" th:href="@{/css/login.css}" />
+<img th:src="@{/img/bg.webp}" alt="Background image" _="on load transition opacity to 0.8 over 5 seconds"/>
+<main>
+    <article>
+        <header>
+            <h1>
+                Gamma
+            </h1>
+        </header>
+        <p th:if="${authorizing}">
+            Before deciding on authorizing the client, please verify your identity
+        </p>
+        <form th:action="@{/login}" th:method="post">
+            <fieldset role="group">
+                <input type="text" name="username" placeholder="Cid / Email">
+                <input type="password" name="password" placeholder="Password">
+                <button type="submit">Login</button>
+            </fieldset>
+        </form>
+        <footer>
+            <div th:if="${error}">
+                Invalid cid/email or password.
+            </div>
+
+            <div th:if="${logout}">
+                You have been logged out.
+            </div>
+
+            <div id="links">
+                <a href="/activate-cid">
+                    Register
+                </a>
+                <a href="/forgot-password">
+                    Forgot password
+                </a>
+            </div>
+        </footer>
+    </article>
+</main>

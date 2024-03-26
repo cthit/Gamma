@@ -1,0 +1,34 @@
+<form th:fragment="api-key-super-group-types"
+      th:object="${settings_form}"
+      method="post"
+      data-hx-target="this"
+      th:data-hx-post="|/api-keys/${apiKeyId}/settings|"
+      _="on htmx:afterSwap call updateNames('superGroupTypesForInfo', 'select')">
+    <input type="hidden" name="_method" value="put" />
+    <input type="hidden" name="version" th:value="${settings_form.version}" />
+    <div th:replace="~{common/form-csrf}"></div>
+
+    <article>
+        <header>
+            <h3 th:text="${settings_title}"></h3>
+        </header>
+        <p th:text="${settings_description}"></p>
+        <div class="super-group-type"
+             th:each="type : ${settings_form.superGroupTypes}">
+            <select>
+                <option disabled selected th:value="${type}" th:text="${type}"></option>
+            </select>
+            <button class="outline contrast"
+                    type="button"
+                    _="on click remove closest .super-group-type then call updateNames('superGroupTypes', 'select')">
+                Remove
+            </button>
+        </div>
+        <footer>
+            <button class="outline contrast" type="button" data-hx-get="/api-keys/new-super-group"
+                    data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
+            </button>
+            <button class="outline contrast" type="submit">Save</button>
+        </footer>
+    </article>
+</form>

@@ -1,0 +1,3 @@
+<select class="authority-user-row" required>
+    <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"></option>
+</select>

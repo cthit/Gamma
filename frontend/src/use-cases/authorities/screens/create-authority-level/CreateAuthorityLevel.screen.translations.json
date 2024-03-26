@@ -1,9 +1,0 @@
-{
-    "AuthorityLevel": ["Authority level name", "Rättighetsnivå namn"],
-    "CreateAuthorityLevel": ["Create authority level", "Skapa rättighetsnivå"],
-    "AddError": [
-        "Something went wrong when adding authority level",
-        "Någonting gick fel när rättighetsnivån skulle läggas till"
-    ],
-    "AddSuccessful": [" was added", " las till"]
-}

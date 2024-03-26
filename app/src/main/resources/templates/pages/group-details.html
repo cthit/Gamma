@@ -1,0 +1,74 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <a href="/groups">Back</a>
+
+    <article th:fragment="group-details-article">
+        <header>
+            <h3>Group details</h3>
+        </header>
+        <ul>
+            <li th:text="${group.name()}"></li>
+            <li th:text="${group.prettyName()}"></li>
+            <li th:text="${group.superGroup().prettyName()}"></li>
+        </ul>
+        <ul>
+            <li th:each="member : ${members}" th:text="${member}"></li>
+        </ul>
+
+        <footer th:if="${isAdmin}">
+            <button
+                    th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
+                    data-hx-target="closest article"
+                    data-hx-swap="outerHTML">Edit
+            </button>
+        </footer>
+    </article>
+
+    <th:block th:with="groupId=${group.id()}">
+        <article th:fragment="group-avatar">
+            <header>
+                Group avatar
+            </header>
+            <img th:if="${!isAdmin}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+            <div th:if="${isAdmin}">
+                <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+                <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
+                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      enctype="multipart/form-data"
+                      data-hx-target="closest article"
+                      data-hx-swap="outerHTML"
+                      id="edit-group-avatar">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="put" />
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                </form>
+            </div>
+            <footer th:if="${isAdmin}">
+                <button class="outline" form="edit-group-avatar" disabled>Upload avatar</button>
+            </footer>
+        </article>
+
+        <article th:fragment="group-banner">
+            <header>
+                <h3>Group banner</h3>
+            </header>
+            <img th:if="${!isAdmin}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+            <div th:if="${isAdmin}">
+                <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+                <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
+                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      enctype="multipart/form-data"
+                      data-hx-target="closest article"
+                      data-hx-swap="outerHTML"
+                      id="edit-group-banner">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="put" />
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                </form>
+            </div>
+            <footer th:if="${isAdmin}">
+                <button class="outline" form="edit-group-banner" disabled>Upload banner</button>
+            </footer>
+        </article>
+    </th:block>
+</main>
