@@ -9,8 +9,8 @@ spring:
             client:
                 registration:
                     gamma:
-                        client-id: "MRELEFSLYGYU3AE3BIX1FI4825LULK"
-                        client-secret: "aOntr42pGaO3QxK1Ydgn4pCVZAQh463Qc24EKqnU6KGS5lbN4ZY5iAY7noE2uQXnhrTv1jpxPDumI8hteuG78UkLxnf46BLPLLSklw524cI2YLiVmmScW2Ui4A7bjVCj"
+                        client-id: "ULISGPUJIK1WK2K8XPQ64NQ8H1ZM8D"
+                        client-secret: "VLjfKrWxQpsQm2a7FpIizSexPVr7AZztJhmDBig7vHDaqYkkwEHF4F5ATFZL7KA8EHuMmGvwWm7zhmmColZsipVyans55VhGXUU8xR1iG8BkqcueaX7AXglL6gngEMBC"
                         client-authentication-method: client_secret_basic
                         authorization-grant-type: authorization_code
                         scope: openid,profile,email
@@ -22,5 +22,5 @@ spring:
                         token-uri: http://gamma:8081/oauth2/token
                         authorization-uri: http://gamma:8081/oauth2/authorize
                         jwk-set-uri: http://gamma:8081/oauth2/jwks
-                        user-info-uri: http://gamma:8081/userinfo
+                        user-info-uri: http://gamma:8081/oauth2/userinfo
                         user-name-attribute: name
