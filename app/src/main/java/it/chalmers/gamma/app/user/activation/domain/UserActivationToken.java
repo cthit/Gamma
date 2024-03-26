@@ -8,7 +8,7 @@ public record UserActivationToken(String value) {
   public UserActivationToken {
     Objects.requireNonNull(value);
 
-    if (value.length() == 9) {
+    if (value.length() != 9) {
       throw new IllegalArgumentException("User activation token must be 9 numbers");
     }
   }
