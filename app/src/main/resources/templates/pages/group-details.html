@@ -4,13 +4,27 @@
 
     <article th:fragment="group-details-article">
         <header>
-            <h3>Group details</h3>
+            Group details
         </header>
-        <ul>
-            <li th:text="${group.name()}"></li>
-            <li th:text="${group.prettyName()}"></li>
-            <li th:text="${group.superGroup().prettyName()}"></li>
+        <ul class="tuple">
+            <li>
+                <b>Name:</b>
+                <span th:text="${group.name()}"></span>
+            </li>
+            <li>
+                <b>Pretty name:</b>
+                <span th:text="${group.prettyName()}"></span>
+            </li>
+            <li>
+                <b>Super group:</b>
+                <a class="contrast" th:href="|/super-groups/${group.superGroup().id()}|">
+                    <span th:text="${group.superGroup().prettyName()}"></span>
+                </a>
+            </li>
         </ul>
+        <p>
+            Members:
+        </p>
         <ul>
             <li th:each="member : ${members}" th:text="${member}"></li>
         </ul>
@@ -29,8 +43,8 @@
             <header>
                 Group avatar
             </header>
-            <img th:if="${!isAdmin}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
-            <div th:if="${isAdmin}">
+            <img class="m-auto" th:if="${!isAdmin}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+            <div class="image-input-container" th:if="${isAdmin}">
                 <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
                 <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
                       _="on htmx:beforeRequest add @disabled to the next <button/> "
@@ -50,10 +64,10 @@
 
         <article th:fragment="group-banner">
             <header>
-                <h3>Group banner</h3>
+                Group banner
             </header>
-            <img th:if="${!isAdmin}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
-            <div th:if="${isAdmin}">
+            <img class="m-auto" th:if="${!isAdmin}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+            <div class="image-input-container" th:if="${isAdmin}">
                 <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
                 <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
                       _="on htmx:beforeRequest add @disabled to the next <button/> "

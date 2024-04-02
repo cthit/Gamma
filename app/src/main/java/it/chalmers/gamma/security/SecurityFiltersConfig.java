@@ -1,5 +1,8 @@
 package it.chalmers.gamma.security;
 
+import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.CACHE;
+import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.COOKIES;
+
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
@@ -25,8 +28,10 @@ import org.springframework.security.oauth2.server.authorization.config.annotatio
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
@@ -154,7 +159,10 @@ public class SecurityFiltersConfig {
                     .anyRequest()
                     .authenticated())
         .formLogin(new LoginCustomizer())
-        .logout(new LogoutCustomizer())
+        .logout(
+            (logout) ->
+                logout.addLogoutHandler(
+                    new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(CACHE, COOKIES))))
         .authenticationProvider(userAuthenticationProvider)
         .sessionManagement(
             sessionManagement ->

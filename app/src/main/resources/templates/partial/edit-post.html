@@ -18,9 +18,9 @@
             <td>
                 <div th:replace="~{common/input :: distantTextInput(name='emailPrefix', value=${post.emailPrefix()}, errorMessage=${null}, label=${null}, form=|edit-${post.id()}|)}"></div>
             </td>
-            <td>
-                <button type="button" th:data-hx-get="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest tr" data-hx-swap="outerHTML">Cancel</button>
-                <button th:form="|edit-${post.id()}|" type="submit">Save</button>
+            <td class="td-buttons">
+                <button class="outline contrast" th:data-hx-get="@{/posts/{postId}(postId=${post.id})}" data-hx-target="closest tr" data-hx-swap="outerHTML">Cancel</button>
+                <button class="outline contrast" th:form="|edit-${post.id()}|">Save</button>
             </td>
         </tr>
     </tbody>

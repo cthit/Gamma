@@ -9,8 +9,6 @@ public class OAuth2AuthorizationServerSecurityConfig {
 
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder()
-            .oidcUserInfoEndpoint("/oauth2/userinfo")
-            .build();
+    return AuthorizationServerSettings.builder().oidcUserInfoEndpoint("/oauth2/userinfo").build();
   }
 }

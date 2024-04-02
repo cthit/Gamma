@@ -54,4 +54,28 @@ public class ImagesController {
                 : type.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_GIF))
         .body(imageDetails.data());
   }
+
+  @GetMapping("/super-group/avatar/{id}")
+  public ResponseEntity<byte[]> getSuperGroupAvatar(@PathVariable("id") UUID id) {
+    ImageFacade.ImageDetails imageDetails = this.imageFacade.getSuperGroupAvatar(id);
+    String type = imageDetails.imageType();
+    return ResponseEntity.ok()
+        .contentType(
+            (type.equals("jpg") || type.equals("jpeg")
+                ? MediaType.IMAGE_JPEG
+                : type.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_GIF))
+        .body(imageDetails.data());
+  }
+
+  @GetMapping("/super-group/banner/{id}")
+  public ResponseEntity<byte[]> getSuperGroupBanner(@PathVariable("id") UUID id) {
+    ImageFacade.ImageDetails imageDetails = this.imageFacade.getSuperGroupBanner(id);
+    String type = imageDetails.imageType();
+    return ResponseEntity.ok()
+        .contentType(
+            (type.equals("jpg") || type.equals("jpeg")
+                ? MediaType.IMAGE_JPEG
+                : type.equals("png") ? MediaType.IMAGE_PNG : MediaType.IMAGE_GIF))
+        .body(imageDetails.data());
+  }
 }

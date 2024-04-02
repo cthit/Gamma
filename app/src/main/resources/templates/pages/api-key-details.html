@@ -4,10 +4,9 @@
 <main>
     <a href="/api-keys" >Back</a>
     <article>
-        <header>
-            <h3 th:text="|${apiKey.prettyName()} details|"></h3>
+        <header th:text="|${apiKey.prettyName()} details|">
         </header>
-        <ul>
+        <ul class="tuple">
             <li>
                 <b>Pretty name</b>
                 <span th:text="${apiKey.prettyName()}"></span>

@@ -2,12 +2,11 @@
 </div>
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/">Back</a>
     <article th:fragment="userinfo">
         <header>
             Your information
         </header>
-        <ul>
+        <ul class="tuple">
             <li>
                 <b>First name:</b>
                 <span th:text="${me.firstName()}"></span>
@@ -54,14 +53,16 @@
             You are not part of any groups
         </th:block>
         <ul th:if="${me.groups().size() > 0}">
-            <li th:each="group : ${me.groups()}" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></li>
+            <li th:each="group : ${me.groups()}">
+                <a th:href="|/groups/${group.group().id()}|" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></a>
+            </li>
         </ul>
     </article>
     <article th:with="meId = ${me.id()}">
         <header>
             Your avatar
         </header>
-        <div th:fragment="me-avatar">
+        <div class="image-input-container" th:fragment="me-avatar">
             <img th:src="@{|/images/user/avatar/${meId}?r=${random}|}" alt="Me avatar" />
             <form id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
                   _="on htmx:beforeRequest add @disabled to the next <button/> "

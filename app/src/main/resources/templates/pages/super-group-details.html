@@ -3,10 +3,9 @@
 <main>
     <a href="/super-groups" >Back</a>
     <article th:fragment="super-group-info">
-        <header>
-            <h3 th:text="${superGroup.prettyName()}"></h3>
+        <header th:text="${superGroup.prettyName()}">
         </header>
-        <ul>
+        <ul class="tuple">
             <li>
                 <b>Name:</b>
                 <span th:text="${superGroup.name()}"></span>
@@ -37,8 +36,7 @@
         </footer>
     </article>
     <article>
-        <header>
-            <h3 th:text="|${superGroup.prettyName()}s groups|"></h3>
+        <header th:text="|${superGroup.prettyName()}s groups|">
         </header>
         <table>
             <thead>

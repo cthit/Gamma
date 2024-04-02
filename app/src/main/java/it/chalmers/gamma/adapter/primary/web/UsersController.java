@@ -43,6 +43,8 @@ public class UsersController {
     return mv;
   }
 
+  public record UserGroup(String text, UUID id) {}
+
   @GetMapping("/users/{id}")
   public ModelAndView getUser(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
@@ -77,7 +79,10 @@ public class UsersController {
             "groups",
             u.groups().stream()
                 .map(
-                    userGroup -> userGroup.group().prettyName() + " - " + userGroup.post().enName())
+                    userGroup ->
+                        new UserGroup(
+                            userGroup.group().prettyName() + " - " + userGroup.post().enName(),
+                            userGroup.group().id()))
                 .toList());
 
         mv.addObject("email", u.user().email());

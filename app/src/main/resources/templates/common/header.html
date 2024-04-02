@@ -1,4 +1,57 @@
+<nav class="mobile-nav">
+    <aside>
+        <ul>
+            <li>
+                <a th:href="@{/me/accepted-clients}">Your accepted clients</a>
+            </li>
+            <li>
+                <a th:href="@{/my-clients}">Your clients</a>
+            </li>
+            <li>
+                <a th:href="@{/users}">Users</a>
+            </li>
+            <li>
+                <a th:href="@{/groups}">Groups</a>
+            </li>
+            <li>
+                <a th:href="@{/super-groups}">Super groups</a>
+            </li>
+            <li>
+                <a th:href="@{/types}">Types</a>
+            </li>
+            <li>
+                <a th:href="@{/posts}">Posts</a>
+            </li>
+            <th:block th:if="${isAdmin}">
+                <br>
+                <b>Admin views</b>
+                <li>
+                    <a th:href="@{/clients}">Official clients</a>
+                </li>
+                <li>
+                    <a th:href="@{/user-clients}">User clients</a>
+                </li>
+                <li>
+                    <a th:href="@{/api-keys}">Api keys</a>
+                </li>
+                <li>
+                    <a th:href="@{/activation-codes}">Activation codes</a>
+                </li>
+                <li>
+                    <a th:href="@{/admins}">Admins</a>
+                </li>
+                <li>
+                    <a th:href="@{/gdpr}">Gdpr trained</a>
+                </li>
+                <li>
+                    <a th:href="@{/allow-list}">Allow lists</a>
+                </li>
+            </th:block>
+        </ul>
+    </aside>
+</nav>
 <header>
+    <button id="toggle-nav" class="outline contrast">Menu</button>
     <a href="/">
         <h1>
             Gamma

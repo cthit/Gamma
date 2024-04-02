@@ -4,7 +4,7 @@
     <a href="/clients" >Back</a>
     <article>
         <header>
-            <h3>Client details</h3>
+           Client details
         </header>
         <ul class="details">
             <li>
@@ -38,35 +38,22 @@
         </ul>
     </article>
 
-    <article>
-        <header>
-            <h3>User approvals</h3>
-        </header>
-        <p th:if="${userApprovals.size() == 0}">
-            No users have approved this client yet
-        </p>
-        <ul th:if="${userApprovals.size() > 0}">
-            <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
-        </ul>
-    </article>
-
     <th:block th:each="clientAuthority : ${clientAuthorities}">
         <article th:fragment="client-authority-article">
-            <header>
-                <h3 th:text="${clientAuthority.authorityName()}"></h3>
+            <header th:text="${clientAuthority.authorityName()}">
             </header>
-            <h5>
+            <p>
                 Super groups:
-            </h5>
+            </p>
             <p th:if="${clientAuthority.superGroups().size() == 0}">
                 No super groups
             </p>
             <ul th:if="${clientAuthority.superGroups().size() > 0}">
                 <li th:each="superGroup : ${clientAuthority.superGroups()}" th:text="${superGroup.prettyName()}"></li>
             </ul>
-            <h5>
+            <p>
                 Users:
-            </h5>
+            </p>
             <p th:if="${clientAuthority.users().size() == 0}">
                 No users
             </p>
@@ -88,5 +75,17 @@
     <div id="client-authorities-anchor" style="visibility: hidden"></div>
 
     <article th:replace="~{partial/add-authority-to-client}"></article>
+
+    <article>
+        <header>
+            User approvals
+        </header>
+        <p th:if="${userApprovals.size() == 0}">
+            No users have approved this client yet
+        </p>
+        <ul th:if="${userApprovals.size() > 0}">
+            <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
+        </ul>
+    </article>
 
 </main>

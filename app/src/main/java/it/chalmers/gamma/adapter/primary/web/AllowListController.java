@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.user.allowlist.AllowListFacade;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
-import jakarta.annotation.Nullable;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +18,7 @@ public class AllowListController {
 
   @GetMapping("/allow-list")
   public ModelAndView getAllowList(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @Nullable String cidInputError) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("pages/allow-list");
@@ -31,10 +29,6 @@ public class AllowListController {
 
     List<String> allowList = this.allowListFacade.getAllowList();
     mv.addObject("allowList", allowList);
-
-    if (cidInputError != null) {
-      mv.addObject("cidInputError", cidInputError);
-    }
 
     return mv;
   }
@@ -48,7 +42,7 @@ public class AllowListController {
     } catch (AllowListRepository.AlreadyAllowedException
         | IllegalArgumentException
         | AllowListFacade.AlreadyAUserException e) {
-      return getAllowList(htmxRequest, e.getMessage());
+      return getAllowList(htmxRequest);
     }
 
     return new ModelAndView("redirect:allow-list");

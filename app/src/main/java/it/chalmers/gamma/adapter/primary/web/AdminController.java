@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.admin.AdminFacade;
 import it.chalmers.gamma.app.user.UserFacade;
-import jakarta.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,8 +25,7 @@ public class AdminController {
 
   @GetMapping("/admins")
   public ModelAndView getAdmins(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @Nullable String errorMessage) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
     List<UUID> admins = this.adminFacade.getAllAdmins();
     List<UserFacade.UserDTO> users =
         this.userFacade.getAll().stream()
@@ -56,7 +54,6 @@ public class AdminController {
 
     mv.addObject("users", users);
     mv.addObject("admins", admins);
-    mv.addObject("errorMessage", errorMessage);
 
     return mv;
   }
@@ -80,7 +77,7 @@ public class AdminController {
     try {
       this.adminFacade.updateAdmins(newAdmins, noLongerAdmins);
     } catch (IllegalArgumentException e) {
-      return this.getAdmins(htmxRequest, e.getMessage());
+      return this.getAdmins(htmxRequest);
     }
 
     return new ModelAndView("redirect:admins");

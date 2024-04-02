@@ -1,6 +1,5 @@
 <article>
-    <header>
-        <h3 th:text="|Edit ${form.prettyName()}|"></h3>
+    <header th:text="|Edit ${form.prettyName()}|">>
     </header>
     <form id="edit-super-group" th:object="${form}" th:data-hx-post="@{/super-groups/{superGroupId}(superGroupId=${superGroupId})}" data-hx-target="closest article" data-hx-swap="outerHTML">
         <input type="hidden" name="version" th:value="${form.version}" />
@@ -16,7 +15,7 @@
     </form>
     <footer>
         <button type="button" data-hx-target="closest article" data-hx-swap="outerHTML" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|">Cancel</button>
-        <button form="edit-super-group" type="submit">Save</button>
+        <button form="edit-super-group">Save</button>
     </footer>
 </article>
-<div th:replace="common/alert :: success('Super group updated')"></div>
+<div th:replace="~{common/alert :: success('Super group updated')}"></div>

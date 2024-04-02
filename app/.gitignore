@@ -5,6 +5,8 @@
 *.run.xml
 /src/main/resources/secrets.properties
 
+generated
+
 ### STS ###
 .apt_generated
 .classpath

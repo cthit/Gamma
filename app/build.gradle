@@ -77,7 +77,7 @@ dependencies {
             // web dependencies
             'org.webjars.npm:htmx.org:1.9.10',
             'org.webjars.npm:hyperscript.org:0.9.12',
-            "org.webjars.npm:picocss__pico:2.0.3"
+            "org.webjars.npm:picocss__pico:2.0.6"
     )
 
     testImplementation(

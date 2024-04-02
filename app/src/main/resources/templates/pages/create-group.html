@@ -7,9 +7,7 @@
           _="on htmx:afterSwap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
         <article>
             <header>
-                <h3>
-                    Create group
-                </h3>
+               Create group
             </header>
             <input type="hidden" name="version" th:value="${form.version}"/>
             <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>

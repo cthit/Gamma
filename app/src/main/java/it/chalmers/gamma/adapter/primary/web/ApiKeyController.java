@@ -157,15 +157,15 @@ public class ApiKeyController {
   }
 
   public static final class ApiKeySettings {
-    public List<String> superGroupTypesForInfo = new ArrayList<>();
+    public List<String> superGroupTypes = new ArrayList<>();
     public int version;
 
-    public List<String> getSuperGroupTypesForInfo() {
-      return superGroupTypesForInfo;
+    public List<String> getSuperGroupTypes() {
+      return superGroupTypes;
     }
 
-    public void setSuperGroupTypesForInfo(List<String> superGroupTypesForInfo) {
-      this.superGroupTypesForInfo = superGroupTypesForInfo;
+    public void setSuperGroupTypes(List<String> superGroupTypes) {
+      this.superGroupTypes = superGroupTypes;
     }
 
     public int getVersion() {
@@ -208,14 +208,13 @@ public class ApiKeyController {
       this.apiKeySettingsFacade.setAccountScaffoldSettings(
           apiKeyId,
           new ApiKeySettingsFacade.ApiKeySettingsAccountScaffoldDTO(
-              form.version, form.superGroupTypesForInfo));
+              form.version, form.superGroupTypes));
 
       loadApiKeySettingsAccountScaffold(mv, apiKey.id());
     } else if (apiKey.keyType().equals("INFO")) {
       this.apiKeySettingsFacade.setInfoSettings(
           apiKeyId,
-          new ApiKeySettingsFacade.ApiKeySettingsInfoDTO(
-              form.version, form.superGroupTypesForInfo));
+          new ApiKeySettingsFacade.ApiKeySettingsInfoDTO(form.version, form.superGroupTypes));
 
       loadApiKeySettingsInfo(mv, apiKey.id());
     }

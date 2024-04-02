@@ -3,7 +3,7 @@
     <a href="/clients" >Back</a>
     <article>
         <header>
-            <h3>Create client</h3>
+            Create client
         </header>
         <form id="create-clients" th:object="${form}" th:action="@{/clients}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
@@ -21,7 +21,7 @@
             <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin">Add restriction</button>
         </form>
         <footer>
-            <button class="outline" form="create-clients" type="submit">Create</button>
+            <button class="outline" form="create-clients">Create</button>
         </footer>
     </article>
 </main>

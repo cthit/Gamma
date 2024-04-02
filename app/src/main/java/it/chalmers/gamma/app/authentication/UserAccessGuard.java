@@ -30,7 +30,10 @@ public class UserAccessGuard {
   }
 
   public boolean accessToExtended(UserId userId) {
-    return isMe(userId) || isAdmin() || isLocalRunnerAuthenticated() || isApiKeyWithExtendedAccess();
+    return isMe(userId)
+        || isAdmin()
+        || isLocalRunnerAuthenticated()
+        || isApiKeyWithExtendedAccess();
   }
 
   public boolean isMe(UserId userId) {
@@ -141,14 +144,11 @@ public class UserAccessGuard {
 
   private boolean isApiKeyWithExtendedAccess() {
     if (AuthenticationExtractor.getAuthentication()
-            instanceof ApiAuthentication apiAuthenticationPrincipal) {
+        instanceof ApiAuthentication apiAuthenticationPrincipal) {
       ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
       return apiKeyType.equals(ApiKeyType.ACCOUNT_SCAFFOLD);
     }
 
     return false;
   }
-
-
-
 }

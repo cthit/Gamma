@@ -4,11 +4,9 @@
     <a href="/" >Back</a>
     <article>
         <header>
-            <h4>
                 Super group types
-            </h4>
         </header>
-        <section>
+        <section class="types-section">
             <th:block th:each="type : ${types}">
                 <div class="list-item" th:fragment="type-item">
                     <span th:text="${type}"></span>
@@ -16,7 +14,7 @@
                         <form data-hx-confirm="Are you sure you want to delete this type?" th:id=|${type}-delete-form| th:fragment="delete-type" th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest div" data-hx-swap="outerHTML">
                             <div th:replace="~{common/form-csrf}"></div>
                             <input type="hidden" name="_method" value="delete" />
-                            <button class="outline contrast" type="submit">Delete</button>
+                            <button class="outline contrast">Delete</button>
                         </form>
                     </span>
                 </div>
@@ -25,11 +23,11 @@
         <footer th:if="${isAdmin}">
             <form th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
                 <div th:replace="~{common/form-csrf}"></div>
-                <div class="table-cell">
+                <div>
                     <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
                 </div>
-                <div class="table-cell">
-                    <button type="submit">Save</button>
+                <div>
+                    <button>Save</button>
                 </div>
             </form>
         </footer>

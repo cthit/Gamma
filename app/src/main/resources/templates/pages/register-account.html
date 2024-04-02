@@ -3,7 +3,7 @@
     <form th:method="post" th:action="@{/register}">
         <article>
             <header>
-                <h3>Finish setting up your account</h3>
+                Finish setting up your account
             </header>
             <div th:replace="~{common/input :: textInput('cid', 'Cid', ${null}, ${null})}"></div>
             <div th:replace="~{common/input :: textInput('code', 'Code from the email', ${null}, ${null})}"></div>
@@ -40,7 +40,7 @@
                 />
             </label>
             <footer>
-                <button type="submit">Create account</button>
+                <button>Create account</button>
             </footer>
         </article>
     </form>

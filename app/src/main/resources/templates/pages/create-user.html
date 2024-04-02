@@ -3,9 +3,7 @@
     <a href="/" >Back</a>
     <article>
         <header>
-            <h3>
-                Create user
-            </h3>
+            Create user
         </header>
         <form id="create-user-form" th:object="${form}" th:action="@{/users}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='firstName', label='First name')}"></div>
@@ -37,7 +35,7 @@
             <div th:replace="~{common/error :: text}"></div>
         </form>
         <footer>
-            <button form="create-user-form" type="submit">Create user</button>
+            <button form="create-user-form">Create user</button>
         </footer>
     </article>
 </main>

@@ -12,8 +12,9 @@ import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.image.domain.UserAvatarRepository;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -26,19 +27,19 @@ public class ImageFacade extends Facade {
   private static final Logger LOGGER = LoggerFactory.getLogger(ImageFacade.class);
 
   private final ImageService imageService;
-  private final UserRepository userRepository;
   private final GroupRepository groupRepository;
+  private final SuperGroupRepository superGroupRepository;
   private final UserAvatarRepository userAvatarRepository;
 
   public ImageFacade(
       AccessGuard accessGuard,
       ImageService imageService,
-      UserRepository userRepository,
       GroupRepository groupRepository,
+      SuperGroupRepository superGroupRepository,
       UserAvatarRepository userAvatarRepository) {
     super(accessGuard);
     this.imageService = imageService;
-    this.userRepository = userRepository;
+    this.superGroupRepository = superGroupRepository;
     this.groupRepository = groupRepository;
     this.userAvatarRepository = userAvatarRepository;
   }
@@ -128,6 +129,34 @@ public class ImageFacade extends Facade {
       this.imageService.removeImage(avatarUri);
     } catch (ImageService.ImageCouldNotBeRemovedException e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  public ImageDetails getSuperGroupAvatar(UUID superGroupId) {
+    Optional<Group> maybeGroup =
+        this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId)).stream()
+            .findFirst();
+
+    if (maybeGroup.isPresent()) {
+      return new ImageDetails(
+          this.imageService.getImage(
+              maybeGroup.get().avatarUri().orElse(ImageUri.defaultGroupAvatar())));
+    } else {
+      throw new RuntimeException();
+    }
+  }
+
+  public ImageDetails getSuperGroupBanner(UUID superGroupId) {
+    Optional<Group> maybeGroup =
+        this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId)).stream()
+            .findFirst();
+
+    if (maybeGroup.isPresent()) {
+      return new ImageDetails(
+          this.imageService.getImage(
+              maybeGroup.get().bannerUri().orElse(ImageUri.defaultGroupAvatar())));
+    } else {
+      throw new RuntimeException();
     }
   }
 

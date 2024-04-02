@@ -9,15 +9,15 @@
     <meta name="color-scheme" content="light dark" />
     <link rel="shortcut icon" type="image/svg" th:href="@{/img/itlogo.svg}" />
 
+    <link rel="stylesheet" th:href="@{/webjars/picocss__pico/2.0.6/css/pico.green.min.css}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" />
-    <link rel="stylesheet" th:href="@{/webjars/picocss__pico/2.0.3/css/pico.green.min.css}" />
 
     <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.min.js}"></script>
     <script th:src="@{/webjars/hyperscript.org/0.9.12/dist/_hyperscript.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/reorder.js}"></script>
 </head>
-<body class="container" hx-boost="true" hx-history="false">
+<body class="container-fluid" hx-boost="true" hx-history="false">
     <th:block th:replace="~{__${page}__}"></th:block>
 </body>
 </html>

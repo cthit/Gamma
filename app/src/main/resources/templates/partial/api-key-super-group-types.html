@@ -3,17 +3,16 @@
       method="post"
       data-hx-target="this"
       th:data-hx-post="|/api-keys/${apiKeyId}/settings|"
-      _="on htmx:afterSwap call updateNames('superGroupTypesForInfo', 'select')">
+      _="on htmx:afterSwap call updateNames('superGroupTypes', 'select')">
     <input type="hidden" name="_method" value="put" />
     <input type="hidden" name="version" th:value="${settings_form.version}" />
     <div th:replace="~{common/form-csrf}"></div>
 
     <article>
-        <header>
-            <h3 th:text="${settings_title}"></h3>
+        <header th:text="${settings_title}">>
         </header>
         <p th:text="${settings_description}"></p>
-        <div class="super-group-type"
+        <div class="super-group-type row"
              th:each="type : ${settings_form.superGroupTypes}">
             <select>
                 <option disabled selected th:value="${type}" th:text="${type}"></option>
@@ -28,7 +27,7 @@
             <button class="outline contrast" type="button" data-hx-get="/api-keys/new-super-group"
                     data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
             </button>
-            <button class="outline contrast" type="submit">Save</button>
+            <button class="outline contrast">Save</button>
         </footer>
     </article>
 </form>

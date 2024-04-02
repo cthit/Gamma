@@ -23,7 +23,7 @@ public class GroupsImageController {
 
   @PutMapping("/groups/avatar/{id}")
   public ModelAndView editGroupAvatar(
-      @RequestParam MultipartFile file, @PathVariable("id") UUID id) {
+      @RequestParam("file") MultipartFile file, @PathVariable("id") UUID id) {
     try {
       this.imageFacade.setGroupAvatar(id, new ImageFile(file));
     } catch (ImageService.ImageCouldNotBeSavedException e) {
@@ -41,7 +41,7 @@ public class GroupsImageController {
 
   @PutMapping("/groups/banner/{id}")
   public ModelAndView editGroupBanner(
-      @RequestParam MultipartFile file, @PathVariable("id") UUID id) {
+      @RequestParam("file") MultipartFile file, @PathVariable("id") UUID id) {
     try {
       this.imageFacade.setGroupBanner(id, new ImageFile(file));
     } catch (ImageService.ImageCouldNotBeSavedException e) {

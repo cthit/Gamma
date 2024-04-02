@@ -9,10 +9,11 @@ article > footer {
     flex-direction: row;
     gap: 1rem;
     justify-content: flex-end;
+    align-items: flex-end;
 }
 
-article > footer > * {
-    margin-bottom: 0;
+article footer * {
+    margin-bottom: 0 !important;
 }
 
 div[role='alert'] {
@@ -55,6 +56,7 @@ header {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    position: relative;
 }
 
 header div {
@@ -75,28 +77,147 @@ img.avatar {
     object-fit: contain;
 }
 
-ul {
+ul.tuple {
     padding-left: 0;
 }
 
-li {
+ul.tuple > li {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
 }
 
-li > * {
+ul.tuple > li > * {
     flex: 1;
 }
 
-li > *:nth-child(1) {
+ul.tuple > li > *:nth-child(1) {
     text-align: right;
 }
 
-li > *:nth-child(2) {
+ul.tuple > li > *:nth-child(2) {
     text-align: left;
 }
 
 .form-check-input {
     visibility: hidden;
+}
+
+input[type=checkbox], input[type=radio], select {
+    /* This is currently a workaround, due to Gamma's strict Content Security Policy. */
+    appearance: auto;
+}
+
+.td-buttons {
+    gap: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.types-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: fit-content;
+    margin: auto;
+}
+
+.list-item {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+body {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "nav main";
+    grid-template-columns: 200px auto;
+}
+
+header {
+    grid-area: header;
+    grid-column: span 2;
+}
+
+nav {
+    grid-area: nav;
+}
+
+main {
+    grid-area: main;
+}
+
+@media only screen and (min-width: 600px) {
+    #toggle-nav {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    body {
+        grid-template-areas:
+            "header"
+            "nav"
+            "main";
+    }
+
+    body.show-nav nav {
+        display: block;
+    }
+
+    nav {
+        display: none;
+    }
+
+    main {
+        grid-column: span 2;
+    }
+}
+.image-input-container {
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    margin: auto;
+    gap: 2rem;
+}
+
+.home-links {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 6rem;
+    gap: 0.5rem;
+}
+
+.member-row > p {
+    margin-bottom: 0.2rem;
+}
+
+.member-row > div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.member-row > div > button {
+    height: fit-content;
+    margin-bottom: 0;
+}
+
+.row {
+    display: flex;
+    gap: 1rem;
+}
+
+.table-align-right {
+    text-align: right;
+}
+
+.m-auto {
+    display: block;
+    margin: auto;
 }

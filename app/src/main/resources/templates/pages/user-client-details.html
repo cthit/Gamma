@@ -16,7 +16,7 @@
             </ul>
         </li>
     </ul>
-    <h2>Authorities</h2>
+    <p>Authorities</p>
     <th:block th:fragment="client-authorities" >
         <div th:data-hx-get="@{/user-clients/{id}/authorities(id=${client.clientUid})}" data-hx-target="this" data-hx-swap="outerHTML" data-hx-trigger="authorities-updated from:body">
             <ul>
@@ -39,7 +39,7 @@
         </div>
         <button th:data-hx-get="@{/user-clients/{id}/new-authority(id=${client.clientUid()})}" data-hx-target="this" data-hx-swap="outerHTML">Add authority</button>
     </th:block>
-    <h2>User approvals</h2>
+    <p>User approvals</p>
     <ul>
         <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
     </ul>

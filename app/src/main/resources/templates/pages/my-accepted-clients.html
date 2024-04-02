@@ -13,7 +13,7 @@
         <tr th:each="acceptedClient : ${acceptedClients}">
             <td th:text="${acceptedClient.name()}"></td>
             <td th:text="${acceptedClient.enDescription()}"></td>
-            <td>
+            <td class="table-align-right">
                 <form th:data-hx-post="|/me/accepted-clients/${acceptedClient.clientUid()}|" data-hx-target="closest tr" data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
