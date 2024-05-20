@@ -1,17 +1,21 @@
-<header th:replace="~{common/header}"></header>
+<header th:replace="~{common/header-without-nav}"></header>
 <main>
-    <b>
-        An email should be sent to your student email
-    </b>
-    <p>
-        If you have not received an email within a few minutes, you may have entered the wrong cid.
-        If you're sure that you have written the correct cid, and you still haven't received an email please contact digIT at digit@chalmers.it.
-        Make sure to check your spam folder as well.
-    </p>
-    <a th:href="@{/activate-cid}" >
-        I have not received a code
-    </a>
-    <a th:href="@{/register}" >
-        I have received a code
-    </a>
+    <article>
+        <header>
+            An email should be sent to your student email
+        </header>
+        <p>
+            If you have not received an email within a few minutes, you may have entered the wrong cid.
+            If you're sure that you have written the correct cid, and you still haven't received an email please contact digIT at digit@chalmers.it.
+            Make sure to check your spam folder as well.
+        </p>
+        <footer>
+            <a th:href="@{/activate-cid}" >
+                I have not received a code
+            </a>
+            <a th:href="@{/register}" >
+                I have received a code
+            </a>
+        </footer>
+    </article>
 </main>

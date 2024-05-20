@@ -16,10 +16,7 @@ public class RegisterAccountController {
     this.userCreationFacade = userCreationFacade;
   }
 
-  @GetMapping("/activate-cid")
-  public ModelAndView getActivateCid(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      String cidInputError) {
+  private ModelAndView createActivateCid(boolean htmxRequest, String cidInputError) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("pages/activate-cid");
@@ -33,6 +30,12 @@ public class RegisterAccountController {
     return mv;
   }
 
+  @GetMapping("/activate-cid")
+  public ModelAndView getActivateCid(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    return createActivateCid(htmxRequest, null);
+  }
+
   @PostMapping("/activate-cid")
   public ModelAndView activateCid(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
@@ -40,7 +43,7 @@ public class RegisterAccountController {
     try {
       this.userCreationFacade.tryToActivateUser(form.cid);
     } catch (IllegalArgumentException e) {
-      return this.getActivateCid(htmxRequest, e.getMessage());
+      return createActivateCid(htmxRequest, e.getMessage());
     }
     return new ModelAndView("redirect:email-sent");
   }
