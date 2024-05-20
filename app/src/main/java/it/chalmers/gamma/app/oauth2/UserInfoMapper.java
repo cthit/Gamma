@@ -15,11 +15,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContext, OidcUserInfo> {
 
-  private final UserRepository userRepository;
   private final ClaimsMapper claimsMapper;
 
-  public UserInfoMapper(UserRepository userRepository, ClaimsMapper claimsMapper) {
-    this.userRepository = userRepository;
+  public UserInfoMapper(ClaimsMapper claimsMapper) {
     this.claimsMapper = claimsMapper;
   }
 

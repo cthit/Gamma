@@ -26,7 +26,7 @@ public class OAuth2AuthorizationServerSecurityConfig {
                 (claims) ->
                     claims.putAll(
                         claimsMapper.generateClaims(
-                            context.getAuthorizedScopes().stream().toList(),
+                            context.getAuthorizedScopes().stream().map(scope -> "SCOPE_" + scope).toList(),
                             UserId.valueOf(context.getAuthorization().getPrincipalName()))));
       }
     };
