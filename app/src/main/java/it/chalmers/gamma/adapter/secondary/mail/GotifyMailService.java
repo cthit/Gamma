@@ -26,12 +26,10 @@ public class GotifyMailService implements MailService {
   }
 
   public void sendMail(String email, String subject, String body) {
-      sendMailViaGotify(email, subject, body);
+    sendMailViaGotify(email, subject, body);
   }
 
-  /**
-   * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
-   */
+  /** Sends mail using Gotify Rest API, see https://github.com/cthit/gotify */
   private void sendMailViaGotify(String email, String subject, String body) {
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);

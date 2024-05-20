@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
@@ -11,8 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class ApiKeyController {
@@ -76,11 +76,12 @@ public class ApiKeyController {
   public ModelAndView getApiKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @PathVariable("id") String apiKeyId) {
-    if(!isValidUUID(apiKeyId)) {
-       return createApiKeyNotFound(apiKeyId, htmxRequest);
+    if (!isValidUUID(apiKeyId)) {
+      return createApiKeyNotFound(apiKeyId, htmxRequest);
     }
 
-    Optional<ApiKeyFacade.ApiKeyDTO> maybeApiKey = this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
+    Optional<ApiKeyFacade.ApiKeyDTO> maybeApiKey =
+        this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
 
     if (maybeApiKey.isEmpty()) {
       return createApiKeyNotFound(apiKeyId, htmxRequest);

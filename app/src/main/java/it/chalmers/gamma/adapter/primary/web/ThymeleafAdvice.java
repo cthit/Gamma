@@ -4,14 +4,10 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.nio.file.AccessDeniedException;
 
 @ControllerAdvice
 public class ThymeleafAdvice {
@@ -40,5 +36,4 @@ public class ThymeleafAdvice {
 
     return mv;
   }
-
 }

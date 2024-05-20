@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
@@ -15,8 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class ClientsController {
@@ -80,8 +80,7 @@ public class ClientsController {
 
     List<ClientAuthorityFacade.ClientAuthorityDTO> clientAuthorities =
         this.clientAuthorityFacade.getAll(uid);
-    List<UserFacade.UserDTO> userApprovals =
-        this.clientApprovalFacade.getApprovalsForClient(uid);
+    List<UserFacade.UserDTO> userApprovals = this.clientApprovalFacade.getApprovalsForClient(uid);
 
     if (htmxRequest) {
       mv.setViewName("pages/client-details");

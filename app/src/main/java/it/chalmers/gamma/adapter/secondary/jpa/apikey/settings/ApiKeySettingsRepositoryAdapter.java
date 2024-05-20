@@ -8,10 +8,9 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyAccountScaffoldSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyInfoSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
+import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Repository
