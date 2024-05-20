@@ -91,7 +91,7 @@ public class SecurityFiltersConfig {
   @Order(3)
   @Bean
   SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
-    http.securityMatcher("\\/images.+")
+    http.securityMatcher(new RegexRequestMatcher("\\/images.+", null))
         .authorizeHttpRequests(authorization -> authorization.anyRequest().permitAll())
         .sessionManagement(
             sessionManagement ->
@@ -107,8 +107,7 @@ public class SecurityFiltersConfig {
       HttpSecurity http,
       PasswordEncoder passwordEncoder,
       UserJpaRepository userJpaRepository,
-      AdminRepository adminRepository,
-      @Value("${application.production}") boolean production)
+      AdminRepository adminRepository)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
