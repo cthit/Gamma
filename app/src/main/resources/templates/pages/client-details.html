@@ -35,6 +35,11 @@
                 <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></span>
             </li>
         </ul>
+        <footer>
+            <form data-hx-confirm="Are you sure you want to delete this client?" th:action="|/clients/${clientUid}|" th:method="delete">
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
+        </footer>
     </article>
 
     <th:block th:each="clientAuthority : ${clientAuthorities}">
