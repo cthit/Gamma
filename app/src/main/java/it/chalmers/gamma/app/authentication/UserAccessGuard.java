@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,8 @@ public class UserAccessGuard {
     return isMe(userId)
         || isAdmin()
         || isLocalRunnerAuthenticated()
-        || isApiKeyWithExtendedAccess();
+        || isApiKeyWithExtendedAccess()
+        || isClientWithEmailScope();
   }
 
   public boolean isMe(UserId userId) {
@@ -147,6 +149,15 @@ public class UserAccessGuard {
         instanceof ApiAuthentication apiAuthenticationPrincipal) {
       ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
       return apiKeyType.equals(ApiKeyType.ACCOUNT_SCAFFOLD);
+    }
+
+    return false;
+  }
+
+  private boolean isClientWithEmailScope() {
+    if (SecurityContextHolder.getContext().getAuthentication()
+            instanceof OAuth2ClientAuthenticationToken client && client.getRegisteredClient() != null) {
+      return client.getRegisteredClient().getScopes().contains("email");
     }
 
     return false;
