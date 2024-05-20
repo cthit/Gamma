@@ -1,7 +1,6 @@
 <header th:replace="~{common/header}"></header>
 <div id="alerts"></div>
 <main>
-    <a href="/clients" >Back</a>
     <article>
         <header>
            Client details
@@ -66,7 +65,7 @@
                       data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete"/>
-                    <button class="outline contrast">Delete</button>
+                    <button class="outline contrast" data-loading-disable>Delete</button>
                 </form>
             </footer>
         </article>

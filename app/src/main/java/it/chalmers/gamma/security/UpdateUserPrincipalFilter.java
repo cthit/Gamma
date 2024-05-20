@@ -8,6 +8,7 @@ import jakarta.servlet.*;
 import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UpdateUserPrincipalFilter implements Filter {
 
@@ -29,12 +30,16 @@ public class UpdateUserPrincipalFilter implements Filter {
         return;
       }
 
-      final GammaUser gammaUser = userDetailsRepository.getGammaUserByUser();
-      final boolean isAdmin = adminRepository.isAdmin(gammaUser.id());
+      try {
+        final GammaUser gammaUser = userDetailsRepository.getGammaUserByUser();
+        final boolean isAdmin = adminRepository.isAdmin(gammaUser.id());
 
-      UserAuthentication userPrincipal = new UserAuthentication(gammaUser, isAdmin);
+        UserAuthentication userPrincipal = new UserAuthentication(gammaUser, isAdmin);
 
-      usernamePasswordAuthenticationToken.setDetails(userPrincipal);
+        usernamePasswordAuthenticationToken.setDetails(userPrincipal);
+      } catch (UsernameNotFoundException ignored) {
+        SecurityContextHolder.getContext().setAuthentication(null);
+      }
     }
 
     chain.doFilter(request, response);

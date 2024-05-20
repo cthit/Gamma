@@ -2,7 +2,6 @@
 <div id="alerts">
 </div>
 <main>
-    <a href="/api-keys" >Back</a>
     <article>
         <header th:text="|${apiKey.prettyName()} details|">
         </header>
@@ -26,7 +25,7 @@
         </ul>
         <footer>
             <form data-hx-confirm="Are you sure you want to delete this api key?" th:action="|/api-keys/${apiKey.id()}|" th:method="delete">
-                <button class="outline contrast">Delete</button>
+                <button class="outline contrast" data-loading-disable>Delete</button>
             </form>
         </footer>
     </article>

@@ -1,6 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/" >Back</a>
     <form th:object="${form}" th:action="@{/super-groups}" th:method="post">
         <article>
             <header>
@@ -17,7 +16,7 @@
                 </select>
             </label>
             <footer>
-                <button>Create</button>
+                <button data-loading-disable>Create</button>
             </footer>
         </article>
     </form>

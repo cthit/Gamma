@@ -52,13 +52,10 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
         claims.put("family_name", me.lastName().value());
         claims.put("nickname", me.nick().value());
         claims.put("locale", me.language().toString().toLowerCase());
-
         claims.put("picture", this.baseUrl + "/images/user/avatar/" + me.id().value());
 
         // Non-standard claims.
         claims.put("cid", me.cid().value());
-
-        // Separate record here to guarantee that the props doesn't change
       } else if (scope.getAuthority().equals(EMAIL_SCOPE)) {
         claims.put("email", me.extended().email().value());
       }

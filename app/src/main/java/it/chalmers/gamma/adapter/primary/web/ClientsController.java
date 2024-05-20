@@ -16,6 +16,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 @Controller
 public class ClientsController {
 
@@ -62,19 +64,25 @@ public class ClientsController {
   @GetMapping("/clients/{id}")
   public ModelAndView getClients(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") UUID clientUid) {
-    Optional<ClientFacade.ClientDTO> client = this.clientFacade.get(clientUid);
+      @PathVariable("id") String clientUid) {
+    if (!isValidUUID(clientUid)) {
+      return createClientNotFound(clientUid, htmxRequest);
+    }
 
+    UUID uid = UUID.fromString(clientUid);
+
+    Optional<ClientFacade.ClientDTO> client = this.clientFacade.get(uid);
+
+    ModelAndView mv = new ModelAndView();
     if (client.isEmpty()) {
-      throw new RuntimeException();
+      return createClientNotFound(clientUid, htmxRequest);
     }
 
     List<ClientAuthorityFacade.ClientAuthorityDTO> clientAuthorities =
-        this.clientAuthorityFacade.getAll(clientUid);
+        this.clientAuthorityFacade.getAll(uid);
     List<UserFacade.UserDTO> userApprovals =
-        this.clientApprovalFacade.getApprovalsForClient(clientUid);
+        this.clientApprovalFacade.getApprovalsForClient(uid);
 
-    ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("pages/client-details");
     } else {
@@ -85,6 +93,20 @@ public class ClientsController {
     mv.addObject("client", client.get());
     mv.addObject("clientAuthorities", clientAuthorities);
     mv.addObject("userApprovals", userApprovals);
+
+    return mv;
+  }
+
+  public ModelAndView createClientNotFound(String clientUid, boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/client-not-found");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/client-not-found");
+    }
+
+    mv.addObject("id", clientUid);
 
     return mv;
   }

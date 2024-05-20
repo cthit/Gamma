@@ -14,8 +14,8 @@
         </select>
     </form>
     <footer>
-        <button type="button" data-hx-target="closest article" data-hx-swap="outerHTML" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|">Cancel</button>
-        <button form="edit-super-group">Save</button>
+        <button type="button" data-hx-target="closest article" data-hx-swap="outerHTML" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|" data-loading-disable>Cancel</button>
+        <button form="edit-super-group" data-loading-disable>Save</button>
     </footer>
 </article>
 <div th:replace="~{common/alert :: success('Super group updated')}"></div>

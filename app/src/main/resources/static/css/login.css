@@ -10,6 +10,9 @@ main {
     align-items: center;
     gap: 1rem;
     min-height: 100lvh;
+
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
 article {
@@ -29,6 +32,8 @@ form > fieldset {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    justify-content: flex-end;
+    align-items: baseline;
 }
 
 img {

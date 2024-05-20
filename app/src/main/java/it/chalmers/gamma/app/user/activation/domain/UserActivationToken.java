@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.user.activation.domain;
 
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.gamma.app.TokenUtils;
 import java.util.Objects;
 
 public record UserActivationToken(String value) {

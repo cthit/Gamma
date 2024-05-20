@@ -33,3 +33,5 @@ generated
 /.nb-gradle/
 
 secrets.properties
+
+.DS-store

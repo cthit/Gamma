@@ -57,6 +57,7 @@ header {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    max-width: calc(100vw - var(--pico-spacing) * 2);
 }
 
 header div {
@@ -66,7 +67,7 @@ header div {
     align-items: center;
 }
 
-header > a > h1 {
+header > div > a > h1 {
     margin-bottom: 0;
 }
 
@@ -136,6 +137,8 @@ body {
         "header header"
         "nav main";
     grid-template-columns: 200px auto;
+
+    overflow-x: hidden;
 }
 
 header {
@@ -149,6 +152,8 @@ nav {
 
 main {
     grid-area: main;
+    overflow-x: auto;
+    padding-block: 0 !important;
 }
 
 @media only screen and (min-width: 600px) {
@@ -175,6 +180,18 @@ main {
 
     main {
         grid-column: span 2;
+    }
+
+    header {
+        align-items: flex-start;
+    }
+
+    header div {
+        flex-direction: column;
+    }
+
+    header > *:nth-child(3) {
+        flex-direction: column-reverse;
     }
 }
 .image-input-container {
@@ -220,4 +237,8 @@ main {
 .m-auto {
     display: block;
     margin: auto;
+}
+
+[data-loading] {
+    display: none;
 }

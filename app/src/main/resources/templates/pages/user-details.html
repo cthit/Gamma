@@ -1,7 +1,6 @@
 <header th:replace="~{common/header}"></header>
 <div id="alerts"></div>
 <main>
-    <a href="/users" >Back</a>
     <article th:fragment="userinfo">
         <header>User details</header>
         <img class="m-auto" th:src="@{/images/user/avatar/{id}(id=${userId})}" alt="User avatar"/>
@@ -33,10 +32,10 @@
             <button class="outline contrast"
                     data-hx-target="closest article"
                     th:data-hx-get="@{|/users/${userId}/edit|}"
-                    data-hx-swap="outerHTML">Edit user
+                    data-hx-swap="outerHTML" data-loading-disable>Edit user
             </button>
             <form th:data-hx-confirm="|Are you sure you wish to delete ${name}?|" th:action="|/users/${userId}|" th:method="delete">
-                <button class="outline contrast">Delete user</button>
+                <button class="outline contrast" data-loading-disable>Delete user</button>
             </form>
         </footer>
     </article>

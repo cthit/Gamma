@@ -1,4 +1,4 @@
-package it.chalmers.gamma.util;
+package it.chalmers.gamma.app;
 
 import java.util.Arrays;
 import java.util.Random;

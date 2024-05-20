@@ -1,7 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/groups">Back</a>
-
     <article th:fragment="group-details-article">
         <header>
             Group details
@@ -26,14 +24,21 @@
             Members:
         </p>
         <ul>
-            <li th:each="member : ${members}" th:text="${member}"></li>
+            <li th:each="member : ${members}">
+                <a th:href="|/users/${member.userId()}|" th:text="${member.name()}"></a>
+                <span th:text="${member.post()}"></span>
+            </li>
         </ul>
 
         <footer th:if="${isAdmin}">
+            <form data-hx-confirm="Are you sure you want to delete this group?" th:action="|/groups/${group.id()}|" th:method="delete">
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
             <button
                     th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
                     data-hx-target="closest article"
-                    data-hx-swap="outerHTML">Edit
+                    data-hx-swap="outerHTML"
+                    data-loading-disable>Edit
             </button>
         </footer>
     </article>
@@ -58,7 +63,7 @@
                 </form>
             </div>
             <footer th:if="${isAdmin}">
-                <button class="outline" form="edit-group-avatar" disabled>Upload avatar</button>
+                <button class="outline" form="edit-group-avatar" disabled data-loading-disable>Upload avatar</button>
             </footer>
         </article>
 
@@ -81,7 +86,7 @@
                 </form>
             </div>
             <footer th:if="${isAdmin}">
-                <button class="outline" form="edit-group-banner" disabled>Upload banner</button>
+                <button class="outline" form="edit-group-banner" disabled data-loading-disable>Upload banner</button>
             </footer>
         </article>
     </th:block>

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.user.passwordreset.domain;
 
-import it.chalmers.gamma.util.TokenUtils;
+import it.chalmers.gamma.app.TokenUtils;
 import java.util.Objects;
 import org.springframework.web.util.HtmlUtils;
 

@@ -43,10 +43,10 @@ public class ConsentController {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
-      mv.setViewName("pages/consent");
+      mv.setViewName("pages/authorize");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/consent");
+      mv.addObject("page", "pages/authorize");
     }
 
     mv.addObject("clientId", clientId);

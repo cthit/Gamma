@@ -49,7 +49,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-websocket:3.1.2",
 
             // OAuth2 Server
-            "org.springframework.security:spring-security-oauth2-authorization-server:1.2.1",
+            "org.springframework.security:spring-security-oauth2-authorization-server:1.2.3",
 
             // Spring session
             "org.springframework.session:spring-session-core:3.1.1",
@@ -57,6 +57,8 @@ dependencies {
 
             // Jackson (JSON)
             'com.fasterxml.jackson.core:jackson-core:2.14.2',
+            'com.fasterxml.jackson.core:jackson-databind:2.14.2',
+            'com.fasterxml.jackson.core:jackson-annotations:2.14.2',
 
             // Redis
             'org.springframework.data:spring-data-redis:3.1.2',

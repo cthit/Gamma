@@ -1,6 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/" >Back</a>
     <article>
         <header>
             Create user
@@ -35,7 +34,7 @@
             <div th:replace="~{common/error :: text}"></div>
         </form>
         <footer>
-            <button form="create-user-form">Create user</button>
+            <button form="create-user-form" data-loading-disable>Create user</button>
         </footer>
     </article>
 </main>

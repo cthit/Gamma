@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.GammaAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,11 @@ public class LoginController {
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       HttpServletRequest request,
       HttpServletResponse response) {
+    GammaAuthentication auth = AuthenticationExtractor.getAuthentication();
+    if (auth != null) {
+      return new ModelAndView("redirect:/");
+    }
+
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("pages/login");
@@ -32,17 +39,6 @@ public class LoginController {
     mv.addObject("error", error);
     mv.addObject("logout", logout);
     mv.addObject("authorizing", isAuthorizing);
-
-    /*
-     * There might be a situation where a user starts an authorizing
-     * against a client, but stops while the redirect request has been cached.
-     * This makes sure that the user when actually trying to login to the
-     * Gamma frontend that they're redirected to that, and not redirected
-     * to the consent page for example.
-     */
-    /*if (!isAuthorizing) {
-        gammaRequestCache.removeRequest(request, response);
-    }*/
 
     response.addHeader("HX-Retarget", "body");
 

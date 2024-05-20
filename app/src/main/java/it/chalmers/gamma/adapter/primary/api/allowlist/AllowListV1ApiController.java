@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.allowlist;
 
-import it.chalmers.gamma.adapter.primary.api.utils.SuccessResponse;
+import it.chalmers.gamma.adapter.primary.api.SuccessResponse;
 import it.chalmers.gamma.app.user.allowlist.AllowListFacade;
 import java.util.ArrayList;
 import java.util.List;

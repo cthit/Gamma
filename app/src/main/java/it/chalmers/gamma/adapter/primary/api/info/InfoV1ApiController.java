@@ -1,6 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.info;
 
-import it.chalmers.gamma.adapter.primary.api.utils.NotFoundResponse;
+import it.chalmers.gamma.adapter.primary.api.NotFoundResponse;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import java.util.List;

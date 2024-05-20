@@ -1,10 +1,10 @@
 package it.chalmers.gamma.bootstrap;
 
+import it.chalmers.gamma.app.TokenUtils;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
-import it.chalmers.gamma.util.TokenUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

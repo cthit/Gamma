@@ -1,6 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
     <table>
         <thead>
         <tr>
@@ -19,7 +18,7 @@
                 <form th:data-hx-post="|/activation-codes/${activationCode.cid()}|" data-hx-target="closest tr" data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
-                    <button class="outline contrast">Delete activation</button>
+                    <button class="outline contrast" data-loading-disable>Delete activation</button>
                 </form>
             </td>
         </tr>

@@ -22,9 +22,6 @@ public class AuthorizationRepositoryAdapter implements GammaAuthorizationReposit
     this.authorizationTokenMapperRedisRepository = authorizationTokenMapperRedisRepository;
   }
 
-  // HMM den sparar bara gamma-authorization och gamma-authorization-rawToken?
-  // Också, ta bort GammaAuthorization och spara OAuth2Authorization direkt bara.
-
   @Override
   public void save(OAuth2Authorization authorization) {
     this.authorizationRedisRepository.save(new AuthorizationValue(authorization));

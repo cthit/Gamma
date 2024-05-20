@@ -12,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 @Controller
 public class ApiKeyController {
 
@@ -73,16 +75,20 @@ public class ApiKeyController {
   @GetMapping("/api-keys/{id}")
   public ModelAndView getApiKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") UUID id) {
-    Optional<ApiKeyFacade.ApiKeyDTO> maybeApiKey = this.apiKeyFacade.getById(id);
+      @PathVariable("id") String apiKeyId) {
+    if(!isValidUUID(apiKeyId)) {
+       return createApiKeyNotFound(apiKeyId, htmxRequest);
+    }
+
+    Optional<ApiKeyFacade.ApiKeyDTO> maybeApiKey = this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
 
     if (maybeApiKey.isEmpty()) {
-      throw new RuntimeException();
+      return createApiKeyNotFound(apiKeyId, htmxRequest);
     }
 
     ApiKeyFacade.ApiKeyDTO apiKey = maybeApiKey.get();
-
     ModelAndView mv = new ModelAndView();
+
     if (htmxRequest) {
       mv.setViewName("pages/api-key-details");
     } else {
@@ -98,6 +104,20 @@ public class ApiKeyController {
     } else if (apiKey.keyType().equals("INFO")) {
       loadApiKeySettingsInfo(mv, apiKey.id());
     }
+
+    return mv;
+  }
+
+  public ModelAndView createApiKeyNotFound(String apiKeyId, boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/api-key-not-found");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/api-key-not-found");
+    }
+
+    mv.addObject("id", apiKeyId);
 
     return mv;
   }

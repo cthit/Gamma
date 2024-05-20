@@ -1,8 +1,7 @@
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
     <form th:action="@{/gdpr}" th:method="put" >
-        <button>Save</button>
+        <button data-loading-disable>Save</button>
         <table>
             <thead>
             <tr>

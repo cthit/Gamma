@@ -41,7 +41,7 @@ public class UserRepositoryAdapter implements UserRepository {
   public void create(GammaUser user, UnencryptedPassword password)
       throws CidAlreadyInUseException, EmailAlreadyInUseException {
     try {
-      this.save(toEntity(user, password.value()));
+      this.save(toEntity(user, password != null ? password.value() : null));
     } catch (DataIntegrityViolationException e) {
       PersistenceErrorState state = PersistenceErrorHelper.getState(e);
 

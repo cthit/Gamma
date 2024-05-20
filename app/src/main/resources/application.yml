@@ -66,5 +66,5 @@ application:
   mocking: "${IS_MOCKING:false}"
   admin-setup: "${ADMIN_SETUP:true}"
   gotify:
-    key: "${GOTIFY_KEY:\"123abc\"}"
-    url: "${GOTIFY_URL:\"localhost:7000\"}"
+    key: "${GOTIFY_KEY:123abc}"
+    url: "${GOTIFY_URL:http://localhost:8080}"

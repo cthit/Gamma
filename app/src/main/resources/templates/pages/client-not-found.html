@@ -1,0 +1,16 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            404 - Not Found
+        </header>
+        <p>
+            Client with the id: [<span th:text="${id}"></span>] was not found.
+        </p>
+        <footer>
+            <a href="/clients">
+                <button type="button">Go to all clients</button>
+            </a>
+        </footer>
+    </article>
+</main>

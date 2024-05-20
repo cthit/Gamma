@@ -13,11 +13,17 @@
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 
     <script th:src="@{/webjars/htmx.org/1.9.10/dist/htmx.min.js}"></script>
+    <script th:src="@{/webjars/htmx.org/1.9.10/dist/ext/loading-states.js}"></script>
+    <script th:src="@{/webjars/htmx.org/1.9.10/dist/ext/response-targets.js}"></script>
     <script th:src="@{/webjars/hyperscript.org/0.9.12/dist/_hyperscript.min.js}"></script>
     <script th:src="@{/js/main.js}"></script>
     <script th:src="@{/js/reorder.js}"></script>
 </head>
-<body class="container-fluid" hx-boost="true" hx-history="false">
+<body class="container-fluid"
+      hx-boost="true"
+      hx-history="false"
+      hx-ext="loading-states response-targets"
+      _="on htmx:afterSwap remove .show-nav from document.body">
     <th:block th:replace="~{__${page}__}"></th:block>
 </body>
 </html>

@@ -10,6 +10,8 @@ import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyInfoSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -103,6 +105,7 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
             .toList());
   }
 
+  @Transactional
   @Override
   public void setAccountScaffoldSettings(
       ApiKeyId apiKeyId, ApiKeyAccountScaffoldSettings settings) {
@@ -128,6 +131,7 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
     this.apiKeySettingsJpaRepository.save(apiKeySettingsEntity);
   }
 
+  @Transactional
   @Override
   public void setInfoSettings(ApiKeyId apiKeyId, ApiKeyInfoSettings settings) {
     ApiKeySettingsEntity apiKeySettingsEntity =

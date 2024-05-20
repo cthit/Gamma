@@ -17,38 +17,20 @@ public class GotifyMailService implements MailService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GotifyMailService.class);
   private final String gotifyApiKey;
   private final String gotifyURL;
-  private final boolean production;
 
   public GotifyMailService(
       @Value("${application.gotify.key}") String gotifyApiKey,
-      @Value("${application.gotify.url}") String gotifyURL,
-      @Value("${application.production}") boolean production) {
+      @Value("${application.gotify.url}") String gotifyURL) {
     this.gotifyApiKey = gotifyApiKey;
     this.gotifyURL = gotifyURL;
-    this.production = production;
   }
 
   public void sendMail(String email, String subject, String body) {
-    if (this.production) {
       sendMailViaGotify(email, subject, body);
-    } else {
-      LOGGER.warn(
-          "Not in production environment, printing mail: \n "
-              + "to: "
-              + email
-              + "\n"
-              + "subject: "
-              + subject
-              + "\n"
-              + "body: "
-              + body);
-    }
   }
 
   /**
    * Sends mail using Gotify Rest API, see https://github.com/cthit/gotify
-   *
-   * @return true if message was successfully sent false if not
    */
   private void sendMailViaGotify(String email, String subject, String body) {
     HttpHeaders headers = new HttpHeaders();
@@ -62,7 +44,7 @@ public class GotifyMailService implements MailService {
     HttpEntity<Request> entity = new HttpEntity<>(request, headers);
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity<String> response =
-        restTemplate.postForEntity(this.gotifyURL, entity, String.class);
+        restTemplate.postForEntity(this.gotifyURL + "/mail", entity, String.class);
     LOGGER.info("Gotify responded with " + response.getHeaders() + response.getBody());
   }
 }

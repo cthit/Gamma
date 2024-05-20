@@ -1,4 +1,4 @@
-package it.chalmers.gamma.util;
+package it.chalmers.gamma.adapter.secondary.redis.oauth2;
 
 import java.io.*;
 import java.util.Base64;

@@ -1,6 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/groups">Back</a>
     <form th:object="${form}"
           th:action="@{/groups}"
           th:method="post"
@@ -43,7 +42,7 @@
                 member
             </button>
             <footer>
-                <button>Create</button>
+                <button data-loading-disable>Create</button>
             </footer>
         </article>
     </form>

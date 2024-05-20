@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 @Controller
 public class GroupsController {
 
@@ -48,17 +50,23 @@ public class GroupsController {
     return mv;
   }
 
+  public record Member(String name, String post, UUID userId) {}
+
   @GetMapping("/groups/{id}")
   public ModelAndView getGroup(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") UUID id) {
-    Optional<GroupFacade.GroupWithMembersDTO> group = this.groupFacade.getWithMembers(id);
-
-    if (group.isEmpty()) {
-      throw new RuntimeException();
+      @PathVariable("id") String groupId) {
+    if (!isValidUUID(groupId)) {
+      return createGroupNotFound(groupId, htmxRequest);
     }
 
+    Optional<GroupFacade.GroupWithMembersDTO> group = this.groupFacade.getWithMembers(UUID.fromString(groupId));
+
     ModelAndView mv = new ModelAndView();
+    if (group.isEmpty()) {
+      return createGroupNotFound(groupId, htmxRequest);
+    }
+
     if (htmxRequest) {
       mv.setViewName("pages/group-details");
     } else {
@@ -72,13 +80,29 @@ public class GroupsController {
         group.get().groupMembers().stream()
             .map(
                 groupMember ->
-                    groupMember.user().nick()
-                        + " - "
-                        + groupMember.post().enName()
-                        + " - "
-                        + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""))
+                    new Member(
+                        groupMember.user().nick(),
+                        " - "
+                            + groupMember.post().enName()
+                            + " - "
+                            + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""),
+                        groupMember.user().id()))
             .toList());
     mv.addObject("random", Math.random());
+
+    return mv;
+  }
+
+  private ModelAndView createGroupNotFound(String groupId, boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/group-not-found");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/group-not-found");
+    }
+
+    mv.addObject("id", groupId);
 
     return mv;
   }
@@ -277,7 +301,7 @@ public class GroupsController {
       throw new RuntimeException(e);
     }
 
-    return this.getGroup(htmxRequest, id);
+    return this.getGroup(htmxRequest, id.toString());
   }
 
   @GetMapping("/groups/new-member")
@@ -340,5 +364,14 @@ public class GroupsController {
     } catch (GroupFacade.GroupAlreadyExistsException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @DeleteMapping("/groups/{groupId}")
+  public ModelAndView deleteGroup(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @PathVariable("groupId") UUID groupId) {
+    this.groupFacade.delete(groupId);
+
+    return new ModelAndView("redirect:/groups");
   }
 }

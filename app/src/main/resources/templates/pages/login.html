@@ -14,19 +14,19 @@
             <fieldset role="group">
                 <input type="text" name="username" placeholder="Cid / Email">
                 <input type="password" name="password" placeholder="Password">
-                <button>Login</button>
+                <button data-loading-disable>Login</button>
             </fieldset>
         </form>
         <footer>
-            <div th:if="${error}">
-                Invalid cid/email or password.
-            </div>
-
-            <div th:if="${logout}">
-                You have been logged out.
-            </div>
-
             <div id="links">
+                <p th:if="${error}">
+                    Invalid credentials or locked account due to system migration. Password reset may be needed.
+                </p>
+
+                <div th:if="${logout}">
+                    You have been logged out.
+                </div>
+
                 <a href="/activate-cid">
                     Register
                 </a>

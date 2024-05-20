@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 @Controller
 public class SuperGroupsController {
 
@@ -43,14 +45,18 @@ public class SuperGroupsController {
   @GetMapping("/super-groups/{id}")
   public ModelAndView getSuperGroup(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") UUID id) {
-    Optional<SuperGroupFacade.SuperGroupDTO> superGroup = this.superGroupFacade.get(id);
-
-    if (superGroup.isEmpty()) {
-      throw new RuntimeException();
+      @PathVariable("id") String superGroupId) {
+    if (!isValidUUID(superGroupId)) {
+      return createSuperGroupNotFound(superGroupId, htmxRequest);
     }
 
+    Optional<SuperGroupFacade.SuperGroupDTO> superGroup = this.superGroupFacade.get(UUID.fromString(superGroupId));
+
     ModelAndView mv = new ModelAndView();
+    if (superGroup.isEmpty()) {
+      return createSuperGroupNotFound(superGroupId, htmxRequest);
+    }
+
     if (htmxRequest) {
       mv.setViewName("pages/super-group-details");
     } else {
@@ -60,6 +66,20 @@ public class SuperGroupsController {
 
     mv.addObject("superGroup", superGroup.get());
     mv.addObject("usages", this.groupFacade.getAllBySuperGroup(superGroup.get().id()));
+
+    return mv;
+  }
+
+  public ModelAndView createSuperGroupNotFound(String superGroupId, boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/super-group-not-found");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/super-group-not-found");
+    }
+
+    mv.addObject("id", superGroupId);
 
     return mv;
   }

@@ -11,9 +11,9 @@ public record Name(String value) {
 
     value = value.toLowerCase(Locale.ROOT);
 
-    if (!value.matches("^([0-9a-z]{3,30})$")) {
+    if (!value.matches("^([0-9a-z\\-]{3,30})$")) {
       throw new IllegalArgumentException(
-          "Name: [" + value + "] must be letters a - z and be of length between 5 - 30");
+          "Name: [" + value + "] must be letters a - z, '-' and be of length between 3 - 30");
     }
   }
 }

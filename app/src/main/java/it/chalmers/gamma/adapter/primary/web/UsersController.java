@@ -14,6 +14,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
+
 @Controller
 public class UsersController {
 
@@ -48,7 +50,11 @@ public class UsersController {
   @GetMapping("/users/{id}")
   public ModelAndView getUser(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") UUID userId) {
+      @PathVariable("id") String userId) {
+    if (!isValidUUID(userId)) {
+      return createUserNotFound(userId, htmxRequest);
+    }
+
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("pages/user-details");
@@ -61,10 +67,10 @@ public class UsersController {
         instanceof UserAuthentication userAuthenticated) {
       if (userAuthenticated.isAdmin()) {
         Optional<UserFacade.UserExtendedWithGroupsDTO> userExtended =
-            this.userFacade.getAsAdmin(userId);
+            this.userFacade.getAsAdmin(UUID.fromString(userId));
 
         if (userExtended.isEmpty()) {
-          throw new RuntimeException();
+          return createUserNotFound(userId, htmxRequest);
         }
 
         UserFacade.UserExtendedWithGroupsDTO u = userExtended.get();
@@ -88,10 +94,10 @@ public class UsersController {
         mv.addObject("email", u.user().email());
         mv.addObject("locked", u.user().locked());
       } else {
-        Optional<UserFacade.UserWithGroupsDTO> user = this.userFacade.get(userId);
+        Optional<UserFacade.UserWithGroupsDTO> user = this.userFacade.get(UUID.fromString(userId));
 
         if (user.isEmpty()) {
-          throw new RuntimeException();
+          return createUserNotFound(userId, htmxRequest);
         }
 
         UserFacade.UserWithGroupsDTO u = user.get();
@@ -110,6 +116,20 @@ public class UsersController {
                 .toList());
       }
     }
+
+    return mv;
+  }
+
+  private ModelAndView createUserNotFound(String userId, boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/user-not-found");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/user-not-found");
+    }
+
+    mv.addObject("id", userId);
 
     return mv;
   }

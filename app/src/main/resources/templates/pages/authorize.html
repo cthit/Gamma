@@ -1,5 +1,4 @@
-<script th:src="@{/js/authorize.js}"></script>
-<header th:replace="~{common/header}"></header>
+<header th:replace="~{common/header-without-nav}"></header>
 <main hx-boost="false">
     <article>
         <header th:text="'Do you want to authorize ' + ${clientName} + ' to access:'">
@@ -35,8 +34,9 @@
             </th:block>
         </form>
         <footer>
-            <button class="outline contrast" form="confirmationForm">Deny</button>
-            <button class="outline contrast" type="button" id="authorizeButton">Authorize</button>
+            <button class="outline contrast" form="confirmationForm" data-loading-disable>Deny</button>
+            <button class="outline contrast" type="button" data-loading-disable
+                    _="on click set .form-check-input.checked to true then call document.confirmationForm.submit()">Authorize</button>
         </footer>
     </article>
 </main>

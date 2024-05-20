@@ -17,7 +17,7 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "cid")
   protected String cid;
 
-  @Column(name = "password")
+  @Column(name = "password", nullable = true)
   protected String password;
 
   @Column(name = "nick")

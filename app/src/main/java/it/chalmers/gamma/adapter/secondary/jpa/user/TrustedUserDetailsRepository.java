@@ -28,6 +28,11 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
             .findById(UUID.fromString(user.getUsername()))
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
+    if (userEntity.password == null) {
+      // Same error to masquerade the account being locked
+      throw new UsernameNotFoundException("User credentials needs to be created");
+    }
+
     return new GammaUser(
         new UserId(UUID.fromString(user.getUsername())),
         new Cid(userEntity.cid),
@@ -48,6 +53,11 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
     UserEntity userEntity =
         getUserByUsernameOrEmail(userIdentifier)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+    if (userEntity.password == null) {
+      // Same error to masquerade the account being locked
+      throw new UsernameNotFoundException("User credentials needs to be created");
+    }
 
     return new User(
         userEntity.id.toString(),

@@ -1,7 +1,6 @@
 <div id="alerts"></div>
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
     <table th:fragment="table">
         <thead>
             <tr>
@@ -26,7 +25,7 @@
                         <button class="outline contrast" th:data-hx-get="@{/posts/{postId}/edit(postId=${post.id()})}"
                                 data-hx-target="main" data-hx-swap="afterend">Edit
                         </button>
-                        <button th:form="|delete-${post.id()}|" class="outline contrast">Delete</button>
+                        <button th:form="|delete-${post.id()}|" class="outline contrast" data-loading-disable>Delete</button>
                     </td>
                 </tr>
             </th:block>
@@ -41,7 +40,7 @@
                     <div th:replace="~{common/input :: distantTextInput(name='emailPrefix', value=${null}, errorMessage=${null}, label='Email prefix', form='create-post')}"></div>
                 </td>
                 <td>
-                    <button form="create-post">Save</button>
+                    <button form="create-post" data-loading-disable>Save</button>
                     <form th:if="${isAdmin}" th:fragment="create-post" id="create-post" th:data-hx-post="@{/posts}" data-hx-target="closest tr" data-hx-swap="outerHTML">
                         <div th:replace="~{common/form-csrf}"></div>
                     </form>

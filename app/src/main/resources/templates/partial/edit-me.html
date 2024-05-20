@@ -22,8 +22,8 @@
         </label>
         <div th:replace="~{common/error :: text}"></div>
         <footer>
-            <button data-hx-get="/me/cancel-edit" data-hx-target="closest <form/>" data-hx-swap="outerHTML" class="outline contrast" type="button">Cancel</button>
-            <button>Save</button>
+            <button data-hx-get="/me/cancel-edit" data-hx-target="closest <form/>" data-hx-swap="outerHTML" class="outline contrast" type="button" data-loading-disable>Cancel</button>
+            <button data-loading-disable>Save</button>
         </footer>
     </article>
 </form>

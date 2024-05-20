@@ -1,4 +1,4 @@
-package it.chalmers.gamma.util;
+package it.chalmers.gamma.adapter.primary.api;
 
 public class ClassNameGeneratorUtils {
 

@@ -1,6 +1,5 @@
-package it.chalmers.gamma.adapter.primary.api.utils;
+package it.chalmers.gamma.adapter.primary.api;
 
-import it.chalmers.gamma.util.ClassNameGeneratorUtils;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;

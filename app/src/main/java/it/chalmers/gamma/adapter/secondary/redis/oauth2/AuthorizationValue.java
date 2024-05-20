@@ -1,6 +1,5 @@
 package it.chalmers.gamma.adapter.secondary.redis.oauth2;
 
-import it.chalmers.gamma.util.Serializer;
 import java.io.IOException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;

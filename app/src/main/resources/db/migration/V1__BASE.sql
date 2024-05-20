@@ -12,8 +12,9 @@ CREATE
         g_user(
             user_id UUID PRIMARY KEY,
             cid VARCHAR(12) NOT NULL UNIQUE,
-            password VARCHAR(255) NOT NULL CHECK(
-                password LIKE '{bcrypt}$%'
+            password VARCHAR(255) CHECK(
+                password IS NULL
+                OR password LIKE '{bcrypt}$%'
             ),
             nick VARCHAR(50) NOT NULL,
             first_name VARCHAR(50) NOT NULL,
@@ -143,7 +144,7 @@ CREATE
         g_client(
             client_uid UUID PRIMARY KEY,
             client_id VARCHAR(100) UNIQUE,
-            client_secret VARCHAR(100) NOT NULL CHECK(
+            client_secret VARCHAR(255) NOT NULL CHECK(
                 client_secret LIKE '{bcrypt}$%'
             ),
             redirect_uri VARCHAR(256) NOT NULL,
@@ -209,7 +210,7 @@ CREATE
         g_api_key(
             api_key_id UUID PRIMARY KEY,
             pretty_name VARCHAR(30) NOT NULL,
-            token VARCHAR(150) UNIQUE,
+            token VARCHAR(255) NOT NULL CHECK( token LIKE '{bcrypt}$%' ),
             KEY_TYPE VARCHAR(30) NOT NULL,
             version INT,
             description UUID REFERENCES g_text ON

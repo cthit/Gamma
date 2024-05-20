@@ -1,6 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <a href="/clients" >Back</a>
     <article>
         <header>
             Create client
@@ -18,10 +17,10 @@
                 Include email scope
                 <input type="checkbox" th:field="*{emailScope}"/>
             </label>
-            <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin">Add restriction</button>
+            <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin" data-loading-disable>Add restriction</button>
         </form>
         <footer>
-            <button class="outline" form="create-clients">Create</button>
+            <button class="outline" form="create-clients" data-loading-disable>Create</button>
         </footer>
     </article>
 </main>

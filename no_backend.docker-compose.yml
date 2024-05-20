@@ -5,19 +5,17 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: example
-    ports:
-      - 5432:5432
+    network_mode: host
 
   redis:
     image: redis:5.0
     restart: always
-    ports:
-      - 6379:6379
+    network_mode: host
 
   gotify:
     image: cthit/gotify
     environment:
-      GOTIFY_PRE-SHARED-KEY: 123abc
+      GOTIFY_PRE-SHARED-KEY: "123abc"
       GOTIFY_MOCK-MODE: "true"
-    ports:
-      - 8080:7000
+      GOTIFY_DEBUG-MODE: "true"
+    network_mode: host

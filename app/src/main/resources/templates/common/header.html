@@ -51,20 +51,27 @@
     </aside>
 </nav>
 <header>
-    <button id="toggle-nav" class="outline contrast">Menu</button>
-    <a href="/">
-        <h1>
-            Gamma
-        </h1>
-    </a>
+    <button id="toggle-nav" class="outline contrast"
+            _="on click toggle .show-nav on document.body">
+        Menu
+    </button>
+    <div>
+        <a href="/">
+            <h1>
+                Gamma
+            </h1>
+        </a>
+        <div data-loading>Loading...</div>
+    </div>
     <div>
         <th:block sec:authorize="isAuthenticated()">
             <div th:text="|Hey, ${#authentication.getDetails().gammaUser().nick().value()}!|"></div>
             <form th:action="@{/logout}" th:method="post" >
-                <button class="outline contrast">
+                <button class="outline contrast" data-loading-disable>
                     Logout
                 </button>
             </form>
         </th:block>
     </div>
 </header>
+

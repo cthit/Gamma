@@ -1,6 +1,5 @@
 <header th:replace="~{common/header}"></header>
 <main>
-     <a href="/" >Back</a>
     <article>
         <header>
             Allow new cid
@@ -9,7 +8,7 @@
             <div th:replace="~{common/input :: textInput(name='cid', label='Cid', errorMessage=${cidInputError}, value=${name})}"></div>
         </form>
         <footer>
-            <button form="allow-cid-form" class="outline contrast">Active</button>
+            <button form="allow-cid-form" class="outline contrast" data-loading-disable>Active</button>
         </footer>
     </article>
     <table>
@@ -26,7 +25,7 @@
                 <form th:data-hx-post="|/allow-list/${allowedCid}|" data-hx-target="closest tr" data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
-                    <button class="outline contrast">Retract approval</button>
+                    <button class="outline contrast" data-loading-disable>Retract approval</button>
                 </form>
             </td>
         </tr>
