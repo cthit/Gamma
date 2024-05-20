@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.oauth2;
 
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
