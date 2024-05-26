@@ -8,10 +8,11 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
+import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
+import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -23,8 +24,12 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
+import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -60,6 +65,32 @@ public class SecurityFiltersConfig {
         .oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
 
     return http.build();
+  }
+
+  @Bean
+  public AuthorizationServerSettings authorizationServerSettings() {
+    return AuthorizationServerSettings
+            .builder()
+            .oidcUserInfoEndpoint("/oauth2/userinfo")
+            .build();
+  }
+
+  @Bean
+  public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(ClaimsMapper claimsMapper) {
+    return (context) -> {
+      if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
+        context
+                .getClaims()
+                .claims(
+                        (claims) ->
+                                claims.putAll(
+                                        claimsMapper.generateClaims(
+                                                context.getAuthorizedScopes().stream()
+                                                        .map(scope -> "SCOPE_" + scope)
+                                                        .toList(),
+                                                UserId.valueOf(context.getAuthorization().getPrincipalName()))));
+      }
+    };
   }
 
   @Order(2)
@@ -170,7 +201,8 @@ public class SecurityFiltersConfig {
         .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .headers(
             headers ->
-                headers.contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self'")));
+                headers.contentSecurityPolicy(
+                    csp -> csp.policyDirectives("default-src 'self'; frame-ancestors 'self'; ")));
 
     return http.build();
   }
