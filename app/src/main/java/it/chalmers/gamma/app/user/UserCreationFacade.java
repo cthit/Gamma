@@ -45,7 +45,7 @@ public class UserCreationFacade extends Facade {
 
     Cid cid = new Cid(cidRaw);
     try {
-      if (throttlingService.canProceed(cidRaw + "-activation")) {
+      if (throttlingService.canProceed(cidRaw + "-activation", 3)) {
         UserActivationToken userActivationToken =
             this.userActivationRepository.createActivationToken(cid);
         sendEmail(cid, userActivationToken);

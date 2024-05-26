@@ -48,8 +48,10 @@ public class UserResetPasswordFacade extends Facade {
       PasswordResetRepository.PasswordReset passwordReset =
           this.passwordResetRepository.createNewToken(email);
 
-      if (throttlingService.canProceed(passwordReset.userId().value() + "-password-reset")) {
+      if (throttlingService.canProceed(passwordReset.userId().value() + "-password-reset", 3)) {
         sendPasswordResetTokenMail(email, passwordReset.token());
+      } else {
+        LOGGER.info("Throttling password reset process triggered.");
       }
     } catch (PasswordResetRepository.UserNotFoundException e) {
       LOGGER.debug(
@@ -108,11 +110,7 @@ public class UserResetPasswordFacade extends Facade {
             + "this mail, feel free to ignore it. \n Your reset code : "
             + token.value();
 
-    if (this.throttlingService.canProceed(email.value() + "-password-reset")) {
-      this.mailService.sendMail(email.value(), subject, message);
-    } else {
-      LOGGER.info("Throttling a password reset email...");
-    }
+    this.mailService.sendMail(email.value(), subject, message);
   }
 
   // Vague for security reasons
