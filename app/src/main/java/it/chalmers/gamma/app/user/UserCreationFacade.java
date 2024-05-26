@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.*;
@@ -24,16 +25,19 @@ public class UserCreationFacade extends Facade {
   private final MailService mailService;
   private final UserActivationRepository userActivationRepository;
   private final UserRepository userRepository;
+  private final ThrottlingService throttlingService;
 
   public UserCreationFacade(
       AccessGuard accessGuard,
       MailService mailService,
       UserActivationRepository userActivationRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      ThrottlingService throttlingService) {
     super(accessGuard);
     this.mailService = mailService;
     this.userActivationRepository = userActivationRepository;
     this.userRepository = userRepository;
+    this.throttlingService = throttlingService;
   }
 
   public void tryToActivateUser(String cidRaw) {
@@ -41,9 +45,13 @@ public class UserCreationFacade extends Facade {
 
     Cid cid = new Cid(cidRaw);
     try {
-      UserActivationToken userActivationToken =
-          this.userActivationRepository.createActivationToken(cid);
-      sendEmail(cid, userActivationToken);
+      if (throttlingService.canProceed(cidRaw + "-activation")) {
+        UserActivationToken userActivationToken =
+            this.userActivationRepository.createActivationToken(cid);
+        sendEmail(cid, userActivationToken);
+      } else {
+        LOGGER.info("Throttling an activation and its email...");
+      }
       LOGGER.info("Cid " + cid + " has been activated");
     } catch (UserActivationRepository.CidNotAllowedException e) {
       LOGGER.info("Someone tried to activate the cid: " + cid);

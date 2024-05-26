@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -23,16 +24,19 @@ public class UserResetPasswordFacade extends Facade {
   private final MailService mailService;
   private final UserRepository userRepository;
   private final PasswordResetRepository passwordResetRepository;
+  private final ThrottlingService throttlingService;
 
   public UserResetPasswordFacade(
       AccessGuard accessGuard,
       MailService mailService,
       UserRepository userRepository,
-      PasswordResetRepository passwordResetRepository) {
+      PasswordResetRepository passwordResetRepository,
+      ThrottlingService throttlingService) {
     super(accessGuard);
     this.mailService = mailService;
     this.userRepository = userRepository;
     this.passwordResetRepository = passwordResetRepository;
+    this.throttlingService = throttlingService;
   }
 
   public void startResetPasswordProcess(String emailString) throws PasswordResetProcessException {
@@ -41,8 +45,12 @@ public class UserResetPasswordFacade extends Facade {
     Email email = new Email(emailString);
 
     try {
-      PasswordResetToken token = this.passwordResetRepository.createNewToken(email);
-      sendPasswordResetTokenMail(email, token);
+      PasswordResetRepository.PasswordReset passwordReset =
+          this.passwordResetRepository.createNewToken(email);
+
+      if (throttlingService.canProceed(passwordReset.userId().value() + "-password-reset")) {
+        sendPasswordResetTokenMail(email, passwordReset.token());
+      }
     } catch (PasswordResetRepository.UserNotFoundException e) {
       LOGGER.debug(
           "Someone tried to reset the password for the email "
@@ -99,7 +107,12 @@ public class UserResetPasswordFacade extends Facade {
         "A value reset have been requested for this account, if you have not requested "
             + "this mail, feel free to ignore it. \n Your reset code : "
             + token.value();
-    this.mailService.sendMail(email.value(), subject, message);
+
+    if (this.throttlingService.canProceed(email.value() + "-password-reset")) {
+      this.mailService.sendMail(email.value(), subject, message);
+    } else {
+      LOGGER.info("Throttling a password reset email...");
+    }
   }
 
   // Vague for security reasons

@@ -156,7 +156,8 @@ public class UserAccessGuard {
 
   private boolean isClientWithEmailScope() {
     if (SecurityContextHolder.getContext().getAuthentication()
-            instanceof OAuth2ClientAuthenticationToken client && client.getRegisteredClient() != null) {
+            instanceof OAuth2ClientAuthenticationToken client
+        && client.getRegisteredClient() != null) {
       return client.getRegisteredClient().getScopes().contains("email");
     }
 

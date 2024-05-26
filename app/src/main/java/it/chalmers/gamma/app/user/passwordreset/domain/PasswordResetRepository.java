@@ -6,7 +6,9 @@ import java.util.Optional;
 
 public interface PasswordResetRepository {
 
-  PasswordResetToken createNewToken(Email email) throws UserNotFoundException;
+  record PasswordReset(PasswordResetToken token, UserId userId) {}
+
+  PasswordReset createNewToken(Email email) throws UserNotFoundException;
 
   Optional<PasswordResetToken> getToken(UserId id);
 

@@ -119,6 +119,7 @@ public class SecurityFiltersConfig {
     return http.build();
   }
 
+
   @Order(3)
   @Bean
   SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {

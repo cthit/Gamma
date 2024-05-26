@@ -419,13 +419,14 @@ public class ClientsController {
   }
 
   @DeleteMapping("/clients/{id}")
-  public ModelAndView deleteClient(@RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-                                   @PathVariable("id") UUID clientUid) {
-      try {
-          this.clientFacade.delete(clientUid);
-      } catch (ClientFacade.ClientNotFoundException e) {
-          throw new RuntimeException(e);
-      }
+  public ModelAndView deleteClient(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID clientUid) {
+    try {
+      this.clientFacade.delete(clientUid);
+    } catch (ClientFacade.ClientNotFoundException e) {
+      throw new RuntimeException(e);
+    }
 
     return new ModelAndView("redirect:/clients");
   }

@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.GammaAuthentication;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +18,8 @@ public class LoginController {
       @RequestParam(value = "logout", required = false) String logout,
       @RequestParam(value = "authorizing", required = false) String authorizing,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      HttpServletRequest request,
       HttpServletResponse response) {
+
     GammaAuthentication auth = AuthenticationExtractor.getAuthentication();
     if (auth != null) {
       return new ModelAndView("redirect:/");

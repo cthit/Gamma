@@ -25,12 +25,8 @@ public class GotifyMailService implements MailService {
     this.gotifyURL = gotifyURL;
   }
 
-  public void sendMail(String email, String subject, String body) {
-    sendMailViaGotify(email, subject, body);
-  }
-
   /** Sends mail using Gotify Rest API, see https://github.com/cthit/gotify */
-  private void sendMailViaGotify(String email, String subject, String body) {
+  public void sendMail(String email, String subject, String body) {
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
     headers.setContentType(MediaType.APPLICATION_JSON);
