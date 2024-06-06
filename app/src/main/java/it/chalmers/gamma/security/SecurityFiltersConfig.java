@@ -10,6 +10,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
+import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
@@ -69,10 +70,7 @@ public class SecurityFiltersConfig {
 
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings
-            .builder()
-            .oidcUserInfoEndpoint("/oauth2/userinfo")
-            .build();
+    return AuthorizationServerSettings.builder().oidcUserInfoEndpoint("/oauth2/userinfo").build();
   }
 
   @Bean
@@ -80,15 +78,15 @@ public class SecurityFiltersConfig {
     return (context) -> {
       if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
         context
-                .getClaims()
-                .claims(
-                        (claims) ->
-                                claims.putAll(
-                                        claimsMapper.generateClaims(
-                                                context.getAuthorizedScopes().stream()
-                                                        .map(scope -> "SCOPE_" + scope)
-                                                        .toList(),
-                                                UserId.valueOf(context.getAuthorization().getPrincipalName()))));
+            .getClaims()
+            .claims(
+                (claims) ->
+                    claims.putAll(
+                        claimsMapper.generateClaims(
+                            context.getAuthorizedScopes().stream()
+                                .map(scope -> "SCOPE_" + scope)
+                                .toList(),
+                            UserId.valueOf(context.getAuthorization().getPrincipalName()))));
       }
     };
   }
@@ -119,7 +117,6 @@ public class SecurityFiltersConfig {
     return http.build();
   }
 
-
   @Order(3)
   @Bean
   SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -139,7 +136,8 @@ public class SecurityFiltersConfig {
       HttpSecurity http,
       PasswordEncoder passwordEncoder,
       UserJpaRepository userJpaRepository,
-      AdminRepository adminRepository)
+      AdminRepository adminRepository,
+      ThrottlingService throttlingService)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
@@ -149,7 +147,10 @@ public class SecurityFiltersConfig {
     userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
     userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
-    http.addFilterAfter(
+    http.addFilterBefore(
+            new LoginThrottlingFilter(throttlingService),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
             UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(
@@ -203,7 +204,9 @@ public class SecurityFiltersConfig {
         .headers(
             headers ->
                 headers.contentSecurityPolicy(
-                    csp -> csp.policyDirectives("default-src 'self'; frame-ancestors 'self'; ")));
+                    csp ->
+                        csp.policyDirectives(
+                            "default-src 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; ")));
 
     return http.build();
   }

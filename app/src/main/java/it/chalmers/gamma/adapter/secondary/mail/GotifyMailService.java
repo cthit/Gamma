@@ -42,7 +42,7 @@ public class GotifyMailService implements MailService {
       clientIp = details.getRemoteAddress();
     }
 
-    if (clientIp != null && !throttlingService.canProceed(clientIp, 5)) {
+    if (clientIp != null && !throttlingService.canProceed("email:" + clientIp, 5)) {
       LOGGER.warn(
           "Client with IP: {} has exceeded the limit of number of emails that can be sent per day.",
           clientIp);

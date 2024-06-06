@@ -18,6 +18,7 @@ public class LoginController {
       @RequestParam(value = "logout", required = false) String logout,
       @RequestParam(value = "authorizing", required = false) String authorizing,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @RequestParam(value = "throttle", required = false) String throttle,
       HttpServletResponse response) {
 
     GammaAuthentication auth = AuthenticationExtractor.getAuthentication();
@@ -34,10 +35,12 @@ public class LoginController {
     }
 
     boolean isAuthorizing = authorizing != null;
+    boolean isThrottled = throttle != null;
 
     mv.addObject("error", error);
     mv.addObject("logout", logout);
     mv.addObject("authorizing", isAuthorizing);
+    mv.addObject("throttle", isThrottled);
 
     response.addHeader("HX-Retarget", "body");
 

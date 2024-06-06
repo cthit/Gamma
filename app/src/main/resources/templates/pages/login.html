@@ -18,14 +18,18 @@
             </fieldset>
         </form>
         <footer>
-            <div id="links">
+            <p id="links">
                 <p th:if="${error}">
                     Invalid credentials or locked account due to system migration. Password reset may be needed.
                 </p>
 
-                <div th:if="${logout}">
+                <p th:if="${logout}">
                     You have been logged out.
-                </div>
+                </p>
+
+                <p th:if="${throttle}">
+                    You have been throttled for attempting to sign in too many times...
+                </p>
 
                 <a href="/activate-cid">
                     Register
