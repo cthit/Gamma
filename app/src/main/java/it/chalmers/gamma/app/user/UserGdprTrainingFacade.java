@@ -15,15 +15,12 @@ import org.springframework.stereotype.Service;
 public class UserGdprTrainingFacade extends Facade {
 
   private final GdprTrainedRepository gdprTrainedRepository;
-  private final UserRepository userRepository;
 
   public UserGdprTrainingFacade(
       AccessGuard accessGuard,
-      GdprTrainedRepository gdprTrainedRepository,
-      UserRepository userRepository) {
+      GdprTrainedRepository gdprTrainedRepository) {
     super(accessGuard);
     this.gdprTrainedRepository = gdprTrainedRepository;
-    this.userRepository = userRepository;
   }
 
   public List<UUID> getGdprTrained() {

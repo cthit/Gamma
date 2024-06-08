@@ -13,6 +13,8 @@ import it.chalmers.gamma.app.user.domain.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
@@ -27,19 +29,21 @@ public class GammaMigration {
   private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final AccessGuard accessGuard;
+  private final GdprTrainedRepository gdprTrainedRepository;
 
   public GammaMigration(
           SuperGroupTypeRepository superGroupTypeRepository,
           SuperGroupRepository superGroupRepository,
           GroupRepository groupRepository,
           UserRepository userRepository,
-          PostRepository postRepository, AccessGuard accessGuard) {
+          PostRepository postRepository, AccessGuard accessGuard, GdprTrainedRepository gdprTrainedRepository) {
     this.superGroupTypeRepository = superGroupTypeRepository;
     this.superGroupRepository = superGroupRepository;
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
       this.accessGuard = accessGuard;
+      this.gdprTrainedRepository = gdprTrainedRepository;
   }
 
   public enum OldLanguage {
@@ -256,6 +260,10 @@ public class GammaMigration {
 
       try {
         this.userRepository.create(convertUser(user), null);
+
+        if (user.gdpr) {
+          this.gdprTrainedRepository.setGdprTrainedStatus(new UserId(user.id), true);
+        }
       } catch (Exception e) {
         System.out.println("Failed to create the user");
       }
