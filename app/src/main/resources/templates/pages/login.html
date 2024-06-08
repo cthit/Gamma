@@ -31,6 +31,10 @@
                     You have been throttled for attempting to sign in too many times...
                 </p>
 
+                <p th:if="${deleted}">
+                    Your account has been deleted.
+                </p>
+
                 <a href="/activate-cid">
                     Register
                 </a>

@@ -78,4 +78,25 @@
             <button disabled class="outline" form="update-me-avatar">Upload avatar</button>
         </footer>
     </article>
+    <article>
+        <header>
+            Do you want to delete your account?
+        </header>
+        <p>
+            Here you can delete your account and prevent further access for clients you have accepted.
+            You have the right to ensure all of your data is removed.
+            Please email <a href="mailto:ita@chalmers.it">ita@chalmers.it</a>, along with:
+        </p>
+        <p>
+            UserId: <span th:text="${me.id()}"></span>
+        </p>
+        <p>
+            Cid: <span th:text="${me.cid()}"></span>
+        </p>
+        <footer>
+            <a th:href="@{/delete-your-account}" >
+                Proceed to deleting your account
+            </a>
+        </footer>
+    </article>
 </main>

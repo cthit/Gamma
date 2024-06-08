@@ -134,8 +134,10 @@ public class MeFacade extends Facade {
         try {
           this.userRepository.delete(me.id());
         } catch (UserRepository.UserNotFoundException e) {
-          e.printStackTrace();
+          throw new IllegalStateException();
         }
+      } else {
+        throw new IllegalArgumentException();
       }
     }
   }
