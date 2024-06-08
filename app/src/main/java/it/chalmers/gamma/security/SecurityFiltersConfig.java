@@ -38,6 +38,7 @@ import org.springframework.security.web.authentication.logout.HeaderWriterLogout
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
@@ -147,6 +148,9 @@ public class SecurityFiltersConfig {
     userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
     userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
+    HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+    requestCache.setMatchingRequestParameterName(null);
+
     http.addFilterBefore(
             new LoginThrottlingFilter(throttlingService),
             UsernamePasswordAuthenticationFilter.class)
@@ -201,6 +205,7 @@ public class SecurityFiltersConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .cors(Customizer.withDefaults())
         .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
+            .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
         .headers(
             headers ->
                 headers.contentSecurityPolicy(

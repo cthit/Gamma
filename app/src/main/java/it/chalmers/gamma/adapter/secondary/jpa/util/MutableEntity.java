@@ -3,6 +3,8 @@ package it.chalmers.gamma.adapter.secondary.jpa.util;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
+import java.time.Instant;
+
 @MappedSuperclass
 public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
 
@@ -13,6 +15,15 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
    */
   @Column(name = "version")
   private int version;
+
+  @Column(name = "updated_at")
+  private Instant updatedAt;
+
+  @Override
+  protected void onCreate() {
+    super.onCreate();
+    updatedAt = Instant.now();
+  }
 
   protected MutableEntity() {
     this.version = 0;
@@ -37,6 +48,7 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
 
     // Checks passed, updating the version.
     this.version++;
+    this.updatedAt = Instant.now();
   }
 
   public int getVersion() {

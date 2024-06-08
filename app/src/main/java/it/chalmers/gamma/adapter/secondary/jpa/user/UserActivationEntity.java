@@ -21,13 +21,9 @@ public class UserActivationEntity extends ImmutableEntity<String> {
   @Column(name = "token")
   private String token;
 
-  @Column(name = "created_at")
-  private Instant createdAt;
-
   protected UserActivationEntity() {}
 
   protected UserActivationEntity(Cid cid) {
-    this.createdAt = Instant.now();
     this.cid = cid.getValue();
   }
 
@@ -37,7 +33,7 @@ public class UserActivationEntity extends ImmutableEntity<String> {
 
   public UserActivation toDomain() {
     return new UserActivation(
-        Cid.valueOf(this.cid), new UserActivationToken(this.token), this.createdAt);
+        Cid.valueOf(this.cid), new UserActivationToken(this.token), this.getCreatedAt());
   }
 
   @Override

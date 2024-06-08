@@ -1,21 +1,32 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.PostLoad;
-import jakarta.persistence.PostPersist;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
+
+import java.time.Instant;
 import java.util.Objects;
 import org.springframework.data.domain.Persistable;
 
 @MappedSuperclass
 public abstract class AbstractEntity<ID> implements Persistable<ID> {
 
+  @Column(name = "created_at", updatable = false, nullable = false)
+  private Instant createdAt;
+
   @Transient private boolean persisted = false;
+
+  @PrePersist
+  protected void onCreate() {
+    createdAt = Instant.now();
+  }
 
   @PostPersist
   @PostLoad
   void setPersisted() {
     persisted = true;
+  }
+
+  protected Instant getCreatedAt() {
+    return createdAt;
   }
 
   @Override

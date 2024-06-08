@@ -19,19 +19,10 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
   @Column(name = "user_id", columnDefinition = "uuid")
   protected UUID userId;
 
-  @Column(name = "created_at")
-  protected Instant createdAt;
-
   @Column(name = "token")
   protected String token;
 
   protected UserPasswordResetEntity() {}
-
-  public UserPasswordResetEntity(UUID userId, Instant createdAt, String token) {
-    this.userId = userId;
-    this.createdAt = createdAt;
-    this.token = token;
-  }
 
   @Override
   public UserId getId() {
@@ -39,7 +30,7 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
   }
 
   public PasswordReset toDomain() {
-    return new PasswordReset(this.getId(), new PasswordResetToken(this.token), this.createdAt);
+    return new PasswordReset(this.getId(), new PasswordResetToken(this.token), this.getCreatedAt());
   }
 
   public String getToken() {

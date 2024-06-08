@@ -42,7 +42,6 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
             .orElse(new UserPasswordResetEntity());
 
     userPasswordResetEntity.userId = userEntity.getId();
-    userPasswordResetEntity.createdAt = Instant.now();
     userPasswordResetEntity.token = token.value();
 
     this.userPasswordResetJpaRepository.save(userPasswordResetEntity);
