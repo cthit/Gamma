@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserCreationFacade extends Facade {
 
-  private static final String MAIL_POSTFIX = "student.chalmers.se";
+  private static final String MAIL_POSTFIX = "chalmers.se";
   private static final Logger LOGGER = LoggerFactory.getLogger(UserCreationFacade.class);
   private final MailService mailService;
   private final UserActivationRepository userActivationRepository;
