@@ -106,7 +106,7 @@ public class UserResetPasswordFacade extends Facade {
   private void sendPasswordResetTokenMail(Email email, PasswordResetToken token) {
     String subject = "Password reset for Account at IT division of Chalmers";
     String message =
-        "A value reset have been requested for this account, if you have not requested "
+        "A password reset have been requested for this account, if you have not requested "
             + "this mail, feel free to ignore it. \n Your reset code : "
             + token.value();
 
