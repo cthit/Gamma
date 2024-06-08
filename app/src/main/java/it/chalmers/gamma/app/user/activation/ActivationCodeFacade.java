@@ -24,6 +24,8 @@ public class ActivationCodeFacade extends Facade {
   }
 
   public Optional<UserActivationDTO> get(String cid) {
+    this.accessGuard.require(isAdmin());
+
     return this.userActivationRepository.get(new Cid(cid)).map(UserActivationDTO::new);
   }
 

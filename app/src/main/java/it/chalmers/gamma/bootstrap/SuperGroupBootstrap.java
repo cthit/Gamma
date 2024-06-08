@@ -62,8 +62,6 @@ public class SuperGroupBootstrap {
                       new PrettyName(mockSuperGroup.prettyName()),
                       new SuperGroupType(mockSuperGroup.type()),
                       new Text()));
-              // LOGGER.error("Error creating supergroup: " + mockSuperGroup.name() + "; Super group
-              // already exists, skipping...");
             });
 
     LOGGER.info("Supergroups created");

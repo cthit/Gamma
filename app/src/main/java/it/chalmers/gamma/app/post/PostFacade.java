@@ -31,6 +31,8 @@ public class PostFacade extends Facade {
   }
 
   public UUID create(NewPost newPost) {
+    accessGuard.require(isAdmin());
+
     PostId postId = PostId.generate();
 
     if (newPost.svText.isEmpty() || newPost.enText.isEmpty()) {
@@ -48,6 +50,8 @@ public class PostFacade extends Facade {
   }
 
   public void update(UpdatePost updatePost) throws PostRepository.PostNotFoundException {
+    accessGuard.require(isAdmin());
+
     Post oldPost = this.postRepository.get(new PostId(updatePost.postId)).orElseThrow();
     Post newPost =
         oldPost
@@ -61,6 +65,8 @@ public class PostFacade extends Facade {
   }
 
   public void delete(UUID postId) throws PostRepository.PostNotFoundException {
+    accessGuard.require(isAdmin());
+
     this.postRepository.delete(new PostId(postId));
   }
 

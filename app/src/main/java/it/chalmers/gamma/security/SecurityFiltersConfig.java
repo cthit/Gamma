@@ -211,7 +211,7 @@ public class SecurityFiltersConfig {
                 headers.contentSecurityPolicy(
                     csp ->
                         csp.policyDirectives(
-                            "default-src 'self'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none'; ")));
+                            "default-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none';")));
 
     return http.build();
   }

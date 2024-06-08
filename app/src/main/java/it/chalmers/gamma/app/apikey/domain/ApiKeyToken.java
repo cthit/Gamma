@@ -28,4 +28,9 @@ public record ApiKeyToken(String value) {
             TokenUtils.CharacterTypes.NUMBERS);
     return new GeneratedApiKeyToken(new ApiKeyToken(passwordEncoder.encode(value)), value);
   }
+
+  @Override
+  public String toString() {
+    return "<value redacted>";
+  }
 }

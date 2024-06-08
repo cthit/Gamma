@@ -33,7 +33,7 @@ public interface ClientAuthorityRepository {
   class ClientAuthorityNotFoundRuntimeException extends RuntimeException {}
 
   /**
-   * Can be avoided if you check that supergroups, posts, and users actually exists. It happens when
+   * Can be avoided if you check that supergroups and users actually exists. It happens when
    * linking an authority level with one of the above, and it is not found in database.
    */
   class NotCompleteClientAuthorityException extends RuntimeException {}

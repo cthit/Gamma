@@ -66,7 +66,6 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
         true,
         true,
         !userEntity.locked,
-        // Authorities will be loaded by UpdateUserPrincipalFilter
         Collections.emptyList());
   }
 

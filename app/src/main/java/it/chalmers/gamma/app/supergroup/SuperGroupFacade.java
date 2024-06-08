@@ -161,6 +161,8 @@ public class SuperGroupFacade extends Facade {
   }
 
   public Optional<SuperGroupDTO> get(UUID superGroupId) {
+    accessGuard.require(isSignedIn());
+
     return this.superGroupRepository.get(new SuperGroupId(superGroupId)).map(SuperGroupDTO::new);
   }
 

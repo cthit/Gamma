@@ -28,4 +28,9 @@ public record ClientSecret(String value) {
             TokenUtils.CharacterTypes.NUMBERS);
     return new GeneratedClientSecret(new ClientSecret(passwordEncoder.encode(value)), value);
   }
+
+  @Override
+  public String toString() {
+    return "<value redacted>";
+  }
 }

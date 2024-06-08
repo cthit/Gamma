@@ -30,10 +30,10 @@ public class GroupRepositoryAdapter implements GroupRepository {
       new PersistenceErrorState("g_group_e_name_key", PersistenceErrorState.Type.NOT_UNIQUE);
   private static final PersistenceErrorState USER_NOT_FOUND =
       new PersistenceErrorState(
-          "membership_user_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
+          "g_membership_user_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
   private static final PersistenceErrorState POST_NOT_FOUND =
       new PersistenceErrorState(
-          "membership_post_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
+          "g_membership_post_id_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
   private final GroupJpaRepository groupJpaRepository;
   private final GroupEntityConverter groupEntityConverter;
   private final MembershipJpaRepository membershipJpaRepository;

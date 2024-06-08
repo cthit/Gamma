@@ -16,7 +16,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
   private static final PersistenceErrorState cidNotAllowed =
       new PersistenceErrorState(
-          "user_activation_cid_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
+          "g_user_activation_cid_fkey", PersistenceErrorState.Type.FOREIGN_KEY_VIOLATION);
   private final UserActivationJpaRepository userActivationJpaRepository;
 
   public UserActivationRepositoryAdapter(UserActivationJpaRepository userActivationJpaRepository) {
