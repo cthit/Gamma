@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-@EnableAsync
 public class GammaApplication {
 
   public static void main(String[] args) {

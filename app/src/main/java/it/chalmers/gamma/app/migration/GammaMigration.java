@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.migration;
 
+import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -13,8 +14,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 
 @Service
 public class GammaMigration {
@@ -24,18 +26,20 @@ public class GammaMigration {
   private final GroupRepository groupRepository;
   private final UserRepository userRepository;
   private final PostRepository postRepository;
+  private final AccessGuard accessGuard;
 
   public GammaMigration(
-      SuperGroupTypeRepository superGroupTypeRepository,
-      SuperGroupRepository superGroupRepository,
-      GroupRepository groupRepository,
-      UserRepository userRepository,
-      PostRepository postRepository) {
+          SuperGroupTypeRepository superGroupTypeRepository,
+          SuperGroupRepository superGroupRepository,
+          GroupRepository groupRepository,
+          UserRepository userRepository,
+          PostRepository postRepository, AccessGuard accessGuard) {
     this.superGroupTypeRepository = superGroupTypeRepository;
     this.superGroupRepository = superGroupRepository;
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
+      this.accessGuard = accessGuard;
   }
 
   public enum OldLanguage {
@@ -108,8 +112,9 @@ public class GammaMigration {
       List<OldSuperGroup> superGroups,
       List<OldPost> posts) {}
 
-  @Async
   public void migrate(String apiKey) {
+    accessGuard.require(isAdmin());
+
     var gammaData = getDataFromGamma(apiKey);
 
     // We got everything we need, let's delete E V E R Y T H I N G

@@ -1,0 +1,23 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main>
+    <article>
+        <header>
+            Used to mass approve users to a client
+        </header>
+        <p>
+            Use with care, just use this when you know that the user already has accepted the client before.
+        </p>
+        <p>
+            Used for migration purposes.
+        </p>
+        <form id="client-approving" th:object="${form}" th:method="post" th:action="@{/client-approving}">
+            <div th:replace="~{common/input :: textInput2(field='clientUid', label='Client UID')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='userIds', label='User Ids (comma seperated)')}"></div>
+        </form>
+        <footer>
+            <button form="client-approving">
+                Mass approve
+            </button>
+        </footer>
+    </article>
+</main>
