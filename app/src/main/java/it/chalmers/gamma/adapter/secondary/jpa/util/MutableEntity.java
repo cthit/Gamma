@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.util;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-
 import java.time.Instant;
 
 @MappedSuperclass

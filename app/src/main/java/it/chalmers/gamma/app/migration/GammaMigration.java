@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.migration;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
@@ -10,15 +12,12 @@ import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 
 @Service
 public class GammaMigration {
@@ -32,18 +31,20 @@ public class GammaMigration {
   private final GdprTrainedRepository gdprTrainedRepository;
 
   public GammaMigration(
-          SuperGroupTypeRepository superGroupTypeRepository,
-          SuperGroupRepository superGroupRepository,
-          GroupRepository groupRepository,
-          UserRepository userRepository,
-          PostRepository postRepository, AccessGuard accessGuard, GdprTrainedRepository gdprTrainedRepository) {
+      SuperGroupTypeRepository superGroupTypeRepository,
+      SuperGroupRepository superGroupRepository,
+      GroupRepository groupRepository,
+      UserRepository userRepository,
+      PostRepository postRepository,
+      AccessGuard accessGuard,
+      GdprTrainedRepository gdprTrainedRepository) {
     this.superGroupTypeRepository = superGroupTypeRepository;
     this.superGroupRepository = superGroupRepository;
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
-      this.accessGuard = accessGuard;
-      this.gdprTrainedRepository = gdprTrainedRepository;
+    this.accessGuard = accessGuard;
+    this.gdprTrainedRepository = gdprTrainedRepository;
   }
 
   public enum OldLanguage {

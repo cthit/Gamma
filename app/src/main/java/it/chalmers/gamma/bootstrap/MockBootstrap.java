@@ -24,8 +24,8 @@ public class MockBootstrap {
   @Bean
   public BootstrapSettings loadBootstrapSettings(
       @Value("${application.admin-setup}") boolean adminSetup,
-      @Value("${application.mocking}") boolean mocking) {
-    return new BootstrapSettings(adminSetup, mocking);
+      @Value("${application.production}") boolean production) {
+    return new BootstrapSettings(adminSetup, !production);
   }
 
   @Bean

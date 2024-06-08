@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
 import jakarta.persistence.*;
-
 import java.time.Instant;
 import java.util.Objects;
 import org.springframework.data.domain.Persistable;

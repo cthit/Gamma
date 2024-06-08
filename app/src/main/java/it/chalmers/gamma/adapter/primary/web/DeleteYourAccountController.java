@@ -43,8 +43,7 @@ public class DeleteYourAccountController {
     try {
       this.meFacade.deleteMe(form.password);
     } catch (IllegalArgumentException e) {
-      bindingResult.addError(
-              new FieldError("form", "password", "Incorrect password"));
+      bindingResult.addError(new FieldError("form", "password", "Incorrect password"));
 
       ModelAndView mv = new ModelAndView();
 

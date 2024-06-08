@@ -205,7 +205,7 @@ public class SecurityFiltersConfig {
                 sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .cors(Customizer.withDefaults())
         .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
-            .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
+        .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
         .headers(
             headers ->
                 headers.contentSecurityPolicy(

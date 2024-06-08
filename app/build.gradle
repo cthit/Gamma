@@ -3,20 +3,21 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.1.2"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.3.0"
     }
 }
 
 plugins {
     id "java"
-    id "application"
-    id 'org.springframework.boot' version '3.2.0'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id "org.springframework.boot" version "3.3.0"
+    id "io.spring.dependency-management" version "1.1.5"
     id "com.diffplug.spotless" version "6.25.0"
 }
 
 java {
-    sourceCompatibility = '21'
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 apply plugin: "org.springframework.boot"
@@ -27,83 +28,54 @@ version = "2.0.0-SNAPSHOT"
 dependencies {
     annotationProcessor(
             // Used to generate Record Builder classes
-            "io.soabase.record-builder:record-builder-processor:37",
-
-            // Used to generate useful configuration metadata for IDEs
-            "org.springframework.boot:spring-boot-configuration-processor:3.1.2",
+            "io.soabase.record-builder:record-builder-processor:41",
     )
 
     implementation(
             // Used to generate Record Builder classes
-            "io.soabase.record-builder:record-builder-core:37",
+            "io.soabase.record-builder:record-builder-core:41",
 
             // Used to handle SQL specific errors
-            "org.postgresql:postgresql:42.6.0",
+            "org.postgresql:postgresql:42.7.3",
 
             // Spring Boot
-            "org.springframework.boot:spring-boot:3.1.2",
-            "org.springframework.boot:spring-boot-autoconfigure:3.1.2",
-            "org.springframework.boot:spring-boot-starter-data-jpa:3.1.2",
-            "org.springframework.boot:spring-boot-starter-security:3.1.2",
-            "org.springframework.boot:spring-boot-starter-validation:3.1.2",
-            "org.springframework.boot:spring-boot-starter-websocket:3.1.2",
-
-            // OAuth2 Server
-            "org.springframework.security:spring-security-oauth2-authorization-server:1.2.3",
+            "org.springframework.boot:spring-boot:3.3.0",
+            "org.springframework.boot:spring-boot-autoconfigure:3.3.0",
+            "org.springframework.boot:spring-boot-starter-data-jpa:3.3.0",
+            "org.springframework.boot:spring-boot-starter-security:3.3.0",
+            "org.springframework.boot:spring-boot-starter-validation:3.3.0",
+            "org.springframework.boot:spring-boot-starter-web:3.3.0",
+            "org.springframework.boot:spring-boot-starter-oauth2-authorization-server:3.3.0",
 
             // Spring session
-            "org.springframework.session:spring-session-core:3.1.1",
-            "org.springframework.session:spring-session-data-redis:3.1.1",
-
-            // Jackson (JSON)
-            'com.fasterxml.jackson.core:jackson-core:2.14.2',
-            'com.fasterxml.jackson.core:jackson-databind:2.14.2',
-            'com.fasterxml.jackson.core:jackson-annotations:2.14.2',
+            "org.springframework.session:spring-session-core:3.3.0",
+            "org.springframework.session:spring-session-data-redis:3.3.0",
 
             // Redis
-            'org.springframework.data:spring-data-redis:3.1.2',
+            "org.springframework.data:spring-data-redis:3.3.0",
     )
 
-    runtimeOnly(
+   runtimeOnly(
             // FlywayDB (Database migration)
             "org.flywaydb:flyway-core:9.21.0",
 
             // Spring Boot
-            "org.springframework.boot:spring-boot-devtools:3.1.2",
-            "org.springframework.boot:spring-boot-starter-data-redis:3.1.2",
+            "org.springframework.boot:spring-boot-devtools:3.3.0",
+            "org.springframework.boot:spring-boot-starter-data-redis:3.3.0",
 
             // Thymeleaf
-            "org.springframework.boot:spring-boot-starter-thymeleaf:3.1.2",
-            "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE",
+            "org.springframework.boot:spring-boot-starter-thymeleaf:3.3.0",
+            "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE",
 
             // web dependencies
-            'org.webjars.npm:htmx.org:1.9.10',
-            'org.webjars.npm:hyperscript.org:0.9.12',
+            "org.webjars.npm:htmx.org:1.9.12",
+            "org.webjars.npm:hyperscript.org:0.9.12",
             "org.webjars.npm:picocss__pico:2.0.6"
     )
 
-    testImplementation(
-            "com.tngtech.archunit:archunit:1.0.0",
-            "io.rest-assured:json-path:5.3.1",
-            "io.rest-assured:rest-assured:5.3.1",
-            "io.rest-assured:xml-path:5.3.1",
-            "org.flywaydb:flyway-core:9.21.0",
-            "org.mockito:mockito-inline:5.2.0",
-            "org.springframework.boot:spring-boot-starter-test:3.1.2",
-            "org.springframework.security:spring-security-test:6.1.2",
-            "org.testcontainers:junit-jupiter:1.18.3",
-            "org.testcontainers:postgresql:1.18.3"
+    developmentOnly(
+            "org.springframework.boot:spring-boot-docker-compose:3.3.0"
     )
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.testcontainers:testcontainers-bom:1.19.3"
-    }
-}
-
-test {
-    useJUnitPlatform()
 }
 
 repositories {
@@ -119,12 +91,12 @@ spotless {
     }
 
     yaml {
-        target 'src/**/*.yml'
+        target "src/**/*.yml"
         jackson()
     }
 
     json {
-        target 'src/**/*.json'
+        target "src/**/*.json"
         jackson()
     }
 }

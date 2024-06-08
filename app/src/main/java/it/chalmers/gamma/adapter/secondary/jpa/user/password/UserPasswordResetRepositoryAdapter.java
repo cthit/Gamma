@@ -7,7 +7,6 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import jakarta.transaction.Transactional;
-import java.time.Instant;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 

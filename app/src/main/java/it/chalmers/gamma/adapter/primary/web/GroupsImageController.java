@@ -5,7 +5,6 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import java.util.UUID;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -23,8 +22,8 @@ public class GroupsImageController {
   private final ImageFacade imageFacade;
 
   public GroupsImageController(GroupFacade groupFacade, ImageFacade imageFacade) {
-      this.groupFacade = groupFacade;
-      this.imageFacade = imageFacade;
+    this.groupFacade = groupFacade;
+    this.imageFacade = imageFacade;
   }
 
   @PutMapping("/groups/avatar/{id}")
@@ -49,8 +48,15 @@ public class GroupsImageController {
 
     boolean canEditImages = false;
     if (SecurityContextHolder.getContext().getAuthentication()
-            instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      canEditImages = group.get().groupMembers().stream().anyMatch(groupMember -> groupMember.user().id().equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      canEditImages =
+          group.get().groupMembers().stream()
+              .anyMatch(
+                  groupMember ->
+                      groupMember
+                          .user()
+                          .id()
+                          .equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
     }
 
     mv.addObject("canEditImages", canEditImages);
@@ -80,8 +86,15 @@ public class GroupsImageController {
 
     boolean canEditImages = false;
     if (SecurityContextHolder.getContext().getAuthentication()
-            instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      canEditImages = group.get().groupMembers().stream().anyMatch(groupMember -> groupMember.user().id().equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      canEditImages =
+          group.get().groupMembers().stream()
+              .anyMatch(
+                  groupMember ->
+                      groupMember
+                          .user()
+                          .id()
+                          .equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
     }
 
     mv.addObject("canEditImages", canEditImages);

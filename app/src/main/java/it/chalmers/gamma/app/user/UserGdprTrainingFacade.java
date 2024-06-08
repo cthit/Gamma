@@ -5,7 +5,6 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
 import java.util.List;
 import java.util.UUID;
@@ -17,8 +16,7 @@ public class UserGdprTrainingFacade extends Facade {
   private final GdprTrainedRepository gdprTrainedRepository;
 
   public UserGdprTrainingFacade(
-      AccessGuard accessGuard,
-      GdprTrainedRepository gdprTrainedRepository) {
+      AccessGuard accessGuard, GdprTrainedRepository gdprTrainedRepository) {
     super(accessGuard);
     this.gdprTrainedRepository = gdprTrainedRepository;
   }

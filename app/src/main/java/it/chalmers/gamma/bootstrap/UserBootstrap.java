@@ -45,7 +45,7 @@ public class UserBootstrap {
                         new AcceptanceYear(mockUser.acceptanceYear()),
                         Language.EN,
                         new UserExtended(
-                            new Email(mockUser.cid() + "@student.chalmers.it"), 0, false, null)),
+                            new Email(mockUser.cid() + "@example.org"), 0, false, null)),
                     new UnencryptedPassword("password"));
               } catch (UserRepository.CidAlreadyInUseException
                   | UserRepository.EmailAlreadyInUseException e) {

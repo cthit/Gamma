@@ -1,5 +1,12 @@
 ---
 spring:
+  docker:
+    compose:
+      lifecycle-management: "start-and-stop"
+      start:
+        command: "UP"
+      stop:
+        command: "down"
   datasource:
     username: "${DB_USER:postgres}"
     password: "${DB_PASSWORD:example}"
@@ -63,7 +70,6 @@ application:
     domain: "${COOKIE_DOMAIN:gamma}"
     path: "${COOKIE_PATH:/}"
     validity-time: 2628000
-  mocking: "${IS_MOCKING:false}"
   admin-setup: "${ADMIN_SETUP:true}"
   gotify:
     key: "${GOTIFY_KEY:123abc}"

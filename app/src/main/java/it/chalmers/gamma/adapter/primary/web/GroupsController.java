@@ -8,7 +8,6 @@ import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -96,8 +95,15 @@ public class GroupsController {
 
     boolean canEditImages = false;
     if (SecurityContextHolder.getContext().getAuthentication()
-            instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      canEditImages = group.get().groupMembers().stream().anyMatch(groupMember -> groupMember.user().id().equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      canEditImages =
+          group.get().groupMembers().stream()
+              .anyMatch(
+                  groupMember ->
+                      groupMember
+                          .user()
+                          .id()
+                          .equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
     }
 
     mv.addObject("canEditImages", canEditImages);
