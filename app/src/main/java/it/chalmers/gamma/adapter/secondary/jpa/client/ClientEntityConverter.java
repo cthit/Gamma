@@ -67,7 +67,7 @@ public class ClientEntityConverter {
         clientEntity.clientRestriction == null
             ? null
             : new ClientRestriction(
-                new ClientRestrictionId(clientEntity.clientRestriction.getRestrictionId()),
+                new ClientRestrictionId(clientEntity.clientRestriction.getId()),
                 clientEntity.clientRestriction.getSuperGroupRestrictions().stream()
                     .map(
                         clientRestrictionSuperGroupEntity ->

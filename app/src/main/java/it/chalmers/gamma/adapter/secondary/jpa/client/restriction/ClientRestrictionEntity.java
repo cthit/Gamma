@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client.restriction;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "g_client_restriction")
-public class ClientRestrictionEntity {
+public class ClientRestrictionEntity extends ImmutableEntity<UUID> {
 
   @Column(name = "restriction_id", columnDefinition = "uuid")
   protected UUID restrictionId;
@@ -37,11 +38,12 @@ public class ClientRestrictionEntity {
     this.superGroupRestrictions = superGroupRestrictions;
   }
 
-  public UUID getRestrictionId() {
-    return restrictionId;
-  }
-
   public List<ClientRestrictionSuperGroupEntity> getSuperGroupRestrictions() {
     return superGroupRestrictions;
+  }
+
+  @Override
+  public UUID getId() {
+    return restrictionId;
   }
 }
