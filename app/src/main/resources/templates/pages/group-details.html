@@ -48,8 +48,8 @@
             <header>
                 Group avatar
             </header>
-            <img class="m-auto" th:if="${!isAdmin}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
-            <div class="image-input-container" th:if="${isAdmin}">
+            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+            <div class="image-input-container" th:if="${isAdmin || canEditImages}">
                 <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
                 <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
                       _="on htmx:beforeRequest add @disabled to the next <button/> "
@@ -62,7 +62,7 @@
                     <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
                 </form>
             </div>
-            <footer th:if="${isAdmin}">
+            <footer th:if="${isAdmin || canEditImages}">
                 <button class="outline" form="edit-group-avatar" disabled data-loading-disable>Upload avatar</button>
             </footer>
         </article>
@@ -71,8 +71,8 @@
             <header>
                 Group banner
             </header>
-            <img class="m-auto" th:if="${!isAdmin}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
-            <div class="image-input-container" th:if="${isAdmin}">
+            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+            <div class="image-input-container" th:if="${isAdmin || canEditImages}">
                 <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
                 <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
                       _="on htmx:beforeRequest add @disabled to the next <button/> "
@@ -85,7 +85,7 @@
                     <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
                 </form>
             </div>
-            <footer th:if="${isAdmin}">
+            <footer th:if="${isAdmin || canEditImages}">
                 <button class="outline" form="edit-group-banner" disabled data-loading-disable>Upload banner</button>
             </footer>
         </article>

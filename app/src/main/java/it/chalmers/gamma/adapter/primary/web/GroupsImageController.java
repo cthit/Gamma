@@ -1,9 +1,13 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
+import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import java.util.UUID;
+
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class GroupsImageController {
 
+  private final GroupFacade groupFacade;
   private final ImageFacade imageFacade;
 
-  public GroupsImageController(ImageFacade imageFacade) {
-    this.imageFacade = imageFacade;
+  public GroupsImageController(GroupFacade groupFacade, ImageFacade imageFacade) {
+      this.groupFacade = groupFacade;
+      this.imageFacade = imageFacade;
   }
 
   @PutMapping("/groups/avatar/{id}")
@@ -35,6 +41,19 @@ public class GroupsImageController {
     mv.setViewName("pages/group-details :: group-avatar");
     mv.addObject("groupId", id);
     mv.addObject("random", Math.random());
+
+    var group = this.groupFacade.getWithMembers(id);
+    if (group.isEmpty()) {
+      throw new RuntimeException();
+    }
+
+    boolean canEditImages = false;
+    if (SecurityContextHolder.getContext().getAuthentication()
+            instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      canEditImages = group.get().groupMembers().stream().anyMatch(groupMember -> groupMember.user().id().equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+    }
+
+    mv.addObject("canEditImages", canEditImages);
 
     return mv;
   }
@@ -53,6 +72,19 @@ public class GroupsImageController {
     mv.setViewName("pages/group-details :: group-banner");
     mv.addObject("groupId", id);
     mv.addObject("random", Math.random());
+
+    var group = this.groupFacade.getWithMembers(id);
+    if (group.isEmpty()) {
+      throw new RuntimeException();
+    }
+
+    boolean canEditImages = false;
+    if (SecurityContextHolder.getContext().getAuthentication()
+            instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      canEditImages = group.get().groupMembers().stream().anyMatch(groupMember -> groupMember.user().id().equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+    }
+
+    mv.addObject("canEditImages", canEditImages);
 
     return mv;
   }

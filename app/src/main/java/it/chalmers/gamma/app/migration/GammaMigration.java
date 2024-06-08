@@ -185,7 +185,7 @@ public class GammaMigration {
         new SuperGroupId(superGroup.id),
         0,
         new Name(superGroup.name.replaceAll(" ", "-")),
-        new PrettyName(superGroup.prettyName),
+        new PrettyName(superGroup.prettyName.replaceAll("'", "")),
         new SuperGroupType(superGroup.type.name()),
         new Text("", ""));
   }
@@ -268,7 +268,7 @@ public class GammaMigration {
                 new GroupId(group.id),
                 0,
                 new Name(group.name.replaceAll(" ", "-")),
-                new PrettyName(group.prettyName),
+                new PrettyName(group.prettyName.replaceAll("'", " ").replaceAll(" {2}", " ")),
                 convertSuperGroup(group.superGroup),
                 group.groupMembers.stream()
                     .map(
