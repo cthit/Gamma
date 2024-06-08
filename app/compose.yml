@@ -7,12 +7,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: example
     ports:
-      - '5432'
+      - '5432:5432'
 
   redis:
     image: redis:5.0
     ports:
-      - '6379'
+      - '6379:6379'
 
   gotify:
     image: cthit/gotify
@@ -21,4 +21,4 @@ services:
       GOTIFY_MOCK-MODE: "true"
       GOTIFY_DEBUG-MODE: "true"
     ports:
-      - '8080'
+      - '8080:8080'
