@@ -62,7 +62,7 @@ logging:
   level:
     root: "${ROOT_DEBUG_LEVEL:INFO}"
 application:
-  base-uri: "${BASE_URI:http://gamma:8081}"
+  base-url: "${BASE_URL:http://gamma:8081}"
   production: "${PRODUCTION:false}"
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"

@@ -16,7 +16,7 @@ public class ClaimsMapper {
   private final String baseUrl;
 
   private ClaimsMapper(
-      UserRepository userRepository, @Value("${application.base-uri}") String baseUrl) {
+      UserRepository userRepository, @Value("${application.base-url}") String baseUrl) {
     this.userRepository = userRepository;
     this.baseUrl = baseUrl;
   }
