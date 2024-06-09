@@ -156,6 +156,7 @@ public class MyClientsController {
     mv.addObject("userApprovals", new ArrayList<>());
     mv.addObject("clientSecret", result.clientSecret());
     mv.addObject("apiKeyToken", result.apiKeyToken());
+    mv.addObject("amIOwner", true);
 
     response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid().toString());
 
