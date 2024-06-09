@@ -22,7 +22,7 @@ public record ClientSecret(String value) {
   public static GeneratedClientSecret generate(PasswordEncoder passwordEncoder) {
     String value =
         TokenUtils.generateToken(
-            128,
+            32,
             TokenUtils.CharacterTypes.LOWERCASE,
             TokenUtils.CharacterTypes.UPPERCASE,
             TokenUtils.CharacterTypes.NUMBERS);

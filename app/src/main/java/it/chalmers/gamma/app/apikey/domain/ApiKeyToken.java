@@ -22,7 +22,7 @@ public record ApiKeyToken(String value) {
   public static GeneratedApiKeyToken generate(PasswordEncoder passwordEncoder) {
     String value =
         TokenUtils.generateToken(
-            50,
+            32,
             TokenUtils.CharacterTypes.LOWERCASE,
             TokenUtils.CharacterTypes.UPPERCASE,
             TokenUtils.CharacterTypes.NUMBERS);

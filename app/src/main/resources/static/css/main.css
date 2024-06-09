@@ -88,6 +88,23 @@ ul.tuple > li {
     gap: 0.5rem;
 }
 
+div.tuple-right-expand > div {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+div.tuple-right-expand > div > *:nth-child(1) {
+    text-align: right;
+    flex: 1;
+}
+
+div.tuple-right-expand > div > *:nth-child(2) {
+    text-align: left;
+    flex: 10;
+    max-width: max-content;
+}
+
 ul.tuple > li > * {
     flex: 1;
 }
@@ -241,4 +258,14 @@ main {
 
 [data-loading] {
     display: none;
+}
+
+code {
+    overflow-x: scroll;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.contents {
+    display: contents;
 }

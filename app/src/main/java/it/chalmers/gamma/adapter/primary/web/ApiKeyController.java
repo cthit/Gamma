@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -167,6 +168,9 @@ public class ApiKeyController {
   @DeleteMapping("/api-keys/{id}")
   public ModelAndView deleteApiKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @RequestHeader(value = "return-empty-on-delete", required = false)
+          boolean returnEmptyOnDelete,
+      HttpServletResponse response,
       @PathVariable("id") UUID id) {
     try {
       this.apiKeyFacade.delete(id);
@@ -174,7 +178,14 @@ public class ApiKeyController {
       throw new RuntimeException(e);
     }
 
-    return new ModelAndView("redirect:/api-keys");
+    if (returnEmptyOnDelete) {
+      response.addHeader("HX-Reswap", "delete");
+      response.addHeader("HX-Retarget", "closest article");
+    } else {
+      response.addHeader("HX-Redirect", "/api-keys");
+    }
+
+    return new ModelAndView("common/empty");
   }
 
   public static final class ApiKeySettings {

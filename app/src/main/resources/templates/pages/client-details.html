@@ -1,6 +1,10 @@
 <header th:replace="~{common/header}"></header>
 <div id="alerts"></div>
-<main>
+<main th:attr="data-hx-headers=${amIOwner} ? '{\'owner\': \'true\'}' : null">
+    <th:block th:if="${clientSecret != null}">
+        <article th:replace="~{partial/client-credentials}"></article>
+    </th:block>
+
     <article>
         <header>
            Client details
@@ -23,16 +27,18 @@
                 <span th:text="${client.clientId()}"></span>
             </li>
             <li>
-                <b>Has Api Key:</b>
-                <span th:text="|Has api key: ${client.hasApiKey()}|"></span>
-            </li>
-            <li>
                 <b>Redirect:</b>
                 <span th:text="${client.webServerRedirectUrl()}"></span>
             </li>
             <li th:if="${client.restriction() != null}">
                 <b>Super group restrictions:</b>
                 <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></span>
+            </li>
+            <li th:if="${owner != null && !amIOwner}">
+                <b>Owned by:</b>
+                <a class="contrast" th:href="|/users/${owner.id()}|">
+                    <span th:text="${owner.nick()}"></span>
+                </a>
             </li>
         </ul>
         <footer>
@@ -41,6 +47,12 @@
             </form>
         </footer>
     </article>
+
+    <th:block th:if="${client.apiKey().isPresent()}" th:with="apiKey = ${client.apiKey().get()}">
+        <div class="contents" data-hx-headers='{"return-empty-on-delete":"true"}'>
+            <article th:replace="~{pages/api-key-details :: details}"></article>
+        </div>
+    </th:block>
 
     <th:block th:each="clientAuthority : ${clientAuthorities}">
         <article th:fragment="client-authority-article">

@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.client.domain;
 
+import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.user.domain.UserId;
 import java.util.List;
@@ -31,6 +32,8 @@ public interface ClientRepository {
   void deleteUserApproval(ClientUid clientUid, UserId userId);
 
   Optional<Client> getByApiKey(ApiKeyToken apiKeyToken);
+
+  Optional<Client> getByApiKey(ApiKeyId apiKeyId);
 
   class ClientNotFoundException extends Exception {}
 

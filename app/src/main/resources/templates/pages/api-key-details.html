@@ -2,8 +2,9 @@
 <div id="alerts">
 </div>
 <main>
-    <article>
-        <header th:text="|${apiKey.prettyName()} details|">
+    <article th:fragment="details">
+        <header>
+            Api key details
         </header>
         <ul class="tuple">
             <li>
@@ -24,7 +25,9 @@
             </li>
         </ul>
         <footer>
-            <form data-hx-confirm="Are you sure you want to delete this api key?" th:action="|/api-keys/${apiKey.id()}|" th:method="delete">
+            <form data-hx-confirm="Are you sure you want to delete this api key?" th:data-hx-post="|/api-keys/${apiKey.id()}|">
+                <input type="hidden" name="_method" value="delete" />
+                <div th:replace="~{common/form-csrf}"></div>
                 <button class="outline contrast" data-loading-disable>Delete</button>
             </form>
         </footer>

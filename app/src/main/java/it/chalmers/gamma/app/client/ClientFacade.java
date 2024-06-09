@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.client;
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
@@ -51,14 +52,14 @@ public class ClientFacade extends Facade {
   }
 
   @Transactional
-  public ClientAndApiKeySecrets createOfficialClient(NewClient newClient) {
+  public CreatedClientDTO createOfficialClient(NewClient newClient) {
     this.accessGuard.require(isAdmin());
 
     return this.create(newClient, new ClientOwnerOfficial());
   }
 
   @Transactional
-  public ClientAndApiKeySecrets createUserClient(NewClient newClient) {
+  public CreatedClientDTO createUserClient(NewClient newClient) {
     this.accessGuard.require(isSignedIn());
 
     if (newClient.restrictions != null) {
@@ -73,7 +74,7 @@ public class ClientFacade extends Facade {
     throw new IllegalStateException();
   }
 
-  private ClientAndApiKeySecrets create(NewClient newClient, ClientOwner clientOwner) {
+  private CreatedClientDTO create(NewClient newClient, ClientOwner clientOwner) {
     ClientSecret.GeneratedClientSecret generatedClientSecret =
         ClientSecret.generate(passwordEncoder);
     ApiKey apiKey = null;
@@ -131,9 +132,8 @@ public class ClientFacade extends Facade {
 
     this.clientRepository.save(client);
 
-    return new ClientAndApiKeySecrets(
-        clientUid.value(),
-        clientId.value(),
+    return new CreatedClientDTO(
+        createDTO(client),
         generatedClientSecret.rawSecret(),
         generatedApiKeyToken == null ? null : generatedApiKeyToken.rawToken());
   }
@@ -215,8 +215,7 @@ public class ClientFacade extends Facade {
       boolean emailScope,
       NewClientRestrictions restrictions) {}
 
-  public record ClientAndApiKeySecrets(
-      UUID clientUid, String clientId, String clientSecret, String apiKeyToken) {}
+  public record CreatedClientDTO(ClientDTO client, String clientSecret, String apiKeyToken) {}
 
   private ClientDTO createDTO(Client client) {
     return new ClientDTO(
@@ -226,7 +225,7 @@ public class ClientFacade extends Facade {
         client.prettyName().value(),
         client.description().sv().value(),
         client.description().en().value(),
-        client.clientApiKey().isPresent(),
+        client.clientApiKey().map(ApiKeyFacade.ApiKeyDTO::new),
         client
             .restrictions()
             .map(
@@ -255,7 +254,7 @@ public class ClientFacade extends Facade {
       String prettyName,
       String svDescription,
       String enDescription,
-      boolean hasApiKey,
+      Optional<ApiKeyFacade.ApiKeyDTO> apiKey,
       ClientRestrictionDTO restriction,
       Owner owner) {
 

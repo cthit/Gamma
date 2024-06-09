@@ -1,6 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.client.ClientFacade;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -131,10 +133,11 @@ public class MyClientsController {
   public ModelAndView createUserClient(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       CreateUserClient form,
-      BindingResult bindingResult) {
+      BindingResult bindingResult,
+      HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
 
-    ClientFacade.ClientAndApiKeySecrets secrets =
+    ClientFacade.CreatedClientDTO result =
         this.clientFacade.createUserClient(
             new ClientFacade.NewClient(
                 form.redirectUrl,
@@ -145,11 +148,16 @@ public class MyClientsController {
                 form.emailScope,
                 null));
 
-    mv.setViewName("pages/client-credentials");
-    mv.addObject("clientUid", secrets.clientUid());
-    mv.addObject("clientSecret", secrets.clientSecret());
-    mv.addObject("apiKeyToken", secrets.apiKeyToken());
-    mv.addObject("name", form.prettyName);
+    mv.setViewName("pages/client-details");
+
+    mv.addObject("clientUid", result.client().clientUid());
+    mv.addObject("client", result.client());
+    mv.addObject("clientAuthorities", new ArrayList<>());
+    mv.addObject("userApprovals", new ArrayList<>());
+    mv.addObject("clientSecret", result.clientSecret());
+    mv.addObject("apiKeyToken", result.apiKeyToken());
+
+    response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid().toString());
 
     return mv;
   }

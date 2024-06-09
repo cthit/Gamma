@@ -136,6 +136,24 @@ public class AccessGuard {
     };
   }
 
+  public static AccessChecker ownerOfClientApi(ApiKeyId apiKeyId) {
+    return (clientRepository, userRepository) -> {
+      if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userPrincipal) {
+        Optional<Client> client = clientRepository.getByApiKey(apiKeyId);
+
+        if (client.isPresent()) {
+          ClientOwner clientOwner = client.get().owner();
+
+          if (clientOwner instanceof ClientUserOwner(UserId userId)) {
+            return userId.equals(userPrincipal.gammaUser().id());
+          }
+        }
+      }
+
+      return false;
+    };
+  }
+
   /** Such as Bootstrap */
   public static AccessChecker isLocalRunner() {
     return (clientRepository, userRepository) ->

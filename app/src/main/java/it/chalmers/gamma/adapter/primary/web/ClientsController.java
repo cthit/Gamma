@@ -8,6 +8,9 @@ import it.chalmers.gamma.app.client.ClientFacade;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +65,7 @@ public class ClientsController {
   }
 
   @GetMapping("/clients/{id}")
-  public ModelAndView getClients(
+  public ModelAndView getClient(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @PathVariable("id") String clientUid) {
     if (!isValidUUID(clientUid)) {
@@ -92,6 +95,17 @@ public class ClientsController {
     mv.addObject("client", client.get());
     mv.addObject("clientAuthorities", clientAuthorities);
     mv.addObject("userApprovals", userApprovals);
+
+    if (client.get().owner() instanceof ClientFacade.ClientDTO.UserOwner userOwner) {
+      if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userPrincipal) {
+        boolean isOwner = userOwner.user().id().equals(userPrincipal.gammaUser().id().value());
+        mv.addObject("amIOwner", isOwner);
+
+        if (!isOwner) {
+          mv.addObject("owner", userOwner.user());
+        }
+      }
+    }
 
     return mv;
   }
@@ -237,10 +251,11 @@ public class ClientsController {
   public ModelAndView createClient(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       CreateClient form,
-      BindingResult bindingResult) {
+      BindingResult bindingResult,
+      HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
 
-    ClientFacade.ClientAndApiKeySecrets secrets =
+    ClientFacade.CreatedClientDTO result =
         this.clientFacade.createOfficialClient(
             new ClientFacade.NewClient(
                 form.redirectUrl,
@@ -251,11 +266,16 @@ public class ClientsController {
                 form.emailScope,
                 new ClientFacade.NewClientRestrictions(form.restrictions)));
 
-    mv.setViewName("pages/client-credentials");
-    mv.addObject("clientUid", secrets.clientUid());
-    mv.addObject("clientSecret", secrets.clientSecret());
-    mv.addObject("apiKeyToken", secrets.apiKeyToken());
-    mv.addObject("name", form.prettyName);
+    mv.setViewName("pages/client-details");
+
+    mv.addObject("clientUid", result.client().clientUid());
+    mv.addObject("client", result.client());
+    mv.addObject("clientAuthorities", new ArrayList<>());
+    mv.addObject("userApprovals", new ArrayList<>());
+    mv.addObject("clientSecret", result.clientSecret());
+    mv.addObject("apiKeyToken", result.apiKeyToken());
+
+    response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid().toString());
 
     return mv;
   }
@@ -421,6 +441,7 @@ public class ClientsController {
   @DeleteMapping("/clients/{id}")
   public ModelAndView deleteClient(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @RequestHeader(value = "owner", required = false) boolean wasOwner,
       @PathVariable("id") UUID clientUid) {
     try {
       this.clientFacade.delete(clientUid);
@@ -428,7 +449,11 @@ public class ClientsController {
       throw new RuntimeException(e);
     }
 
-    return new ModelAndView("redirect:/clients");
+    if (wasOwner) {
+      return new ModelAndView("redirect:/my-clients");
+    } else {
+      return new ModelAndView("redirect:/clients");
+    }
   }
 
   @DeleteMapping("/clients/{id}/authority/{name}")

@@ -13,8 +13,6 @@ public interface ApiKeyRepository {
 
   Optional<ApiKey> getById(ApiKeyId apiKeyId);
 
-  Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken);
-
   class ApiKeyNotFoundException extends Exception {}
 
   /**

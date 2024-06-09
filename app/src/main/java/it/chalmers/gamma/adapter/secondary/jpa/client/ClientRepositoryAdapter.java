@@ -7,6 +7,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserApprovalJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
@@ -140,6 +141,14 @@ public class ClientRepositoryAdapter implements ClientRepository {
   public Optional<Client> getByApiKey(ApiKeyToken apiKeyToken) {
     return this.clientApiKeyJpaRepository
         .findByApiKey_Token(apiKeyToken.value())
+        .map(ClientApiKeyEntity::getClient)
+        .map(this.clientEntityConverter::toDomain);
+  }
+
+  @Override
+  public Optional<Client> getByApiKey(ApiKeyId apiKeyId) {
+    return this.clientApiKeyJpaRepository
+        .findById(apiKeyId.value())
         .map(ClientApiKeyEntity::getClient)
         .map(this.clientEntityConverter::toDomain);
   }

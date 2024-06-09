@@ -5,7 +5,6 @@ import it.chalmers.gamma.adapter.secondary.jpa.client.apikey.ClientApiKeyJpaRepo
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -73,14 +72,6 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
   @Override
   public Optional<ApiKey> getById(ApiKeyId apiKeyId) {
     return this.repository.findById(apiKeyId.value()).map(this.apiKeyEntityConverter::toDomain);
-  }
-
-  @Override
-  public Optional<ApiKey> getByToken(ApiKeyToken apiKeyToken) {
-    System.out.println(apiKeyToken.value());
-    return this.repository
-        .findByToken(apiKeyToken.value())
-        .map(this.apiKeyEntityConverter::toDomain);
   }
 
   private ApiKeyEntity toEntity(ApiKey apiKey) {

@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.apikey;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isLocalRunner;
+import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.*;
@@ -90,9 +89,11 @@ public class ApiKeyFacade extends Facade {
   }
 
   public Optional<ApiKeyDTO> getById(UUID apiKeyId) {
-    this.accessGuard.require(isAdmin());
+    ApiKeyId id = new ApiKeyId(apiKeyId);
 
-    return this.apiKeyRepository.getById(new ApiKeyId(apiKeyId)).map(ApiKeyDTO::new);
+    this.accessGuard.requireEither(isAdmin(), ownerOfClientApi(id));
+
+    return this.apiKeyRepository.getById(id).map(ApiKeyDTO::new);
   }
 
   public List<ApiKeyDTO> getAll() {
