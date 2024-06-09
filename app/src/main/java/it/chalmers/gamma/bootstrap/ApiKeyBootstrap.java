@@ -30,7 +30,7 @@ public class ApiKeyBootstrap {
     for (ApiKeyType apiKeyType : ApiKeyType.values()) {
       if (apiKeyType != ApiKeyType.CLIENT) {
 
-        var secrets =
+        var createdApiKey =
             this.apiKeyFacade.create(
                 new ApiKeyFacade.NewApiKey(
                     apiKeyType.name().toLowerCase() + "-mock", "", "", apiKeyType.name()));
@@ -39,9 +39,9 @@ public class ApiKeyBootstrap {
             "Api key of type "
                 + apiKeyType.name()
                 + " has been generated with id: "
-                + secrets.apiKeyId()
+                + createdApiKey.apiKey().id()
                 + " and code: "
-                + secrets.token());
+                + createdApiKey.token());
       }
     }
 

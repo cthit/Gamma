@@ -2,6 +2,10 @@
 <div id="alerts">
 </div>
 <main>
+    <th:block th:if="${apiKeyToken!= null}">
+        <article th:replace="~{partial/api-key-credentials}"></article>
+    </th:block>
+
     <article th:fragment="details">
         <header>
             Api key details

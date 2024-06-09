@@ -149,18 +149,30 @@ public class ApiKeyController {
   public ModelAndView createApiKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       CreateApiKey form,
-      BindingResult bindingResult) {
+      BindingResult bindingResult,
+      HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
 
-    ApiKeyFacade.CreatedApiKey apiKeyCredentials =
+    ApiKeyFacade.CreatedApiKey createdApiKey =
         this.apiKeyFacade.create(
             new ApiKeyFacade.NewApiKey(
                 form.prettyName, form.svDescription, form.enDescription, form.keyType));
 
-    mv.setViewName("pages/api-key-credentials");
-    mv.addObject("apiKeyId", apiKeyCredentials.apiKeyId());
-    mv.addObject("apiKeyToken", apiKeyCredentials.token());
-    mv.addObject("name", form.prettyName);
+    UUID apiKeyId = createdApiKey.apiKey().id();
+
+    mv.setViewName("pages/api-key-details");
+    mv.addObject("apiKey", createdApiKey.apiKey());
+    mv.addObject("apiKeyId", apiKeyId);
+    mv.addObject("apiKeyToken", createdApiKey.token());
+
+    String type = createdApiKey.apiKey().keyType();
+    if (type.equals("ACCOUNT_SCAFFOLD")) {
+      loadApiKeySettingsAccountScaffold(mv, apiKeyId);
+    } else if (type.equals("INFO")) {
+      loadApiKeySettingsInfo(mv, apiKeyId);
+    }
+
+    response.addHeader("HX-Push-Url", "/api-keys/" + apiKeyId);
 
     return mv;
   }

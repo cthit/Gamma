@@ -275,7 +275,7 @@ public class ClientsController {
     mv.addObject("clientSecret", result.clientSecret());
     mv.addObject("apiKeyToken", result.apiKeyToken());
 
-    response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid().toString());
+    response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid());
 
     return mv;
   }

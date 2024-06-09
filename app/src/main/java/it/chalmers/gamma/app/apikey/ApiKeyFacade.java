@@ -46,7 +46,7 @@ public class ApiKeyFacade extends Facade {
     return s;
   }
 
-  public record CreatedApiKey(UUID apiKeyId, String token) {}
+  public record CreatedApiKey(ApiKeyDTO apiKey, String token) {}
 
   @Transactional
   public CreatedApiKey create(NewApiKey newApiKey) {
@@ -61,13 +61,15 @@ public class ApiKeyFacade extends Facade {
 
     ApiKeyId apiKeyId = ApiKeyId.generate();
     ApiKeyToken.GeneratedApiKeyToken generated = ApiKeyToken.generate(passwordEncoder);
-    apiKeyRepository.create(
+    ApiKey apiKey =
         new ApiKey(
             apiKeyId,
             new PrettyName(newApiKey.prettyName),
             new Text(newApiKey.svDescription, newApiKey.enDescription),
             type,
-            generated.apiKeyToken()));
+            generated.apiKeyToken());
+
+    apiKeyRepository.create(apiKey);
 
     if (type == ApiKeyType.INFO) {
       this.apiKeySettingsRepository.createEmptyInfoSettings(apiKeyId);
@@ -75,7 +77,7 @@ public class ApiKeyFacade extends Facade {
       this.apiKeySettingsRepository.createEmptyAccountScaffoldSettings(apiKeyId);
     }
 
-    return new CreatedApiKey(apiKeyId.value(), generated.rawToken());
+    return new CreatedApiKey(new ApiKeyDTO(apiKey), generated.rawToken());
   }
 
   public void delete(UUID apiKeyId) throws ApiKeyNotFoundException {
