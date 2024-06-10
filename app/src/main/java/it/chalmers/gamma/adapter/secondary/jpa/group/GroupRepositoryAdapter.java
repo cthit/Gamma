@@ -134,18 +134,6 @@ public class GroupRepositoryAdapter implements GroupRepository {
         .map(this.groupEntityConverter::toDomain);
   }
 
-  @Override
-  public List<GroupMember> getAllMembersBySuperGroup(SuperGroupId superGroupId) {
-    return this.membershipJpaRepository.findAllBySuperGroup(superGroupId.value()).stream()
-        .map(
-            membershipEntity ->
-                new GroupMember(
-                    this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
-                    new UnofficialPostName(membershipEntity.getUnofficialPostName()),
-                    this.userEntityConverter.toDomain(membershipEntity.getId().getUser())))
-        .toList();
-  }
-
   private GroupEntity toEntity(Group group) {
     GroupEntity entity =
         this.groupJpaRepository.findById(group.id().value()).orElse(new GroupEntity());

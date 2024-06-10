@@ -9,6 +9,7 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.Name;
@@ -79,12 +80,27 @@ public class SuperGroupFacade extends Facade {
     for (SuperGroupType type : superGroupTypes) {
       List<SuperGroupWithMembersDTO> superGroupsOutput = new ArrayList<>();
       for (SuperGroup superGroup : this.superGroupRepository.getAllByType(type)) {
+        List<Group> groups = this.groupRepository.getAllBySuperGroup(superGroup.id());
+
+        boolean hasAvatar =
+            groups.stream()
+                .map(Group::avatarUri)
+                .map(Optional::isPresent)
+                .reduce(false, (a, b) -> a || b);
+        boolean hasBanner =
+            groups.stream()
+                .map(Group::bannerUri)
+                .map(Optional::isPresent)
+                .reduce(false, (a, b) -> a || b);
         List<GroupFacade.GroupMemberDTO> members =
-            this.groupRepository.getAllMembersBySuperGroup(superGroup.id()).stream()
+            groups.stream()
+                .flatMap(group -> group.groupMembers().stream())
                 .map(GroupFacade.GroupMemberDTO::new)
                 .toList();
 
-        superGroupsOutput.add(new SuperGroupWithMembersDTO(new SuperGroupDTO(superGroup), members));
+        superGroupsOutput.add(
+            new SuperGroupWithMembersDTO(
+                new SuperGroupDTO(superGroup), hasBanner, hasAvatar, members));
       }
 
       output.add(new SuperGroupTypeDTO(type.value(), superGroupsOutput));
@@ -94,7 +110,10 @@ public class SuperGroupFacade extends Facade {
   }
 
   public record SuperGroupWithMembersDTO(
-      SuperGroupDTO superGroup, List<GroupFacade.GroupMemberDTO> members) {}
+      SuperGroupDTO superGroup,
+      boolean hasBanner,
+      boolean hasAvatar,
+      List<GroupFacade.GroupMemberDTO> members) {}
 
   public record SuperGroupTypeDTO(String type, List<SuperGroupWithMembersDTO> superGroups) {}
 
