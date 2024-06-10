@@ -54,6 +54,23 @@ public class GroupsController {
 
   public record Member(String name, String post, UUID userId) {}
 
+  public static class MyMembershipsForm {
+
+    private MyMembershipsForm() {
+      this.postNames = new HashMap<>();
+    }
+
+    private Map<String, String> postNames;
+
+    public Map<String, String> getPostNames() {
+      return postNames;
+    }
+
+    public void setPostNames(Map<String, String> postNames) {
+      this.postNames = postNames;
+    }
+  }
+
   @GetMapping("/groups/{id}")
   public ModelAndView getGroup(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
@@ -96,14 +113,27 @@ public class GroupsController {
     boolean canEditImages = false;
     if (SecurityContextHolder.getContext().getAuthentication()
         instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
+
       canEditImages =
           group.get().groupMembers().stream()
-              .anyMatch(
-                  groupMember ->
-                      groupMember
-                          .user()
-                          .id()
-                          .equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+              .anyMatch(groupMember -> groupMember.user().id().equals(myUserId));
+
+      List<GroupFacade.GroupMemberDTO> myGroupMembers =
+          group.get().groupMembers().stream()
+              .filter(groupMember -> groupMember.user().id().equals(myUserId))
+              .toList();
+      mv.addObject("myMembers", myGroupMembers);
+
+      MyMembershipsForm form = new MyMembershipsForm();
+
+      myGroupMembers.forEach(
+          groupMember -> {
+            form.postNames.put(
+                groupMember.post().id().toString(), groupMember.unofficialPostName());
+          });
+
+      mv.addObject("myMembershipsForm", form);
     }
 
     mv.addObject("canEditImages", canEditImages);
@@ -391,5 +421,22 @@ public class GroupsController {
     this.groupFacade.delete(groupId);
 
     return new ModelAndView("redirect:/groups");
+  }
+
+  @PutMapping("/groups/{groupId}/my-posts")
+  public ModelAndView updateUnofficialPostNames(
+      @PathVariable("groupId") UUID groupId, MyMembershipsForm myMembershipsForm) {
+    if (SecurityContextHolder.getContext().getAuthentication()
+        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
+
+      myMembershipsForm.postNames.forEach(
+          (postId, newUnofficialPostName) -> {
+            groupFacade.changeUnofficialPostName(
+                groupId, UUID.fromString(postId), myUserId, newUnofficialPostName);
+          });
+    }
+
+    return new ModelAndView("redirect:/groups/" + groupId);
   }
 }

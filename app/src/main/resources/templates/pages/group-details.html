@@ -43,6 +43,24 @@
         </footer>
     </article>
 
+    <article th:if="${myMembers.size() > 0}">
+        <header>
+            Change unofficial post name for your posts
+        </header>
+
+        <form id="update-unofficial-post-name" th:object="${myMembershipsForm}" th:action="|/groups/${group.id()}/my-posts|" th:method="put">
+            <th:block th:each="myMember : ${myMembers}">
+                <div th:replace="~{common/input :: textInput2(field='postNames['+${myMember.post().id()}+']', label=${myMember.post().enName()})}"></div>
+            </th:block>
+        </form>
+
+        <footer>
+            <button class="outline contained" form="update-unofficial-post-name">
+                Update unofficial post names
+            </button>
+        </footer>
+    </article>
+
     <th:block th:with="groupId=${group.id()}">
         <article th:fragment="group-avatar">
             <header>

@@ -134,6 +134,42 @@ public class GroupFacade extends Facade {
   }
 
   @Transactional
+  public void changeUnofficialPostName(
+      UUID groupId, UUID postId, UUID userId, String newUnofficialPostName) {
+    accessGuard.requireEither(isAdmin(), isMe(new UserId(userId)));
+
+    Group group =
+        this.groupRepository
+            .get(new GroupId(groupId))
+            .orElseThrow(GroupNotFoundRuntimeException::new);
+
+    List<GroupMember> groupMembers = new ArrayList<>(group.groupMembers());
+    boolean found = false;
+    for (int i = 0; i < groupMembers.size() && !found; i++) {
+      GroupMember groupMember = groupMembers.get(i);
+      if (groupMember.user().id().value().equals(userId)
+          && groupMember.post().id().value().equals(postId)) {
+        GroupMember newGroupMember =
+            groupMember.withUnofficialPostName(new UnofficialPostName(newUnofficialPostName));
+        groupMembers.set(i, newGroupMember);
+        found = true;
+      }
+    }
+
+    if (!found) {
+      throw new PostNotFoundRuntimeException();
+    }
+
+    group = group.withGroupMembers(groupMembers);
+    try {
+      this.groupRepository.save(group);
+    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
+      LOGGER.error("GroupAlreadyExistsException when just trying to update withGroupMembers", e);
+      throw new UnexpectedRuntimeException();
+    }
+  }
+
+  @Transactional
   public void delete(UUID id) throws GroupNotFoundRuntimeException {
     accessGuard.require(isAdmin());
 

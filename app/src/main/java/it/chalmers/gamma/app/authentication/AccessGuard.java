@@ -41,6 +41,17 @@ public class AccessGuard {
     };
   }
 
+  public static AccessChecker isMe(UserId userId) {
+    return (clientRepository, userRepository) -> {
+      if (AuthenticationExtractor.getAuthentication()
+          instanceof UserAuthentication userAuthenticated) {
+        return userAuthenticated.gammaUser().id().equals(userId);
+      }
+
+      return false;
+    };
+  }
+
   public static AccessChecker passwordCheck(String password) {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication()
