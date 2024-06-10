@@ -62,12 +62,12 @@ logging:
   level:
     root: "${ROOT_DEBUG_LEVEL:INFO}"
 application:
-  base-url: "${BASE_URL:http://gamma:8081}"
+  base-url: "${BASE_URL:http://localhost:8081}"
   production: "${PRODUCTION:false}"
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"
   cookie:
-    domain: "${COOKIE_DOMAIN:gamma}"
+    domain: "${COOKIE_DOMAIN:localhost}"
     path: "${COOKIE_PATH:/}"
     validity-time: 2628000
   admin-setup: "${ADMIN_SETUP:true}"
