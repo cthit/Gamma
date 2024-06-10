@@ -13,10 +13,11 @@ import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.image.domain.UserAvatarRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,18 +29,15 @@ public class ImageFacade extends Facade {
 
   private final ImageService imageService;
   private final GroupRepository groupRepository;
-  private final SuperGroupRepository superGroupRepository;
   private final UserAvatarRepository userAvatarRepository;
 
   public ImageFacade(
       AccessGuard accessGuard,
       ImageService imageService,
       GroupRepository groupRepository,
-      SuperGroupRepository superGroupRepository,
       UserAvatarRepository userAvatarRepository) {
     super(accessGuard);
     this.imageService = imageService;
-    this.superGroupRepository = superGroupRepository;
     this.groupRepository = groupRepository;
     this.userAvatarRepository = userAvatarRepository;
   }
@@ -133,31 +131,41 @@ public class ImageFacade extends Facade {
   }
 
   public ImageDetails getSuperGroupAvatar(UUID superGroupId) {
-    Optional<Group> maybeGroup =
+    List<ImageUri> groupAvatars =
         this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId)).stream()
-            .findFirst();
+            .map(Group::avatarUri)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
-    if (maybeGroup.isPresent()) {
-      return new ImageDetails(
-          this.imageService.getImage(
-              maybeGroup.get().avatarUri().orElse(ImageUri.defaultGroupAvatar())));
-    } else {
-      throw new RuntimeException();
+    ImageUri randomAvatar = null;
+    if (!groupAvatars.isEmpty()) {
+      int randomIndex = ThreadLocalRandom.current().nextInt(groupAvatars.size());
+      randomAvatar = groupAvatars.get(randomIndex);
     }
+
+    ImageUri image = randomAvatar != null ? randomAvatar : ImageUri.defaultGroupAvatar();
+
+    return new ImageDetails(this.imageService.getImage(image));
   }
 
   public ImageDetails getSuperGroupBanner(UUID superGroupId) {
-    Optional<Group> maybeGroup =
+    List<ImageUri> groupBanners =
         this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId)).stream()
-            .findFirst();
+            .map(Group::bannerUri)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
 
-    if (maybeGroup.isPresent()) {
-      return new ImageDetails(
-          this.imageService.getImage(
-              maybeGroup.get().bannerUri().orElse(ImageUri.defaultGroupAvatar())));
-    } else {
-      throw new RuntimeException();
+    ImageUri randomBanner = null;
+    if (!groupBanners.isEmpty()) {
+      int randomIndex = ThreadLocalRandom.current().nextInt(groupBanners.size());
+      randomBanner = groupBanners.get(randomIndex);
     }
+
+    ImageUri image = randomBanner != null ? randomBanner : ImageUri.defaultGroupBanner();
+
+    return new ImageDetails(this.imageService.getImage(image));
   }
 
   public record ImageDetails(byte[] data, String imageType) {
