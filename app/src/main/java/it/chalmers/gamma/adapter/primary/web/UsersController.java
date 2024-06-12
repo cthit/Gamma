@@ -112,7 +112,10 @@ public class UsersController {
             "groups",
             u.groups().stream()
                 .map(
-                    userGroup -> userGroup.group().prettyName() + " - " + userGroup.post().enName())
+                    userGroup ->
+                        new UserGroup(
+                            userGroup.group().prettyName() + " - " + userGroup.post().enName(),
+                            userGroup.group().id()))
                 .toList());
       }
     }
