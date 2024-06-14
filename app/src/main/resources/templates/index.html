@@ -31,8 +31,9 @@
 <body class="container-fluid"
       hx-boost="true"
       hx-history="false"
-      hx-ext="loading-states response-targets"
-      _="on htmx:afterSwap remove .show-nav from document.body">
+      hx-ext="loading-states, response-targets"
+      _="on htmx:afterSwap remove .show-nav from document.body"
+      data-loading-delay="500">
     <th:block th:replace="~{__${page}__}"></th:block>
 </body>
 </html>

@@ -7,6 +7,8 @@ spring:
         command: "UP"
       stop:
         command: "down"
+      readiness:
+        timeout: 10m
   datasource:
     username: "${DB_USER:postgres}"
     password: "${DB_PASSWORD:example}"
@@ -29,8 +31,7 @@ spring:
     open-in-view: false
   servlet:
     multipart:
-      max-file-size: "2MB"
-      max-request-size: "2MB"
+      max-file-size: 2MB
   data:
     redis:
       host: "${REDIS_HOST:0.0.0.0}"

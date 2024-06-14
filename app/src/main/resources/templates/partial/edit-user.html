@@ -30,6 +30,12 @@
         <div th:replace="~{common/error :: text}"></div>
     </form>
     <footer>
+        <button type="button"
+                class="outline contrast"
+                th:data-hx-get="|/users/${userId}|"
+                data-hx-target="body"
+                data-hx-swap="outerHTML" data-loading-disable>Cancel
+        </button>
         <button class="outline" form="edit-user" data-loading-disable>Save</button>
     </footer>
 </article>

@@ -4,9 +4,11 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
@@ -35,5 +37,13 @@ public class ThymeleafAdvice {
     }
 
     return mv;
+  }
+
+  @ExceptionHandler(MaxUploadSizeExceededException.class)
+  public ModelAndView handleMaxSizeException(HttpServletResponse response) {
+    response.addHeader("HX-Retarget", "#alerts");
+    response.addHeader("HX-Reswap", "afterbegin");
+
+    return new ModelAndView("common/content-too-large");
   }
 }

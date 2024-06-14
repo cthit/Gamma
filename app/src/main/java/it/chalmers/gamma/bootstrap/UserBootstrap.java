@@ -46,7 +46,7 @@ public class UserBootstrap {
                         Language.EN,
                         new UserExtended(
                             new Email(mockUser.cid() + "@example.org"), 0, false, null)),
-                    new UnencryptedPassword("password"));
+                    new UnencryptedPassword("password1337"));
               } catch (UserRepository.CidAlreadyInUseException
                   | UserRepository.EmailAlreadyInUseException e) {
                 e.printStackTrace();

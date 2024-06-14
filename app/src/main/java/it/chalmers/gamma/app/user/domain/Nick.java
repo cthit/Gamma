@@ -1,18 +1,21 @@
 package it.chalmers.gamma.app.user.domain;
 
+import static it.chalmers.gamma.app.validation.ValidationHelper.*;
+
+import it.chalmers.gamma.app.validation.*;
 import java.io.Serializable;
-import java.util.Objects;
-import org.springframework.web.util.HtmlUtils;
 
 public record Nick(String value) implements Serializable {
 
   public Nick {
-    Objects.requireNonNull(value);
+    throwIfFailed(new NickValidator().validate(value));
+  }
 
-    value = HtmlUtils.htmlEscape(value, "UTF-8");
+  public static final class NickValidator implements Validator<String> {
 
-    if (value.isEmpty() || value.length() > 30) {
-      throw new IllegalArgumentException("Nick length must be between 1 and 30");
+    @Override
+    public ValidationResult validate(String value) {
+      return withValidators(IS_NOT_EMPTY, SANITIZED_HTML, MAX_LENGTH.apply(50)).validate(value);
     }
   }
 }

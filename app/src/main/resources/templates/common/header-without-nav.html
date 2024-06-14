@@ -1,4 +1,7 @@
 <link rel="stylesheet" th:href="@{/css/no-nav.css}"/>
+<div id="loader-container" data-loading data-loading-class="loading">
+    <progress></progress>
+</div>
 <header>
     <button id="toggle-nav" class="outline contrast"
             _="on click toggle .show-nav on document.body">
@@ -10,7 +13,6 @@
                 Gamma
             </h1>
         </a>
-        <div data-loading>Loading...</div>
     </div>
     <div>
         <th:block sec:authorize="isAuthenticated()">

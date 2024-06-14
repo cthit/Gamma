@@ -59,7 +59,7 @@ public class EnsureAnAdminUserBootstrap {
 
     String password;
     if (!production) {
-      password = "password";
+      password = "password1337";
     } else {
       password =
           TokenUtils.generateToken(

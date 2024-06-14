@@ -1,18 +1,22 @@
 package it.chalmers.gamma.app.user.domain;
 
+import static it.chalmers.gamma.app.validation.ValidationHelper.*;
+
+import it.chalmers.gamma.app.validation.ValidationResult;
+import it.chalmers.gamma.app.validation.Validator;
 import java.io.Serializable;
-import java.util.Objects;
-import org.springframework.web.util.HtmlUtils;
 
 public record FirstName(String value) implements Serializable {
 
   public FirstName {
-    Objects.requireNonNull(value);
+    throwIfFailed(new FirstNameValidator().validate(value));
+  }
 
-    value = HtmlUtils.htmlEscape(value, "UTF-8");
+  public static final class FirstNameValidator implements Validator<String> {
 
-    if (value.isEmpty() || value.length() > 50) {
-      throw new IllegalArgumentException("First name length must be between 1 and 50");
+    @Override
+    public ValidationResult validate(String value) {
+      return withValidators(IS_NOT_EMPTY, SANITIZED_HTML, MAX_LENGTH.apply(50)).validate(value);
     }
   }
 }
