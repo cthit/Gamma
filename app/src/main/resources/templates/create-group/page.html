@@ -1,7 +1,7 @@
 <header th:replace="~{common/header}"></header>
 <main>
     <form th:object="${form}"
-          th:action="@{/groups}"
+          th:action="@{/groups/create}"
           th:method="post"
           _="on htmx:afterSwap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
         <article>

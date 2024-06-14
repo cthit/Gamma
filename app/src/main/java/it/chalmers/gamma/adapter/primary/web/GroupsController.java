@@ -1,8 +1,5 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.post.PostFacade;
@@ -10,8 +7,6 @@ import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.Name.NameValidator;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,6 +14,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class GroupsController {
@@ -443,10 +444,10 @@ public class GroupsController {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
-      mv.setViewName("pages/create-group");
+      mv.setViewName("create-group/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/create-group");
+      mv.addObject("page", "create-group/page");
     }
 
     if (form == null) {
@@ -463,7 +464,7 @@ public class GroupsController {
     return mv;
   }
 
-  @PostMapping("/groups")
+  @PostMapping("/groups/create")
   public ModelAndView createGroup(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       final GroupForm form,
