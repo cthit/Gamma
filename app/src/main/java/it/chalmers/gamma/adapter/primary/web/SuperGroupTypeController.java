@@ -3,6 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupTypeRepository;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -36,7 +37,8 @@ public class SuperGroupTypeController {
     var v = new CreateType("");
 
     mv.addObject("form", v);
-    mv.addObject("types", types);
+    mv.addObject(
+        "types", types.stream().sorted(Comparator.comparing(String::toLowerCase)).toList());
 
     return mv;
   }

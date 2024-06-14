@@ -25,7 +25,7 @@
                 <label>
                     Post
                     <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
-                        <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+                        <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
                     </select>
                 </label>
                 <label>

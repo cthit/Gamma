@@ -52,7 +52,11 @@ public class GroupsController {
       mv.addObject("page", "groups/page");
     }
 
-    mv.addObject("groups", groups);
+    mv.addObject(
+        "groups",
+        groups.stream()
+            .sorted(Comparator.comparing(group -> group.prettyName().toLowerCase()))
+            .toList());
 
     return mv;
   }
@@ -310,12 +314,14 @@ public class GroupsController {
     ModelAndView mv = new ModelAndView();
     mv.setViewName("group-details/edit-group");
 
-    List<SuperGroupFacade.SuperGroupDTO> superGroups = this.superGroupFacade.getAll();
+    List<SuperGroupFacade.SuperGroupDTO> superGroups =
+        this.superGroupFacade.getAll().stream()
+            .sorted(Comparator.comparing(superGroup -> superGroup.prettyName().toLowerCase()))
+            .toList();
     List<UserFacade.UserDTO> users = this.userFacade.getAll();
     List<PostFacade.PostDTO> posts = this.postFacade.getAll();
 
     if (form != null) {
-
       form =
           new GroupForm(
               group.get().version(),
@@ -339,10 +345,22 @@ public class GroupsController {
         "posts",
         posts.stream()
             .collect(Collectors.toMap(PostFacade.PostDTO::id, PostFacade.PostDTO::enName)));
+    mv.addObject(
+        "postKeys",
+        posts.stream()
+            .sorted(Comparator.comparing(post -> post.enName().toLowerCase()))
+            .map(PostFacade.PostDTO::id)
+            .toList());
 
     mv.addObject(
         "users",
         users.stream().collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
+    mv.addObject(
+        "userKeys",
+        users.stream()
+            .sorted(Comparator.comparing(user -> user.nick().toLowerCase()))
+            .map(UserFacade.UserDTO::id)
+            .toList());
 
     if (bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -397,10 +415,22 @@ public class GroupsController {
         "posts",
         posts.stream()
             .collect(Collectors.toMap(PostFacade.PostDTO::id, PostFacade.PostDTO::enName)));
+    mv.addObject(
+        "postKeys",
+        posts.stream()
+            .sorted(Comparator.comparing(post -> post.enName().toLowerCase()))
+            .map(PostFacade.PostDTO::id)
+            .toList());
 
     mv.addObject(
         "users",
         users.stream().collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
+    mv.addObject(
+        "userKeys",
+        users.stream()
+            .sorted(Comparator.comparing(user -> user.nick().toLowerCase()))
+            .map(UserFacade.UserDTO::id)
+            .toList());
 
     return mv;
   }

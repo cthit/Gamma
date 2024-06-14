@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.domain.PostRepository;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,7 +33,9 @@ public class PostsController {
       mv.addObject("page", "pages/posts");
     }
 
-    mv.addObject("posts", posts);
+    mv.addObject(
+        "posts",
+        posts.stream().sorted(Comparator.comparing(post -> post.enName().toLowerCase())).toList());
 
     return mv;
   }

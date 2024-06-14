@@ -3,13 +3,13 @@
         <label>
             User
             <select class="userId">
-                <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"></option>
+                <option th:each="userKey : ${userKeys}" th:value="${userKey}" th:text="${users.get(userKey)}"></option>
             </select>
         </label>
         <label>
             Post
             <select class="postId">
-                <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+                <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
             </select>
         </label>
         <label>

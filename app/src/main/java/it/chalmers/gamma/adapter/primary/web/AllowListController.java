@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.user.allowlist.AllowListFacade;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,8 @@ public class AllowListController {
     }
 
     List<String> allowList = this.allowListFacade.getAllowList();
-    mv.addObject("allowList", allowList);
+    mv.addObject(
+        "allowList", allowList.stream().sorted(Comparator.comparing(String::toLowerCase)).toList());
 
     return mv;
   }

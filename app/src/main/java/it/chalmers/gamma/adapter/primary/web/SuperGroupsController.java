@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,7 +38,11 @@ public class SuperGroupsController {
       mv.addObject("page", "pages/super-groups");
     }
 
-    mv.addObject("superGroups", superGroups);
+    mv.addObject(
+        "superGroups",
+        superGroups.stream()
+            .sorted(Comparator.comparing(superGroup -> superGroup.prettyName().toLowerCase()))
+            .toList());
 
     return mv;
   }
@@ -118,7 +123,11 @@ public class SuperGroupsController {
             sg.type(),
             sg.svDescription(),
             sg.enDescription()));
-    mv.addObject("types", this.superGroupFacade.getAllTypes());
+    mv.addObject(
+        "types",
+        this.superGroupFacade.getAllTypes().stream()
+            .sorted(Comparator.comparing(String::toLowerCase))
+            .toList());
 
     return mv;
   }
@@ -212,7 +221,11 @@ public class SuperGroupsController {
     }
 
     mv.addObject("form", new CreateSuperGroupForm("", "", "", "", ""));
-    mv.addObject("types", this.superGroupFacade.getAllTypes());
+    mv.addObject(
+        "types",
+        this.superGroupFacade.getAllTypes().stream()
+            .sorted(Comparator.comparing(String::toLowerCase))
+            .toList());
 
     return mv;
   }

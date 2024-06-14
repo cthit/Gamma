@@ -11,10 +11,7 @@ import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -243,6 +240,12 @@ public class ClientsController {
                 Collectors.toMap(
                     SuperGroupFacade.SuperGroupDTO::id,
                     SuperGroupFacade.SuperGroupDTO::prettyName)));
+    mv.addObject(
+        "superGroupKeys",
+        this.superGroupFacade.getAll().stream()
+            .sorted(Comparator.comparing(superGroup -> superGroup.prettyName().toLowerCase()))
+            .map(SuperGroupFacade.SuperGroupDTO::id)
+            .toList());
 
     return mv;
   }

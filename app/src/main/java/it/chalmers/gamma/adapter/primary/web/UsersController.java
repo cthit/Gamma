@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.time.Year;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -40,7 +41,9 @@ public class UsersController {
       mv.addObject("page", "users/page");
     }
 
-    mv.addObject("users", users);
+    mv.addObject(
+        "users",
+        users.stream().sorted(Comparator.comparing(user -> user.nick().toLowerCase())).toList());
 
     return mv;
   }
