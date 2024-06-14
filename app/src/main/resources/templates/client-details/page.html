@@ -1,7 +1,7 @@
 <header th:replace="~{common/header}"></header>
 <main th:data-hx-headers="${amIOwner} ? '{&quot;owner&quot;: &quot;true&quot;}' : null">
     <th:block th:if="${clientSecret != null}">
-        <article th:replace="~{partial/client-credentials}"></article>
+        <article th:replace="~{client-details/client-credentials}"></article>
     </th:block>
     <article>
         <header>
@@ -88,7 +88,7 @@
 
     <div id="client-authorities-anchor" style="visibility: hidden"></div>
 
-    <article th:replace="~{partial/add-authority-to-client}"></article>
+    <article th:replace="~{client-details/add-authority-to-client}"></article>
 
     <article>
         <header>

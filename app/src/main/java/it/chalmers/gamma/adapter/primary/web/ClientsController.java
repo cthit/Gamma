@@ -1,11 +1,15 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
+import it.chalmers.gamma.app.client.domain.ClientRedirectUrl.ClientRedirectUrlValidator;
+import it.chalmers.gamma.app.client.domain.authority.AuthorityName.AuthorityNameValidator;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
+import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -83,10 +87,10 @@ public class ClientsController {
     List<UserFacade.UserDTO> userApprovals = this.clientApprovalFacade.getApprovalsForClient(uid);
 
     if (htmxRequest) {
-      mv.setViewName("pages/client-details");
+      mv.setViewName("client-details/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/client-details");
+      mv.addObject("page", "client-details/page");
     }
     mv.addObject("clientUid", client.get().clientUid());
     mv.addObject("client", client.get());
@@ -114,10 +118,10 @@ public class ClientsController {
   public ModelAndView createClientNotFound(String clientUid, boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
-      mv.setViewName("pages/client-not-found");
+      mv.setViewName("client-details/not-found");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/client-not-found");
+      mv.addObject("page", "client-details/not-found");
     }
 
     mv.addObject("id", clientUid);
@@ -126,8 +130,13 @@ public class ClientsController {
   }
 
   public static final class CreateClient {
+
+    @ValidatedWith(ClientRedirectUrlValidator.class)
     private String redirectUrl;
+
+    @ValidatedWith(PrettyNameValidator.class)
     private String prettyName;
+
     private String svDescription;
     private String enDescription;
     private boolean generateApiKey;
@@ -214,18 +223,28 @@ public class ClientsController {
   }
 
   @GetMapping("/clients/create")
-  public ModelAndView createClient(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+  public ModelAndView getCreateClient(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      CreateClient form,
+      BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
-    if (htmxRequest) {
-      mv.setViewName("pages/create-client");
-    } else {
-      mv.setViewName("index");
-      mv.addObject("page", "pages/create-client");
+    if (form == null) {
+      form = new CreateClient();
     }
 
-    mv.addObject("form", new CreateClient());
+    if (htmxRequest) {
+      mv.setViewName("create-client/page");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "create-client/page");
+    }
+
+    mv.addObject("form", form);
+
+    if (bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
 
     return mv;
   }
@@ -235,7 +254,7 @@ public class ClientsController {
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("partial/add-restriction-to-client");
+    mv.setViewName("create-client/add-restriction-to-client");
 
     mv.addObject(
         "superGroups",
@@ -254,12 +273,19 @@ public class ClientsController {
     return mv;
   }
 
-  @PostMapping("/clients")
-  public ModelAndView createClient(
+  @PostMapping("/clients/create")
+  public ModelAndView getCreateClient(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       CreateClient form,
       BindingResult bindingResult,
       HttpServletResponse response) {
+
+    validateObject(form, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      return getCreateClient(htmxRequest, form, bindingResult);
+    }
+
     ModelAndView mv = new ModelAndView();
 
     ClientFacade.CreatedClientDTO result =
@@ -273,7 +299,7 @@ public class ClientsController {
                 form.emailScope,
                 new ClientFacade.NewClientRestrictions(form.restrictions)));
 
-    mv.setViewName("pages/client-details");
+    mv.setViewName("client-details/page");
 
     mv.addObject("clientUid", result.client().clientUid());
     mv.addObject("client", result.client());
@@ -302,7 +328,7 @@ public class ClientsController {
 
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("pages/client-details :: client-authorities");
+    mv.setViewName("client-details/page :: client-authorities");
     mv.addObject("client", client.get());
     mv.addObject("clientAuthorities", clientAuthorities);
 
@@ -321,7 +347,7 @@ public class ClientsController {
 
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("partial/add-authority-to-client");
+    mv.setViewName("client-details/add-authority-to-client");
     mv.addObject("client", client.get());
 
     return mv;
@@ -332,7 +358,7 @@ public class ClientsController {
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("partial/add-super-group-authority-to-client");
+    mv.setViewName("client-details/add-super-group-authority-to-client");
 
     mv.addObject(
         "superGroups",
@@ -350,7 +376,7 @@ public class ClientsController {
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("partial/add-user-authority-to-client");
+    mv.setViewName("client-details/add-user-authority-to-client");
 
     mv.addObject(
         "users",
@@ -363,6 +389,8 @@ public class ClientsController {
   public static final class CreateAuthority {
     private List<UUID> superGroups;
     private List<UUID> users;
+
+    @ValidatedWith(AuthorityNameValidator.class)
     private String authority;
 
     public List<UUID> getSuperGroups() {
@@ -394,7 +422,12 @@ public class ClientsController {
   public ModelAndView createAuthority(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       @PathVariable("id") UUID clientUid,
-      CreateAuthority form) {
+      CreateAuthority form,
+      BindingResult bindingResult) {
+
+    validateObject(form, bindingResult);
+
+    if (bindingResult.hasErrors()) {}
 
     try {
       this.clientAuthorityFacade.create(clientUid, form.authority);
@@ -434,7 +467,7 @@ public class ClientsController {
           });
     }
 
-    ModelAndView mv = new ModelAndView("partial/created-client-authority");
+    ModelAndView mv = new ModelAndView("client-details/created-client-authority");
 
     mv.addObject("clientUid", clientUid);
     mv.addObject(
@@ -474,6 +507,6 @@ public class ClientsController {
       throw new RuntimeException(e);
     }
 
-    return new ModelAndView("partial/deleted-client-authority");
+    return new ModelAndView("client-details/deleted-client-authority");
   }
 }

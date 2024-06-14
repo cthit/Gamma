@@ -148,7 +148,7 @@ public class MyClientsController {
                 form.emailScope,
                 null));
 
-    mv.setViewName("pages/client-details");
+    mv.setViewName("client-details/page");
 
     mv.addObject("clientUid", result.client().clientUid());
     mv.addObject("client", result.client());

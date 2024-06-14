@@ -1,14 +1,21 @@
 package it.chalmers.gamma.app.client.domain;
 
-import org.springframework.web.util.HtmlUtils;
+import static it.chalmers.gamma.app.validation.ValidationHelper.*;
+
+import it.chalmers.gamma.app.validation.ValidationResult;
+import it.chalmers.gamma.app.validation.Validator;
 
 public record ClientRedirectUrl(String value) {
 
   public ClientRedirectUrl {
-    if (value == null) {
-      throw new NullPointerException();
-    }
+    throwIfFailed(new ClientRedirectUrlValidator().validate(value));
+  }
 
-    value = HtmlUtils.htmlEscape(value, "UTF-8");
+  public static final class ClientRedirectUrlValidator implements Validator<String> {
+
+    @Override
+    public ValidationResult validate(String value) {
+      return withValidators(IS_NOT_EMPTY, SANITIZED_HTML).validate(value);
+    }
   }
 }

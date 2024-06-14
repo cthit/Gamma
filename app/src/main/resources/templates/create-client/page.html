@@ -4,7 +4,7 @@
         <header>
             Create client
         </header>
-        <form id="create-clients" th:object="${form}" th:action="@{/clients}" th:method="post">
+        <form id="create-clients" th:object="${form}" th:action="@{/clients/create}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
