@@ -3,7 +3,6 @@ package it.chalmers.gamma.app.group;
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
-import it.chalmers.gamma.app.UnexpectedRuntimeException;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.*;
@@ -49,7 +48,7 @@ public class GroupFacade extends Facade {
     this.superGroupRepository = superGroupRepository;
   }
 
-  public UUID create(NewGroup newGroup) throws GroupAlreadyExistsException {
+  public UUID create(NewGroup newGroup) {
     accessGuard.require(isAdmin());
 
     Group group =
@@ -65,17 +64,13 @@ public class GroupFacade extends Facade {
             Optional.empty(),
             Optional.empty());
 
-    try {
-      this.groupRepository.save(group);
-    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-      throw new GroupAlreadyExistsException();
-    }
+    this.groupRepository.save(group);
 
     return group.id().value();
   }
 
   @Transactional
-  public void update(UpdateGroup updateGroup) throws GroupAlreadyExistsException {
+  public void update(UpdateGroup updateGroup) {
     accessGuard.require(isAdmin());
 
     GroupId groupId = new GroupId(updateGroup.id);
@@ -93,11 +88,7 @@ public class GroupFacade extends Facade {
                     .orElseThrow(SuperGroupNotFoundRuntimeException::new))
             .build();
 
-    try {
-      this.groupRepository.save(newGroup);
-    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-      throw new GroupAlreadyExistsException();
-    }
+    this.groupRepository.save(newGroup);
   }
 
   public void setMembers(UUID groupId, List<ShallowMember> newMembers)
@@ -124,13 +115,7 @@ public class GroupFacade extends Facade {
                   .orElseThrow(UserNotFoundRuntimeException::new)));
     }
 
-    try {
-      this.groupRepository.save(oldGroup.withGroupMembers(newGroupMembers));
-    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-      // Unexpected error since it can only be thrown if id or name is the same as any other group.
-      LOGGER.error("GroupAlreadyExistsException when just trying to update withGroupMembers", e);
-      throw new UnexpectedRuntimeException();
-    }
+    this.groupRepository.save(oldGroup.withGroupMembers(newGroupMembers));
   }
 
   @Transactional
@@ -161,12 +146,7 @@ public class GroupFacade extends Facade {
     }
 
     group = group.withGroupMembers(groupMembers);
-    try {
-      this.groupRepository.save(group);
-    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-      LOGGER.error("GroupAlreadyExistsException when just trying to update withGroupMembers", e);
-      throw new UnexpectedRuntimeException();
-    }
+    this.groupRepository.save(group);
   }
 
   @Transactional
@@ -178,6 +158,14 @@ public class GroupFacade extends Facade {
     } catch (GroupRepository.GroupNotFoundException e) {
       throw new GroupNotFoundRuntimeException();
     }
+  }
+
+  public boolean groupWithNameAlreadyExists(UUID id, String name) {
+    accessGuard.require(isSignedIn());
+
+    Optional<Group> maybeGroup = this.groupRepository.get(new Name(name));
+
+    return maybeGroup.isEmpty() || !maybeGroup.get().id().value().equals(id);
   }
 
   public Optional<GroupWithMembersDTO> getWithMembers(UUID groupId) {
@@ -256,8 +244,6 @@ public class GroupFacade extends Facade {
           new SuperGroupFacade.SuperGroupDTO(group.superGroup()));
     }
   }
-
-  public static class GroupAlreadyExistsException extends Exception {}
 
   public static class UserNotFoundRuntimeException extends RuntimeException {}
 

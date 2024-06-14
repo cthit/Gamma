@@ -1,18 +1,23 @@
 package it.chalmers.gamma.app.common;
 
+import static it.chalmers.gamma.app.validation.ValidationHelper.*;
+
+import it.chalmers.gamma.app.validation.ValidationResult;
+import it.chalmers.gamma.app.validation.Validator;
 import java.io.Serializable;
-import java.util.Objects;
-import org.springframework.web.util.HtmlUtils;
 
 public record PrettyName(String value) implements Serializable {
 
   public PrettyName {
-    Objects.requireNonNull(value);
+    throwIfFailed(new PrettyNameValidator().validate(value));
+  }
 
-    value = HtmlUtils.htmlEscape(value, "UTF-8");
+  public static final class PrettyNameValidator implements Validator<String> {
 
-    if (value.length() < 2 || value.length() > 50) {
-      throw new IllegalArgumentException("Pretty name must be between 3 and 50 in length");
+    @Override
+    public ValidationResult validate(String value) {
+      return withValidators(IS_NOT_EMPTY, SANITIZED_HTML, BETWEEN_LENGTH.apply(2, 50))
+          .validate(value);
     }
   }
 }

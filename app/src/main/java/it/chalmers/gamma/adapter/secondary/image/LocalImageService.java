@@ -5,12 +5,14 @@ import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -102,6 +104,15 @@ public class LocalImageService implements ImageService {
   private void checkIfValidImageContent(MultipartFile file) throws ImageCouldNotBeSavedException {
     String contentType = file.getContentType();
     if (!List.of("image/jpeg", "image/png", "image/gif").contains(contentType)) {
+      throw new ImageCouldNotBeSavedException("Image content type not valid");
+    }
+
+    try (InputStream is = file.getInputStream()) {
+      var test = ImageIO.read(is);
+      if (test == null) {
+        throw new ImageCouldNotBeSavedException("Image content not valid");
+      }
+    } catch (IOException e) {
       throw new ImageCouldNotBeSavedException("Image content not valid");
     }
   }

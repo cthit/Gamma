@@ -102,11 +102,7 @@ public class GroupBootstrap {
                       Optional.empty(),
                       Optional.empty());
 
-              try {
-                this.groupRepository.save(group);
-              } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-                e.printStackTrace();
-              }
+              this.groupRepository.save(group);
             });
 
     LOGGER.info("==========                 ==========");

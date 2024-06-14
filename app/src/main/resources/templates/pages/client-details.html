@@ -1,5 +1,4 @@
 <header th:replace="~{common/header}"></header>
-<div id="alerts"></div>
 <main th:data-hx-headers="${amIOwner} ? '{&quot;owner&quot;: &quot;true&quot;}' : null">
     <th:block th:if="${clientSecret != null}">
         <article th:replace="~{partial/client-credentials}"></article>

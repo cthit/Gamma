@@ -1,19 +1,30 @@
 package it.chalmers.gamma.app.user.domain;
 
-import java.util.Locale;
+import static it.chalmers.gamma.app.validation.ValidationHelper.*;
+
+import it.chalmers.gamma.app.validation.ValidationResult;
+import it.chalmers.gamma.app.validation.Validator;
+import java.util.regex.Pattern;
 
 public record Name(String value) {
 
   public Name {
-    if (value == null) {
-      throw new NullPointerException("Name cannot be null");
-    }
+    throwIfFailed(new NameValidator().validate(value));
+  }
 
-    value = value.toLowerCase(Locale.ROOT);
+  public static final class NameValidator implements Validator<String> {
 
-    if (!value.matches("^([0-9a-z\\-]{3,30})$")) {
-      throw new IllegalArgumentException(
-          "Name: [" + value + "] must be letters a - z, '-' and be of length between 3 - 30");
+    private static final Pattern namePattern = Pattern.compile("^([0-9a-z\\-]{3,30})$");
+
+    @Override
+    public ValidationResult validate(String value) {
+      return withValidators(
+              IS_NOT_EMPTY,
+              MATCHES_REGEX.apply(
+                  new RegexMatcher(
+                      namePattern,
+                      "Must be lowercase letters a - z, '-' and be of length between 3 - 30")))
+          .validate(value);
     }
   }
 }

@@ -20,14 +20,14 @@ public record Email(String value) implements UserIdentifier, Serializable {
         Pattern.compile(
             "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 
-    private static final Validator<String> emailRegex =
-        value ->
-            result(
-                EmailValidator.emailPattern.matcher(value).matches(), "Email does not look valid");
-
     @Override
     public ValidationResult validate(String value) {
-      return withValidators(IS_NOT_EMPTY, SANITIZED_HTML, emailRegex).validate(value);
+      return withValidators(
+              IS_NOT_EMPTY,
+              SANITIZED_HTML,
+              MATCHES_REGEX.apply(
+                  new RegexMatcher(emailPattern, "Does not look like a valid email")))
+          .validate(value);
     }
   }
 }

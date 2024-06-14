@@ -48,11 +48,7 @@ public class ImageFacade extends Facade {
     accessGuard.requireEither(isAdmin(), isSignedInUserMemberOfGroup(group));
 
     ImageUri imageUri = this.imageService.saveImage(image);
-    try {
-      this.groupRepository.save(group.withBannerUri(Optional.of(imageUri)));
-    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-      e.printStackTrace();
-    }
+    this.groupRepository.save(group.withBannerUri(Optional.of(imageUri)));
   }
 
   public ImageDetails getGroupBanner(UUID groupId) {
@@ -70,8 +66,7 @@ public class ImageFacade extends Facade {
     try {
       this.groupRepository.save(group.withBannerUri(Optional.empty()));
       this.imageService.removeImage(imageUri);
-    } catch (ImageService.ImageCouldNotBeRemovedException
-        | GroupRepository.GroupNameAlreadyExistsException e) {
+    } catch (ImageService.ImageCouldNotBeRemovedException e) {
       throw new RuntimeException(e);
     }
   }
@@ -82,11 +77,7 @@ public class ImageFacade extends Facade {
     accessGuard.requireEither(isAdmin(), isSignedInUserMemberOfGroup(group));
 
     ImageUri imageUri = this.imageService.saveImage(image);
-    try {
-      this.groupRepository.save(group.withAvatarUri(Optional.of(imageUri)));
-    } catch (GroupRepository.GroupNameAlreadyExistsException e) {
-      e.printStackTrace();
-    }
+    this.groupRepository.save(group.withAvatarUri(Optional.of(imageUri)));
   }
 
   public ImageDetails getGroupAvatar(UUID groupId) {
@@ -104,8 +95,7 @@ public class ImageFacade extends Facade {
     try {
       this.groupRepository.save(group.withAvatarUri(Optional.empty()));
       this.imageService.removeImage(imageUri);
-    } catch (ImageService.ImageCouldNotBeRemovedException
-        | GroupRepository.GroupNameAlreadyExistsException e) {
+    } catch (ImageService.ImageCouldNotBeRemovedException e) {
       throw new RuntimeException(e);
     }
   }

@@ -1,10 +1,14 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
+import it.chalmers.gamma.adapter.secondary.image.ImageFile.ImageFileValidator;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
+import it.chalmers.gamma.app.validation.FailedValidation;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -28,76 +32,104 @@ public class GroupsImageController {
 
   @PutMapping("/groups/avatar/{id}")
   public ModelAndView editGroupAvatar(
-      @RequestParam("file") MultipartFile file, @PathVariable("id") UUID id) {
-    try {
-      this.imageFacade.setGroupAvatar(id, new ImageFile(file));
-    } catch (ImageService.ImageCouldNotBeSavedException e) {
-      throw new RuntimeException(e);
-    }
-
+      @RequestParam("file") MultipartFile file,
+      @PathVariable("id") UUID id,
+      HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("pages/group-details :: group-avatar");
-    mv.addObject("groupId", id);
-    mv.addObject("random", Math.random());
-
-    var group = this.groupFacade.getWithMembers(id);
-    if (group.isEmpty()) {
-      throw new RuntimeException();
+    if (new ImageFileValidator().validate(file) instanceof FailedValidation) {
+      response.addHeader("HX-Reswap", "afterbegin");
+      response.addHeader("HX-Retarget", "#alerts");
+      mv.setStatus(HttpStatus.FORBIDDEN);
+      mv.setViewName("group-details/failed-to-edit-group-avatar");
+      return mv;
     }
 
-    boolean canEditImages = false;
-    if (SecurityContextHolder.getContext().getAuthentication()
-        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      canEditImages =
-          group.get().groupMembers().stream()
-              .anyMatch(
-                  groupMember ->
-                      groupMember
-                          .user()
-                          .id()
-                          .equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
-    }
+    try {
+      this.imageFacade.setGroupAvatar(id, new ImageFile(file));
 
-    mv.addObject("canEditImages", canEditImages);
+      mv.setViewName("group-details/page :: group-avatar");
+      mv.addObject("groupId", id);
+      mv.addObject("random", Math.random());
+
+      var group = this.groupFacade.getWithMembers(id);
+      if (group.isEmpty()) {
+        throw new RuntimeException();
+      }
+
+      boolean canEditImages = false;
+      if (SecurityContextHolder.getContext().getAuthentication()
+          instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+        canEditImages =
+            group.get().groupMembers().stream()
+                .anyMatch(
+                    groupMember ->
+                        groupMember
+                            .user()
+                            .id()
+                            .equals(
+                                UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+      }
+
+      mv.addObject("canEditImages", canEditImages);
+    } catch (ImageService.ImageCouldNotBeSavedException e) {
+      response.addHeader("HX-Reswap", "afterbegin");
+      response.addHeader("HX-Retarget", "#alerts");
+      mv.setStatus(HttpStatus.FORBIDDEN);
+      mv.setViewName("group-details/failed-to-edit-group-avatar");
+    }
 
     return mv;
   }
 
   @PutMapping("/groups/banner/{id}")
   public ModelAndView editGroupBanner(
-      @RequestParam("file") MultipartFile file, @PathVariable("id") UUID id) {
-    try {
-      this.imageFacade.setGroupBanner(id, new ImageFile(file));
-    } catch (ImageService.ImageCouldNotBeSavedException e) {
-      throw new RuntimeException(e);
-    }
-
+      @RequestParam("file") MultipartFile file,
+      @PathVariable("id") UUID id,
+      HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("pages/group-details :: group-banner");
-    mv.addObject("groupId", id);
-    mv.addObject("random", Math.random());
-
-    var group = this.groupFacade.getWithMembers(id);
-    if (group.isEmpty()) {
-      throw new RuntimeException();
+    if (new ImageFileValidator().validate(file) instanceof FailedValidation) {
+      response.addHeader("HX-Reswap", "afterbegin");
+      response.addHeader("HX-Retarget", "#alerts");
+      mv.setStatus(HttpStatus.FORBIDDEN);
+      mv.setViewName("group-details/failed-to-edit-group-banner");
+      return mv;
     }
 
-    boolean canEditImages = false;
-    if (SecurityContextHolder.getContext().getAuthentication()
-        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      canEditImages =
-          group.get().groupMembers().stream()
-              .anyMatch(
-                  groupMember ->
-                      groupMember
-                          .user()
-                          .id()
-                          .equals(UUID.fromString(usernamePasswordAuthenticationToken.getName())));
-    }
+    try {
+      this.imageFacade.setGroupBanner(id, new ImageFile(file));
 
-    mv.addObject("canEditImages", canEditImages);
+      mv.setViewName("group-details/page :: group-banner");
+      mv.addObject("groupId", id);
+      mv.addObject("random", Math.random());
+
+      var group = this.groupFacade.getWithMembers(id);
+      if (group.isEmpty()) {
+        throw new RuntimeException();
+      }
+
+      boolean canEditImages = false;
+      if (SecurityContextHolder.getContext().getAuthentication()
+          instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+        canEditImages =
+            group.get().groupMembers().stream()
+                .anyMatch(
+                    groupMember ->
+                        groupMember
+                            .user()
+                            .id()
+                            .equals(
+                                UUID.fromString(usernamePasswordAuthenticationToken.getName())));
+      }
+
+      mv.addObject("canEditImages", canEditImages);
+    } catch (ImageService.ImageCouldNotBeSavedException e) {
+      response.addHeader("HX-Reswap", "afterbegin");
+      response.addHeader("HX-Retarget", "#alerts");
+      mv.setStatus(HttpStatus.FORBIDDEN);
+      mv.setViewName("group-details/failed-to-edit-group-banner");
+    }
 
     return mv;
   }
@@ -108,7 +140,7 @@ public class GroupsImageController {
 
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("pages/group-details :: group-avatar");
+    mv.setViewName("group-details/page :: group-avatar");
     mv.addObject("groupId", id);
     mv.addObject("random", Math.random());
 
@@ -120,7 +152,7 @@ public class GroupsImageController {
     this.imageFacade.removeGroupBanner(id);
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("pages/group-details :: group-banner");
+    mv.setViewName("group-details/page :: group-banner");
     mv.addObject("groupId", id);
     mv.addObject("random", Math.random());
 

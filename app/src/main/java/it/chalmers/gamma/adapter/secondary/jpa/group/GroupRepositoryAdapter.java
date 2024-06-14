@@ -1,14 +1,17 @@
 package it.chalmers.gamma.adapter.secondary.jpa.group;
 
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
-import it.chalmers.gamma.app.group.domain.*;
+import it.chalmers.gamma.app.group.domain.Group;
+import it.chalmers.gamma.app.group.domain.GroupId;
+import it.chalmers.gamma.app.group.domain.GroupRepository;
+import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import jakarta.transaction.Transactional;
@@ -41,7 +44,6 @@ public class GroupRepositoryAdapter implements GroupRepository {
   private final SuperGroupJpaRepository superGroupJpaRepository;
   private final PostJpaRepository postJpaRepository;
   private final UserJpaRepository userJpaRepository;
-  private final UserEntityConverter userEntityConverter;
 
   public GroupRepositoryAdapter(
       GroupJpaRepository groupJpaRepository,
@@ -50,8 +52,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
       PostEntityConverter postEntityConverter,
       SuperGroupJpaRepository superGroupJpaRepository,
       PostJpaRepository postJpaRepository,
-      UserJpaRepository userJpaRepository,
-      UserEntityConverter userEntityConverter) {
+      UserJpaRepository userJpaRepository) {
     this.groupJpaRepository = groupJpaRepository;
     this.groupEntityConverter = groupEntityConverter;
     this.membershipJpaRepository = membershipJpaRepository;
@@ -59,11 +60,10 @@ public class GroupRepositoryAdapter implements GroupRepository {
     this.superGroupJpaRepository = superGroupJpaRepository;
     this.postJpaRepository = postJpaRepository;
     this.userJpaRepository = userJpaRepository;
-    this.userEntityConverter = userEntityConverter;
   }
 
   @Override
-  public void save(Group group) throws GroupNameAlreadyExistsException {
+  public void save(Group group) {
     try {
       this.groupJpaRepository.saveAndFlush(toEntity(group));
     } catch (DataIntegrityViolationException e) {
@@ -72,7 +72,7 @@ public class GroupRepositoryAdapter implements GroupRepository {
       if (state.equals(SUPER_GROUP_NOT_FOUND)) {
         throw new SuperGroupNotFoundRuntimeException();
       } else if (state.equals(GROUP_NAME_ALREADY_EXISTS)) {
-        throw new GroupNameAlreadyExistsException();
+        throw new GroupNameAlreadyExistsRuntimeException();
       } else if (state.equals(USER_NOT_FOUND)) {
         throw new UserNotFoundRuntimeException();
       } else if (state.equals(POST_NOT_FOUND)) {
@@ -131,6 +131,13 @@ public class GroupRepositoryAdapter implements GroupRepository {
   public Optional<Group> get(GroupId groupId) {
     return this.groupJpaRepository
         .findById(groupId.value())
+        .map(this.groupEntityConverter::toDomain);
+  }
+
+  @Override
+  public Optional<Group> get(Name name) {
+    return this.groupJpaRepository
+        .findByName(name.value())
         .map(this.groupEntityConverter::toDomain);
   }
 

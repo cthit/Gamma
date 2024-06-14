@@ -35,6 +35,7 @@
                 <button class="outline contrast" data-loading-disable>Delete</button>
             </form>
             <button
+                    class="outline contrast"
                     th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
                     data-hx-target="closest article"
                     data-hx-swap="outerHTML"

@@ -1,11 +1,17 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+import static it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
+import static it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
+
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,10 +21,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
-import static it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
-import static it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 
 @Controller
 public class HomeController {
@@ -182,7 +184,8 @@ public class HomeController {
   }
 
   @PutMapping("/me/avatar")
-  public ModelAndView editAvatar(@RequestParam("file") MultipartFile file) {
+  public ModelAndView editAvatar(
+      @RequestParam("file") MultipartFile file, HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
     try {
       this.meFacade.setAvatar(new ImageFile(file));
@@ -193,6 +196,9 @@ public class HomeController {
       mv.addObject("random", Math.random());
       mv.addObject("meId", me.id());
     } catch (ImageService.ImageCouldNotBeSavedException e) {
+      response.addHeader("HX-Retarget", "#alerts");
+      response.addHeader("HX-Reswap", "afterbegin");
+      mv.setStatus(HttpStatus.FORBIDDEN);
       mv.setViewName("home/failed-to-edit-me-avatar");
     }
 

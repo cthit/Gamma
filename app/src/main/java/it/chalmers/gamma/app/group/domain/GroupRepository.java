@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.group.domain;
 
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
+import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 public interface GroupRepository {
 
   void save(Group group)
-      throws GroupNameAlreadyExistsException,
+      throws GroupNameAlreadyExistsRuntimeException,
           SuperGroupNotFoundRuntimeException,
           UserNotFoundRuntimeException,
           PostNotFoundRuntimeException;
@@ -27,9 +28,11 @@ public interface GroupRepository {
 
   Optional<Group> get(GroupId groupId);
 
+  Optional<Group> get(Name name);
+
   class GroupNotFoundException extends Exception {}
 
-  class GroupNameAlreadyExistsException extends Exception {}
+  class GroupNameAlreadyExistsRuntimeException extends RuntimeException {}
 
   class SuperGroupNotFoundRuntimeException extends RuntimeException {}
 

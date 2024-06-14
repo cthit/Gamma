@@ -1,17 +1,22 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
+import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.domain.Name.NameValidator;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,10 +46,10 @@ public class GroupsController {
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
-      mv.setViewName("pages/groups");
+      mv.setViewName("groups/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/groups");
+      mv.addObject("page", "groups/page");
     }
 
     mv.addObject("groups", groups);
@@ -88,10 +93,10 @@ public class GroupsController {
     }
 
     if (htmxRequest) {
-      mv.setViewName("pages/group-details");
+      mv.setViewName("group-details/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/group-details");
+      mv.addObject("page", "group-details/page");
     }
 
     mv.addObject("group", group.get());
@@ -144,10 +149,10 @@ public class GroupsController {
   private ModelAndView createGroupNotFound(String groupId, boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
-      mv.setViewName("pages/group-not-found");
+      mv.setViewName("group-details/not-found");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/group-not-found");
+      mv.addObject("page", "group-details/not-found");
     }
 
     mv.addObject("id", groupId);
@@ -166,7 +171,7 @@ public class GroupsController {
     }
 
     ModelAndView mv = new ModelAndView();
-    mv.setViewName("pages/group-details :: group-details-article");
+    mv.setViewName("group-details/page :: group-details-article");
 
     mv.addObject("group", group.get());
     mv.addObject(
@@ -174,20 +179,27 @@ public class GroupsController {
         group.get().groupMembers().stream()
             .map(
                 groupMember ->
-                    groupMember.user().nick()
-                        + " - "
-                        + groupMember.post().enName()
-                        + " - "
-                        + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""))
+                    new Member(
+                        groupMember.user().nick(),
+                        " - "
+                            + groupMember.post().enName()
+                            + " - "
+                            + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""),
+                        groupMember.user().id()))
             .toList());
 
     return mv;
   }
 
   public static final class GroupForm {
-    private int version;
+
+    @ValidatedWith(NameValidator.class)
     private String name;
+
+    @ValidatedWith(PrettyNameValidator.class)
     private String prettyName;
+
+    private int version;
     private UUID superGroupId;
     private List<Member> members;
 
@@ -286,7 +298,9 @@ public class GroupsController {
   @GetMapping("/groups/{id}/edit")
   public ModelAndView getGroupEdit(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-      @PathVariable("id") UUID id) {
+      @PathVariable("id") UUID id,
+      GroupForm form,
+      BindingResult bindingResult) {
     Optional<GroupFacade.GroupWithMembersDTO> group = this.groupFacade.getWithMembers(id);
 
     if (group.isEmpty()) {
@@ -294,26 +308,29 @@ public class GroupsController {
     }
 
     ModelAndView mv = new ModelAndView();
-    mv.setViewName("partial/edit-group");
+    mv.setViewName("group-details/edit-group");
 
     List<SuperGroupFacade.SuperGroupDTO> superGroups = this.superGroupFacade.getAll();
     List<UserFacade.UserDTO> users = this.userFacade.getAll();
     List<PostFacade.PostDTO> posts = this.postFacade.getAll();
 
-    GroupForm form =
-        new GroupForm(
-            group.get().version(),
-            group.get().name(),
-            group.get().prettyName(),
-            group.get().superGroup().id(),
-            group.get().groupMembers().stream()
-                .map(
-                    groupMember ->
-                        new GroupForm.Member(
-                            groupMember.user().id(),
-                            groupMember.post().id(),
-                            groupMember.unofficialPostName()))
-                .toList());
+    if (form != null) {
+
+      form =
+          new GroupForm(
+              group.get().version(),
+              group.get().name(),
+              group.get().prettyName(),
+              group.get().superGroup().id(),
+              group.get().groupMembers().stream()
+                  .map(
+                      groupMember ->
+                          new GroupForm.Member(
+                              groupMember.user().id(),
+                              groupMember.post().id(),
+                              groupMember.unofficialPostName()))
+                  .toList());
+    }
 
     mv.addObject("form", form);
     mv.addObject("superGroups", superGroups);
@@ -327,6 +344,10 @@ public class GroupsController {
         "users",
         users.stream().collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
 
+    if (bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
+
     return mv;
   }
 
@@ -334,22 +355,33 @@ public class GroupsController {
   public ModelAndView updateGroup(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @PathVariable("id") UUID id,
+      HttpServletResponse response,
       final GroupForm form,
       final BindingResult bindingResult) {
-    try {
+
+    validateObject(form, bindingResult);
+
+    if (!bindingResult.hasErrors() && this.groupFacade.groupWithNameAlreadyExists(id, form.name)) {
+      bindingResult.addError(new FieldError("form", "name", "Group with name already exists"));
+    }
+
+    if (bindingResult.hasErrors()) {
+      response.addHeader("HX-Reswap", "outerHTML");
+      response.addHeader("HX-Retarget", "closest <article/>");
+      return this.getGroupEdit(htmxRequest, id, form, bindingResult);
+    } else {
       this.groupFacade.update(
           new GroupFacade.UpdateGroup(
               id, form.version, form.name, form.prettyName, form.superGroupId));
+
       this.groupFacade.setMembers(
           id,
           form.members.stream()
               .map(m -> new GroupFacade.ShallowMember(m.userId, m.postId, m.unofficialPostName))
               .toList());
-    } catch (GroupFacade.GroupAlreadyExistsException e) {
-      throw new RuntimeException(e);
-    }
 
-    return this.getGroup(htmxRequest, id.toString());
+      return this.getGroup(htmxRequest, id.toString());
+    }
   }
 
   @GetMapping("/groups/new-member")
@@ -359,7 +391,7 @@ public class GroupsController {
     List<PostFacade.PostDTO> posts = this.postFacade.getAll();
 
     ModelAndView mv = new ModelAndView();
-    mv.setViewName("partial/add-member-to-group");
+    mv.setViewName("group-details/add-member-to-group");
 
     mv.addObject(
         "posts",
@@ -375,7 +407,9 @@ public class GroupsController {
 
   @GetMapping("/groups/create")
   public ModelAndView getCreateGroup(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      GroupForm form,
+      BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
@@ -385,10 +419,16 @@ public class GroupsController {
       mv.addObject("page", "pages/create-group");
     }
 
-    GroupForm form = new GroupForm();
+    if (form == null) {
+      form = new GroupForm();
+    }
 
     mv.addObject("form", form);
     mv.addObject("superGroups", this.superGroupFacade.getAll());
+
+    if (bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
 
     return mv;
   }
@@ -398,20 +438,24 @@ public class GroupsController {
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       final GroupForm form,
       final BindingResult bindingResult) {
-    try {
-      UUID groupId =
-          this.groupFacade.create(
-              new GroupFacade.NewGroup(form.name, form.prettyName, form.superGroupId));
-      this.groupFacade.setMembers(
-          groupId,
-          form.members.stream()
-              .map(m -> new GroupFacade.ShallowMember(m.userId, m.postId, m.unofficialPostName))
-              .toList());
 
-      return new ModelAndView("redirect:/groups/" + groupId);
-    } catch (GroupFacade.GroupAlreadyExistsException e) {
-      throw new RuntimeException(e);
+    validateObject(form, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      return getCreateGroup(htmxRequest, form, bindingResult);
     }
+
+    UUID groupId =
+        this.groupFacade.create(
+            new GroupFacade.NewGroup(form.name, form.prettyName, form.superGroupId));
+
+    this.groupFacade.setMembers(
+        groupId,
+        form.members.stream()
+            .map(m -> new GroupFacade.ShallowMember(m.userId, m.postId, m.unofficialPostName))
+            .toList());
+
+    return new ModelAndView("redirect:/groups/" + groupId);
   }
 
   @DeleteMapping("/groups/{groupId}")
