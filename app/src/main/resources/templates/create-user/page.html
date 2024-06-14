@@ -4,7 +4,7 @@
         <header>
             Create user
         </header>
-        <form id="create-user-form" th:object="${form}" th:action="@{/users}" th:method="post">
+        <form id="create-user-form" th:object="${form}" th:action="@{/users/create}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='firstName', label='First name')}"></div>
             <div th:replace="~{common/input :: textInput2(field='lastName', label='Last name')}"></div>
             <div th:replace="~{common/input :: textInput2(field='nick', label='Nick')}"></div>

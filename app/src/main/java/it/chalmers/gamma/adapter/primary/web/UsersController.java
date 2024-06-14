@@ -1,21 +1,31 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
+import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.domain.AcceptanceYear.AcceptanceYearValidator;
+import it.chalmers.gamma.app.user.domain.Cid.CidValidator;
+import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
+import it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
+import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
+import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
 import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class UsersController {
@@ -141,13 +151,13 @@ public class UsersController {
   }
 
   public record CreateUser(
-      String password,
-      String nick,
-      String firstName,
-      String lastName,
-      String email,
-      int acceptanceYear,
-      String cid,
+      @ValidatedWith(UnencryptedPasswordValidator.class) String password,
+      @ValidatedWith(NickValidator.class) String nick,
+      @ValidatedWith(FirstNameValidator.class) String firstName,
+      @ValidatedWith(LastNameValidator.class) String lastName,
+      @ValidatedWith(EmailValidator.class) String email,
+      @ValidatedWith(AcceptanceYearValidator.class) int acceptanceYear,
+      @ValidatedWith(CidValidator.class) String cid,
       String language) {}
 
   @GetMapping("/users/create")
@@ -156,10 +166,10 @@ public class UsersController {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
-      mv.setViewName("pages/create-user");
+      mv.setViewName("create-user/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/create-user");
+      mv.addObject("page", "create-user/page");
     }
 
     mv.addObject("form", new CreateUser("", "", "", "", "", Year.now().getValue(), "", ""));
@@ -167,46 +177,52 @@ public class UsersController {
     return mv;
   }
 
-  @PostMapping("/users")
+  @PostMapping("/users/create")
   public ModelAndView createUser(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       CreateUser form,
       final BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
+    validateObject(form, bindingResult);
+
     try {
-      UUID userId =
-          this.userCreationFacade.createUser(
-              new UserCreationFacade.NewUser(
-                  form.password,
-                  form.nick,
-                  form.firstName,
-                  form.lastName,
-                  form.email,
-                  form.acceptanceYear,
-                  form.cid,
-                  form.language));
+      if (!bindingResult.hasErrors()) {
+        UUID userId =
+            this.userCreationFacade.createUser(
+                new UserCreationFacade.NewUser(
+                    form.password,
+                    form.nick,
+                    form.firstName,
+                    form.lastName,
+                    form.email,
+                    form.acceptanceYear,
+                    form.cid,
+                    form.language));
 
-      mv.setViewName("redirect:/users/" + userId);
-
-      return mv;
-    } catch (IllegalArgumentException
-        | UserCreationFacade.CidNotUniqueException
-        | UserCreationFacade.EmailNotUniqueException e) {
+        mv.setViewName("redirect:/users/" + userId);
+      }
+    } catch (IllegalArgumentException e) {
       bindingResult.addError(new ObjectError("global", e.getMessage()));
+    } catch (UserCreationFacade.CidNotUniqueException e) {
+      bindingResult.addError(new FieldError("form", "cid", e.getMessage()));
+    } catch (UserCreationFacade.EmailNotUniqueException e) {
+      bindingResult.addError(new FieldError("form", "email", e.getMessage()));
+    }
 
+    if (bindingResult.hasErrors()) {
       if (htmxRequest) {
-        mv.setViewName("pages/create-user");
+        mv.setViewName("create-user/page");
       } else {
         mv.setViewName("index");
-        mv.addObject("page", "pages/create-user");
+        mv.addObject("page", "create-user/page");
       }
 
       mv.addObject("form", form);
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
-
-      return mv;
     }
+
+    return mv;
   }
 
   public record EditUser(
