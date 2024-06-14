@@ -1,7 +1,5 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
@@ -11,12 +9,15 @@ import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class ClientsController {
@@ -91,7 +92,11 @@ public class ClientsController {
     mv.addObject("clientUid", client.get().clientUid());
     mv.addObject("client", client.get());
     mv.addObject("clientAuthorities", clientAuthorities);
-    mv.addObject("userApprovals", userApprovals);
+    mv.addObject(
+        "userApprovals",
+        userApprovals.stream()
+            .sorted(Comparator.comparing(user -> user.nick().toLowerCase()))
+            .toList());
 
     if (client.get().owner() instanceof ClientFacade.ClientDTO.UserOwner userOwner) {
       if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userPrincipal) {
