@@ -1,16 +1,19 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
+import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.*;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class ApiKeyController {
@@ -122,33 +125,52 @@ public class ApiKeyController {
   }
 
   public record CreateApiKey(
-      String prettyName, String svDescription, String enDescription, String keyType) {}
+      @ValidatedWith(PrettyNameValidator.class) String prettyName,
+      String svDescription,
+      String enDescription,
+      String keyType) {}
 
   @GetMapping("/api-keys/create")
   public ModelAndView getCreateApiKey(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      CreateApiKey form,
+      BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
-      mv.setViewName("pages/create-api-key");
+      mv.setViewName("create-api-key/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/create-api-key");
+      mv.addObject("page", "create-api-key/page");
     }
 
-    mv.addObject("form", new CreateApiKey("", "", "", ""));
+    if (form == null) {
+      form = new CreateApiKey("", "", "", "");
+    }
+
+    mv.addObject("form", form);
     mv.addObject("keyTypes", this.apiKeyFacade.getApiKeyTypes());
+
+    if (bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
 
     return mv;
   }
 
-  @PostMapping("/api-keys")
+  @PostMapping("/api-keys/create")
   public ModelAndView createApiKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       CreateApiKey form,
       BindingResult bindingResult,
       HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
+
+    validateObject(form, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      return getCreateApiKey(htmxRequest, form, bindingResult);
+    }
 
     ApiKeyFacade.CreatedApiKey createdApiKey =
         this.apiKeyFacade.create(

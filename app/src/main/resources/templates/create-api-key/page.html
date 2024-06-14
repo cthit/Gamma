@@ -4,7 +4,7 @@
         <header>
             Create api key
         </header>
-        <form id="create-api-key" th:object="${form}" th:action="@{/api-keys}" th:method="post">
+        <form id="create-api-key" th:object="${form}" th:action="@{/api-keys/create}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
