@@ -1,20 +1,21 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
-import java.time.Year;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.time.Year;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class UsersController {
@@ -34,10 +35,10 @@ public class UsersController {
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
-      mv.setViewName("pages/users");
+      mv.setViewName("users/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/users");
+      mv.addObject("page", "users/page");
     }
 
     mv.addObject("users", users);
@@ -57,10 +58,10 @@ public class UsersController {
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
-      mv.setViewName("pages/user-details");
+      mv.setViewName("user-details/page");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/user-details");
+      mv.addObject("page", "user-details/page");
     }
 
     if (AuthenticationExtractor.getAuthentication()
@@ -126,10 +127,10 @@ public class UsersController {
   private ModelAndView createUserNotFound(String userId, boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
-      mv.setViewName("pages/user-not-found");
+      mv.setViewName("user-details/not-found");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/user-not-found");
+      mv.addObject("page", "user-details/not-found");
     }
 
     mv.addObject("id", userId);
@@ -228,7 +229,7 @@ public class UsersController {
 
     ModelAndView mv = new ModelAndView();
 
-    mv.setViewName("partial/edit-user");
+    mv.setViewName("user-details/edit-user");
     mv.addObject("userId", u.id());
     mv.addObject(
         "form",
@@ -259,7 +260,7 @@ public class UsersController {
     } catch (IllegalArgumentException e) {
       bindingResult.addError(new ObjectError("global", e.getMessage()));
 
-      mv.setViewName("partial/edit-user");
+      mv.setViewName("user-details/edit-user");
       mv.addObject("userId", userId);
       mv.addObject("form", form);
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -275,7 +276,7 @@ public class UsersController {
 
     String name = form.firstName() + " '" + form.nick() + "' " + form.lastName();
 
-    mv.setViewName("partial/edited-user");
+    mv.setViewName("user-details/edited-user");
     mv.addObject("name", name);
     mv.addObject("cid", user.get().user().cid());
     mv.addObject("acceptanceYear", form.acceptanceYear);
