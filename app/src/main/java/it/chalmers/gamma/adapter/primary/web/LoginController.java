@@ -19,6 +19,7 @@ public class LoginController {
       @RequestParam(value = "authorizing", required = false) String authorizing,
       @RequestParam(value = "deleted", required = false) String deleted,
       @RequestParam(value = "account-created", required = false) String accountCreated,
+      @RequestParam(value = "password-reset", required = false) String passwordReset,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @RequestParam(value = "throttle", required = false) String throttle,
       HttpServletResponse response) {
@@ -40,6 +41,7 @@ public class LoginController {
     boolean isThrottled = throttle != null;
     boolean isDeleted = deleted != null;
     boolean isAccountCreated = accountCreated != null;
+    boolean isPasswordReset = passwordReset != null;
 
     mv.addObject("error", error);
     mv.addObject("logout", logout);
@@ -47,6 +49,7 @@ public class LoginController {
     mv.addObject("deleted", isDeleted);
     mv.addObject("throttle", isThrottled);
     mv.addObject("accountCreated", isAccountCreated);
+    mv.addObject("passwordReset", isPasswordReset);
 
     response.addHeader("HX-Retarget", "body");
 

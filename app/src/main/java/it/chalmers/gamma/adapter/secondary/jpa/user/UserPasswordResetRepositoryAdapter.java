@@ -1,8 +1,7 @@
-package it.chalmers.gamma.adapter.secondary.jpa.user.password;
+package it.chalmers.gamma.adapter.secondary.jpa.user;
 
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
-import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
@@ -24,15 +23,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     this.userPasswordResetJpaRepository = userPasswordResetJpaRepository;
   }
 
-  @Override
-  public PasswordReset createNewToken(Email email) throws UserNotFoundException {
-    Optional<UserEntity> maybeUserEntity = this.userJpaRepository.findByEmail(email.value());
-
-    if (maybeUserEntity.isEmpty()) {
-      throw new UserNotFoundException();
-    }
-
-    UserEntity userEntity = maybeUserEntity.get();
+  private PasswordReset createNewToken(UserEntity userEntity) {
     PasswordResetToken token = PasswordResetToken.generate();
 
     UserPasswordResetEntity userPasswordResetEntity =
@@ -45,7 +36,29 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
 
     this.userPasswordResetJpaRepository.save(userPasswordResetEntity);
 
-    return new PasswordReset(token, new UserId(userEntity.getId()));
+    return new PasswordReset(token, new Email(userEntity.email));
+  }
+
+  @Override
+  public PasswordReset createNewToken(Email email) throws UserNotFoundException {
+    Optional<UserEntity> maybeUserEntity = this.userJpaRepository.findByEmail(email.value());
+
+    if (maybeUserEntity.isEmpty()) {
+      throw new UserNotFoundException();
+    }
+
+    return this.createNewToken(maybeUserEntity.get());
+  }
+
+  @Override
+  public PasswordReset createNewToken(Cid cid) throws UserNotFoundException {
+    Optional<UserEntity> maybeUserEntity = this.userJpaRepository.findByCid(cid.value());
+
+    if (maybeUserEntity.isEmpty()) {
+      throw new UserNotFoundException();
+    }
+
+    return this.createNewToken(maybeUserEntity.get());
   }
 
   @Override

@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.user.password;
+package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.user.domain.UserId;

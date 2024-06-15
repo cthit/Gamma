@@ -1,5 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken.UserActivationTokenValidator;
@@ -9,6 +11,7 @@ import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
 import it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
+import java.time.Year;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,10 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.time.Year;
-
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 
 @Controller
 public class RegisterAccountController {
@@ -37,9 +36,11 @@ public class RegisterAccountController {
 
   @GetMapping("/activate-cid")
   public ModelAndView getActivateCid(
-          @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, ActivateCidForm form, BindingResult bindingResult) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      ActivateCidForm form,
+      BindingResult bindingResult) {
 
-    if(form == null) {
+    if (form == null) {
       form = new ActivateCidForm("");
     }
 
@@ -51,6 +52,7 @@ public class RegisterAccountController {
       mv.addObject("page", "register-account/activate-cid");
     }
 
+    mv.addObject("form", form);
     mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
 
     return mv;
@@ -123,32 +125,29 @@ public class RegisterAccountController {
     try {
       if (!bindingResult.hasErrors()) {
         this.userCreationFacade.createUserWithCode(
-                new UserCreationFacade.NewUser(
-                        form.password,
-                        form.nick,
-                        form.firstName,
-                        form.lastName,
-                        form.email,
-                        form.acceptanceYear,
-                        form.cid,
-                        form.language),
-                form.code,
-                form.confirmPassword,
-                form.acceptUserAgreement);
+            new UserCreationFacade.NewUser(
+                form.password,
+                form.nick,
+                form.firstName,
+                form.lastName,
+                form.email,
+                form.acceptanceYear,
+                form.cid,
+                form.language),
+            form.code,
+            form.confirmPassword,
+            form.acceptUserAgreement);
       }
     } catch (UserCreationFacade.SomePropertyNotUniqueRuntimeException e) {
       bindingResult.addError(
-              new ObjectError(
-                      "global",
-                      "Please double check what you have entered. Please send an email to ita@chalmers.it if your issues persist."));
+          new ObjectError(
+              "global",
+              "Please double check what you have entered. Please send an email to ita@chalmers.it if your issues persist."));
       LOGGER.info(
-              "Some property wasn't unique when a user tried to create an account. More info on debug level...");
+          "Some property wasn't unique when a user tried to create an account. More info on debug level...");
       LOGGER.debug(e.getMessage());
     } catch (IllegalArgumentException e) {
-      bindingResult.addError(
-              new ObjectError("global",
-                      e.getMessage())
-      );
+      bindingResult.addError(new ObjectError("global", e.getMessage()));
     }
 
     if (bindingResult.hasErrors()) {

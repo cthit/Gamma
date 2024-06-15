@@ -39,6 +39,10 @@
                     Your account has been created.
                 </p>
 
+                <p th:if="${passwordReset}">
+                    Your password was reset.
+                </p>
+
                 <a href="/activate-cid">
                     Register
                 </a>

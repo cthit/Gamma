@@ -1,5 +1,8 @@
 package it.chalmers.gamma.app.user;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
+
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
@@ -10,14 +13,10 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import jakarta.transaction.Transactional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
-
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 @Service
 public class UserCreationFacade extends Facade {
@@ -31,17 +30,18 @@ public class UserCreationFacade extends Facade {
   private final AllowListRepository allowListRepository;
 
   public UserCreationFacade(
-          AccessGuard accessGuard,
-          MailService mailService,
-          UserActivationRepository userActivationRepository,
-          UserRepository userRepository,
-          ThrottlingService throttlingService, AllowListRepository allowListRepository) {
+      AccessGuard accessGuard,
+      MailService mailService,
+      UserActivationRepository userActivationRepository,
+      UserRepository userRepository,
+      ThrottlingService throttlingService,
+      AllowListRepository allowListRepository) {
     super(accessGuard);
     this.mailService = mailService;
     this.userActivationRepository = userActivationRepository;
     this.userRepository = userRepository;
     this.throttlingService = throttlingService;
-      this.allowListRepository = allowListRepository;
+    this.allowListRepository = allowListRepository;
   }
 
   public void tryToActivateUser(String cidRaw) {
@@ -56,9 +56,9 @@ public class UserCreationFacade extends Facade {
       } else {
         LOGGER.info("Throttling an activation and its email...");
       }
-        LOGGER.info("Cid {} has been activated", cid);
+      LOGGER.info("Cid {} has been activated", cid);
     } catch (UserActivationRepository.CidNotAllowedException e) {
-        LOGGER.info("Someone tried to activate the cid: {}", cid);
+      LOGGER.info("Someone tried to activate the cid: {}", cid);
     }
   }
 

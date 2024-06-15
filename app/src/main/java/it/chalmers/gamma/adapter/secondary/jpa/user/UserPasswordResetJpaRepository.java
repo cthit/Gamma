@@ -1,4 +1,4 @@
-package it.chalmers.gamma.adapter.secondary.jpa.user.password;
+package it.chalmers.gamma.adapter.secondary.jpa.user;
 
 import java.util.Optional;
 import java.util.UUID;
