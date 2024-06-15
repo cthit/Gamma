@@ -12,7 +12,7 @@ public interface PasswordResetRepository {
 
   PasswordReset createNewToken(Cid cid) throws UserNotFoundException;
 
-  boolean doesTokenExist(PasswordResetToken token);
+  boolean isTokenValid(PasswordResetToken token);
 
   UserId useToken(PasswordResetToken token);
 

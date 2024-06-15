@@ -7,10 +7,13 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.Cid;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserActivationRepositoryAdapter implements UserActivationRepository {
@@ -54,9 +57,11 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
         .toList();
   }
 
+
+
   @Override
-  public boolean doesTokenExist(UserActivationToken token) {
-    return this.userActivationJpaRepository.findByToken(token.value()).isPresent();
+  public boolean isTokenValid(UserActivationToken token) {
+    return this.userActivationJpaRepository.findByToken(token.value()).map(this::isStillValid).orElse(false);
   }
 
   @Override
@@ -68,9 +73,18 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
       throw new TokenNotActivatedRuntimeException();
     }
 
+    if (!isStillValid(maybeActivation.get())) {
+      throw new TokenNotActivatedRuntimeException();
+    }
+
     this.userActivationJpaRepository.deleteById(maybeActivation.get().getId());
 
     return new Cid(maybeActivation.get().getId());
+  }
+
+  public boolean isStillValid(UserActivationEntity userActivationEntity) {
+    Instant createdAt = userActivationEntity.toDomain().createdAt();
+    return Duration.between(createdAt, Instant.now()).toMinutes() < 15;
   }
 
   @Override

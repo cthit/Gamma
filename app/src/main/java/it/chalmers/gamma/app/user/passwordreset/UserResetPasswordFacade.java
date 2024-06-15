@@ -94,7 +94,7 @@ public class UserResetPasswordFacade extends Facade {
     String message =
         "A password reset have been requested for this account, if you have not requested "
             + "this mail, feel free to ignore it. \n Click here to reset password: "
-            + resetUrl;
+            + resetUrl + ". \nThe link is valid for 15 minutes.";
 
     this.mailService.sendMail(email.value(), subject, message);
   }
@@ -102,7 +102,7 @@ public class UserResetPasswordFacade extends Facade {
   public boolean isValidToken(String token) {
     this.accessGuard.require(isNotSignedIn());
 
-    return this.passwordResetRepository.doesTokenExist(new PasswordResetToken(token));
+    return this.passwordResetRepository.isTokenValid(new PasswordResetToken(token));
   }
 
   // Vague for security reasons

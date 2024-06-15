@@ -9,7 +9,7 @@ public interface UserActivationRepository {
 
   List<UserActivation> getAll();
 
-  boolean doesTokenExist(UserActivationToken token);
+  boolean isTokenValid(UserActivationToken token);
 
   Cid useToken(UserActivationToken token);
 

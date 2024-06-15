@@ -6,8 +6,11 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import jakarta.transaction.Transactional;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
 
 @Service("PasswordResetRepository")
 @Transactional
@@ -61,8 +64,8 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   }
 
   @Override
-  public boolean doesTokenExist(PasswordResetToken token) {
-    return this.userPasswordResetJpaRepository.findByToken(token.value()).isPresent();
+  public boolean isTokenValid(PasswordResetToken token) {
+    return this.userPasswordResetJpaRepository.findByToken(token.value()).map(this::isStillValid).orElse(false);
   }
 
   @Override
@@ -75,8 +78,18 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
       throw new TokenNotFoundRuntimeException();
     }
 
+    if (!this.isStillValid(maybeReset.get())) {
+      throw new TokenNotFoundRuntimeException();
+    }
+
     this.userPasswordResetJpaRepository.deleteByToken(token.value());
 
     return new UserId(maybeReset.get().userId);
   }
+
+  public boolean isStillValid(UserPasswordResetEntity userPasswordResetEntity) {
+    Instant createdAt = userPasswordResetEntity.toDomain().createdAt();
+    return Duration.between(createdAt, Instant.now()).toMinutes() < 15;
+  }
+
 }

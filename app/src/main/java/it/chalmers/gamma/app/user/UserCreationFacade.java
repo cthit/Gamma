@@ -132,14 +132,14 @@ public class UserCreationFacade extends Facade {
   private void sendEmail(Cid cid, UserActivationToken userActivationToken) {
     String to = cid.getValue() + "@" + MAIL_POSTFIX;
     String resetUrl = baseUrl + "/register?token=" + userActivationToken.value();
-    String message = "Follow this link to finish up creating your account: " + resetUrl;
+    String message = "Follow this link to finish up creating your account: " + resetUrl + ". \nThe link is valid for 15 minutes.";
     this.mailService.sendMail(to, "Gamma activation url", message);
   }
 
   public boolean isValidToken(String token) {
     this.accessGuard.require(isNotSignedIn());
 
-    return this.userActivationRepository.doesTokenExist(new UserActivationToken(token));
+    return this.userActivationRepository.isTokenValid(new UserActivationToken(token));
   }
 
   public record NewUserByCode(
