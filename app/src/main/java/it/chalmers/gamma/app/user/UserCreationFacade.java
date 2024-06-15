@@ -1,8 +1,5 @@
 package it.chalmers.gamma.app.user;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
-
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
@@ -10,12 +7,17 @@ import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
+import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import jakarta.transaction.Transactional;
-import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 @Service
 public class UserCreationFacade extends Facade {
@@ -26,18 +28,20 @@ public class UserCreationFacade extends Facade {
   private final UserActivationRepository userActivationRepository;
   private final UserRepository userRepository;
   private final ThrottlingService throttlingService;
+  private final AllowListRepository allowListRepository;
 
   public UserCreationFacade(
-      AccessGuard accessGuard,
-      MailService mailService,
-      UserActivationRepository userActivationRepository,
-      UserRepository userRepository,
-      ThrottlingService throttlingService) {
+          AccessGuard accessGuard,
+          MailService mailService,
+          UserActivationRepository userActivationRepository,
+          UserRepository userRepository,
+          ThrottlingService throttlingService, AllowListRepository allowListRepository) {
     super(accessGuard);
     this.mailService = mailService;
     this.userActivationRepository = userActivationRepository;
     this.userRepository = userRepository;
     this.throttlingService = throttlingService;
+      this.allowListRepository = allowListRepository;
   }
 
   public void tryToActivateUser(String cidRaw) {
@@ -52,9 +56,9 @@ public class UserCreationFacade extends Facade {
       } else {
         LOGGER.info("Throttling an activation and its email...");
       }
-      LOGGER.info("Cid " + cid + " has been activated");
+        LOGGER.info("Cid {} has been activated", cid);
     } catch (UserActivationRepository.CidNotAllowedException e) {
-      LOGGER.info("Someone tried to activate the cid: " + cid);
+        LOGGER.info("Someone tried to activate the cid: {}", cid);
     }
   }
 
@@ -86,16 +90,15 @@ public class UserCreationFacade extends Facade {
 
   @Transactional
   public void createUserWithCode(
-      NewUser data, String token, String confirmPassword, boolean acceptsUserAgreement)
-      throws SomePropertyNotUniqueException {
+      NewUser data, String token, String confirmPassword, boolean acceptsUserAgreement) {
     this.accessGuard.require(isNotSignedIn());
 
     if (!data.password.equals(confirmPassword)) {
-      throw new IllegalArgumentException("password not confirmed");
+      throw new IllegalArgumentException("Password not confirmed");
     }
 
     if (!acceptsUserAgreement) {
-      throw new IllegalArgumentException("must accept user agreement");
+      throw new IllegalArgumentException("Must accept user agreement");
     }
 
     Cid tokenCid = this.userActivationRepository.getByToken(new UserActivationToken(token));
@@ -117,10 +120,11 @@ public class UserCreationFacade extends Facade {
             new UnencryptedPassword(data.password));
       } catch (UserRepository.CidAlreadyInUseException
           | UserRepository.EmailAlreadyInUseException e) {
-        throw new SomePropertyNotUniqueException();
+        throw new SomePropertyNotUniqueRuntimeException();
       }
 
       this.userActivationRepository.removeActivation(cid);
+      this.allowListRepository.remove(cid);
     }
   }
 
@@ -141,8 +145,8 @@ public class UserCreationFacade extends Facade {
       String cid,
       String language) {}
 
-  public static class SomePropertyNotUniqueException extends Exception {
-    public SomePropertyNotUniqueException() {
+  public static class SomePropertyNotUniqueRuntimeException extends RuntimeException {
+    public SomePropertyNotUniqueRuntimeException() {
       super("Please double check your details");
     }
   }

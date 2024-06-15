@@ -4,7 +4,7 @@
 <div id="loader-container" data-loading data-loading-class="loading">
     <progress></progress>
 </div>
-<header>
+<header id="main-header">
     <button id="toggle-nav" class="outline contrast"
             _="on click toggle .show-nav on document.body">
         Menu
@@ -16,7 +16,7 @@
             </h1>
         </a>
     </div>
-    <div>
+    <div id="login-container">
         <th:block sec:authorize="isAuthenticated()">
             <div th:text="|Hey, ${#authentication.getDetails().gammaUser().nick().value()}!|"></div>
             <form th:action="@{/logout}" th:method="post" >

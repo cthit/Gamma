@@ -1,6 +1,6 @@
 <header th:replace="~{common/header-without-nav}"></header>
 <main>
-    <form th:action="@{/activate-cid}" th:method="post" >
+    <form th:object="${form}" th:action="@{/activate-cid}" th:method="post" >
         <article>
             <header>
                 Activate cid
@@ -8,7 +8,7 @@
             <p>Enter cid to start process of creating an account. </p>
             <p>If you are an IT student, you should already be activated.</p>
             <p></p>
-            <div th:replace="~{common/input :: textInput(name='cid', value=${null}, errorMessage=${null}, label=${null})}"></div>
+            <div th:replace="~{common/input :: textInput2('cid', 'Cid')}"></div>
             <footer>
                 <a href="/register">
                     <button type="button" class="outline contrast">I already have a code</button>
