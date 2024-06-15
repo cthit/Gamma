@@ -1,7 +1,5 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
-
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
@@ -11,7 +9,6 @@ import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
 import it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
-import java.time.Year;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,6 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.time.Year;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 
 @Controller
 public class RegisterAccountController {
@@ -115,6 +116,18 @@ public class RegisterAccountController {
   public ModelAndView getRegister(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @RequestParam(value = "token", required = true) String token) {
+    if (!this.userCreationFacade.isValidToken(token)) {
+      ModelAndView mv = new ModelAndView();
+      if (htmxRequest) {
+        mv.setViewName("pages/register-account-token-bad");
+      } else {
+        mv.setViewName("index");
+        mv.addObject("page", "pages/register-account-token-bad");
+      }
+
+      return mv;
+    }
+
     CreateAccountForm form =
         new CreateAccountForm(token, "", "", "", "", "", "", Year.now().getValue(), "SV", false);
 

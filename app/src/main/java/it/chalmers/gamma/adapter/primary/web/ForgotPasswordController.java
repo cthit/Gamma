@@ -114,6 +114,18 @@ public class ForgotPasswordController {
   public ModelAndView getFinalizeForgotPassword(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @RequestParam(value = "token", required = true) String token) {
+    if (!this.userResetPasswordFacade.isValidToken(token)) {
+      ModelAndView mv = new ModelAndView();
+      if (htmxRequest) {
+        mv.setViewName("pages/password-reset-token-bad");
+      } else {
+        mv.setViewName("index");
+        mv.addObject("page", "pages/password-reset-token-bad");
+      }
+
+      return mv;
+    }
+
     FinalizeForgotPassword form = new FinalizeForgotPassword(token, "", "");
 
     return createGetFinalizeForgotPassword(htmxRequest, form, null);

@@ -1,7 +1,5 @@
 package it.chalmers.gamma.app.user.passwordreset;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
-
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
@@ -18,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 @Service
 public class UserResetPasswordFacade extends Facade {
@@ -97,6 +97,12 @@ public class UserResetPasswordFacade extends Facade {
             + resetUrl;
 
     this.mailService.sendMail(email.value(), subject, message);
+  }
+
+  public boolean isValidToken(String token) {
+    this.accessGuard.require(isNotSignedIn());
+
+    return this.passwordResetRepository.doesTokenExist(new PasswordResetToken(token));
   }
 
   // Vague for security reasons
