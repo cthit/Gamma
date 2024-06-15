@@ -22,11 +22,8 @@ public class UserActivationEntity extends ImmutableEntity<String> {
 
   protected UserActivationEntity() {}
 
-  protected UserActivationEntity(Cid cid) {
+  protected UserActivationEntity(Cid cid, UserActivationToken token) {
     this.cid = cid.getValue();
-  }
-
-  public void setToken(UserActivationToken token) {
     this.token = token.value();
   }
 

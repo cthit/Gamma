@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.client.domain;
 
-import it.chalmers.gamma.app.TokenUtils;
+import it.chalmers.gamma.app.Tokens;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,11 +21,11 @@ public record ClientSecret(String value) {
 
   public static GeneratedClientSecret generate(PasswordEncoder passwordEncoder) {
     String value =
-        TokenUtils.generateToken(
+        Tokens.generate(
             32,
-            TokenUtils.CharacterTypes.LOWERCASE,
-            TokenUtils.CharacterTypes.UPPERCASE,
-            TokenUtils.CharacterTypes.NUMBERS);
+            Tokens.CharacterTypes.LOWERCASE,
+            Tokens.CharacterTypes.UPPERCASE,
+            Tokens.CharacterTypes.NUMBERS);
     return new GeneratedClientSecret(new ClientSecret(passwordEncoder.encode(value)), value);
   }
 

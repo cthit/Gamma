@@ -5,14 +5,13 @@
             <header>
                 Finish setting up your account
             </header>
-            <div th:replace="~{common/input :: textInput2('cid', 'Cid')}"></div>
-            <div th:replace="~{common/input :: textInput2('code', 'Code from the email')}"></div>
-            <div th:replace="~{common/input :: passwordTextInput2('password', 'Password')}"></div>
-            <div th:replace="~{common/input :: passwordTextInput2('confirmPassword', 'Confirm password')}"></div>
+            <input type="hidden" name="code" th:value="${form.code()}" />
+            <div th:replace="~{common/input :: emailInput2('email', 'Non student email')}"></div>
             <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
             <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
             <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
-            <div th:replace="~{common/input :: emailInput2('email', 'Non student email')}"></div>
+            <div th:replace="~{common/input :: passwordTextInput2('password', 'Password')}"></div>
+            <div th:replace="~{common/input :: passwordTextInput2('confirmPassword', 'Confirm password')}"></div>
             <label>
                 Which year did the user start at IT?
                 <select th:field="*{acceptanceYear}">

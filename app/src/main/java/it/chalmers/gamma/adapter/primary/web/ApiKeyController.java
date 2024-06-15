@@ -1,18 +1,19 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.*;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class ApiKeyController {
@@ -129,11 +130,8 @@ public class ApiKeyController {
       String enDescription,
       String keyType) {}
 
-  @GetMapping("/api-keys/create")
-  public ModelAndView getCreateApiKey(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      CreateApiKey form,
-      BindingResult bindingResult) {
+  public ModelAndView createGetCreateApiKey(
+      boolean htmxRequest, CreateApiKey form, BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
@@ -150,11 +148,17 @@ public class ApiKeyController {
     mv.addObject("form", form);
     mv.addObject("keyTypes", this.apiKeyFacade.getApiKeyTypes());
 
-    if (bindingResult.hasErrors()) {
+    if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
     }
 
     return mv;
+  }
+
+  @GetMapping("/api-keys/create")
+  public ModelAndView getCreateApiKey(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    return createGetCreateApiKey(htmxRequest, null, null);
   }
 
   @PostMapping("/api-keys/create")
@@ -168,7 +172,7 @@ public class ApiKeyController {
     validateObject(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      return getCreateApiKey(htmxRequest, form, bindingResult);
+      return createGetCreateApiKey(htmxRequest, form, bindingResult);
     }
 
     ApiKeyFacade.CreatedApiKey createdApiKey =

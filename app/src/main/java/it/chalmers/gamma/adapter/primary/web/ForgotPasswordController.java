@@ -1,7 +1,5 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
-
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.domain.Cid.CidValidator;
 import it.chalmers.gamma.app.user.passwordreset.UserResetPasswordFacade;
@@ -11,10 +9,14 @@ import it.chalmers.gamma.app.validation.ValidationResult;
 import it.chalmers.gamma.app.validation.Validator;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 
 @Controller
 public class ForgotPasswordController {
@@ -41,15 +43,8 @@ public class ForgotPasswordController {
 
   public record ForgotPassword(@ValidatedWith(IdentifierValidator.class) String cidOrEmail) {}
 
-  @GetMapping("/forgot-password")
-  public ModelAndView getForgotPassword(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      ForgotPassword form,
-      BindingResult bindingResult) {
-    if (form == null) {
-      form = new ForgotPassword("");
-    }
-
+  public ModelAndView createGetForgotPassword(
+      boolean htmxRequest, ForgotPassword form, BindingResult bindingResult, boolean hasSent) {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
@@ -60,12 +55,19 @@ public class ForgotPasswordController {
     }
 
     mv.addObject("form", form);
+    mv.addObject("hasSent", hasSent);
 
-    if (bindingResult.hasErrors()) {
+    if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
     }
 
     return mv;
+  }
+
+  @GetMapping("/forgot-password")
+  public ModelAndView getForgotPassword(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    return createGetForgotPassword(htmxRequest, new ForgotPassword(""), null, false);
   }
 
   @PostMapping("/forgot-password")
@@ -73,27 +75,23 @@ public class ForgotPasswordController {
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       ForgotPassword form,
       final BindingResult bindingResult) {
-    ModelAndView mv = new ModelAndView();
-
     validateObject(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      return getForgotPassword(htmxRequest, form, bindingResult);
+      return createGetForgotPassword(htmxRequest, form, bindingResult, false);
     }
 
     try {
       this.userResetPasswordFacade.startResetPasswordProcess(form.cidOrEmail);
-      mv.setViewName("redirect:forgot-password/finalize");
     } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
-      mv.setViewName("redirect:forgot-password/finalize");
+      // ignore
     }
 
-    return mv;
+    return createGetForgotPassword(htmxRequest, form, bindingResult, true);
   }
 
-  @GetMapping("/forgot-password/finalize")
-  public ModelAndView getFinalizeForgotPassword(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+  public ModelAndView createGetFinalizeForgotPassword(
+      boolean htmxRequest, FinalizeForgotPassword form, BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
@@ -103,29 +101,42 @@ public class ForgotPasswordController {
       mv.addObject("page", "pages/finalize-forgot-password");
     }
 
-    mv.addObject("form", new FinalizeForgotPassword("", "", "", ""));
+    mv.addObject("form", form);
+
+    if (bindingResult != null && bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
 
     return mv;
   }
 
-  public record FinalizeForgotPassword(
-      String email, String token, String password, String confirmPassword) {}
+  @GetMapping("/forgot-password/finalize")
+  public ModelAndView getFinalizeForgotPassword(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @RequestParam(value = "token", required = true) String token) {
+    FinalizeForgotPassword form = new FinalizeForgotPassword(token, "", "");
+
+    return createGetFinalizeForgotPassword(htmxRequest, form, null);
+  }
+
+  public record FinalizeForgotPassword(String token, String password, String confirmPassword) {}
 
   @PostMapping("/forgot-password/finalize")
   public ModelAndView finalizeForgotPassword(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      FinalizeForgotPassword form) {
+      FinalizeForgotPassword form,
+      BindingResult bindingResult) {
     try {
       this.userResetPasswordFacade.finishResetPasswordProcess(
-          form.email, form.token, form.password, form.confirmPassword);
+          form.token, form.password, form.confirmPassword);
     } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
       throw new RuntimeException(e);
+    } catch (IllegalArgumentException e) {
+      bindingResult.addError(new ObjectError("global", e.getMessage()));
+      return createGetFinalizeForgotPassword(
+          htmxRequest, new FinalizeForgotPassword(form.token, "", ""), bindingResult);
     }
 
-    ModelAndView mv = new ModelAndView();
-
-    mv.setViewName("redirect:login?password-reset");
-
-    return mv;
+    return new ModelAndView("redirect:/");
   }
 }

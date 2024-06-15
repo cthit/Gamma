@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.client.domain;
 
-import it.chalmers.gamma.app.TokenUtils;
+import it.chalmers.gamma.app.Tokens;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -19,9 +19,7 @@ public record ClientId(String value) {
   }
 
   public static ClientId generate() {
-    String id =
-        TokenUtils.generateToken(
-            30, TokenUtils.CharacterTypes.UPPERCASE, TokenUtils.CharacterTypes.NUMBERS);
+    String id = Tokens.generate(30, Tokens.CharacterTypes.UPPERCASE, Tokens.CharacterTypes.NUMBERS);
     return new ClientId(id);
   }
 }

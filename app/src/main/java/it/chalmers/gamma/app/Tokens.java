@@ -1,20 +1,20 @@
 package it.chalmers.gamma.app;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
 import java.util.stream.Collectors;
 
-public final class TokenUtils {
+public final class Tokens {
 
-  private TokenUtils() {}
+  private Tokens() {}
 
-  public static String generateToken(int length, CharacterTypes... types) {
+  public static String generate(int length, CharacterTypes... types) {
     String characters =
         Arrays.stream(types).map(CharacterTypes::getCharacters).collect(Collectors.joining());
-    Random rand = new Random();
+    SecureRandom rand = new SecureRandom();
     StringBuilder code = new StringBuilder();
     for (int i = 0; i < length; i++) {
-      code.append(characters.charAt(rand.nextInt(characters.length() - 1)));
+      code.append(characters.charAt(rand.nextInt(characters.length())));
     }
     return code.toString();
   }

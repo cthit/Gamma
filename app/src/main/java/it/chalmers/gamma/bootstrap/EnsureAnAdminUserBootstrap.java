@@ -1,6 +1,6 @@
 package it.chalmers.gamma.bootstrap;
 
-import it.chalmers.gamma.app.TokenUtils;
+import it.chalmers.gamma.app.Tokens;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.*;
@@ -62,11 +62,11 @@ public class EnsureAnAdminUserBootstrap {
       password = "password1337";
     } else {
       password =
-          TokenUtils.generateToken(
+          Tokens.generate(
               75,
-              TokenUtils.CharacterTypes.LOWERCASE,
-              TokenUtils.CharacterTypes.UPPERCASE,
-              TokenUtils.CharacterTypes.NUMBERS);
+              Tokens.CharacterTypes.LOWERCASE,
+              Tokens.CharacterTypes.UPPERCASE,
+              Tokens.CharacterTypes.NUMBERS);
     }
 
     UserId adminId = UserId.generate();

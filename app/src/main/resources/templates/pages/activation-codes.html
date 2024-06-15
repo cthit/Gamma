@@ -4,7 +4,6 @@
         <thead>
         <tr>
             <th>Cid</th>
-            <th>Token</th>
             <th>Created at</th>
             <th></th>
         </tr>
@@ -12,7 +11,6 @@
         <tbody>
         <tr th:each="activationCode : ${activationCodes}">
             <td th:text="${activationCode.cid()}"></td>
-            <td th:text="${activationCode.token()}"></td>
             <td th:text="${activationCode.createdAt()}"></td>
             <td class="table-align-right">
                 <form th:data-hx-post="|/activation-codes/${activationCode.cid()}|" data-hx-target="closest tr" data-hx-swap="delete">

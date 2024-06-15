@@ -4,7 +4,7 @@ import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validate
 
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.UserCreationFacade;
-import it.chalmers.gamma.app.user.activation.domain.UserActivationToken.UserActivationTokenValidator;
+import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear.AcceptanceYearValidator;
 import it.chalmers.gamma.app.user.domain.Cid.CidValidator;
 import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
@@ -20,6 +20,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -34,16 +35,8 @@ public class RegisterAccountController {
     this.userCreationFacade = userCreationFacade;
   }
 
-  @GetMapping("/activate-cid")
-  public ModelAndView getActivateCid(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      ActivateCidForm form,
-      BindingResult bindingResult) {
-
-    if (form == null) {
-      form = new ActivateCidForm("");
-    }
-
+  public ModelAndView createGetActivateCid(
+      boolean htmxRequest, ActivateCidForm form, BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("register-account/activate-cid");
@@ -52,10 +45,22 @@ public class RegisterAccountController {
       mv.addObject("page", "register-account/activate-cid");
     }
 
+    if (form == null) {
+      form = new ActivateCidForm("");
+    }
     mv.addObject("form", form);
-    mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+
+    if (bindingResult != null && bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
 
     return mv;
+  }
+
+  @GetMapping("/activate-cid")
+  public ModelAndView getActivateCid(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    return createGetActivateCid(htmxRequest, null, null);
   }
 
   @PostMapping("/activate-cid")
@@ -67,10 +72,10 @@ public class RegisterAccountController {
     validateObject(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      return getActivateCid(htmxRequest, form, bindingResult);
+      return createGetActivateCid(htmxRequest, form, bindingResult);
     } else {
       this.userCreationFacade.tryToActivateUser(form.cid);
-      return new ModelAndView("redirect:email-sent");
+      return new ModelAndView("redirect:/email-sent");
     }
   }
 
@@ -86,17 +91,9 @@ public class RegisterAccountController {
     return mv;
   }
 
-  @GetMapping("/register")
   public ModelAndView createGetRegister(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      CreateAccountForm form,
-      BindingResult bindingResult) {
+      boolean htmxRequest, CreateAccountForm form, BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
-
-    if (form == null) {
-      form =
-          new CreateAccountForm("", "", "", "", "", "", "", "", Year.now().getValue(), "SV", false);
-    }
 
     if (htmxRequest) {
       mv.setViewName("register-account/register-account");
@@ -107,11 +104,21 @@ public class RegisterAccountController {
 
     mv.addObject("form", form);
 
-    if (bindingResult.hasErrors()) {
+    if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
     }
 
     return mv;
+  }
+
+  @GetMapping("/register")
+  public ModelAndView getRegister(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @RequestParam(value = "token", required = true) String token) {
+    CreateAccountForm form =
+        new CreateAccountForm(token, "", "", "", "", "", "", Year.now().getValue(), "SV", false);
+
+    return createGetRegister(htmxRequest, form, null);
   }
 
   @PostMapping("/register")
@@ -125,14 +132,13 @@ public class RegisterAccountController {
     try {
       if (!bindingResult.hasErrors()) {
         this.userCreationFacade.createUserWithCode(
-            new UserCreationFacade.NewUser(
+            new UserCreationFacade.NewUserByCode(
                 form.password,
                 form.nick,
                 form.firstName,
                 form.lastName,
                 form.email,
                 form.acceptanceYear,
-                form.cid,
                 form.language),
             form.code,
             form.confirmPassword,
@@ -147,19 +153,22 @@ public class RegisterAccountController {
           "Some property wasn't unique when a user tried to create an account. More info on debug level...");
       LOGGER.debug(e.getMessage());
     } catch (IllegalArgumentException e) {
-      bindingResult.addError(new ObjectError("global", e.getMessage()));
+      throw new RuntimeException(e);
+    } catch (UserActivationRepository.TokenNotActivatedRuntimeException e) {
+      bindingResult.addError(
+          new ObjectError(
+              "global", "Token not valid anymore. Please request a new registration url."));
     }
 
     if (bindingResult.hasErrors()) {
       return createGetRegister(htmxRequest, form, bindingResult);
     } else {
-      return new ModelAndView("redirect:/login?account-created");
+      return new ModelAndView("redirect:/");
     }
   }
 
   public record CreateAccountForm(
-      @ValidatedWith(CidValidator.class) String cid,
-      @ValidatedWith(UserActivationTokenValidator.class) String code,
+      String code,
       @ValidatedWith(UnencryptedPasswordValidator.class) String password,
       @ValidatedWith(UnencryptedPasswordValidator.class) String confirmPassword,
       @ValidatedWith(NickValidator.class) String nick,

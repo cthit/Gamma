@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.apikey.domain;
 
-import it.chalmers.gamma.app.TokenUtils;
+import it.chalmers.gamma.app.Tokens;
 import java.util.Objects;
 import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,11 +21,11 @@ public record ApiKeyToken(String value) {
 
   public static GeneratedApiKeyToken generate(PasswordEncoder passwordEncoder) {
     String value =
-        TokenUtils.generateToken(
+        Tokens.generate(
             32,
-            TokenUtils.CharacterTypes.LOWERCASE,
-            TokenUtils.CharacterTypes.UPPERCASE,
-            TokenUtils.CharacterTypes.NUMBERS);
+            Tokens.CharacterTypes.LOWERCASE,
+            Tokens.CharacterTypes.UPPERCASE,
+            Tokens.CharacterTypes.NUMBERS);
     return new GeneratedApiKeyToken(new ApiKeyToken(passwordEncoder.encode(value)), value);
   }
 

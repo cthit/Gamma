@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "g_password_reset")
-public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
+public class UserPasswordResetEntity extends ImmutableEntity<UUID> {
 
   @Id
   @Column(name = "user_id", columnDefinition = "uuid")
@@ -24,12 +24,13 @@ public class UserPasswordResetEntity extends ImmutableEntity<UserId> {
   protected UserPasswordResetEntity() {}
 
   @Override
-  public UserId getId() {
-    return new UserId(this.userId);
+  public UUID getId() {
+    return this.userId;
   }
 
   public PasswordReset toDomain() {
-    return new PasswordReset(this.getId(), new PasswordResetToken(this.token), this.getCreatedAt());
+    return new PasswordReset(
+        new UserId(this.userId), new PasswordResetToken(this.token), this.getCreatedAt());
   }
 
   public String getToken() {

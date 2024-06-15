@@ -206,6 +206,10 @@ public class SecurityFiltersConfig {
         .cors(Customizer.withDefaults())
         .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
+        .exceptionHandling(
+            exceptionConfig ->
+                exceptionConfig.accessDeniedHandler(
+                    (request, response, accessDeniedException) -> response.sendRedirect("/")))
         .headers(
             headers ->
                 headers.contentSecurityPolicy(

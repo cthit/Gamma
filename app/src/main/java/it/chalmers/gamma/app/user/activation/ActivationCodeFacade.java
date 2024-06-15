@@ -9,7 +9,6 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.domain.Cid;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,12 +20,6 @@ public class ActivationCodeFacade extends Facade {
       AccessGuard accessGuard, UserActivationRepository userActivationRepository) {
     super(accessGuard);
     this.userActivationRepository = userActivationRepository;
-  }
-
-  public Optional<UserActivationDTO> get(String cid) {
-    this.accessGuard.require(isAdmin());
-
-    return this.userActivationRepository.get(new Cid(cid)).map(UserActivationDTO::new);
   }
 
   public List<UserActivationDTO> getAllUserActivations() {
@@ -41,10 +34,9 @@ public class ActivationCodeFacade extends Facade {
     this.userActivationRepository.removeActivation(new Cid(cid));
   }
 
-  public record UserActivationDTO(String cid, String token, Instant createdAt) {
+  public record UserActivationDTO(String cid, Instant createdAt) {
     public UserActivationDTO(UserActivation userActivation) {
-      this(
-          userActivation.cid().value(), userActivation.token().value(), userActivation.createdAt());
+      this(userActivation.cid().value(), userActivation.createdAt());
     }
   }
 }

@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivation;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.domain.Cid;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,13 +26,12 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
 
   @Override
   public UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException {
+    UserActivationToken token = UserActivationToken.generate();
+
     UserActivationEntity entity =
         this.userActivationJpaRepository
             .findById(cid.value())
-            .orElse(new UserActivationEntity(cid));
-
-    UserActivationToken token = UserActivationToken.generate();
-    entity.setToken(token);
+            .orElse(new UserActivationEntity(cid, token));
 
     try {
       this.userActivationJpaRepository.saveAndFlush(entity);
@@ -48,13 +48,6 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   }
 
   @Override
-  public Optional<UserActivation> get(Cid cid) {
-    return this.userActivationJpaRepository
-        .findById(cid.value())
-        .map(UserActivationEntity::toDomain);
-  }
-
-  @Override
   public List<UserActivation> getAll() {
     return this.userActivationJpaRepository.findAll().stream()
         .map(UserActivationEntity::toDomain)
@@ -62,11 +55,22 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   }
 
   @Override
-  public Cid getByToken(UserActivationToken token) {
-    return this.userActivationJpaRepository
-        .findByToken(token.value())
-        .orElseThrow(TokenNotActivatedException::new)
-        .cid();
+  public boolean doesTokenExist(UserActivationToken token) {
+    return this.userActivationJpaRepository.findByToken(token.value()).isPresent();
+  }
+
+  @Override
+  @Transactional
+  public Cid useToken(UserActivationToken token) {
+    Optional<UserActivationEntity> maybeActivation =
+        this.userActivationJpaRepository.findByToken(token.value());
+    if (maybeActivation.isEmpty()) {
+      throw new TokenNotActivatedRuntimeException();
+    }
+
+    this.userActivationJpaRepository.deleteById(maybeActivation.get().getId());
+
+    return new Cid(maybeActivation.get().getId());
   }
 
   @Override

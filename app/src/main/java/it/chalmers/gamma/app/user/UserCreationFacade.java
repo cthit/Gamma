@@ -16,6 +16,7 @@ import jakarta.transaction.Transactional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,6 +29,7 @@ public class UserCreationFacade extends Facade {
   private final UserRepository userRepository;
   private final ThrottlingService throttlingService;
   private final AllowListRepository allowListRepository;
+  private final String baseUrl;
 
   public UserCreationFacade(
       AccessGuard accessGuard,
@@ -35,13 +37,15 @@ public class UserCreationFacade extends Facade {
       UserActivationRepository userActivationRepository,
       UserRepository userRepository,
       ThrottlingService throttlingService,
-      AllowListRepository allowListRepository) {
+      AllowListRepository allowListRepository,
+      @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
     this.mailService = mailService;
     this.userActivationRepository = userActivationRepository;
     this.userRepository = userRepository;
     this.throttlingService = throttlingService;
     this.allowListRepository = allowListRepository;
+    this.baseUrl = baseUrl;
   }
 
   public void tryToActivateUser(String cidRaw) {
@@ -90,7 +94,7 @@ public class UserCreationFacade extends Facade {
 
   @Transactional
   public void createUserWithCode(
-      NewUser data, String token, String confirmPassword, boolean acceptsUserAgreement) {
+      NewUserByCode data, String token, String confirmPassword, boolean acceptsUserAgreement) {
     this.accessGuard.require(isNotSignedIn());
 
     if (!data.password.equals(confirmPassword)) {
@@ -101,39 +105,44 @@ public class UserCreationFacade extends Facade {
       throw new IllegalArgumentException("Must accept user agreement");
     }
 
-    Cid tokenCid = this.userActivationRepository.getByToken(new UserActivationToken(token));
+    Cid cid = this.userActivationRepository.useToken(new UserActivationToken(token));
 
-    if (tokenCid.value().equals(data.cid)) {
-      Cid cid = new Cid(data.cid);
-
-      try {
-        this.userRepository.create(
-            new GammaUser(
-                UserId.generate(),
-                cid,
-                new Nick(data.nick),
-                new FirstName(data.firstName),
-                new LastName(data.lastName),
-                new AcceptanceYear(data.acceptanceYear),
-                Language.valueOf(data.language),
-                new UserExtended(new Email(data.email), 0, false, null)),
-            new UnencryptedPassword(data.password));
-      } catch (UserRepository.CidAlreadyInUseException
-          | UserRepository.EmailAlreadyInUseException e) {
-        throw new SomePropertyNotUniqueRuntimeException();
-      }
-
-      this.userActivationRepository.removeActivation(cid);
-      this.allowListRepository.remove(cid);
+    try {
+      this.userRepository.create(
+          new GammaUser(
+              UserId.generate(),
+              cid,
+              new Nick(data.nick),
+              new FirstName(data.firstName),
+              new LastName(data.lastName),
+              new AcceptanceYear(data.acceptanceYear),
+              Language.valueOf(data.language),
+              new UserExtended(new Email(data.email), 0, false, null)),
+          new UnencryptedPassword(data.password));
+    } catch (UserRepository.CidAlreadyInUseException
+        | UserRepository.EmailAlreadyInUseException e) {
+      throw new SomePropertyNotUniqueRuntimeException();
     }
+
+    this.userActivationRepository.removeActivation(cid);
+    this.allowListRepository.remove(cid);
   }
 
   private void sendEmail(Cid cid, UserActivationToken userActivationToken) {
     String to = cid.getValue() + "@" + MAIL_POSTFIX;
-    String code = userActivationToken.value();
-    String message = "Your code to Gamma is: " + code;
-    this.mailService.sendMail(to, "Gamma activation code", message);
+    String resetUrl = baseUrl + "/register?token=" + userActivationToken.value();
+    String message = "Follow this link to finish up creating your account: " + resetUrl;
+    this.mailService.sendMail(to, "Gamma activation url", message);
   }
+
+  public record NewUserByCode(
+      String password,
+      String nick,
+      String firstName,
+      String lastName,
+      String email,
+      int acceptanceYear,
+      String language) {}
 
   public record NewUser(
       String password,

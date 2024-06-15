@@ -80,6 +80,6 @@ public class AdminController {
       return this.getAdmins(htmxRequest);
     }
 
-    return new ModelAndView("redirect:admins");
+    return new ModelAndView("redirect:/admins");
   }
 }

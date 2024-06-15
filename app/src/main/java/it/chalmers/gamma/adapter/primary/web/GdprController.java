@@ -82,6 +82,6 @@ public class GdprController {
       this.userGdprTrainingFacade.updateGdprTrainedStatus(userId, false);
     }
 
-    return new ModelAndView("redirect:gdpr");
+    return new ModelAndView("redirect:/gdpr");
   }
 }

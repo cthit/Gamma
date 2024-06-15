@@ -1,22 +1,23 @@
 package it.chalmers.gamma.adapter.primary.web;
 
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
-import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
-
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.Name.NameValidator;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 @Controller
 public class SuperGroupsController {
@@ -216,11 +217,8 @@ public class SuperGroupsController {
       String svDescription,
       String enDescription) {}
 
-  @GetMapping("/super-groups/create")
-  public ModelAndView getCreateSuperGroup(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      CreateSuperGroupForm form,
-      BindingResult bindingResult) {
+  public ModelAndView createGetCreateSuperGroup(
+      boolean htmxRequest, CreateSuperGroupForm form, BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
 
     if (htmxRequest) {
@@ -241,11 +239,17 @@ public class SuperGroupsController {
             .sorted(Comparator.comparing(String::toLowerCase))
             .toList());
 
-    if (bindingResult.hasErrors()) {
+    if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
     }
 
     return mv;
+  }
+
+  @GetMapping("/super-groups/create")
+  public ModelAndView getCreateSuperGroup(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    return createGetCreateSuperGroup(htmxRequest, null, null);
   }
 
   @PostMapping("/super-groups")
@@ -257,7 +261,7 @@ public class SuperGroupsController {
     validateObject(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
-      return getCreateSuperGroup(htmxRequest, form, bindingResult);
+      return createGetCreateSuperGroup(htmxRequest, form, bindingResult);
     }
 
     try {
@@ -269,7 +273,7 @@ public class SuperGroupsController {
       return new ModelAndView("redirect:/super-groups/" + superGroupId);
     } catch (SuperGroupRepository.SuperGroupAlreadyExistsException e) {
       bindingResult.addError(new FieldError("form", "name", e.getMessage()));
-      return getCreateSuperGroup(htmxRequest, form, bindingResult);
+      return createGetCreateSuperGroup(htmxRequest, form, bindingResult);
     }
   }
 }
