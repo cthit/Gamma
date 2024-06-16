@@ -25,12 +25,6 @@ apply plugin: "io.spring.dependency-management"
 group = "it.chalmers"
 version = "2.0.0-SNAPSHOT"
 
-bootBuildImage {
-    environment = [
-            'JAVA_TOOL_OPTIONS': '-XX:MaxRAM=10g'
-    ]
-}
-
 dependencies {
     annotationProcessor(
             // Used to generate Record Builder classes

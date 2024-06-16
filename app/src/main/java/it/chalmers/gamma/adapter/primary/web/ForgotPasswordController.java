@@ -1,8 +1,11 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.domain.Cid.CidValidator;
 import it.chalmers.gamma.app.user.passwordreset.UserResetPasswordFacade;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.validation.FailedValidation;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
 import it.chalmers.gamma.app.validation.ValidationResult;
@@ -15,8 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
-import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 
 @Controller
 public class ForgotPasswordController {
@@ -145,6 +146,12 @@ public class ForgotPasswordController {
       throw new RuntimeException(e);
     } catch (IllegalArgumentException e) {
       bindingResult.addError(new ObjectError("global", e.getMessage()));
+    } catch (PasswordResetRepository.TokenNotFoundRuntimeException e) {
+      bindingResult.addError(
+          new ObjectError("global", "Token has expired, please restart the reset flow."));
+    }
+
+    if (bindingResult.hasErrors()) {
       return createGetFinalizeForgotPassword(
           htmxRequest, new FinalizeForgotPassword(form.token, "", ""), bindingResult);
     }
