@@ -1,8 +1,5 @@
 package it.chalmers.gamma.security;
 
-import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.CACHE;
-import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.COOKIES;
-
 import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
@@ -41,6 +38,9 @@ import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+
+import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.CACHE;
+import static org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive.COOKIES;
 
 @Configuration
 public class SecurityFiltersConfig {
@@ -206,10 +206,6 @@ public class SecurityFiltersConfig {
         .cors(Customizer.withDefaults())
         .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
-        .exceptionHandling(
-            exceptionConfig ->
-                exceptionConfig.accessDeniedHandler(
-                    (request, response, accessDeniedException) -> response.sendRedirect("/")))
         .headers(
             headers ->
                 headers.contentSecurityPolicy(
