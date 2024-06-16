@@ -1,5 +1,8 @@
 package it.chalmers.gamma.app.user;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
+
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
@@ -10,15 +13,11 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import jakarta.transaction.Transactional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
-
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
-import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 @Service
 public class UserCreationFacade extends Facade {
@@ -132,7 +131,14 @@ public class UserCreationFacade extends Facade {
   private void sendEmail(Cid cid, UserActivationToken userActivationToken) {
     String to = cid.getValue() + "@" + MAIL_POSTFIX;
     String resetUrl = baseUrl + "/register?token=" + userActivationToken.value();
-    String message = "Follow this link to finish up creating your account: " + resetUrl + ". \nThe link is valid for 15 minutes.";
+    String message =
+        """
+        Follow this link to finish up creating your account:
+        <a href="%s">%s</a>
+        The link is valid for 15 minutes.
+        """
+            .formatted(resetUrl, resetUrl);
+
     this.mailService.sendMail(to, "Gamma activation url", message);
   }
 

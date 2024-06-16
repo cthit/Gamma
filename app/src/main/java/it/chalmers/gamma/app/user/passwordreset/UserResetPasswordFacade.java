@@ -1,5 +1,7 @@
 package it.chalmers.gamma.app.user.passwordreset;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
+
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
@@ -16,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 @Service
 public class UserResetPasswordFacade extends Facade {
@@ -92,9 +92,12 @@ public class UserResetPasswordFacade extends Facade {
     String resetUrl = this.baseUrl + "/forgot-password/finalize?token=" + token.value();
 
     String message =
-        "A password reset have been requested for this account, if you have not requested "
-            + "this mail, feel free to ignore it. \n Click here to reset password: "
-            + resetUrl + ". \nThe link is valid for 15 minutes.";
+        """
+        A password reset have been requested for this account, if you have not requested this mail, feel free to ignore it.
+        Click here to reset password: <a href="%s">%s</a>
+        The link is valid for 15 minutes.
+        """
+            .formatted(resetUrl, resetUrl);
 
     this.mailService.sendMail(email.value(), subject, message);
   }
