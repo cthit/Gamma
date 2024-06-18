@@ -10,11 +10,7 @@ import java.util.regex.Pattern;
 public record AuthorityName(String value) implements Id<String> {
 
   public AuthorityName {
-    if (value == null) {
-      throw new NullPointerException("Authority name cannot be null");
-    } else if (!value.matches("^([0-9a-z]{2,30})$")) {
-      throw new IllegalArgumentException("Input: " + value + "; ");
-    }
+    throwIfFailed(new AuthorityNameValidator().validate(value));
   }
 
   public static AuthorityName valueOf(String name) {
