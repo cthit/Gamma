@@ -203,7 +203,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "gammars"
+name = "gamma_rust_client"
 version = "0.1.0"
 dependencies = [
  "rand",

@@ -46,27 +46,31 @@ pub fn gamma_init_auth(config: &GammaConfig) -> GammaResult<GammaInit> {
 }
 
 impl GammaState {
+    /// When receiving a callback from the gamma API.
     pub async fn gamma_callback<QueryParams, SA, SB>(
         &self,
         config: &GammaConfig,
-        query_params: &QueryParams,
+        query_params: QueryParams,
     ) -> GammaResult<GammaAccessToken>
     where
         QueryParams: IntoIterator<Item = (SA, SB)>,
         SA: AsRef<str>,
         SB: AsRef<str>,
     {
-        let params: HashMap<&str, &str> = query_params.into_iter().collect();
+        let params: HashMap<String, String> = query_params
+            .into_iter()
+            .map(|(a, b)| (a.as_ref().to_string(), b.as_ref().to_string()))
+            .collect();
 
-        if params.get("state") != Some(&self.0.as_str()) {
+        if params.get("state") != Some(&self.0) {
             return Err(GammaError::GammaStateMissmatch);
         }
 
-        let Some(&code) = params.get("code") else {
+        let Some(code) = params.get("code") else {
             return Err(GammaError::NoCodeReceived);
         };
 
-        gamma_get_oauth2_token(config, code).await
+        gamma_get_oauth2_token(config, code.into()).await
     }
 }
 
@@ -84,8 +88,10 @@ struct GammaTokenResponse {
     access_token: String,
 }
 
+/// An oauth2 access token that can be used to call gamma APIs on behalf of a user.
 pub struct GammaAccessToken(String);
 
+/// Retrieve a gamma oauth2 token from the code received in a callback.
 pub async fn gamma_get_oauth2_token(
     config: &GammaConfig,
     code: String,
@@ -112,20 +118,28 @@ pub async fn gamma_get_oauth2_token(
     Ok(GammaAccessToken(body.access_token))
 }
 
+/// A gamma user retrieved from the OpenID Connect API.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct GammaOpenIDUser {
+    /// The ID of the gamma user.
     #[serde(rename = "sub")]
     pub user_id: Uuid,
+    /// The chalmers ID of this person.
     pub cid: String,
+    /// The IT nick of this person.
     #[serde(rename = "nickname")]
     pub nick: String,
+    /// The firstname of the person.
     pub given_name: String,
+    /// The family name of the person.
     pub family_name: String,
+    /// A url pointing to the picture uploaded by this user (if any).
     #[serde(rename = "picture")]
     pub avatar_url: String,
 }
 
 impl GammaAccessToken {
+    /// Get the openid user information for this gamma user.
     pub async fn get_current_user(&self, config: &GammaConfig) -> GammaResult<GammaOpenIDUser> {
         let client = Client::new();
         let url = format!("{}/oauth2/userinfo", config.gamma_url);
