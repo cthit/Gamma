@@ -13,4 +13,5 @@ pub mod config;
 #[cfg(feature = "api")]
 pub mod api;
 
-mod error;
+/// Error types used within the lib.
+pub mod error;
