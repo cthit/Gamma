@@ -190,9 +190,8 @@ pub struct GammaSuperGroup {
 /// Note: In gamma these are generic strings and can be created and deleted through the GUI,
 /// for this reason an `Other` option is provided as a cath all and the remaining options
 /// are simply the ones currently in use at the time of writing.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
-// Note: These are not stable as they are treated as changeable strings in gamma.
 pub enum GammaSuperGroupType {
     /// An alumni group (not active).
     Alumni,
@@ -205,6 +204,7 @@ pub enum GammaSuperGroupType {
     /// Gamma administrators.
     Admin,
     /// A type that of group that is not specificly supported by this client.
+    #[serde(untagged)]
     Other(String),
 }
 
