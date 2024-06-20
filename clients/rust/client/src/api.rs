@@ -51,6 +51,19 @@ impl GammaClient {
         Ok(super_groups)
     }
 
+    /// Get a single gamma user (that has accepted this client) by its user_id.
+    pub async fn get_user(&self, user_id: &Uuid) -> GammaResult<GammaUser> {
+        let request = self
+            .client
+            .get(format!("{}/v1/users/{user_id}", self.gamma_url));
+
+        let user: GammaUser = self
+            .handle_gamma_request(request, "get user endpoint")
+            .await?;
+
+        Ok(user)
+    }
+
     /// Get all users that have accepted this client (this is usually done by authorizing against this client at least once).
     pub async fn get_users(&self) -> GammaResult<Vec<GammaUser>> {
         let request = self.client.get(format!("{}/v1/users", self.gamma_url));

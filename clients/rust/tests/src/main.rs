@@ -112,8 +112,6 @@ async fn api(debug: bool, gamma_config: &GammaConfig) -> eyre::Result<()> {
 
     // TODO: The supergroup endpoint is broken at the time of writing, uncomment this when that is fixed.
     // For more information follow this issue: https://github.com/cthit/Gamma/issues/879
-
-    /*
     println!("Retrieving super groups...");
     let super_groups = client.get_super_groups().await?;
     println!("Successfully retrieved {} super groups", super_groups.len());
@@ -122,7 +120,6 @@ async fn api(debug: bool, gamma_config: &GammaConfig) -> eyre::Result<()> {
             println!("  - {{{super_group:?}}}");
         }
     }
-    */
 
     println!("\n\n");
 
@@ -151,6 +148,14 @@ async fn api(debug: bool, gamma_config: &GammaConfig) -> eyre::Result<()> {
     println!("\n\n");
 
     if let Some(user) = users.first() {
+        // Get user (again)
+        println!("Retrieving user by ID {}", user.id);
+        let user = client.get_user(&user.id).await?;
+        println!("Successfully retrieved user by its ID");
+        if debug {
+            println!("  - {{{user:?}}}");
+        }
+
         // Get groups for user
         println!("Retrieving groups for a specific user... Picking the first user received in the previous call ().");
         let user_groups = client.get_groups_for_user(&user.id).await?;
