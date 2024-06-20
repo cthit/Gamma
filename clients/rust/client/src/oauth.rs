@@ -110,6 +110,12 @@ impl GammaState {
     }
 }
 
+impl Default for GammaState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl From<String> for GammaState {
     fn from(value: String) -> Self {
         Self(value)
@@ -179,9 +185,9 @@ pub struct GammaOpenIDUser {
     #[serde(rename = "picture")]
     pub avatar_url: String,
 
-    /// The email the user has registered in gamma. 
+    /// The email the user has registered in gamma.
     /// Requires the `email` scope!
-    pub email: Option<String>
+    pub email: Option<String>,
 }
 
 impl GammaAccessToken {

@@ -28,7 +28,7 @@ impl GammaClient {
 
     /// Get all groups.
     pub async fn get_groups(&self) -> GammaResult<Vec<GammaGroup>> {
-        let request = self.client.get(&format!("{}/v1/groups", self.gamma_url));
+        let request = self.client.get(format!("{}/v1/groups", self.gamma_url));
 
         let groups: Vec<GammaGroup> = self
             .handle_gamma_request(request, "get groups endpoint")
@@ -41,7 +41,7 @@ impl GammaClient {
     pub async fn get_super_groups(&self) -> GammaResult<Vec<GammaSuperGroup>> {
         let request = self
             .client
-            .get(&format!("{}/v1/superGroups", self.gamma_url));
+            .get(format!("{}/v1/superGroups", self.gamma_url));
 
         let super_groups: Vec<GammaSuperGroup> = self
             .handle_gamma_request(request, "get supergroups endpoint")
@@ -52,7 +52,7 @@ impl GammaClient {
 
     /// Get all users that have accepted this client (this is usually done by authorizing against this client at least once).
     pub async fn get_users(&self) -> GammaResult<Vec<GammaUser>> {
-        let request = self.client.get(&format!("{}/v1/users", self.gamma_url));
+        let request = self.client.get(format!("{}/v1/users", self.gamma_url));
 
         let users = self
             .handle_gamma_request(request, "get users endpoint")
@@ -65,7 +65,7 @@ impl GammaClient {
     pub async fn get_groups_for_user(&self, user_id: &Uuid) -> GammaResult<Vec<GammaUserGroup>> {
         let request = self
             .client
-            .get(&format!("{}/v1/groups/for/{user_id}", self.gamma_url));
+            .get(format!("{}/v1/groups/for/{user_id}", self.gamma_url));
 
         let user_groups = self
             .handle_gamma_request(request, "get groups for user endpoint")
@@ -78,7 +78,7 @@ impl GammaClient {
     pub async fn get_authorities(&self) -> GammaResult<Vec<String>> {
         let request = self
             .client
-            .get(&format!("{}/v1/authorities", self.gamma_url));
+            .get(format!("{}/v1/authorities", self.gamma_url));
 
         let authorities = self
             .handle_gamma_request(request, "get authorities endpoint")
@@ -91,7 +91,7 @@ impl GammaClient {
     pub async fn get_authorities_for_user(&self, user_id: &Uuid) -> GammaResult<Vec<String>> {
         let request = self
             .client
-            .get(&format!("{}/v1/authorities/for/{user_id}", self.gamma_url));
+            .get(format!("{}/v1/authorities/for/{user_id}", self.gamma_url));
 
         let authorities = self
             .handle_gamma_request(request, "get authorities for user endpoint")

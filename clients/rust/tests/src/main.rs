@@ -34,7 +34,7 @@ struct Args {
 enum TestAction {
     Init,
     Finish { code: String },
-    API,
+    Api,
 }
 
 #[tokio::main]
@@ -58,7 +58,7 @@ async fn run(args: Args) -> eyre::Result<()> {
     match args.action {
         TestAction::Init => init(&gamma_config),
         TestAction::Finish { code } => finish(args.debug, &gamma_config, code).await,
-        TestAction::API => api(args.debug, &gamma_config).await,
+        TestAction::Api => api(args.debug, &gamma_config).await,
     }
 }
 
