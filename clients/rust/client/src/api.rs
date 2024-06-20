@@ -10,6 +10,7 @@ use crate::{
 const PRE_SHARED: &str = "pre-shared";
 
 /// A client to be used in order to perform calls to the gamma API requiring an API key.
+#[derive(Debug, Clone)]
 pub struct GammaClient {
     client: Client,
     gamma_url: String,
