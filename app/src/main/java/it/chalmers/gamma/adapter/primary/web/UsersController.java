@@ -106,7 +106,8 @@ public class UsersController {
         mv.addObject("email", u.user().email());
         mv.addObject("locked", u.user().locked());
       } else {
-        Optional<UserFacade.UserWithGroupsDTO> user = this.userFacade.get(UUID.fromString(userId));
+        Optional<UserFacade.UserWithGroupsDTO> user =
+            this.userFacade.getWithGroups(UUID.fromString(userId));
 
         if (user.isEmpty()) {
           return createUserNotFound(userId, htmxRequest);

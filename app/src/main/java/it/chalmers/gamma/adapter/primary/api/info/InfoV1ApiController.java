@@ -30,7 +30,7 @@ public class InfoV1ApiController {
 
   @GetMapping("/users/{id}")
   public UserFacade.UserWithGroupsDTO getUser(@PathVariable("id") UUID id) {
-    return this.userFacade.get(id).orElseThrow(UserNotFoundResponse::new);
+    return this.userFacade.getWithGroups(id).orElseThrow(UserNotFoundResponse::new);
   }
 
   @GetMapping("/blob")

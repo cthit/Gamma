@@ -109,12 +109,23 @@ public class ClientApiV1Controller {
     return this.userFacade.getAllByClientAccepting().stream().map(ClientV1User::new).toList();
   }
 
+  @GetMapping("/users/{id}")
+  ClientV1User getUser(@PathVariable("id") UUID id) {
+    return this.userFacade
+        .get(id)
+        .map(ClientV1User::new)
+        .orElseThrow(
+            () ->
+                new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User Not Found Or Unauthorized"));
+  }
+
   @GetMapping("/groups/for/{id}")
-  List<ClientV1UserGroup> getUsersForGroup(@PathVariable("id") UUID id) {
+  List<ClientV1UserGroup> getGroupsForUser(@PathVariable("id") UUID id) {
     Optional<UserFacade.UserWithGroupsDTO> maybeUser;
 
     try {
-      maybeUser = this.userFacade.get(id);
+      maybeUser = this.userFacade.getWithGroups(id);
     } catch (AccessGuard.AccessDeniedException e) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Or Unauthorized");
     }

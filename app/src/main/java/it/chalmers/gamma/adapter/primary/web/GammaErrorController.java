@@ -10,20 +10,21 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class GammaErrorController implements ErrorController {
 
-    @GetMapping("/error")
-    public ModelAndView handleRuntimeException(@RequestHeader(value = "HX-Request", required = false) boolean htmxRequest, HttpServletResponse response) {
-        response.addHeader("HX-Retarget", "body");
-        response.addHeader("HX-Reswap", "innerHTML");
+  @GetMapping("/error")
+  public ModelAndView handleRuntimeException(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      HttpServletResponse response) {
+    response.addHeader("HX-Retarget", "body");
+    response.addHeader("HX-Reswap", "innerHTML");
 
-        ModelAndView mv = new ModelAndView();
-        if (htmxRequest) {
-            mv.setViewName("pages/error");
-        } else {
-            mv.setViewName("index");
-            mv.addObject("page", "pages/error");
-        }
-
-        return mv;
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/error");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/error");
     }
 
+    return mv;
+  }
 }

@@ -38,7 +38,14 @@ public class UserFacade extends Facade {
     this.clientApprovalsRepository = clientApprovalsRepository;
   }
 
-  public Optional<UserWithGroupsDTO> get(UUID id) {
+  public Optional<UserDTO> get(UUID id) {
+    UserId userId = new UserId(id);
+    accessGuard.requireEither(isSignedIn(), userHasAcceptedClient(userId), isApi(ApiKeyType.INFO));
+
+    return this.userRepository.get(userId).map(UserDTO::new);
+  }
+
+  public Optional<UserWithGroupsDTO> getWithGroups(UUID id) {
     UserId userId = new UserId(id);
     accessGuard.requireEither(isSignedIn(), userHasAcceptedClient(userId), isApi(ApiKeyType.INFO));
 

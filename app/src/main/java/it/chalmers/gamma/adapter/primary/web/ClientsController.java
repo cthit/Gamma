@@ -466,7 +466,7 @@ public class ClientsController {
               throw new RuntimeException(e);
             }
 
-            users.add(this.userFacade.get(user).orElseThrow().user());
+            users.add(this.userFacade.getWithGroups(user).orElseThrow().user());
           });
     }
 

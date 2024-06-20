@@ -56,4 +56,13 @@ public class ThymeleafAdvice {
   public void handleAccessDeniedException(HttpServletResponse response) throws IOException {
     response.sendRedirect("/");
   }
+
+  @ExceptionHandler(RuntimeException.class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ModelAndView handleRuntimeException(RuntimeException ex, HttpServletResponse response) {
+    response.addHeader("HX-Retarget", "body");
+    response.addHeader("HX-Reswap", "innerHTML");
+
+    return new ModelAndView("pages/error");
+  }
 }

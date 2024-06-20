@@ -166,7 +166,7 @@ public class SuperGroupFacade extends Facade {
   }
 
   public List<SuperGroupDTO> getAll() {
-    accessGuard.requireEither(isAdmin(), isSignedIn());
+    accessGuard.requireEither(isAdmin(), isClientApi(), isSignedIn());
 
     return this.superGroupRepository.getAll().stream().map(SuperGroupDTO::new).toList();
   }
