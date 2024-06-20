@@ -137,6 +137,7 @@ struct GammaTokenResponse {
 }
 
 /// An oauth2 access token that can be used to call gamma APIs on behalf of a user.
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GammaAccessToken(String);
 
 /// Retrieve a gamma oauth2 token from the code received in a callback.
