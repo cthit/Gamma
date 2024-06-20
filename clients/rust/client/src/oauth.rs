@@ -26,36 +26,53 @@ pub struct GammaInit {
 /// Begins the auth flow with gamma, returning a GammaInit containing a redirect url to which the
 /// user should be redirected to.
 pub fn gamma_init_auth(config: &GammaConfig) -> GammaResult<GammaInit> {
-    let state: String = thread_rng()
-        .sample_iter(&Alphanumeric)
-        .take(32)
-        .map(char::from)
-        .collect();
+    let state = GammaState::new();
 
     let scopes = urlencoding::encode(&config.scopes);
 
     let redirect_uri = format!(
-        "{}/oauth2/authorize?response_type=code&client_id={}&scope={scopes}&redirect_uri={}&state={state}",
-        config.gamma_url, config.gamma_client_id, config.gamma_redirect_uri
+        "{}/oauth2/authorize?response_type=code&client_id={}&scope={scopes}&redirect_uri={}&state={}",
+        config.gamma_url, config.gamma_client_id, config.gamma_redirect_uri, state.get_state()
     );
 
     Ok(GammaInit {
-        state: GammaState(state),
+        state,
         redirect_to: redirect_uri,
     })
 }
 
 impl GammaState {
+    /// Generate a new state that can be used when querying gamma.
+    pub fn new() -> Self {
+        Self(
+            thread_rng()
+                .sample_iter(&Alphanumeric)
+                .take(32)
+                .map(char::from)
+                .collect(),
+        )
+    }
+
+    /// Create a new gamma state from the provided string.
+    pub fn get_state_str(state: String) -> Self {
+        Self(state)
+    }
+
+    /// Returns the contained state
+    pub fn get_state(&self) -> &str {
+        &self.0
+    }
+
     /// When receiving a callback from the gamma API.
-    pub async fn gamma_callback<QueryParams, SA, SB>(
+    pub async fn gamma_callback<QueryParams, QueryName, QueryValue>(
         &self,
         config: &GammaConfig,
         query_params: QueryParams,
     ) -> GammaResult<GammaAccessToken>
     where
-        QueryParams: IntoIterator<Item = (SA, SB)>,
-        SA: AsRef<str>,
-        SB: AsRef<str>,
+        QueryParams: IntoIterator<Item = (QueryName, QueryValue)>,
+        QueryName: AsRef<str>,
+        QueryValue: AsRef<str>,
     {
         let params: HashMap<String, String> = query_params
             .into_iter()
@@ -71,6 +88,31 @@ impl GammaState {
         };
 
         gamma_get_oauth2_token(config, code.into()).await
+    }
+
+    /// Same as `gamma_callback` but providing the required parameters directly.
+    /// Note that `callback_state` and `callback_code` should be the values received from gamma in
+    /// the callback redirect as query parameters.
+    pub async fn gamma_callback_params<State>(
+        &self,
+        config: &GammaConfig,
+        callback_state: State,
+        callback_code: String,
+    ) -> GammaResult<GammaAccessToken>
+    where
+        State: AsRef<str>,
+    {
+        if callback_state.as_ref() != self.get_state() {
+            return Err(GammaError::GammaStateMissmatch);
+        }
+
+        gamma_get_oauth2_token(config, callback_code).await
+    }
+}
+
+impl From<String> for GammaState {
+    fn from(value: String) -> Self {
+        Self(value)
     }
 }
 
