@@ -1,4 +1,5 @@
 /// Configuration parameters required for a gamma client.
+#[derive(Debug, Clone)]
 pub struct GammaConfig {
     /// Client ID for the gamma oauth client.
     pub gamma_client_id: String,
