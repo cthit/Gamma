@@ -133,9 +133,9 @@ public class UserCreationFacade extends Facade {
     String resetUrl = baseUrl + "/register?token=" + userActivationToken.value();
     String message =
         """
-        Follow this link to finish up creating your account:
-        <a href="%s">%s</a>
+        Follow the link to finish up creating your account.
         The link is valid for 15 minutes.
+        %s
         """
             .formatted(resetUrl, resetUrl);
 

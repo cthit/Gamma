@@ -94,8 +94,8 @@ public class UserResetPasswordFacade extends Facade {
     String message =
         """
         A password reset have been requested for this account, if you have not requested this mail, feel free to ignore it.
-        Click here to reset password: <a href="%s">%s</a>
-        The link is valid for 15 minutes.
+        The link is valid for 15 minutes. Click here to reset password:
+        %s
         """
             .formatted(resetUrl, resetUrl);
 
