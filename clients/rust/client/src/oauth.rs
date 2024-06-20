@@ -178,6 +178,10 @@ pub struct GammaOpenIDUser {
     /// A url pointing to the picture uploaded by this user (if any).
     #[serde(rename = "picture")]
     pub avatar_url: String,
+
+    /// The email the user has registered in gamma. 
+    /// Requires the `email` scope!
+    pub email: Option<String>
 }
 
 impl GammaAccessToken {

@@ -21,14 +21,14 @@ impl GammaClient {
     pub fn new(config: &GammaConfig) -> Self {
         Self {
             client: Client::new(),
-            gamma_url: format!("{}/api", config.gamma_url),
+            gamma_url: format!("{}/api/client", config.gamma_url),
             gamma_api_key: config.gamma_api_key.clone(),
         }
     }
 
     /// Get all groups.
     pub async fn get_groups(&self) -> GammaResult<Vec<GammaGroup>> {
-        let request = self.client.get(&format!("{}/groups", self.gamma_url));
+        let request = self.client.get(&format!("{}/v1/groups", self.gamma_url));
 
         let groups: Vec<GammaGroup> = self
             .handle_gamma_request(request, "get groups endpoint")
@@ -39,7 +39,9 @@ impl GammaClient {
 
     /// Get all super groups.
     pub async fn get_super_groups(&self) -> GammaResult<Vec<GammaSuperGroup>> {
-        let request = self.client.get(&format!("{}/superGroups", self.gamma_url));
+        let request = self
+            .client
+            .get(&format!("{}/v1/superGroups", self.gamma_url));
 
         let super_groups: Vec<GammaSuperGroup> = self
             .handle_gamma_request(request, "get supergroups endpoint")
@@ -50,7 +52,7 @@ impl GammaClient {
 
     /// Get all users that have accepted this client (this is usually done by authorizing against this client at least once).
     pub async fn get_users(&self) -> GammaResult<Vec<GammaUser>> {
-        let request = self.client.get(&format!("{}/users", self.gamma_url));
+        let request = self.client.get(&format!("{}/v1/users", self.gamma_url));
 
         let users = self
             .handle_gamma_request(request, "get users endpoint")
@@ -60,10 +62,10 @@ impl GammaClient {
     }
 
     /// Get all groups that the user with the provided `user_id` are a part of.
-    pub async fn get_groups_for_user(&self, user_id: Uuid) -> GammaResult<Vec<GammaUserGroup>> {
+    pub async fn get_groups_for_user(&self, user_id: &Uuid) -> GammaResult<Vec<GammaUserGroup>> {
         let request = self
             .client
-            .get(&format!("{}/groups/for/{user_id}", self.gamma_url));
+            .get(&format!("{}/v1/groups/for/{user_id}", self.gamma_url));
 
         let user_groups = self
             .handle_gamma_request(request, "get groups for user endpoint")
@@ -74,7 +76,9 @@ impl GammaClient {
 
     /// Get all authorities for this client.
     pub async fn get_authorities(&self) -> GammaResult<Vec<String>> {
-        let request = self.client.get(&format!("{}/authorities", self.gamma_url));
+        let request = self
+            .client
+            .get(&format!("{}/v1/authorities", self.gamma_url));
 
         let authorities = self
             .handle_gamma_request(request, "get authorities endpoint")
@@ -84,10 +88,10 @@ impl GammaClient {
     }
 
     /// Get all authorities for the provided `user_id` and this client.
-    pub async fn get_authorities_for_user(&self, user_id: Uuid) -> GammaResult<Vec<String>> {
+    pub async fn get_authorities_for_user(&self, user_id: &Uuid) -> GammaResult<Vec<String>> {
         let request = self
             .client
-            .get(&format!("{}/authorities/for/{user_id}", self.gamma_url));
+            .get(&format!("{}/v1/authorities/for/{user_id}", self.gamma_url));
 
         let authorities = self
             .handle_gamma_request(request, "get authorities for user endpoint")
@@ -174,6 +178,7 @@ pub struct GammaSuperGroup {
     /// The pretty name of the supergroup (e.g. "digIT").
     pub pretty_name: String,
     /// The type of supergroup this is.
+    #[serde(rename = "type")]
     pub group_type: GammaSuperGroupType,
     /// The swedish description of the supergroup.
     pub sv_description: String,
