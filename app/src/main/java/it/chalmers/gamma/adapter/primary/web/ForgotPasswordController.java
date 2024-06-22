@@ -76,6 +76,8 @@ public class ForgotPasswordController {
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       ForgotPassword form,
       final BindingResult bindingResult) {
+    form = new ForgotPassword(form.cidOrEmail.toLowerCase());
+
     validateObject(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
@@ -156,6 +158,6 @@ public class ForgotPasswordController {
           htmxRequest, new FinalizeForgotPassword(form.token, "", ""), bindingResult);
     }
 
-    return new ModelAndView("redirect:/");
+    return new ModelAndView("redirect:/login?password-reset");
   }
 }
