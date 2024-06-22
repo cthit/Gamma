@@ -102,6 +102,14 @@ public class LocalImageService implements ImageService {
   }
 
   private void checkIfValidImageContent(MultipartFile file) throws ImageCouldNotBeSavedException {
+    long fileSizeInBytes = file.getSize();
+    long fileSizeInKB = fileSizeInBytes / 1024;
+    long fileSizeInMB = fileSizeInKB / 1024;
+
+    if (fileSizeInMB > 2) {
+      throw new ImageCouldNotBeSavedException("Image size exceeds the limit of 2MB");
+    }
+
     String contentType = file.getContentType();
     if (!List.of("image/jpeg", "image/png", "image/gif").contains(contentType)) {
       throw new ImageCouldNotBeSavedException("Image content type not valid");
