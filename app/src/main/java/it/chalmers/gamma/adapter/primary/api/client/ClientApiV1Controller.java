@@ -111,13 +111,19 @@ public class ClientApiV1Controller {
 
   @GetMapping("/users/{id}")
   ClientV1User getUser(@PathVariable("id") UUID id) {
-    return this.userFacade
-        .get(id)
-        .map(ClientV1User::new)
-        .orElseThrow(
-            () ->
-                new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User Not Found Or Unauthorized"));
+    Optional<UserFacade.UserDTO> maybeUser;
+
+    try {
+      maybeUser = this.userFacade.get(id);
+    } catch (AccessGuard.AccessDeniedException e) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Or Unauthorized");
+    }
+
+    if (maybeUser.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User Not Found Or Unauthorized");
+    }
+
+    return maybeUser.map(ClientV1User::new).get();
   }
 
   @GetMapping("/groups/for/{id}")
