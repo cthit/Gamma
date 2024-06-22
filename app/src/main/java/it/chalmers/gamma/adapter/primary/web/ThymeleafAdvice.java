@@ -57,6 +57,8 @@ public class ThymeleafAdvice {
     response.sendRedirect("/");
   }
 
+  /*
+  TODO: This interferes with security filter chains other that web.
   @ExceptionHandler(RuntimeException.class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   public ModelAndView handleRuntimeException(RuntimeException ex, HttpServletResponse response) {
@@ -65,4 +67,5 @@ public class ThymeleafAdvice {
 
     return new ModelAndView("pages/error");
   }
+   */
 }
