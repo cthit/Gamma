@@ -8,11 +8,12 @@ pub enum GammaError {
     #[error("The callback from gamma did not contain the expected code query parameter")]
     NoCodeReceived,
     /// Failed sending a request to gamma.
-    #[error("Failed sending request to gamma in context {context:?} due to error: {err:?}")]
+    #[error("Failed sending request to gamma in context {context:?}")]
     FailedSendingRequest {
         /// Which endpoint the request failed for.
         context: String,
         /// The error that occurred.
+        #[source]
         err: reqwest::Error,
     },
     /// Got a non 2XX response from the gamma API.
@@ -26,11 +27,12 @@ pub enum GammaError {
         body_str: String,
     },
     /// The response body did not match the expected response body.
-    #[error("Failed to deserialize gamma response in context {context:?} due to error: {error:?}")]
+    #[error("Failed to deserialize gamma response in context {context:?}")]
     FailedToDeserializeResponse {
         /// The endpoint deserialization failed for.
         context: String,
         /// The error that occurred.
+        #[source]
         error: reqwest::Error,
     },
     /// Got a 404 NOT_FOUND from gamma.
