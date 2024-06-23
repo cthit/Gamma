@@ -141,7 +141,7 @@ struct GammaTokenResponse {
 pub struct GammaAccessToken(String);
 
 /// Retrieve a gamma oauth2 token from the code received in a callback.
-pub async fn gamma_get_oauth2_token(
+async fn gamma_get_oauth2_token(
     config: &GammaConfig,
     code: String,
 ) -> GammaResult<GammaAccessToken> {

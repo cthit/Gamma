@@ -109,9 +109,6 @@ async fn api(debug: bool, gamma_config: &GammaConfig) -> eyre::Result<()> {
     println!("\n\n");
 
     // Get super groups
-
-    // TODO: The supergroup endpoint is broken at the time of writing, uncomment this when that is fixed.
-    // For more information follow this issue: https://github.com/cthit/Gamma/issues/879
     println!("Retrieving super groups...");
     let super_groups = client.get_super_groups().await?;
     println!("Successfully retrieved {} super groups", super_groups.len());

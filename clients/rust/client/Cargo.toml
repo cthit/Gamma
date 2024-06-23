@@ -12,5 +12,6 @@ urlencoding = "2.1.3"
 uuid = { version = "1.8.0", features = ["serde"] }
 
 [features]
-default = ["api"]
+default = ["api", "oauth"]
+oauth = []
 api = []
