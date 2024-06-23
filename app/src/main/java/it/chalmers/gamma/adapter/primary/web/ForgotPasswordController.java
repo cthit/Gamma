@@ -84,11 +84,7 @@ public class ForgotPasswordController {
       return createGetForgotPassword(htmxRequest, form, bindingResult, false);
     }
 
-    try {
-      this.userResetPasswordFacade.startResetPasswordProcess(form.cidOrEmail);
-    } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
-      // ignore
-    }
+    this.userResetPasswordFacade.startResetPasswordProcess(form.cidOrEmail);
 
     return createGetForgotPassword(htmxRequest, form, bindingResult, true);
   }
@@ -144,8 +140,6 @@ public class ForgotPasswordController {
     try {
       this.userResetPasswordFacade.finishResetPasswordProcess(
           form.token, form.password, form.confirmPassword);
-    } catch (UserResetPasswordFacade.PasswordResetProcessException e) {
-      throw new RuntimeException(e);
     } catch (IllegalArgumentException e) {
       bindingResult.addError(new ObjectError("global", e.getMessage()));
     } catch (PasswordResetRepository.TokenNotFoundRuntimeException e) {

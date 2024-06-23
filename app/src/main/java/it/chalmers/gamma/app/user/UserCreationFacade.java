@@ -12,6 +12,7 @@ import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
 import it.chalmers.gamma.app.user.activation.domain.UserActivationToken;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.security.TimerBlock;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -51,19 +52,23 @@ public class UserCreationFacade extends Facade {
   public void tryToActivateUser(String cidRaw) {
     accessGuard.require(isNotSignedIn());
 
-    Cid cid = new Cid(cidRaw);
-    try {
-      if (throttlingService.canProceed(cidRaw + "-activation", 3)) {
-        UserActivationToken userActivationToken =
-            this.userActivationRepository.createActivationToken(cid);
-        sendEmail(cid, userActivationToken);
-      } else {
-        LOGGER.info("Throttling an activation and its email...");
-      }
-      LOGGER.info("Cid {} has been activated", cid);
-    } catch (UserActivationRepository.CidNotAllowedException e) {
-      LOGGER.info("Someone tried to activate the cid: {}", cid);
-    }
+    TimerBlock.minimum(3000)
+        .execute(
+            () -> {
+              Cid cid = new Cid(cidRaw);
+              try {
+                if (throttlingService.canProceed(cidRaw + "-activation", 3)) {
+                  UserActivationToken userActivationToken =
+                      this.userActivationRepository.createActivationToken(cid);
+                  sendEmail(cid, userActivationToken);
+                } else {
+                  LOGGER.info("Throttling an activation and its email...");
+                }
+                LOGGER.info("Cid {} has been activated", cid);
+              } catch (UserActivationRepository.CidNotAllowedException e) {
+                LOGGER.info("Someone tried to activate the cid: {}", cid);
+              }
+            });
   }
 
   public UUID createUser(NewUser newUser) throws EmailNotUniqueException, CidNotUniqueException {

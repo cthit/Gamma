@@ -1,28 +1,26 @@
 package it.chalmers.gamma.security;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.security.SecureRandom;
+import java.util.concurrent.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TimerBlock {
-
   private static final Logger LOGGER = LoggerFactory.getLogger(TimerBlock.class);
   private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-  private final long minExecutionTimeInSeconds;
+  private final long minExecutionTimeInMillis;
 
-  private TimerBlock(long minExecutionTimeInSeconds) {
-    this.minExecutionTimeInSeconds = minExecutionTimeInSeconds;
+  private TimerBlock(long minExecutionTimeInMillis) {
+    this.minExecutionTimeInMillis = minExecutionTimeInMillis;
   }
 
-  public static TimerBlock minimum(long minExecutionTimeInSeconds) {
-    return new TimerBlock(minExecutionTimeInSeconds);
+  public static TimerBlock minimum(long minExecutionTimeInMillis) {
+    return new TimerBlock(minExecutionTimeInMillis);
   }
 
   public void execute(Runnable block) {
+    SecureRandom secureRandom = new SecureRandom();
     long startTime = System.currentTimeMillis();
     RuntimeException blockException = null;
     try {
@@ -31,18 +29,24 @@ public class TimerBlock {
       blockException = e;
     } finally {
       long endTime = System.currentTimeMillis();
-      long actualExecutionTimeInSeconds = TimeUnit.MILLISECONDS.toSeconds(endTime - startTime);
+      long actualExecutionTimeInMillis = endTime - startTime;
 
-      if (actualExecutionTimeInSeconds < minExecutionTimeInSeconds) {
+      long maxExecutionTime = minExecutionTimeInMillis + (long) (minExecutionTimeInMillis * 0.5);
+      long randomDelay =
+          minExecutionTimeInMillis
+              + secureRandom.nextInt((int) (maxExecutionTime - minExecutionTimeInMillis));
+
+      if (actualExecutionTimeInMillis < randomDelay) {
         try {
-          long remainingTimeInSeconds = minExecutionTimeInSeconds - actualExecutionTimeInSeconds;
-          scheduler.schedule(() -> {}, remainingTimeInSeconds, TimeUnit.SECONDS).get();
+          long remainingTimeInMillis = randomDelay - actualExecutionTimeInMillis;
+          scheduler.schedule(() -> {}, remainingTimeInMillis, TimeUnit.MILLISECONDS).get();
         } catch (InterruptedException | ExecutionException e) {
           LOGGER.warn("Exception occurred during delay: {}", e.getMessage());
         }
       } else {
         LOGGER.warn(
-            "Block execution took longer than expected: {} seconds.", actualExecutionTimeInSeconds);
+            "Block execution took longer than expected: {} milliseconds.",
+            actualExecutionTimeInMillis);
       }
     }
 

@@ -14,6 +14,7 @@ import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
+import it.chalmers.gamma.security.TimerBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,37 +45,42 @@ public class UserResetPasswordFacade extends Facade {
     this.baseUrl = baseUrl;
   }
 
-  public void startResetPasswordProcess(String cidOrEmailString)
-      throws PasswordResetProcessException {
+  public void startResetPasswordProcess(String cidOrEmailString) {
     this.accessGuard.require(isNotSignedIn());
 
-    try {
-      PasswordResetRepository.PasswordReset passwordReset;
-      if (new Email.EmailValidator().validate(cidOrEmailString) instanceof SuccessfulValidation) {
-        passwordReset = this.passwordResetRepository.createNewToken(new Email(cidOrEmailString));
-      } else if (new Cid.CidValidator().validate(cidOrEmailString)
-          instanceof SuccessfulValidation) {
-        passwordReset = this.passwordResetRepository.createNewToken(new Cid(cidOrEmailString));
-      } else {
-        throw new IllegalArgumentException("Neither an email nor a cid.");
-      }
+    TimerBlock.minimum(3000)
+        .execute(
+            () -> {
+              try {
+                PasswordResetRepository.PasswordReset passwordReset;
+                if (new Email.EmailValidator().validate(cidOrEmailString)
+                    instanceof SuccessfulValidation) {
+                  passwordReset =
+                      this.passwordResetRepository.createNewToken(new Email(cidOrEmailString));
+                } else if (new Cid.CidValidator().validate(cidOrEmailString)
+                    instanceof SuccessfulValidation) {
+                  passwordReset =
+                      this.passwordResetRepository.createNewToken(new Cid(cidOrEmailString));
+                } else {
+                  throw new IllegalArgumentException("Neither an email nor a cid.");
+                }
 
-      if (throttlingService.canProceed(passwordReset.email().value() + "-password-reset", 3)) {
-        sendPasswordResetTokenMail(passwordReset.email(), passwordReset.token());
-      } else {
-        LOGGER.info("Throttling password reset process triggered.");
-      }
-    } catch (PasswordResetRepository.UserNotFoundException e) {
-      LOGGER.debug(
-          "Someone tried to reset the password for the email {} that doesn't exist",
-          cidOrEmailString);
-      throw new PasswordResetProcessException();
-    }
+                if (throttlingService.canProceed(
+                    passwordReset.email().value() + "-password-reset", 3)) {
+                  sendPasswordResetTokenMail(passwordReset.email(), passwordReset.token());
+                } else {
+                  LOGGER.info("Throttling password reset process triggered.");
+                }
+              } catch (PasswordResetRepository.UserNotFoundException e) {
+                LOGGER.debug(
+                    "Someone tried to reset the password for the email {} that doesn't exist",
+                    cidOrEmailString);
+              }
+            });
   }
 
   public void finishResetPasswordProcess(
-      String inputToken, String newPassword, String confirmPassword)
-      throws PasswordResetProcessException {
+      String inputToken, String newPassword, String confirmPassword) {
     this.accessGuard.require(isNotSignedIn());
 
     if (!newPassword.equals(confirmPassword)) {
@@ -107,7 +113,4 @@ public class UserResetPasswordFacade extends Facade {
 
     return this.passwordResetRepository.isTokenValid(new PasswordResetToken(token));
   }
-
-  // Vague for security reasons
-  public static class PasswordResetProcessException extends Exception {}
 }
