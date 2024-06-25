@@ -15,18 +15,19 @@ public class GammaErrorController implements ErrorController {
 
   @GetMapping("/error")
   public ModelAndView handleRuntimeException(
-          @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-          HttpServletResponse response,
-          HttpServletRequest request) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      HttpServletResponse response,
+      HttpServletRequest request) {
     Object statusCodeString = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
     int statusCode = Integer.parseInt(statusCodeString.toString());
 
     System.out.println(statusCode);
 
-    String page = switch(HttpStatus.valueOf(statusCode)) {
-      case NOT_FOUND -> "pages/404";
-      default -> "pages/500";
-    };
+    String page =
+        switch (HttpStatus.valueOf(statusCode)) {
+          case NOT_FOUND -> "pages/404";
+          default -> "pages/error";
+        };
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {

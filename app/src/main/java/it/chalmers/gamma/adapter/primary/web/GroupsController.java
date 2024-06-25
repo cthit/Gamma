@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.group.GroupFacade;
+import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
@@ -12,11 +13,14 @@ import it.chalmers.gamma.app.user.domain.Name.NameValidator;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,6 +41,11 @@ public class GroupsController {
     this.superGroupFacade = superGroupFacade;
     this.userFacade = userFacade;
     this.postFacade = postFacade;
+  }
+
+  @InitBinder
+  public void initBinder(WebDataBinder binder) {
+    binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
   }
 
   @GetMapping("/groups")
@@ -108,14 +117,15 @@ public class GroupsController {
         "members",
         group.get().groupMembers().stream()
             .map(
-                groupMember ->
-                    new Member(
-                        groupMember.user().nick(),
-                        " - "
-                            + groupMember.post().enName()
-                            + " - "
-                            + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""),
-                        groupMember.user().id()))
+                groupMember -> {
+                  String post = " - " + groupMember.post().enName();
+
+                  if (groupMember.unofficialPostName() != null) {
+                    post += " - " + groupMember.unofficialPostName();
+                  }
+
+                  return new Member(groupMember.user().nick(), post, groupMember.user().id());
+                })
             .toList());
     mv.addObject("random", Math.random());
 
@@ -263,6 +273,8 @@ public class GroupsController {
     public static final class Member {
       private UUID userId;
       private UUID postId;
+
+      @ValidatedWith(UnofficialPostName.UnofficialPostNameValidator.class)
       private String unofficialPostName;
 
       public Member() {}
@@ -299,12 +311,7 @@ public class GroupsController {
     }
   }
 
-  @GetMapping("/groups/{id}/edit")
-  public ModelAndView getGroupEdit(
-      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-      @PathVariable("id") UUID id,
-      GroupForm form,
-      BindingResult bindingResult) {
+  private ModelAndView createGetGroupEdit(UUID id, GroupForm form, BindingResult bindingResult) {
     Optional<GroupFacade.GroupWithMembersDTO> group = this.groupFacade.getWithMembers(id);
 
     if (group.isEmpty()) {
@@ -321,7 +328,7 @@ public class GroupsController {
     List<UserFacade.UserDTO> users = this.userFacade.getAll();
     List<PostFacade.PostDTO> posts = this.postFacade.getAll();
 
-    if (form != null) {
+    if (form == null) {
       form =
           new GroupForm(
               group.get().version(),
@@ -362,11 +369,32 @@ public class GroupsController {
             .map(UserFacade.UserDTO::id)
             .toList());
 
-    if (bindingResult.hasErrors()) {
+    if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
     }
 
     return mv;
+  }
+
+  private void checkForDuplicateEntries(GroupForm form, BindingResult bindingResult) {
+    Set<Pair<UUID, UUID>> uniquePairs = new HashSet<>();
+    for (int i = 0; i < form.getMembers().size(); i++) {
+      GroupForm.Member member = form.getMembers().get(i);
+      Pair<UUID, UUID> pair = Pair.of(member.getUserId(), member.getPostId());
+      if (uniquePairs.contains(pair)) {
+        bindingResult.addError(
+            new FieldError("form", "members[" + i + "]", "Duplicate user/post entry"));
+      } else {
+        uniquePairs.add(pair);
+      }
+    }
+  }
+
+  @GetMapping("/groups/{id}/edit")
+  public ModelAndView getGroupEdit(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID id) {
+    return createGetGroupEdit(id, null, null);
   }
 
   @PutMapping("/groups/{id}")
@@ -379,6 +407,8 @@ public class GroupsController {
 
     validateObject(form, bindingResult);
 
+    checkForDuplicateEntries(form, bindingResult);
+
     if (!bindingResult.hasErrors() && this.groupFacade.groupWithNameAlreadyExists(id, form.name)) {
       bindingResult.addError(new FieldError("form", "name", "Group with name already exists"));
     }
@@ -386,7 +416,7 @@ public class GroupsController {
     if (bindingResult.hasErrors()) {
       response.addHeader("HX-Reswap", "outerHTML");
       response.addHeader("HX-Retarget", "closest <article/>");
-      return this.getGroupEdit(htmxRequest, id, form, bindingResult);
+      return createGetGroupEdit(id, form, bindingResult);
     } else {
       this.groupFacade.update(
           new GroupFacade.UpdateGroup(
@@ -450,8 +480,18 @@ public class GroupsController {
       form = new GroupForm();
     }
 
+    List<UserFacade.UserDTO> users = this.userFacade.getAll();
+    List<PostFacade.PostDTO> posts = this.postFacade.getAll();
+
     mv.addObject("form", form);
     mv.addObject("superGroups", this.superGroupFacade.getAll());
+    mv.addObject(
+        "users",
+        users.stream().collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
+    mv.addObject(
+        "posts",
+        posts.stream()
+            .collect(Collectors.toMap(PostFacade.PostDTO::id, PostFacade.PostDTO::enName)));
 
     if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -473,6 +513,8 @@ public class GroupsController {
       final BindingResult bindingResult) {
 
     validateObject(form, bindingResult);
+
+    checkForDuplicateEntries(form, bindingResult);
 
     if (bindingResult.hasErrors()) {
       return createGetCreateGroup(htmxRequest, form, bindingResult);

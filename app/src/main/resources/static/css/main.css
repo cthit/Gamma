@@ -292,3 +292,7 @@ progress {
     0% {opacity: 0;}
     100% {opacity: 1;}
 }
+
+.error-message {
+    color: var(--pico-del-color);
+}

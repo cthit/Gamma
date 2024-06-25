@@ -19,20 +19,23 @@
             </select>
         </label>
         <div class="member-row" th:each="member, memberStat : *{members}">
+            <hr>
             <p th:text="${users.get(member.userId)}"></p>
             <div>
                 <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}"/>
-                <label>
-                    Post
+                <div>
+                    <label>
+                        Post
+                    </label>
                     <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
                         <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
                     </select>
-                </label>
-                <label>
-                    Unofficial post name
-                    <input class="unofficialPostName" type="text"
-                           th:field="*{members[__${memberStat.index}__].unofficialPostName}"/>
-                </label>
+                    <small th:if="${#fields.hasErrors('members[__${memberStat.index}__]')}" class="error-message" th:errors="*{members[__${memberStat.index}__]}">
+                    </small>
+                </div>
+                <div>
+                    <div th:replace="~{common/input :: textInput2(field='members[__${memberStat.index}__].unofficialPostName', label='Unofficial post name')}"></div>
+                </div>
                 <button class="outline contrast" _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')"
                         type="button">Delete
                 </button>

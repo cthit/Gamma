@@ -1,24 +1,31 @@
 package it.chalmers.gamma.app.group.domain;
 
-import org.springframework.web.util.HtmlUtils;
+import static it.chalmers.gamma.app.validation.ValidationHelper.*;
+import static it.chalmers.gamma.app.validation.ValidationHelper.MAX_LENGTH;
+
+import it.chalmers.gamma.app.validation.SuccessfulValidation;
+import it.chalmers.gamma.app.validation.ValidationResult;
+import it.chalmers.gamma.app.validation.Validator;
 
 public record UnofficialPostName(String value) {
 
   public UnofficialPostName {
-    if ("".equals(value)) {
-      value = null;
-    }
-
-    if (value != null) {
-      value = HtmlUtils.htmlEscape(value, "UTF-8");
-
-      if (value.length() > 50) {
-        throw new IllegalArgumentException("Unofficial post name can max be 50 characters");
-      }
-    }
+    throwIfFailed(new UnofficialPostNameValidator().validate(value));
   }
 
   public static UnofficialPostName none() {
     return new UnofficialPostName(null);
+  }
+
+  public static final class UnofficialPostNameValidator implements Validator<String> {
+
+    @Override
+    public ValidationResult validate(String value) {
+      if (value != null) {
+        return withValidators(IS_NOT_EMPTY, SANITIZED_HTML, MAX_LENGTH.apply(50)).validate(value);
+      }
+
+      return new SuccessfulValidation();
+    }
   }
 }

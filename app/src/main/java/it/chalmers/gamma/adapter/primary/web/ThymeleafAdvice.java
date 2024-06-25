@@ -56,5 +56,4 @@ public class ThymeleafAdvice {
   public void handleAccessDeniedException(HttpServletResponse response) throws IOException {
     response.sendRedirect("/");
   }
-
 }

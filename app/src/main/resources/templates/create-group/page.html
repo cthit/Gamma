@@ -22,22 +22,26 @@
             <div class="member-row" th:each="member, memberStat : *{members}">
                 <div th:text="${users.get(member.userId)}"></div>
                 <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}"/>
-                <label>
-                    Post
-                    <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
-                        <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
-                    </select>
-                </label>
-                <label>
-                    Unofficial post name
-                    <input class="unofficialPostName" type="text"
-                           th:field="*{members[__${memberStat.index}__].unofficialPostName}"/>
-                </label>
-                <button _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName') "
-                        type="button">Delete
-                </button>
+                <div>
+                    <div>
+                        <label>
+                            Post
+                        </label>
+                        <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
+                            <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
+                        </select>
+                        <small th:if="${#fields.hasErrors('members[__${memberStat.index}__]')}" class="error-message" th:errors="*{members[__${memberStat.index}__]}">
+                        </small>
+                    </div>
+                    <div>
+                        <div th:replace="~{common/input :: textInput2(field='members[__${memberStat.index}__].unofficialPostName', label='Unofficial post name')}"></div>
+                    </div>
+                    <button class="outline contrast" _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName') "
+                            type="button">Delete
+                    </button>
+                </div>
             </div>
-            <button type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">
+            <button class="outline contrast" type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">
                 Add
                 member
             </button>

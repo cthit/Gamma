@@ -108,8 +108,7 @@ public class GroupFacade extends Facade {
               this.postRepository
                   .get(new PostId(shallowMember.postId))
                   .orElseThrow(PostNotFoundRuntimeException::new),
-              new UnofficialPostName(
-                  shallowMember.unofficialPostName == null ? "" : shallowMember.unofficialPostName),
+              new UnofficialPostName(shallowMember.unofficialPostName),
               this.userRepository
                   .get(new UserId(shallowMember.userId))
                   .orElseThrow(UserNotFoundRuntimeException::new)));
