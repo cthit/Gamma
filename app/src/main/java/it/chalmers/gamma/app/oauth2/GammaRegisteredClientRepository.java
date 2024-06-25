@@ -26,18 +26,26 @@ public class GammaRegisteredClientRepository implements RegisteredClientReposito
 
   @Override
   public RegisteredClient findById(String id) {
-    Client client =
-        this.clientRepository.get(ClientUid.valueOf(id)).orElseThrow(NullPointerException::new);
-
-    return toRegisteredClient(client);
+    try {
+      return this.clientRepository
+          .get(ClientUid.valueOf(id))
+          .map(this::toRegisteredClient)
+          .orElse(null);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   @Override
   public RegisteredClient findByClientId(String clientId) {
-    Client client =
-        this.clientRepository.get(new ClientId(clientId)).orElseThrow(NullPointerException::new);
-
-    return toRegisteredClient(client);
+    try {
+      return this.clientRepository
+          .get(new ClientId(clientId))
+          .map(this::toRegisteredClient)
+          .orElse(null);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
   }
 
   private RegisteredClient toRegisteredClient(Client client) {
