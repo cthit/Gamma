@@ -57,15 +57,4 @@ public class ThymeleafAdvice {
     response.sendRedirect("/");
   }
 
-  /*
-  TODO: This interferes with security filter chains other that web.
-  @ExceptionHandler(RuntimeException.class)
-  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  public ModelAndView handleRuntimeException(RuntimeException ex, HttpServletResponse response) {
-    response.addHeader("HX-Retarget", "body");
-    response.addHeader("HX-Reswap", "innerHTML");
-
-    return new ModelAndView("pages/error");
-  }
-   */
 }
