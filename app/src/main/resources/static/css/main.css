@@ -236,7 +236,7 @@ main {
 .member-row > div {
     display: flex;
     gap: 0.5rem;
-    align-items: center;
+    align-items: last baseline;
 }
 
 .member-row > div > button {

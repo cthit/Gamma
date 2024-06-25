@@ -1,11 +1,12 @@
 <div class="member-row">
+    <hr>
+    <label>
+        User
+        <select class="userId">
+            <option th:each="userKey : ${userKeys}" th:value="${userKey}" th:text="${users.get(userKey)}"></option>
+        </select>
+    </label>
     <div>
-        <label>
-            User
-            <select class="userId">
-                <option th:each="userKey : ${userKeys}" th:value="${userKey}" th:text="${users.get(userKey)}"></option>
-            </select>
-        </label>
         <label>
             Post
             <select class="postId">
