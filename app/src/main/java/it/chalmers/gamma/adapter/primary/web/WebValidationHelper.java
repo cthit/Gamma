@@ -5,6 +5,7 @@ import it.chalmers.gamma.app.validation.ValidationResult;
 import it.chalmers.gamma.app.validation.Validator;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
@@ -19,6 +20,10 @@ public class WebValidationHelper {
 
   private static void validateField(
       Field field, String prefix, Object obj, BindingResult bindingResult) {
+    if (Modifier.isStatic(field.getModifiers())) {
+      return;
+    }
+
     field.setAccessible(true);
     Object fieldValue;
     try {
@@ -55,7 +60,10 @@ public class WebValidationHelper {
     if (fieldValue instanceof Iterable<?>) {
       int i = 0;
       for (Object item : (Iterable<?>) fieldValue) {
-        if (item != null && !item.getClass().isPrimitive() && !(item instanceof String)) {
+        if (item != null
+            && !item.getClass().isPrimitive()
+            && !(item instanceof String)
+            && !item.getClass().getPackageName().startsWith("java")) {
           String newPrefix = String.format("%s%s[%d].", prefix, field.getName(), i);
           validateObject(item, newPrefix, bindingResult);
         }
