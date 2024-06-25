@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -62,8 +62,10 @@ public class GotifyMailService implements MailService {
 
     HttpEntity<Request> entity = new HttpEntity<>(request, headers);
     RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> response =
-        restTemplate.postForEntity(this.gotifyURL + "/mail", entity, String.class);
-    LOGGER.info("Gotify responded with " + response.getHeaders() + response.getBody());
+    try {
+      restTemplate.postForEntity(this.gotifyURL + "/mail", entity, String.class);
+    } catch (RestClientException e) {
+      LOGGER.error(e.getMessage());
+    }
   }
 }
