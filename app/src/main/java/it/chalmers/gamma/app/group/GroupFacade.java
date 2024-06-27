@@ -164,7 +164,7 @@ public class GroupFacade extends Facade {
 
     Optional<Group> maybeGroup = this.groupRepository.get(new Name(name));
 
-    return maybeGroup.isEmpty() || !maybeGroup.get().id().value().equals(id);
+    return maybeGroup.filter(group -> !group.id().value().equals(id)).isPresent();
   }
 
   public Optional<GroupWithMembersDTO> getWithMembers(UUID groupId) {
