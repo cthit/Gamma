@@ -19,9 +19,8 @@ public class GammaErrorController implements ErrorController {
       HttpServletResponse response,
       HttpServletRequest request) {
     Object statusCodeString = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-    int statusCode = Integer.parseInt(statusCodeString.toString());
 
-    System.out.println(statusCode);
+    int statusCode = statusCodeString == null ? 500 : Integer.parseInt(statusCodeString.toString());
 
     String page =
         switch (HttpStatus.valueOf(statusCode)) {
