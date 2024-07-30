@@ -14,14 +14,11 @@ import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestrictionId;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
-import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.UserFacade;
-import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
-import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
@@ -40,21 +37,18 @@ public class ClientFacade extends Facade {
   private final SuperGroupRepository superGroupRepository;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private final GroupRepository groupRepository;
 
   public ClientFacade(
-          AccessGuard accessGuard,
-          ClientRepository clientRepository,
-          SuperGroupRepository superGroupRepository,
-          UserRepository userRepository,
-          PasswordEncoder passwordEncoder,
-          GroupRepository groupRepository) {
+      AccessGuard accessGuard,
+      ClientRepository clientRepository,
+      SuperGroupRepository superGroupRepository,
+      UserRepository userRepository,
+      PasswordEncoder passwordEncoder) {
     super(accessGuard);
     this.clientRepository = clientRepository;
     this.superGroupRepository = superGroupRepository;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
-    this.groupRepository = groupRepository;
   }
 
   @Transactional
@@ -208,33 +202,6 @@ public class ClientFacade extends Facade {
     }
 
     return Optional.empty();
-  }
-
-  public boolean hasAccessToClient(String clientId) {
-    accessGuard.require(isSignedIn());
-
-    if (AuthenticationExtractor.getAuthentication()
-            instanceof UserAuthentication userAuthentication) {
-      GammaUser user = userAuthentication.gammaUser();
-      Client client = this.clientRepository.get(new ClientId(clientId)).orElseThrow();
-
-      if (client.restrictions().isEmpty()) {
-        return true;
-      }
-
-      List<UserMembership> memberships = this.groupRepository.getAllByUser(user.id());
-      List<SuperGroupId> userSuperGroups =
-              memberships.stream()
-                      .map(UserMembership::group)
-                      .map(group -> group.superGroup().id())
-                      .distinct()
-                      .toList();
-
-      return client.restrictions().get().superGroups().stream()
-              .anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()));
-    }
-
-    return false;
   }
 
   public record NewClientRestrictions(List<UUID> superGroups) {}

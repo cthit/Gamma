@@ -411,14 +411,8 @@ public class GroupsController {
 
     if (!bindingResult.hasErrors() && this.groupFacade.groupWithNameAlreadyExists(id, form.name)) {
       bindingResult.addError(
-              new FieldError(
-                      "form",
-                      "name",
-                      form.name,
-                      true,
-                      null,
-                      null,
-                      "Group with name already exists"));
+          new FieldError(
+              "form", "name", form.name, true, null, null, "Group with name already exists"));
     }
 
     if (bindingResult.hasErrors()) {

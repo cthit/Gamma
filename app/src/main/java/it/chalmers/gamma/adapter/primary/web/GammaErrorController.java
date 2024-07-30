@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.oauth2.GammaAuthorizationService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,11 +23,14 @@ public class GammaErrorController implements ErrorController {
 
     int statusCode = statusCodeString == null ? 500 : Integer.parseInt(statusCodeString.toString());
 
-    String page =
-        switch (HttpStatus.valueOf(statusCode)) {
-          case NOT_FOUND -> "pages/404";
-          default -> "pages/error";
-        };
+    Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+    String page = "pages/error";
+
+    if (HttpStatus.valueOf(statusCode) == HttpStatus.NOT_FOUND) {
+      page = "pages/404";
+    } else if (exception instanceof GammaAuthorizationService.UserNotAllowedRuntimeException) {
+      page = "pages/no-access-to-client";
+    }
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
