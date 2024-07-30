@@ -86,6 +86,17 @@ public class ConsentController {
           "There is a mismatch between registered client scopes, and the scopes specified for this authorization.");
     }
 
+    if (!this.clientFacade.hasAccessToClient(clientId)) {
+      if (htmxRequest) {
+        mv.setViewName("pages/no-access-to-client");
+      } else {
+        mv.setViewName("index");
+        mv.addObject("page", "pages/no-access-to-client");
+      }
+
+      return mv;
+    }
+
     if (htmxRequest) {
       mv.setViewName("pages/authorize");
     } else {

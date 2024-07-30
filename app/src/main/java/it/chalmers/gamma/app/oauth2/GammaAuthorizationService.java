@@ -46,19 +46,17 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     UsernamePasswordAuthenticationToken authenticationToken =
         authorization.getAttribute("java.security.Principal");
 
-    // The first oauth2 request has no tokens, so lets stop that
-    // if the signed-in user does not have the proper authority.
-    if (hasNoTokens(authorization) && authenticationToken.getPrincipal() instanceof User user) {
-      Client client =
-          this.clientRepository
-              .get(ClientUid.valueOf(authorization.getRegisteredClientId()))
-              .orElseThrow();
+    if (authenticationToken != null && authenticationToken.getPrincipal() instanceof User user) {
+        Client client =
+                this.clientRepository
+                        .get(ClientUid.valueOf(authorization.getRegisteredClientId()))
+                        .orElseThrow();
 
-      // If the client has no restrictions, then any user can sign in.
-      if (client.restrictions().isPresent()
-          && userPassesRestriction(client.restrictions().get(), user)) {
-        throw new AccessDeniedException("User does not have the necessary authority");
-      }
+        // If the client has no restrictions, then any user can sign in.
+        if (client.restrictions().isPresent()
+                && !userPassesRestriction(client.restrictions().get(), user)) {
+            throw new AccessDeniedException("User does not have the necessary authority");
+        }
     }
 
     gammaAuthorizationRepository.save(authorization);
@@ -77,12 +75,6 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
     return restriction.superGroups().stream()
         .anyMatch(superGroup -> userSuperGroups.contains(superGroup.id()));
-  }
-
-  private boolean hasNoTokens(OAuth2Authorization authorization) {
-    return authorization.getToken(OAuth2AuthorizationCode.class) == null
-        && authorization.getToken(OAuth2AccessToken.class) == null
-        && authorization.getToken(OidcIdToken.class) == null;
   }
 
   @Override
