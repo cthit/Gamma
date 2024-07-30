@@ -50,6 +50,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
       // If the client has no restrictions, then any user can sign in.
       if (client.restrictions().isPresent()
+          && !client.restrictions().get().superGroups().isEmpty()
           && !userPassesRestriction(client.restrictions().get(), user)) {
         throw new UserNotAllowedRuntimeException();
       }
