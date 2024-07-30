@@ -4,6 +4,8 @@ import it.chalmers.gamma.app.oauth2.GammaAuthorizationService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class GammaErrorController implements ErrorController {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GammaErrorController.class);
 
   @GetMapping("/error")
   public ModelAndView handleRuntimeException(
@@ -24,6 +28,12 @@ public class GammaErrorController implements ErrorController {
     int statusCode = statusCodeString == null ? 500 : Integer.parseInt(statusCodeString.toString());
 
     Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+    if (exception == null) {
+      LOGGER.error("error, but no exception...");
+    } else {
+      LOGGER.error("Caught error, rendering error page...", exception);
+    }
+
     String page = "pages/error";
 
     if (HttpStatus.valueOf(statusCode) == HttpStatus.NOT_FOUND) {
