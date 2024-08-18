@@ -10,15 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CookieConfig {
 
-  @Value("${application.production}")
-  private boolean production;
-
-  @Value("${application.cookie.domain}")
-  private String domain;
-
-  @Value("${application.cookie.path}")
-  private String path;
-
   @Value("${application.cookie.validity-time}")
   private int validityTime;
 
@@ -26,11 +17,11 @@ public class CookieConfig {
   public CookieSerializer cookieSerializer() {
     DefaultCookieSerializer serializer = new DefaultCookieSerializer();
     serializer.setSameSite("LAX");
-    serializer.setUseSecureCookie(this.production);
+    serializer.setUseSecureCookie(true);
     serializer.setCookieName("gamma");
-    serializer.setDomainName(this.domain);
+    serializer.setDomainName("");
     serializer.setUseHttpOnlyCookie(true);
-    serializer.setCookiePath(this.path);
+    serializer.setCookiePath("/");
     serializer.setCookieMaxAge(this.validityTime);
     return serializer;
   }
