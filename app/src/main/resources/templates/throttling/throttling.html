@@ -1,0 +1,25 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <table>
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${throttling}">
+            <td th:text="${t.key()}"></td>
+            <td th:text="${t.value()}"></td>
+            <td class="table-align-right">
+                <form th:data-hx-post="|/throttling/${t.key()}|" data-hx-target="closest tr" data-hx-swap="delete">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="delete" />
+                    <button class="outline contrast" data-loading-disable>Delete</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
