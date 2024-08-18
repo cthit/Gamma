@@ -71,8 +71,6 @@ application:
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"
   cookie:
-    domain: "${COOKIE_DOMAIN:localhost}"
-    path: "${COOKIE_PATH:/}"
     validity-time: 2628000
   admin-setup: "${ADMIN_SETUP:true}"
   gotify:
