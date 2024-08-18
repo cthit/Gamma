@@ -28,9 +28,7 @@ public class GammaErrorController implements ErrorController {
     int statusCode = statusCodeString == null ? 500 : Integer.parseInt(statusCodeString.toString());
 
     Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-    if (exception == null) {
-      LOGGER.error("error, but no exception...");
-    } else {
+    if (exception != null) {
       LOGGER.error("Caught error, rendering error page...", exception);
     }
 
