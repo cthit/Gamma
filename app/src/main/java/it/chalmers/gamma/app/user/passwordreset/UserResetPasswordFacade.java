@@ -87,9 +87,11 @@ public class UserResetPasswordFacade extends Facade {
       throw new IllegalArgumentException("Please properly confirm password");
     }
 
+    UnencryptedPassword unencryptedPassword = new UnencryptedPassword(newPassword);
+
     UserId userId = this.passwordResetRepository.useToken(new PasswordResetToken(inputToken));
 
-    this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
+    this.userRepository.setPassword(userId, unencryptedPassword);
   }
 
   private void sendPasswordResetTokenMail(Email email, PasswordResetToken token) {
