@@ -175,7 +175,7 @@ public class RegisterAccountController {
     if (bindingResult.hasErrors()) {
       return createGetRegister(htmxRequest, form, bindingResult);
     } else {
-      return new ModelAndView("redirect:/");
+      return new ModelAndView("redirect:/login?account-created");
     }
   }
 
