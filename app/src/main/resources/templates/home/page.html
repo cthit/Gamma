@@ -41,7 +41,7 @@
             </li>
             <li>
                 <b>Preferred language:</b>
-                <span th:text="${me.language()}"></span>
+                <span th:text="${me.language() == 'EN' ? 'English' : (me.language() == 'SV' ? 'Swedish' : '')}"></span>
             </li>
             <li th:if="${me.isAdmin()}">
                 <b>Is admin?</b>
