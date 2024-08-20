@@ -89,7 +89,7 @@ public class UserRepositoryAdapter implements UserRepository {
 
   @Override
   public Optional<GammaUser> get(Email email) {
-    return this.repository.findByEmail(email.value()).map(this.converter::toDomain);
+    return this.repository.findByEmailIgnoreCase(email.value()).map(this.converter::toDomain);
   }
 
   @Override
