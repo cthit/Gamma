@@ -1,5 +1,15 @@
 <header th:replace="~{common/header}"></header>
 <main>
+    <article th:if="${me.cid() == 'admin'}">
+        <header>
+            Urgency for Deletion of This 'Admin' Account
+        </header>
+        <p>
+            The security of your system is paramount. Given that accounts with the "admin" username tend to
+            attract higher rates of brute-force attack attempts, we strongly advise you to delete this account promptly.
+        </p>
+    </article>
+
     <article th:fragment="userinfo">
         <header>
             Your information
