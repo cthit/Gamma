@@ -70,7 +70,7 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
   }
 
   private Optional<UserEntity> getUserByUsernameOrEmail(String userIdentifier) {
-    Optional<UserEntity> userEntity = this.userJpaRepository.findByCid(userIdentifier);
+    Optional<UserEntity> userEntity = this.userJpaRepository.findByCidIgnoreCase(userIdentifier);
     if (userEntity.isEmpty()) {
       userEntity = this.userJpaRepository.findByEmailIgnoreCase(userIdentifier);
     }
