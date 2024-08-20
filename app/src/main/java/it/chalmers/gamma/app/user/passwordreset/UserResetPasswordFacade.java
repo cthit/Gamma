@@ -1,5 +1,6 @@
 package it.chalmers.gamma.app.user.passwordreset;
 
+import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 import it.chalmers.gamma.app.Facade;
@@ -15,6 +16,7 @@ import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
 import it.chalmers.gamma.security.TimerBlock;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +45,19 @@ public class UserResetPasswordFacade extends Facade {
     this.passwordResetRepository = passwordResetRepository;
     this.throttlingService = throttlingService;
     this.baseUrl = baseUrl;
+  }
+
+  public String generatePasswordLink(UUID userId) {
+    super.accessGuard.require(isAdmin());
+
+    try {
+      PasswordResetRepository.PasswordReset passwordReset =
+          this.passwordResetRepository.createNewToken(new UserId(userId));
+
+      return generatePasswordResetLink(passwordReset.token());
+    } catch (PasswordResetRepository.UserNotFoundException e) {
+      throw new IllegalStateException();
+    }
   }
 
   public void startResetPasswordProcess(String cidOrEmailString) {
@@ -94,10 +109,14 @@ public class UserResetPasswordFacade extends Facade {
     this.userRepository.setPassword(userId, unencryptedPassword);
   }
 
+  private String generatePasswordResetLink(PasswordResetToken token) {
+    return this.baseUrl + "/forgot-password/finalize?token=" + token.value();
+  }
+
   private void sendPasswordResetTokenMail(Email email, PasswordResetToken token) {
     String subject = "Password reset for Account at IT division of Chalmers";
 
-    String resetUrl = this.baseUrl + "/forgot-password/finalize?token=" + token.value();
+    String resetUrl = generatePasswordResetLink(token);
 
     String message =
         """
@@ -105,7 +124,7 @@ public class UserResetPasswordFacade extends Facade {
         The link is valid for 15 minutes. Click here to reset password:
         %s
         """
-            .formatted(resetUrl, resetUrl);
+            .formatted(resetUrl);
 
     this.mailService.sendMail(email.value(), subject, message);
   }

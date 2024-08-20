@@ -39,6 +39,23 @@
         </footer>
     </article>
 
+    <article th:if="${isAdmin}" th:fragment="password-link-generated">
+        <header>
+            Generate reset password link
+        </header>
+        <p th:if="${passwordLink == null}">Password link will appear here</p>
+        <th:block th:if="${passwordLink != null}">
+            <p>Link valid for 15 minutes.</p>
+            <code th:text="${passwordLink}"></code>
+        </th:block>
+        <footer>
+            <form th:data-hx-post="|/users/${userId}/generate-password-link|" data-hx-target="closest article" data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="outline contrast" data-loading-disable>Generate</button>
+            </form>
+        </footer>
+    </article>
+
     <article>
         <header th:text="|${nick}:s groups|"></header>
         <p th:if="${groups.size() == 0}">

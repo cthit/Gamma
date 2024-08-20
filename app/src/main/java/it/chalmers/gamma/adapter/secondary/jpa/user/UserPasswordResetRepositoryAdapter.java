@@ -63,6 +63,17 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   }
 
   @Override
+  public PasswordReset createNewToken(UserId userId) throws UserNotFoundException {
+    Optional<UserEntity> maybeUserEntity = this.userJpaRepository.findById(userId.value());
+
+    if (maybeUserEntity.isEmpty()) {
+      throw new UserNotFoundException();
+    }
+
+    return this.createNewToken(maybeUserEntity.get());
+  }
+
+  @Override
   public boolean isTokenValid(PasswordResetToken token) {
     return this.userPasswordResetJpaRepository
         .findByToken(token.value())

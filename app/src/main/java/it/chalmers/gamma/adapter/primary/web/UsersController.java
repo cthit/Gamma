@@ -12,6 +12,7 @@ import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
 import it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
+import it.chalmers.gamma.app.user.passwordreset.UserResetPasswordFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.time.Year;
@@ -31,10 +32,15 @@ public class UsersController {
 
   private final UserFacade userFacade;
   private final UserCreationFacade userCreationFacade;
+  private final UserResetPasswordFacade userResetPasswordFacade;
 
-  public UsersController(UserFacade userFacade, UserCreationFacade userCreationFacade) {
+  public UsersController(
+      UserFacade userFacade,
+      UserCreationFacade userCreationFacade,
+      UserResetPasswordFacade userResetPasswordFacade) {
     this.userFacade = userFacade;
     this.userCreationFacade = userCreationFacade;
+    this.userResetPasswordFacade = userResetPasswordFacade;
   }
 
   @GetMapping("/users")
@@ -313,5 +319,18 @@ public class UsersController {
     this.userFacade.deleteUser(userId);
 
     return new ModelAndView("redirect:/users");
+  }
+
+  @PostMapping("/users/{id}/generate-password-link")
+  public ModelAndView generatePasswordLink(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID userId) {
+    String passwordResetLink = userResetPasswordFacade.generatePasswordLink(userId);
+
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("user-details/page :: password-link-generated");
+    mv.addObject("passwordLink", passwordResetLink);
+
+    return mv;
   }
 }
