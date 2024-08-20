@@ -28,8 +28,7 @@
                 <a th:href="@{/posts}">Posts</a>
             </li>
             <th:block th:if="${isAdmin}">
-                <br>
-                <b>Admin views</b>
+                <hr>
                 <li>
                     <a th:href="@{/clients}">Official clients</a>
                 </li>
@@ -55,6 +54,13 @@
                     <a th:href="@{/throttling}">Throttling</a>
                 </li>
             </th:block>
+            <hr>
+            <li>
+                <a href="https://github.com/cthit/gamma" target="_blank">GitHub</a>
+            </li>
+            <li>
+                Made by <span><a href="https://digit.chalmers.it">digIT</a></span>
+            </li>
         </ul>
     </aside>
 </nav>

@@ -296,3 +296,7 @@ progress {
 .error-message {
     color: var(--pico-del-color);
 }
+
+span a {
+    display: inline-block !important;
+}

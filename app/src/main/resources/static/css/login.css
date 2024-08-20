@@ -53,3 +53,12 @@ img {
     object-fit: cover;
     object-position: center;
 }
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form button {
+    width: 100%;
+}

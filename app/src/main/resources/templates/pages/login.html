@@ -11,11 +11,9 @@
             Before deciding on authorizing the client, please verify your identity
         </p>
         <form th:action="@{/login}" th:method="post">
-            <fieldset role="group">
-                <input type="text" name="username" placeholder="Cid / Email">
-                <input type="password" name="password" placeholder="Password">
-                <button data-loading-disable>Login</button>
-            </fieldset>
+            <input type="text" name="username" placeholder="Cid / Email">
+            <input type="password" name="password" placeholder="Password">
+            <button class="outline contrast" data-loading-disable>Login</button>
         </form>
         <footer>
             <p id="links">
@@ -46,6 +44,7 @@
                 <a href="/activate-cid">
                     Register
                 </a>
+
                 <a href="/forgot-password">
                     Forgot password
                 </a>
