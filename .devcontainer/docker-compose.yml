@@ -9,20 +9,25 @@ services:
     command: sleep infinity
 
   db:
+    container_name: db
     image: postgres:16
     restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: "postgres"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   redis:
+    container_name: redis
     image: redis:5.0
     restart: always
     ports:
       - "6379:6379"
 
   gotify:
+    container_name: gotify
     image: cthit/gotify:latest
     environment:
       GOTIFY_PRE-SHARED-KEY: "123abc"
