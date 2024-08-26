@@ -1,0 +1,26 @@
+{
+	"name": "Gamma Devcontainer",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "app",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+	"features": {
+		"ghcr.io/devcontainers/features/java:1": {
+			"installGradle": true,
+			"gradleVersion": "8.10",
+			"jdkDistro": "open"
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "20"
+		}
+	},
+
+	"forwardPorts": [8081],
+
+	"customizations" : {
+    	"jetbrains" : {
+      		"backend" : "IntelliJ"
+    	}
+  }
+
+}

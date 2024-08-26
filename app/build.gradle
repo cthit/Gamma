@@ -72,10 +72,6 @@ dependencies {
             "org.webjars.npm:hyperscript.org:0.9.12",
             "org.webjars.npm:picocss__pico:2.0.6"
     )
-
-    developmentOnly(
-            "org.springframework.boot:spring-boot-docker-compose:3.3.0"
-    )
 }
 
 repositories {

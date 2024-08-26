@@ -1,18 +1,9 @@
 ---
 spring:
-  docker:
-    compose:
-      lifecycle-management: "start-and-stop"
-      start:
-        command: "UP"
-      stop:
-        command: "down"
-      readiness:
-        timeout: 10m
   datasource:
     username: "${DB_USER:postgres}"
-    password: "${DB_PASSWORD:example}"
-    url: "jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:postgres}"
+    password: "${DB_PASSWORD:postgres}"
+    url: "jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:postgres}"
   flyway:
     baseline-on-migrate: true
     locations: "classpath:/db/migration"
@@ -34,7 +25,7 @@ spring:
       max-file-size: 50MB
   data:
     redis:
-      host: "${REDIS_HOST:0.0.0.0}"
+      host: "${REDIS_HOST:redis}"
       password: "${REDIS_PASSWORD:}"
       port: "${REDIS_PORT:6379}"
       repositories:
@@ -75,4 +66,4 @@ application:
   admin-setup: "${ADMIN_SETUP:true}"
   gotify:
     key: "${GOTIFY_KEY:123abc}"
-    url: "${GOTIFY_BASE_URL:http://localhost:8080}"
+    url: "${GOTIFY_BASE_URL:http://db:8080}"
