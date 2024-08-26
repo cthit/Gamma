@@ -3,8 +3,8 @@ volumes:
 
 services:
   app:
-    container_name: javadev
-    image: mcr.microsoft.com/devcontainers/java:1-21
+    container_name: dev
+    image: mcr.microsoft.com/devcontainers/base:ubuntu-22.04
     volumes:
       - ../..:/workspaces:cached
     command: sleep infinity
