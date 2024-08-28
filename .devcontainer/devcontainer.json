@@ -2,7 +2,7 @@
 	"name": "Gamma Devcontainer",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
-	"workspaceFolder": "/workspaces/gamma",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolder}",
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {

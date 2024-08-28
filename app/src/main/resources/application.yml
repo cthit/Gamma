@@ -66,4 +66,4 @@ application:
   admin-setup: "${ADMIN_SETUP:true}"
   gotify:
     key: "${GOTIFY_KEY:123abc}"
-    url: "${GOTIFY_BASE_URL:http://db:8080}"
+    url: "${GOTIFY_BASE_URL:http://gotify:80}"
