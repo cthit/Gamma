@@ -2,7 +2,8 @@
 	"name": "Gamma Devcontainer",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolder}",
+	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+	"remoteUser": "root",
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
@@ -21,5 +22,4 @@
       		"backend" : "IntelliJ"
     	}
   }
-
 }
