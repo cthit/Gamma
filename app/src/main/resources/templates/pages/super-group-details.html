@@ -26,12 +26,17 @@
                 <span th:text="${superGroup.type()}"></span>
             </li>
         </ul>
-        <footer>
+        <footer th:if="${isAdmin}">
             <button th:data-hx-get="@{/super-groups/{superGroupId}/edit(superGroupId=${superGroup.id()})}"
+                class="outline contrast"
                 data-hx-target="closest article"
                 data-hx-swap="outerHTML">
                 Edit
             </button>
+            <form data-hx-confirm="Are you sure you want to delete this super group?"
+                  th:action="|/super-groups/${superGroup.id()}|" th:method="delete" th:if="${usages.size() == 0}">
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
         </footer>
     </article>
     <article>

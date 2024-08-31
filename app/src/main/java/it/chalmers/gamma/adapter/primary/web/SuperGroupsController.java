@@ -206,7 +206,7 @@ public class SuperGroupsController {
       throw new RuntimeException(e);
     }
 
-    return new ModelAndView("common/empty");
+    return new ModelAndView("redirect:/super-groups");
   }
 
   public record CreateSuperGroupForm(
