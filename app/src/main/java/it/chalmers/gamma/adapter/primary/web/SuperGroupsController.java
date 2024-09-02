@@ -132,6 +132,7 @@ public class SuperGroupsController {
         this.superGroupFacade.getAllTypes().stream()
             .sorted(Comparator.comparing(String::toLowerCase))
             .toList());
+    mv.addObject("usages", this.groupFacade.getAllBySuperGroup(superGroup.get().id()));
 
     return mv;
   }

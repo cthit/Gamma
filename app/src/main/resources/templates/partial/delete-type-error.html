@@ -1,5 +1,0 @@
-<form th:object="${deleteForm}">
-    <th:block th:if="${#fields.hasErrors('global')}">
-        <span th:each="err : ${#fields.errors('global')}" th:text="${err}"></span>
-    </th:block>
-</form>

@@ -135,14 +135,6 @@ input[type=checkbox], input[type=radio], select {
     text-align: right;
 }
 
-.types-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    width: fit-content;
-    margin: auto;
-}
-
 .list-item {
     display: flex;
     gap: 2rem;

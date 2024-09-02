@@ -75,7 +75,8 @@ public class UserResetPasswordFacade extends Facade {
                 } else if (new Cid.CidValidator().validate(cidOrEmailString.toLowerCase())
                     instanceof SuccessfulValidation) {
                   passwordReset =
-                      this.passwordResetRepository.createNewToken(new Cid(cidOrEmailString.toLowerCase()));
+                      this.passwordResetRepository.createNewToken(
+                          new Cid(cidOrEmailString.toLowerCase()));
                 } else {
                   throw new IllegalArgumentException("Neither an email nor a cid.");
                 }

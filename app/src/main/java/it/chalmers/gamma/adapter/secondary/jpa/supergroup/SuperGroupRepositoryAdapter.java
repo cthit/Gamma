@@ -82,6 +82,11 @@ public class SuperGroupRepositoryAdapter implements SuperGroupRepository {
 
   @Override
   public List<SuperGroup> getAllByType(SuperGroupType superGroupType) {
+    boolean typeExists = this.superGroupTypeJpaRepository.existsById(superGroupType.value());
+    if (!typeExists) {
+      throw new TypeNotFoundRuntimeException();
+    }
+
     return this.repository.findAllBySuperGroupType_Name(superGroupType.value()).stream()
         .map(this.superGroupEntityConverter::toDomain)
         .toList();

@@ -1,36 +1,32 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <article>
+    <article th:if="${isAdmin}">
         <header>
-                Super group types
+            Create new super group type
         </header>
-        <section class="types-section">
-            <p>
-                These are the types of super groups that can exist.
-            </p>
-            <th:block th:each="type : ${types}">
-                <div class="list-item" th:fragment="type-item">
-                    <span th:text="${type}"></span>
-                    <span th:if="${isAdmin}">
-                        <form data-hx-confirm="Are you sure you want to delete this type?" th:id=|${type}-delete-form| th:fragment="delete-type" th:data-hx-post="@{/types/{type}(type=${type})}" data-hx-target="closest div" data-hx-swap="outerHTML">
-                            <div th:replace="~{common/form-csrf}"></div>
-                            <input type="hidden" name="_method" value="delete" />
-                            <button class="outline contrast" data-loading-disable>Delete</button>
-                        </form>
-                    </span>
-                </div>
-            </th:block>
-        </section>
-        <footer th:if="${isAdmin}">
-            <form th:object="${form}" th:fragment="create-type" th:data-hx-post="@{/types}" data-hx-target="this" data-hx-swap="outerHTML">
-                <div th:replace="~{common/form-csrf}"></div>
-                <div>
-                    <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
-                </div>
-                <div>
-                    <button data-loading-disable>Save</button>
-                </div>
-            </form>
-        </footer>
+        <form th:object="${form}" th:action="@{/types}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
+            <button data-loading-disable>Save</button>
+        </form>
     </article>
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Details
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="type : ${types}">
+            <td th:text="${type}"></td>
+            <td>
+                <a th:href="${'/types/' + type}">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </main>
