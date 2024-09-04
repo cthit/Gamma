@@ -70,7 +70,7 @@ public class GroupsController {
     return mv;
   }
 
-  public record Member(String name, String post, UUID userId) {}
+  public record Member(String name, String post, UUID postId, UUID userId) {}
 
   public static class MyMembershipsForm {
 
@@ -118,13 +118,17 @@ public class GroupsController {
         group.get().groupMembers().stream()
             .map(
                 groupMember -> {
-                  String post = " - " + groupMember.post().enName();
+                  String post = groupMember.post().enName();
 
                   if (groupMember.unofficialPostName() != null) {
                     post += " - " + groupMember.unofficialPostName();
                   }
 
-                  return new Member(groupMember.user().nick(), post, groupMember.user().id());
+                  return new Member(
+                      groupMember.user().nick(),
+                      post,
+                      groupMember.post().id(),
+                      groupMember.user().id());
                 })
             .toList());
     mv.addObject("random", Math.random());
@@ -199,6 +203,7 @@ public class GroupsController {
                             + groupMember.post().enName()
                             + " - "
                             + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""),
+                        groupMember.post().id(),
                         groupMember.user().id()))
             .toList());
 

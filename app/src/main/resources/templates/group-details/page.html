@@ -26,8 +26,9 @@
         <ul>
             <li th:each="member : ${members}">
                 <a th:href="|/users/${member.userId()}|" th:text="${member.name()}"></a>
-                <span th:text="${member.post()}"></span>
-            </li>
+                <span> - </span>
+                <a th:href="|/posts/${member.postId()}|" th:text="${member.post()}"></a>
+           </li>
         </ul>
 
         <footer th:if="${isAdmin}">

@@ -18,7 +18,9 @@
         <tbody>
             <tr th:each="superGroup : ${superGroups}">
                 <td th:text="${superGroup.prettyName()}"></td>
-                <td th:text="${superGroup.type()}"></td>
+                <td>
+                    <a th:href="|/types/${superGroup.type()}|" th:text="${superGroup.type()}"></a>
+                </td>
                 <td>
                     <a th:href="${'/super-groups/' + superGroup.id()}">Details</a>
                 </td>

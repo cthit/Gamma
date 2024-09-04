@@ -98,7 +98,9 @@
             No users have approved this client yet
         </p>
         <ul th:if="${userApprovals.size() > 0}">
-            <li th:each="userApproval : ${userApprovals}" th:text="${userApproval.nick()}"></li>
+            <li th:each="userApproval : ${userApprovals}">
+                <a th:href="|/users/${userApproval.id()}|" th:text="${userApproval.fullName()}"></a>
+            </li>
         </ul>
     </article>
 

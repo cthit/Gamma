@@ -9,11 +9,10 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.post.domain.PostRepository;
-import java.util.*;
-
 import it.chalmers.gamma.app.validation.ValidationResult;
 import it.chalmers.gamma.app.validation.Validator;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.*;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -128,7 +127,12 @@ public class PostsController {
     ModelAndView mv = new ModelAndView();
 
     if (form == null) {
-      form = new UpdatePost(post.get().svName(), post.get().enName(), post.get().emailPrefix(), post.get().version());
+      form =
+          new UpdatePost(
+              post.get().svName(),
+              post.get().enName(),
+              post.get().emailPrefix(),
+              post.get().version());
     }
 
     if (bindingResult != null) {
@@ -210,7 +214,6 @@ public class PostsController {
     @Override
     public ValidationResult validate(String value) {
       return withValidators(IS_NOT_EMPTY, SANITIZED_HTML, MAX_LENGTH.apply(2048)).validate(value);
-
     }
   }
 
