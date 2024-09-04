@@ -130,6 +130,10 @@ public class UserFacade extends Facade {
           user.id().value(),
           user.acceptanceYear().value());
     }
+
+    public String fullName() {
+      return firstName + " '" + nick + "' " + lastName;
+    }
   }
 
   public record UserGroupDTO(GroupFacade.GroupDTO group, PostFacade.PostDTO post) {

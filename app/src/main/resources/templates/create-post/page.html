@@ -1,0 +1,18 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <form th:object="${form}"
+          th:action="@{/posts}"
+          th:method="post">
+        <article>
+            <header>
+                Create post
+            </header>
+            <div th:replace="~{common/input :: textInput2(field='svName', label='Swedish name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enName', label='English name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='emailPrefix', label='Email prefix')}"></div>
+            <footer>
+                <button data-loading-disable>Create</button>
+            </footer>
+        </article>
+    </form>
+</main>

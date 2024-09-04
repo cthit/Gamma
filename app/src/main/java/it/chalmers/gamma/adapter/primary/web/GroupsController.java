@@ -430,7 +430,7 @@ public class GroupsController {
               .map(m -> new GroupFacade.ShallowMember(m.userId, m.postId, m.unofficialPostName))
               .toList());
 
-      return this.getGroup(htmxRequest, id.toString());
+      return new ModelAndView("redirect:/groups/" + id.toString());
     }
   }
 

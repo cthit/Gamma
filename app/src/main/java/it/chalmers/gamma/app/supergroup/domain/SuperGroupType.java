@@ -31,7 +31,7 @@ public record SuperGroupType(String value) implements Id<String> {
       return withValidators(
               IS_NOT_EMPTY,
               MATCHES_REGEX.apply(
-                  new RegexMatcher(pattern, "must be made using a-z, with length between 5-30")))
+                  new RegexMatcher(pattern, "must be made using a-z, with length between 3-30")))
           .validate(value);
     }
   }

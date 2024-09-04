@@ -20,6 +20,8 @@ public class ValidationHelper {
     };
   }
 
+  public static Validator<String> IS_NOT_NULL = value -> result(value != null, "Cannot be null");
+
   public static Validator<String> IS_NOT_EMPTY =
       value -> result(!(value == null || value.isEmpty()), "Cannot be empty");
 

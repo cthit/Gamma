@@ -1,0 +1,18 @@
+<article>
+    <header>Post details</header>
+    <form id="edit-post" th:object="${form}" th:action="@{|/posts/${postId}|}" th:method="put">
+        <div th:replace="~{common/input :: textInput2('svName', 'Swedish name')}"></div>
+        <div th:replace="~{common/input :: textInput2('enName', 'English name')}"></div>
+        <div th:replace="~{common/input :: textInput2('emailPrefix', 'Email prefix')}"></div>
+        <input type="hidden" name="version" th:value="${form.version()}" />
+    </form>
+    <footer>
+        <button type="button"
+                class="outline contrast"
+                th:data-hx-get="|/posts/${postId}/cancel|"
+                data-hx-target="body"
+                data-hx-swap="outerHTML" data-loading-disable>Cancel
+        </button>
+        <button class="outline" form="edit-post" data-loading-disable>Save</button>
+    </footer>
+</article>

@@ -83,7 +83,7 @@ public class PostFacade extends Facade {
   }
 
   public List<GroupFacade.GroupWithMembersDTO> getPostUsages(UUID postId) {
-    this.accessGuard.require(isAdmin());
+    this.accessGuard.require(isSignedIn());
 
     return this.groupRepository.getAllByPost(new PostId(postId)).stream()
         .map(GroupFacade.GroupWithMembersDTO::new)

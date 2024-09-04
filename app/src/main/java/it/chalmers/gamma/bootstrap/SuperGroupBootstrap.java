@@ -42,7 +42,7 @@ public class SuperGroupBootstrap {
         .forEach(
             type -> {
               try {
-                this.superGroupTypeRepository.add(new SuperGroupType(type));
+                this.superGroupTypeRepository.add(new SuperGroupType(type.toLowerCase()));
               } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
                 LOGGER.error("Error creating supergroup type: " + type + ";");
               }
@@ -60,7 +60,7 @@ public class SuperGroupBootstrap {
                       0,
                       new Name(mockSuperGroup.name()),
                       new PrettyName(mockSuperGroup.prettyName()),
-                      new SuperGroupType(mockSuperGroup.type()),
+                      new SuperGroupType(mockSuperGroup.type().toLowerCase()),
                       new Text()));
             });
 

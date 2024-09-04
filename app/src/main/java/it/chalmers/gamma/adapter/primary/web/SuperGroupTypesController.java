@@ -125,7 +125,7 @@ public class SuperGroupTypesController {
       @ValidatedWith(SuperGroupType.SuperGroupTypeValidator.class) String type) {}
 
   @DeleteMapping("/types/{id}")
-  public ModelAndView deleteEditPost(
+  public ModelAndView deleteType(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       @PathVariable("id") String type)
       throws SuperGroupTypeRepository.SuperGroupTypeHasUsagesException,
