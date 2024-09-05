@@ -2,6 +2,7 @@ package it.chalmers.gamma.bootstrap;
 
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.group.domain.EmailPrefix;
+import it.chalmers.gamma.app.post.domain.Order;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
@@ -32,16 +33,17 @@ public class PostBootstrap {
 
     LOGGER.info("========== POST BOOTSTRAP ==========");
 
-    mockData
-        .posts()
-        .forEach(
-            mockPost ->
-                this.postRepository.save(
-                    new Post(
-                        new PostId(mockPost.id()),
-                        0,
-                        new Text(mockPost.postName().sv(), mockPost.postName().en()),
-                        EmailPrefix.none())));
+    int i = 0;
+    for (MockData.MockPost mockPost : mockData.posts()) {
+      this.postRepository.save(
+          new Post(
+              new PostId(mockPost.id()),
+              0,
+              new Text(mockPost.postName().sv(), mockPost.postName().en()),
+              EmailPrefix.none(),
+              new Order(i)));
+      i++;
+    }
     LOGGER.info("Posts created");
     LOGGER.info("==========                ==========");
   }

@@ -41,10 +41,7 @@ public class PostsController {
       mv.addObject("page", "posts/page");
     }
 
-    mv.addObject(
-        "posts",
-        posts.stream().sorted(Comparator.comparing(post -> post.enName().toLowerCase())).toList());
-
+    mv.addObject("posts", posts);
     return mv;
   }
 
@@ -263,5 +260,14 @@ public class PostsController {
         this.postFacade.create(new PostFacade.NewPost(form.svName, form.enName, form.emailPrefix));
 
     return new ModelAndView("redirect:/posts/" + postId);
+  }
+
+  @PutMapping("/posts/order")
+  public ModelAndView updateOrder(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @RequestParam("list") List<UUID> list) {
+    this.postFacade.setOrder(list);
+
+    return new ModelAndView("redirect:/posts");
   }
 }

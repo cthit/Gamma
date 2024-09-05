@@ -9,12 +9,14 @@ import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
+import it.chalmers.gamma.app.post.domain.Order;
 import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import jakarta.transaction.Transactional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -44,7 +46,8 @@ public class PostFacade extends Facade {
             postId,
             0,
             new Text(newPost.svText, newPost.enText),
-            new EmailPrefix(newPost.emailPrefix)));
+            new EmailPrefix(newPost.emailPrefix),
+            new Order(this.postRepository.numberOfPosts())));
 
     return postId.value();
   }
@@ -90,19 +93,48 @@ public class PostFacade extends Facade {
         .toList();
   }
 
+  @Transactional
+  public void setOrder(List<UUID> orderedPosts) {
+    this.accessGuard.require(isAdmin());
+
+    Map<PostId, Post> posts =
+        this.postRepository.getAll().stream()
+            .collect(Collectors.toMap(Post::id, Function.identity()));
+
+    boolean anythingChanged = false;
+
+    for (int i = 0; i < orderedPosts.size(); i++) {
+      UUID orderedPostId = orderedPosts.get(i);
+      Post post = posts.get(new PostId(orderedPostId));
+      if (post == null) {
+        throw new IllegalArgumentException("Unexpected post id");
+      }
+
+      anythingChanged = anythingChanged || post.order().value() != i;
+
+      posts.put(post.id(), post.withOrder(new Order(i)));
+    }
+
+    if (anythingChanged) {
+      this.postRepository.saveAll(new ArrayList<>(posts.values()));
+    }
+  }
+
   public record NewPost(String svText, String enText, String emailPrefix) {}
 
   public record UpdatePost(
       UUID postId, int version, String svText, String enText, String emailPrefix) {}
 
-  public record PostDTO(UUID id, int version, String svName, String enName, String emailPrefix) {
+  public record PostDTO(
+      UUID id, int version, String svName, String enName, String emailPrefix, int order) {
     public PostDTO(Post post) {
       this(
           post.id().value(),
           post.version(),
           post.name().sv().value(),
           post.name().en().value(),
-          post.emailPrefix().value());
+          post.emailPrefix().value(),
+          post.order().value());
     }
   }
 }

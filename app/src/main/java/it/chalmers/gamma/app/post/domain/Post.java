@@ -6,7 +6,7 @@ import it.chalmers.gamma.app.group.domain.EmailPrefix;
 import java.util.Objects;
 
 @RecordBuilder
-public record Post(PostId id, int version, Text name, EmailPrefix emailPrefix)
+public record Post(PostId id, int version, Text name, EmailPrefix emailPrefix, Order order)
     implements PostBuilder.With {
 
   public Post {

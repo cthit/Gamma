@@ -10,6 +10,7 @@ import it.chalmers.gamma.app.group.domain.UnofficialPostName;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.Name;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,6 +49,7 @@ public class GroupEntityConverter {
                       user);
                 })
             .filter(Objects::nonNull)
+            .sorted(Comparator.comparingInt(member -> member.post().order().value()))
             .toList();
 
     Optional<ImageUri> avatarUri = Optional.empty();

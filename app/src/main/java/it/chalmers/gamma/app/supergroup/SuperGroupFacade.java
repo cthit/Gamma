@@ -96,6 +96,7 @@ public class SuperGroupFacade extends Facade {
             groups.stream()
                 .flatMap(group -> group.groupMembers().stream())
                 .map(GroupFacade.GroupMemberDTO::new)
+                .sorted(Comparator.comparingInt(member -> member.post().order()))
                 .toList();
 
         superGroupsOutput.add(

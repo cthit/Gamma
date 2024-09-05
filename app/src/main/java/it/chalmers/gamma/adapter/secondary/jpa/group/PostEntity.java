@@ -20,6 +20,9 @@ public class PostEntity extends MutableEntity<UUID> {
   @Column(name = "email_prefix")
   protected String emailPrefix;
 
+  @Column(name = "post_order")
+  protected int order;
+
   protected PostEntity() {}
 
   protected PostEntity(UUID id) {

@@ -27,6 +27,11 @@ public class PostRepositoryAdapter implements PostRepository {
   }
 
   @Override
+  public void saveAll(List<Post> posts) {
+    this.repository.saveAll(posts.stream().map(this::toEntity).toList());
+  }
+
+  @Override
   public void delete(PostId postId) throws PostNotFoundException {
     try {
       this.repository.deleteById(postId.value());
@@ -37,12 +42,19 @@ public class PostRepositoryAdapter implements PostRepository {
 
   @Override
   public List<Post> getAll() {
-    return this.repository.findAll().stream().map(this.postEntityConverter::toDomain).toList();
+    return this.repository.findAllByOrderByOrderAsc().stream()
+        .map(this.postEntityConverter::toDomain)
+        .toList();
   }
 
   @Override
   public Optional<Post> get(PostId postId) {
     return this.repository.findById(postId.value()).map(this.postEntityConverter::toDomain);
+  }
+
+  @Override
+  public int numberOfPosts() {
+    return Math.toIntExact(this.repository.count());
   }
 
   private PostEntity toEntity(Post post) {
@@ -58,6 +70,8 @@ public class PostRepositoryAdapter implements PostRepository {
     }
 
     postEntity.postName.apply(post.name());
+
+    postEntity.order = post.order().value();
 
     return postEntity;
   }

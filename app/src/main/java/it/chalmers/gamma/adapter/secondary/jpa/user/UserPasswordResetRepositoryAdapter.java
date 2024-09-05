@@ -105,7 +105,8 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   public int removeInvalidPasswordResetTokens() {
     int i = 0;
 
-    for (UserPasswordResetEntity userPasswordResetEntity : this.userPasswordResetJpaRepository.findAll()) {
+    for (UserPasswordResetEntity userPasswordResetEntity :
+        this.userPasswordResetJpaRepository.findAll()) {
       if (!isStillValid(userPasswordResetEntity)) {
         this.userPasswordResetJpaRepository.delete(userPasswordResetEntity);
         i++;
