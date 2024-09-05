@@ -20,9 +20,12 @@
         </thead>
         <tbody>
         <tr th:each="allowedCid : ${allowList}">
-            <td th:text="${allowedCid}"></td>
+            <td th:text="${allowedCid.cid()}"></td>
             <td class="table-align-right">
-                <form th:data-hx-post="|/allow-list/${allowedCid}|" data-hx-target="closest tr" data-hx-swap="delete">
+                <span th:if="${allowedCid.hasActivationCode()}">
+                    Has activation code
+                </span>
+                <form th:if="${!allowedCid.hasActivationCode()}" th:data-hx-post="|/allow-list/${allowedCid.cid()}|" data-hx-target="closest tr" data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
                     <button class="outline contrast" data-loading-disable>Retract approval</button>

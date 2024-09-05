@@ -15,6 +15,8 @@ public interface UserActivationRepository {
 
   void removeActivation(Cid cid) throws CidNotActivatedException;
 
+  int removeInvalidActivationCodes();
+
   class TokenNotActivatedRuntimeException extends RuntimeException {}
 
   class CidNotActivatedException extends RuntimeException {}

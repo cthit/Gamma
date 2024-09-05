@@ -91,4 +91,18 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   public void removeActivation(Cid cid) throws CidNotActivatedException {
     this.userActivationJpaRepository.deleteById(cid.value());
   }
+
+  @Override
+  public int removeInvalidActivationCodes() {
+    int i = 0;
+
+    for (UserActivationEntity userActivationEntity : this.userActivationJpaRepository.findAll()) {
+      if (!isStillValid(userActivationEntity)) {
+        this.userActivationJpaRepository.delete(userActivationEntity);
+        i++;
+      }
+    }
+
+    return i;
+  }
 }

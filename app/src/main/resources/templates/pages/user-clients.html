@@ -11,7 +11,9 @@
         <tbody>
         <tr th:each="client : ${clients}">
             <td th:text="${client.prettyName()}"></td>
-            <td th:text="${client.ownerUserName()}"></td>
+            <td>
+                <a th:href="|/users/${client.userId()}|" th:text="${client.fullName()}"></a>
+            </td>
             <td>
                 <a th:href="${'/clients/' + client.clientUid()}">Details</a>
             </td>

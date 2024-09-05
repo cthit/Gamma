@@ -18,6 +18,8 @@ public interface PasswordResetRepository {
 
   UserId useToken(PasswordResetToken token);
 
+  int removeInvalidPasswordResetTokens();
+
   class UserNotFoundException extends Exception {}
 
   class TokenNotFoundRuntimeException extends RuntimeException {}

@@ -101,6 +101,20 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     return new UserId(maybeReset.get().userId);
   }
 
+  @Override
+  public int removeInvalidPasswordResetTokens() {
+    int i = 0;
+
+    for (UserPasswordResetEntity userPasswordResetEntity : this.userPasswordResetJpaRepository.findAll()) {
+      if (!isStillValid(userPasswordResetEntity)) {
+        this.userPasswordResetJpaRepository.delete(userPasswordResetEntity);
+        i++;
+      }
+    }
+
+    return i;
+  }
+
   public boolean isStillValid(UserPasswordResetEntity userPasswordResetEntity) {
     Instant createdAt = userPasswordResetEntity.toDomain().createdAt();
     return Duration.between(createdAt, Instant.now()).toMinutes() < 15;

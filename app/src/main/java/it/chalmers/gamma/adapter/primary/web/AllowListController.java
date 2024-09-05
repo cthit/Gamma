@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.user.activation.ActivationCodeFacade;
 import it.chalmers.gamma.app.user.allowlist.AllowListFacade;
 import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import java.util.Comparator;
@@ -12,10 +13,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class AllowListController {
 
   private final AllowListFacade allowListFacade;
+  private final ActivationCodeFacade activationCodeFacade;
 
-  public AllowListController(AllowListFacade allowListFacade) {
+  public AllowListController(
+      AllowListFacade allowListFacade, ActivationCodeFacade activationCodeFacade) {
     this.allowListFacade = allowListFacade;
+    this.activationCodeFacade = activationCodeFacade;
   }
+
+  public record AllowListItem(String cid, boolean hasActivationCode) {}
 
   @GetMapping("/allow-list")
   public ModelAndView getAllowList(
@@ -29,8 +35,17 @@ public class AllowListController {
     }
 
     List<String> allowList = this.allowListFacade.getAllowList();
+    List<String> activationList =
+        this.activationCodeFacade.getAllUserActivations().stream()
+            .map(ActivationCodeFacade.UserActivationDTO::cid)
+            .toList();
+
     mv.addObject(
-        "allowList", allowList.stream().sorted(Comparator.comparing(String::toLowerCase)).toList());
+        "allowList",
+        allowList.stream()
+            .sorted(Comparator.comparing(String::toLowerCase))
+            .map(cid -> new AllowListItem(cid, activationList.contains(cid)))
+            .toList());
 
     return mv;
   }

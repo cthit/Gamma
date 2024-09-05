@@ -17,9 +17,9 @@ public class UserClientsController {
     this.clientFacade = clientFacade;
   }
 
-  public record UserClient(String prettyName, String ownerUserName, UUID clientUid) {
+  public record UserClient(String prettyName, String fullName, UUID userId, UUID clientUid) {
     public UserClient(ClientFacade.ClientDTO client, UserFacade.UserDTO user) {
-      this(client.prettyName(), user.firstName() + " " + user.lastName(), client.clientUid());
+      this(client.prettyName(), user.fullName(), user.id(), client.clientUid());
     }
   }
 
