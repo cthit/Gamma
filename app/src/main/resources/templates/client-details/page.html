@@ -28,9 +28,12 @@
                 <b>Redirect:</b>
                 <span th:text="${client.webServerRedirectUrl()}"></span>
             </li>
-            <li th:if="${client.restriction() != null}">
+            <li th:if="${client.restriction() != null && client.restriction().superGroups().size() > 0}">
                 <b>Super group restrictions:</b>
                 <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></span>
+            </li>
+            <li th:if="${client.restriction() == null || client.restriction().superGroups().size() == 0}">
+                This client has no restrictions.
             </li>
             <li th:if="${owner != null && !amIOwner}">
                 <b>Owned by:</b>
@@ -67,7 +70,9 @@
                 No super groups
             </p>
             <ul th:if="${clientAuthority.superGroups().size() > 0}">
-                <li th:each="superGroup : ${clientAuthority.superGroups()}" th:text="${superGroup.prettyName()}"></li>
+                <li th:each="superGroup : ${clientAuthority.superGroups()}">
+                    <a th:href="|/super-groups/${superGroup.id()}|" th:text="${superGroup.prettyName()}"></a>
+                </li>
             </ul>
             <p>
                 Users:
@@ -76,7 +81,9 @@
                 No users
             </p>
             <ul th:if="${clientAuthority.users().size() > 0}">
-                <li th:each="user : ${clientAuthority.users()}" th:text="${user.nick()}"></li>
+                <li th:each="user : ${clientAuthority.users()}">
+                    <a th:href="|/users/${user.id()}|" th:text="${user.nick()}"></a>
+                </li>
             </ul>
             <footer>
                 <form data-hx-confirm="Are you sure you want to delete this authority?" th:data-hx-post="|/clients/${clientUid}/authority/${clientAuthority.authorityName()}|"
