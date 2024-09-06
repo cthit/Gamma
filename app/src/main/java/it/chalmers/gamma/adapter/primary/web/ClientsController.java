@@ -10,10 +10,12 @@ import it.chalmers.gamma.app.client.domain.ClientRedirectUrl.ClientRedirectUrlVa
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName.AuthorityNameValidator;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
+import it.chalmers.gamma.app.common.TextValue;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,10 +67,11 @@ public class ClientsController {
     return mv;
   }
 
-  @GetMapping("/clients/{id}")
-  public ModelAndView getClient(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") String clientUid) {
+  private ModelAndView createGetClient(
+      boolean htmxRequest,
+      String clientUid,
+      @Nullable String clientSecret,
+      @Nullable String apiKeyToken) {
     if (!isValidUUID(clientUid)) {
       return createClientNotFound(clientUid, htmxRequest);
     }
@@ -112,10 +115,13 @@ public class ClientsController {
       }
     }
 
+    mv.addObject("clientSecret", clientSecret);
+    mv.addObject("apiKeyToken", apiKeyToken);
+
     return mv;
   }
 
-  public ModelAndView createClientNotFound(String clientUid, boolean htmxRequest) {
+  private ModelAndView createClientNotFound(String clientUid, boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("client-details/not-found");
@@ -129,6 +135,13 @@ public class ClientsController {
     return mv;
   }
 
+  @GetMapping("/clients/{id}")
+  public ModelAndView getClient(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @PathVariable("id") String clientUid) {
+    return createGetClient(htmxRequest, clientUid, null, null);
+  }
+
   public static final class CreateClient {
 
     @ValidatedWith(ClientRedirectUrlValidator.class)
@@ -137,8 +150,12 @@ public class ClientsController {
     @ValidatedWith(PrettyNameValidator.class)
     private String prettyName;
 
+    @ValidatedWith(TextValue.TextValueValidator.class)
     private String svDescription;
+
+    @ValidatedWith(TextValue.TextValueValidator.class)
     private String enDescription;
+
     private boolean generateApiKey;
     private boolean emailScope;
 
@@ -304,16 +321,13 @@ public class ClientsController {
 
     mv.setViewName("client-details/page");
 
-    mv.addObject("clientUid", result.client().clientUid());
-    mv.addObject("client", result.client());
-    mv.addObject("clientAuthorities", new ArrayList<>());
-    mv.addObject("userApprovals", new ArrayList<>());
-    mv.addObject("clientSecret", result.clientSecret());
-    mv.addObject("apiKeyToken", result.apiKeyToken());
-
     response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid());
 
-    return mv;
+    return createGetClient(
+        htmxRequest,
+        result.client().clientUid().toString(),
+        result.clientSecret(),
+        result.apiKeyToken());
   }
 
   @GetMapping("/clients/{id}/authorities")
@@ -511,5 +525,14 @@ public class ClientsController {
     }
 
     return new ModelAndView("client-details/deleted-client-authority");
+  }
+
+  @PostMapping("/clients/{uid}/reset")
+  public ModelAndView resetClientSecret(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("uid") UUID clientUid) {
+    String clientSecret = this.clientFacade.resetClientSecret(clientUid);
+
+    return createGetClient(htmxRequest, clientUid.toString(), clientSecret, null);
   }
 }

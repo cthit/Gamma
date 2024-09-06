@@ -4,7 +4,7 @@
         <article th:replace="~{partial/api-key-credentials}"></article>
     </th:block>
 
-    <article th:fragment="details">
+    <article th:fragment="details(details)">
         <header>
             Api key details
         </header>
@@ -26,8 +26,15 @@
                 <span th:text="${apiKey.enDescription()}"></span>
             </li>
         </ul>
-        <footer>
-            <form data-hx-confirm="Are you sure you want to reset the token? The old token will immediately stop working."
+        <footer th:if="${details != null && details}">
+            <a th:href="|/api-keys/${apiKey.id()}|">
+                <button class="outline contrast">
+                    More details
+                </button>
+            </a>
+        </footer>
+        <footer th:if="${details == null || !details}">
+            <form data-hx-confirm="Are you sure you want to reset the token? The old token will be immediately revoked."
                   data-hx-target="body"
                   th:data-hx-headers="${redirectUri != null} ? '{&quot;redirectUri&quot;: &quot;' + ${redirectUri} + '&quot;}' : null" th:data-hx-post="|/api-keys/${apiKey.id()}/reset|">
                 <div th:replace="~{common/form-csrf}"></div>

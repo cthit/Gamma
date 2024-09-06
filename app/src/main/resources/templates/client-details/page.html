@@ -40,6 +40,10 @@
             </li>
         </ul>
         <footer>
+            <form data-hx-confirm="Are you sure you want to reset the client secret? The old client secret will be immediately revoked." th:data-hx-post="|/clients/${client.clientUid()}/reset|" data-hx-target="body">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="outline contrast" data-loading-disable>Reset client secret</button>
+            </form>
             <form data-hx-confirm="Are you sure you want to delete this client?" th:action="|/clients/${clientUid}|" th:method="delete">
                 <button class="outline contrast" data-loading-disable>Delete</button>
             </form>
@@ -47,8 +51,8 @@
     </article>
 
     <th:block th:if="${client.apiKey().isPresent()}" th:with="apiKey = ${client.apiKey().get()}">
-        <div class="contents" data-hx-headers='{"return-empty-on-delete":"true"}'>
-            <article th:replace="~{pages/api-key-details :: details}"></article>
+        <div class="contents">
+            <article th:replace="~{pages/api-key-details :: details(details = true)}"></article>
         </div>
     </th:block>
 

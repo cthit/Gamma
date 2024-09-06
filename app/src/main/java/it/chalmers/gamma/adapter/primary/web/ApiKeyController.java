@@ -49,13 +49,14 @@ public class ApiKeyController {
     return mv;
   }
 
-  private ModelAndView createGetApiKey(boolean htmxRequest, String apiKeyId, @Nullable String token) {
+  private ModelAndView createGetApiKey(
+      boolean htmxRequest, String apiKeyId, @Nullable String token) {
     if (!isValidUUID(apiKeyId)) {
       return createApiKeyNotFound(apiKeyId, htmxRequest);
     }
 
     Optional<ApiKeyFacade.ApiKeyDTO> maybeApiKey =
-            this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
+        this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
 
     if (maybeApiKey.isEmpty()) {
       return createApiKeyNotFound(apiKeyId, htmxRequest);
@@ -198,8 +199,6 @@ public class ApiKeyController {
   @DeleteMapping("/api-keys/{id}")
   public ModelAndView deleteApiKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @RequestHeader(value = "return-empty-on-delete", required = false)
-          boolean returnEmptyOnDelete,
       HttpServletResponse response,
       @PathVariable("id") UUID id) {
     try {
@@ -208,12 +207,7 @@ public class ApiKeyController {
       throw new RuntimeException(e);
     }
 
-    if (returnEmptyOnDelete) {
-      response.addHeader("HX-Reswap", "delete");
-      response.addHeader("HX-Retarget", "closest article");
-    } else {
-      response.addHeader("HX-Redirect", "/api-keys");
-    }
+    response.addHeader("HX-Redirect", "/api-keys");
 
     return new ModelAndView("common/empty");
   }
@@ -292,12 +286,10 @@ public class ApiKeyController {
 
   @PostMapping("/api-keys/{apiKeyId}/reset")
   public ModelAndView resetApiKeyToken(
-          @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-          @PathVariable("apiKeyId") UUID apiKeyId
-  ) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @PathVariable("apiKeyId") UUID apiKeyId) {
     String newToken = this.apiKeyFacade.resetApiKey(apiKeyId);
 
     return createGetApiKey(htmxRequest, apiKeyId.toString(), newToken);
   }
-
 }

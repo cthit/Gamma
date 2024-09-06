@@ -177,12 +177,12 @@ public class ClientFacade extends Facade {
     throw new IllegalStateException();
   }
 
-  public String resetClientSecret(UUID clientUid) throws ClientNotFoundException {
+  public String resetClientSecret(UUID clientUid) {
     ClientUid uid = new ClientUid(clientUid);
 
     this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
 
-    Client client = this.clientRepository.get(uid).orElseThrow(ClientNotFoundException::new);
+    Client client = this.clientRepository.get(uid).orElseThrow();
     ClientSecret.GeneratedClientSecret generated = ClientSecret.generate(passwordEncoder);
 
     Client newClient = client.withClientSecret(generated.clientSecret());
