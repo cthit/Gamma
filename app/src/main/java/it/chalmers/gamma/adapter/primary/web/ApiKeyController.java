@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 import org.springframework.stereotype.Controller;
@@ -48,40 +49,13 @@ public class ApiKeyController {
     return mv;
   }
 
-  private void loadApiKeySettingsInfo(ModelAndView mv, UUID apiKeyId) {
-    var settings = this.apiKeySettingsFacade.getInfoSettings(apiKeyId);
-
-    mv.addObject("settings_title", "Info settings");
-    mv.addObject(
-        "settings_description",
-        "Set the super group types from which the information will be query from");
-    mv.addObject(
-        "settings_form", new ApiKeySettingsForm(settings.version(), settings.superGroupTypes()));
-  }
-
-  private void loadApiKeySettingsAccountScaffold(ModelAndView mv, UUID apiKeyId) {
-    var settings = this.apiKeySettingsFacade.getAccountScaffoldSettings(apiKeyId);
-
-    mv.addObject("settings_title", "Account scaffold settings");
-    mv.addObject(
-        "settings_description",
-        "Set the super group types from which the information will query from");
-    mv.addObject(
-        "settings_form", new ApiKeySettingsForm(settings.version(), settings.superGroupTypes()));
-  }
-
-  public record ApiKeySettingsForm(int version, List<String> superGroupTypes) {}
-
-  @GetMapping("/api-keys/{id}")
-  public ModelAndView getApiKey(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("id") String apiKeyId) {
+  private ModelAndView createGetApiKey(boolean htmxRequest, String apiKeyId, @Nullable String token) {
     if (!isValidUUID(apiKeyId)) {
       return createApiKeyNotFound(apiKeyId, htmxRequest);
     }
 
     Optional<ApiKeyFacade.ApiKeyDTO> maybeApiKey =
-        this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
+            this.apiKeyFacade.getById(UUID.fromString(apiKeyId));
 
     if (maybeApiKey.isEmpty()) {
       return createApiKeyNotFound(apiKeyId, htmxRequest);
@@ -106,10 +80,36 @@ public class ApiKeyController {
       loadApiKeySettingsInfo(mv, apiKey.id());
     }
 
+    if (token != null) {
+      mv.addObject("apiKeyToken", token);
+    }
+
     return mv;
   }
 
-  public ModelAndView createApiKeyNotFound(String apiKeyId, boolean htmxRequest) {
+  private void loadApiKeySettingsInfo(ModelAndView mv, UUID apiKeyId) {
+    var settings = this.apiKeySettingsFacade.getInfoSettings(apiKeyId);
+
+    mv.addObject("settings_title", "Info settings");
+    mv.addObject(
+        "settings_description",
+        "Set the super group types from which the information will be query from");
+    mv.addObject(
+        "settings_form", new ApiKeySettingsForm(settings.version(), settings.superGroupTypes()));
+  }
+
+  private void loadApiKeySettingsAccountScaffold(ModelAndView mv, UUID apiKeyId) {
+    var settings = this.apiKeySettingsFacade.getAccountScaffoldSettings(apiKeyId);
+
+    mv.addObject("settings_title", "Account scaffold settings");
+    mv.addObject(
+        "settings_description",
+        "Set the super group types from which the information will query from");
+    mv.addObject(
+        "settings_form", new ApiKeySettingsForm(settings.version(), settings.superGroupTypes()));
+  }
+
+  private ModelAndView createApiKeyNotFound(String apiKeyId, boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
       mv.setViewName("pages/api-key-not-found");
@@ -121,6 +121,15 @@ public class ApiKeyController {
     mv.addObject("id", apiKeyId);
 
     return mv;
+  }
+
+  public record ApiKeySettingsForm(int version, List<String> superGroupTypes) {}
+
+  @GetMapping("/api-keys/{id}")
+  public ModelAndView getApiKey(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @PathVariable("id") String apiKeyId) {
+    return createGetApiKey(htmxRequest, apiKeyId, null);
   }
 
   public record CreateApiKey(
@@ -179,23 +188,11 @@ public class ApiKeyController {
             new ApiKeyFacade.NewApiKey(
                 form.prettyName, form.svDescription, form.enDescription, form.keyType));
 
-    UUID apiKeyId = createdApiKey.apiKey().id();
-
-    mv.setViewName("pages/api-key-details");
-    mv.addObject("apiKey", createdApiKey.apiKey());
-    mv.addObject("apiKeyId", apiKeyId);
-    mv.addObject("apiKeyToken", createdApiKey.token());
-
-    String type = createdApiKey.apiKey().keyType();
-    if (type.equals("ACCOUNT_SCAFFOLD")) {
-      loadApiKeySettingsAccountScaffold(mv, apiKeyId);
-    } else if (type.equals("INFO")) {
-      loadApiKeySettingsInfo(mv, apiKeyId);
-    }
+    String apiKeyId = createdApiKey.apiKey().id().toString();
 
     response.addHeader("HX-Push-Url", "/api-keys/" + apiKeyId);
 
-    return mv;
+    return createGetApiKey(htmxRequest, apiKeyId, createdApiKey.token());
   }
 
   @DeleteMapping("/api-keys/{id}")
@@ -292,4 +289,15 @@ public class ApiKeyController {
 
     return mv;
   }
+
+  @PostMapping("/api-keys/{apiKeyId}/reset")
+  public ModelAndView resetApiKeyToken(
+          @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+          @PathVariable("apiKeyId") UUID apiKeyId
+  ) {
+    String newToken = this.apiKeyFacade.resetApiKey(apiKeyId);
+
+    return createGetApiKey(htmxRequest, apiKeyId.toString(), newToken);
+  }
+
 }

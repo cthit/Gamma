@@ -104,6 +104,16 @@ public class ApiKeyFacade extends Facade {
     return this.apiKeyRepository.getAll().stream().map(ApiKeyDTO::new).toList();
   }
 
+  public String resetApiKey(UUID apiKeyId) {
+    this.accessGuard.require(isAdmin());
+
+    ApiKeyId id = new ApiKeyId(apiKeyId);
+    ApiKeyToken.GeneratedApiKeyToken generated = ApiKeyToken.generate(passwordEncoder);
+    this.apiKeyRepository.setNewGeneratedToken(id, generated.apiKeyToken());
+
+    return generated.rawToken();
+  }
+
   public record NewApiKey(
       String prettyName, String svDescription, String enDescription, String keyType) {}
 

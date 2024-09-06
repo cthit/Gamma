@@ -13,6 +13,8 @@ public interface ApiKeyRepository {
 
   Optional<ApiKey> getById(ApiKeyId apiKeyId);
 
+  void setNewGeneratedToken(ApiKeyId apiKeyId, ApiKeyToken apiKeyToken);
+
   class ApiKeyNotFoundException extends Exception {}
 
   /**

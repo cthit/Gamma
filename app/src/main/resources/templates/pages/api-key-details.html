@@ -27,6 +27,12 @@
             </li>
         </ul>
         <footer>
+            <form data-hx-confirm="Are you sure you want to reset the token? The old token will immediately stop working."
+                  data-hx-target="body"
+                  th:data-hx-headers="${redirectUri != null} ? '{&quot;redirectUri&quot;: &quot;' + ${redirectUri} + '&quot;}' : null" th:data-hx-post="|/api-keys/${apiKey.id()}/reset|">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="outline contrast" data-loading-disable>Reset token</button>
+            </form>
             <form data-hx-confirm="Are you sure you want to delete this api key?" th:data-hx-post="|/api-keys/${apiKey.id()}|">
                 <input type="hidden" name="_method" value="delete" />
                 <div th:replace="~{common/form-csrf}"></div>
