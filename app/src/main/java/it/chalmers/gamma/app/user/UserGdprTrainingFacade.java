@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.user;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isMe;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
@@ -31,5 +32,12 @@ public class UserGdprTrainingFacade extends Facade {
     this.accessGuard.require(isAdmin());
 
     this.gdprTrainedRepository.setGdprTrainedStatus(new UserId(userId), gdprTrained);
+  }
+
+  public boolean hasGdprTraining(UUID userId) {
+    UserId id = new UserId(userId);
+    this.accessGuard.requireEither(isAdmin(), isMe(id));
+
+    return this.gdprTrainedRepository.getGdprTrainedStatus(id);
   }
 }

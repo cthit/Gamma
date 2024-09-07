@@ -8,6 +8,7 @@ import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.user.MeFacade;
+import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,9 +27,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class HomeController {
 
   private final MeFacade meFacade;
+  private final UserGdprTrainingFacade userGdprTrainingFacade;
 
-  public HomeController(MeFacade meFacade) {
+  public HomeController(MeFacade meFacade, UserGdprTrainingFacade userGdprTrainingFacade) {
     this.meFacade = meFacade;
+    this.userGdprTrainingFacade = userGdprTrainingFacade;
   }
 
   @GetMapping("/")
@@ -47,6 +50,7 @@ public class HomeController {
 
     mv.addObject("me", me);
     mv.addObject("random", Math.random());
+    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
 
     return mv;
   }

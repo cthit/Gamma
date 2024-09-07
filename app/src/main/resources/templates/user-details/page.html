@@ -22,6 +22,10 @@
                     <span th:text="${email}"></span>
                 </li>
                 <li th:if="${isAdmin}">
+                    <b>Has GDPR training:</b>
+                    <span th:text="${gdpr}"></span>
+                </li>
+                <li th:if="${isAdmin}">
                     <b>Is locked:</b>
                     <span th:text="${locked}"></span>
                 </li>

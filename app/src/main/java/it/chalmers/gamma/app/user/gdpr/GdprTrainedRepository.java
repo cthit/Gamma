@@ -8,4 +8,6 @@ public interface GdprTrainedRepository {
   void setGdprTrainedStatus(UserId userId, boolean gdprTrained);
 
   List<UserId> getAll();
+
+  boolean getGdprTrainedStatus(UserId userId);
 }

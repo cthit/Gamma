@@ -30,7 +30,9 @@
             </li>
             <li th:if="${client.restriction() != null && client.restriction().superGroups().size() > 0}">
                 <b>Super group restrictions:</b>
-                <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></span>
+                <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}">
+                    <a th:href="|/super-groups/${restrictionSuperGroup.id()}|" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></a>
+                </span>
             </li>
             <li th:if="${client.restriction() == null || client.restriction().superGroups().size() == 0}">
                 This client has no restrictions.

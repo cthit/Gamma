@@ -38,4 +38,9 @@ public class GdprTrainedRepositoryAdapter implements GdprTrainedRepository {
         .map(gdprTrainedEntity -> new UserId(gdprTrainedEntity.getId()))
         .toList();
   }
+
+  @Override
+  public boolean getGdprTrainedStatus(UserId userId) {
+    return this.gdprTrainedJpaRepository.existsById(userId.value());
+  }
 }

@@ -6,6 +6,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
+import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
 import it.chalmers.gamma.app.user.domain.AcceptanceYear.AcceptanceYearValidator;
 import it.chalmers.gamma.app.user.domain.Cid.CidValidator;
 import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
@@ -33,14 +34,17 @@ public class UsersController {
   private final UserFacade userFacade;
   private final UserCreationFacade userCreationFacade;
   private final UserResetPasswordFacade userResetPasswordFacade;
+  private final UserGdprTrainingFacade userGdprTrainingFacade;
 
   public UsersController(
       UserFacade userFacade,
       UserCreationFacade userCreationFacade,
-      UserResetPasswordFacade userResetPasswordFacade) {
+      UserResetPasswordFacade userResetPasswordFacade,
+      UserGdprTrainingFacade userGdprTrainingFacade) {
     this.userFacade = userFacade;
     this.userCreationFacade = userCreationFacade;
     this.userResetPasswordFacade = userResetPasswordFacade;
+    this.userGdprTrainingFacade = userGdprTrainingFacade;
   }
 
   @GetMapping("/users")
@@ -111,6 +115,7 @@ public class UsersController {
 
         mv.addObject("email", u.user().email());
         mv.addObject("locked", u.user().locked());
+        mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(u.user().id()));
       } else {
         Optional<UserFacade.UserWithGroupsDTO> user =
             this.userFacade.getWithGroups(UUID.fromString(userId));
@@ -306,6 +311,7 @@ public class UsersController {
     mv.addObject("acceptanceYear", form.acceptanceYear);
     mv.addObject("email", form.email);
     mv.addObject("locked", user.get().user().locked());
+    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(user.get().user().id()));
     mv.addObject("userId", userId);
 
     return mv;
