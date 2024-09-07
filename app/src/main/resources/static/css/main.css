@@ -292,3 +292,7 @@ progress {
 span a {
     display: inline-block !important;
 }
+
+#digit18-smurf {
+    width: 60%;
+}
