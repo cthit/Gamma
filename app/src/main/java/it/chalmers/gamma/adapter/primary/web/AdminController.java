@@ -69,13 +69,11 @@ public class AdminController {
             .map(UUID::fromString)
             .toList();
 
-    List<UUID> newAdmins =
-        formAdmins.stream().filter(userId -> !oldAdmins.contains(userId)).toList();
     List<UUID> noLongerAdmins =
         oldAdmins.stream().filter(userId -> !formAdmins.contains(userId)).toList();
 
     try {
-      this.adminFacade.updateAdmins(newAdmins, noLongerAdmins);
+      this.adminFacade.updateAdmins(formAdmins, noLongerAdmins);
     } catch (IllegalArgumentException e) {
       return this.getAdmins(htmxRequest);
     }
