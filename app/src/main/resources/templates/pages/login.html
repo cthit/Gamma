@@ -1,0 +1,54 @@
+<link rel="stylesheet" th:href="@{/css/login.css}" />
+<img th:src="@{/img/bg.webp}" alt="Background image" _="on load transition opacity to 1.0 over 5 seconds"/>
+<main hx-boost="false">
+    <article>
+        <header>
+            <h1>
+                Gamma
+            </h1>
+        </header>
+        <p th:if="${authorizing}">
+            Before deciding on authorizing the client, please verify your identity
+        </p>
+        <form th:action="@{/login}" th:method="post">
+            <input type="text" name="username" placeholder="Cid / Email">
+            <input type="password" name="password" placeholder="Password">
+            <button class="outline contrast" data-loading-disable>Login</button>
+        </form>
+        <footer>
+            <p id="links">
+                <p th:if="${error}">
+                    Invalid credentials or locked account due to system migration. Password reset may be needed.
+                </p>
+
+                <p th:if="${logout}">
+                    You have been logged out.
+                </p>
+
+                <p th:if="${throttle}">
+                    You have been throttled for attempting to sign in too many times...
+                </p>
+
+                <p th:if="${deleted}">
+                    Your account has been deleted.
+                </p>
+
+                <p th:if="${accountCreated}">
+                    Your account has been created.
+                </p>
+
+                <p th:if="${passwordReset}">
+                    Your password was reset.
+                </p>
+
+                <a href="/activate-cid">
+                    Register
+                </a>
+
+                <a href="/forgot-password">
+                    Forgot password
+                </a>
+            </div>
+        </footer>
+    </article>
+</main>

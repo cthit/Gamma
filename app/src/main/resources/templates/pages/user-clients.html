@@ -1,0 +1,23 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Created by</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.prettyName()}"></td>
+            <td>
+                <a th:href="|/users/${client.userId()}|" th:text="${client.fullName()}"></a>
+            </td>
+            <td>
+                <a th:href="${'/clients/' + client.clientUid()}">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

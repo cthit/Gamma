@@ -1,0 +1,37 @@
+.gradle/
+/build/
+!gradle/wrapper/gradle-wrapper.jar
+/uploads/
+*.run.xml
+/src/main/resources/secrets.properties
+
+generated
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+.idea/
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+secrets.properties
+
+.DS-store

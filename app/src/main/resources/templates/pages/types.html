@@ -1,0 +1,32 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article th:if="${isAdmin}">
+        <header>
+            Create new super group type
+        </header>
+        <form th:object="${form}" th:action="@{/types}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
+            <button data-loading-disable>Save</button>
+        </form>
+    </article>
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Details
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="type : ${types}">
+            <td th:text="${type}"></td>
+            <td>
+                <a th:href="${'/types/' + type}">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

@@ -1,0 +1,69 @@
+---
+spring:
+  datasource:
+    username: "${DB_USER:postgres}"
+    password: "${DB_PASSWORD:postgres}"
+    url: "jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:postgres}"
+  flyway:
+    baseline-on-migrate: true
+    locations: "classpath:/db/migration"
+  output:
+    ansi:
+      enabled: "ALWAYS"
+  jpa:
+    database-platform: "org.hibernate.dialect.PostgreSQLDialect"
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        temp:
+          use_jdbc_metadata_defaults: false
+    hibernate:
+      ddl-auto: "validate"
+    open-in-view: false
+  servlet:
+    multipart:
+      max-file-size: 50MB
+  data:
+    redis:
+      host: "${REDIS_HOST:redis}"
+      password: "${REDIS_PASSWORD:}"
+      port: "${REDIS_PORT:6379}"
+      repositories:
+        enabled: true
+  thymeleaf:
+    cache: "${PRODUCTION:false}"
+    enabled: true
+    encoding: "UTF-8"
+  session:
+    store-type: "redis"
+    timeout: "${SESSION_TIMEOUT:43200}"
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  threads:
+    virtual:
+      enabled: true
+server:
+  port: "${SERVER_PORT:8081}"
+  error:
+    whitelabel:
+      enabled: false
+    path: "/error"
+  http2:
+    enabled: true
+  forward-headers-strategy: "native"
+logging:
+  level:
+    root: "${ROOT_DEBUG_LEVEL:INFO}"
+application:
+  base-url: "${BASE_URL:http://localhost:8081}"
+  production: "${PRODUCTION:false}"
+  files:
+    path: "${UPLOAD_FOLDER:./uploads/}"
+  cookie:
+    validity-time: 2628000
+  admin-setup: "${ADMIN_SETUP:true}"
+  gotify:
+    key: "${GOTIFY_KEY:123abc}"
+    url: "${GOTIFY_BASE_URL:http://gotify:80}"

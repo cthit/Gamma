@@ -1,0 +1,29 @@
+<div id="alerts">
+</div>
+<link rel="stylesheet" th:href="@{/css/no-nav.css}"/>
+<div id="loader-container" data-loading data-loading-class="loading">
+    <progress></progress>
+</div>
+<header id="main-header">
+    <button id="toggle-nav" class="outline contrast"
+            _="on click toggle .show-nav on document.body">
+        Menu
+    </button>
+    <div>
+        <a href="/">
+            <h1>
+                Gamma
+            </h1>
+        </a>
+    </div>
+    <div id="login-container">
+        <th:block sec:authorize="isAuthenticated()">
+            <div th:text="|Hey, ${#authentication.getDetails().gammaUser().nick().value()}!|"></div>
+            <form th:action="@{/logout}" th:method="post" >
+                <button class="outline contrast" data-loading-disable>
+                    Logout
+                </button>
+            </form>
+        </th:block>
+    </div>
+</header>

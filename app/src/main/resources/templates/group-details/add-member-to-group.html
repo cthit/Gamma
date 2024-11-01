@@ -1,0 +1,24 @@
+<div class="member-row">
+    <hr>
+    <label>
+        User
+        <select class="userId">
+            <option th:each="userKey : ${userKeys}" th:value="${userKey}" th:text="${users.get(userKey)}"></option>
+        </select>
+    </label>
+    <div>
+        <label>
+            Post
+            <select class="postId">
+                <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
+            </select>
+        </label>
+        <label>
+            Unofficial post name
+            <input class="unofficialPostName" type="text" value=""/>
+        </label>
+        <button _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')"
+                type="button" class="outline contrast">Delete
+        </button>
+    </div>
+</div>

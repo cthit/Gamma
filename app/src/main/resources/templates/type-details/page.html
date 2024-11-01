@@ -1,0 +1,39 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header th:text="${type}">
+        </header>
+        <p>
+            These are the super group that has <span th:text="${type}"></span> as the type.
+        </p>
+        <table>
+            <thead>
+            <tr>
+                <th>
+                    Pretty name
+                </th>
+                <th>
+                    Details
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${usages.size() == 0}">
+                <td colspan="2" th:text="|${type} has no super groups|"></td>
+            </tr>
+            <tr th:each="superGroup : ${usages}">
+                <td th:text="${superGroup.prettyName()}"></td>
+                <td>
+                    <a th:href="|/super-groups/${superGroup.id()}|">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <footer th:if="${isAdmin}">
+            <form data-hx-confirm="Are you sure you want to delete this super group type?"
+                  th:action="|/types/${type}|" th:method="delete" th:if="${usages.size() == 0}">
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
+        </footer>
+    </article>
+</main>

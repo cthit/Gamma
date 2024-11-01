@@ -1,0 +1,30 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <a th:if="${isAdmin}" href="/super-groups/create">Create super group</a>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    Pretty name
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Details
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="superGroup : ${superGroups}">
+                <td th:text="${superGroup.prettyName()}"></td>
+                <td>
+                    <a th:href="|/types/${superGroup.type()}|" th:text="${superGroup.type()}"></a>
+                </td>
+                <td>
+                    <a th:href="${'/super-groups/' + superGroup.id()}">Details</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</main>

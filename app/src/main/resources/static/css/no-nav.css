@@ -1,0 +1,19 @@
+body {
+    grid-template-areas:
+        "header header"
+        "main main";
+}
+
+@media only screen and (max-width: 600px) {
+    #toggle-nav {
+        display: none !important;
+    }
+
+    #login-container {
+        display: none !important;
+    }
+
+    #main-header {
+        justify-content: center !important;
+    }
+}

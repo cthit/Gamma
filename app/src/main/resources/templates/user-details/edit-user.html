@@ -1,0 +1,41 @@
+<article>
+    <header>User details</header>
+    <form id="edit-user" th:object="${form}" th:data-hx-post="@{|/users/${userId}|}" data-hx-target="closest article" data-hx-swap="outerHTML">
+        <div th:replace="~{common/form-csrf}"></div>
+        <input type="hidden" name="_method" value="put" />
+        <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
+        <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
+        <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
+        <div th:replace="~{common/input :: emailInput2('email', 'Email')}"></div>
+        <label>
+            Which year did you start at IT?
+            <select th:field="*{acceptanceYear}">
+                <option th:each="year : ${#numbers.sequence(T(java.time.Year).now().getValue(), 2001)}"
+                        th:value="${year}"
+                        th:text="${year}">
+                </option>
+            </select>
+        </label>
+        <label>
+            Language
+            <select th:field="*{language}">
+                <option value="SV">
+                    Swedish
+                </option>
+                <option value="EN">
+                    English
+                </option>
+            </select>
+        </label>
+        <div th:replace="~{common/error :: text}"></div>
+    </form>
+    <footer>
+        <button type="button"
+                class="outline contrast"
+                th:data-hx-get="|/users/${userId}|"
+                data-hx-target="body"
+                data-hx-swap="outerHTML" data-loading-disable>Cancel
+        </button>
+        <button class="outline" form="edit-user" data-loading-disable>Save</button>
+    </footer>
+</article>

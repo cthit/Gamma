@@ -1,0 +1,17 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main>
+    <form th:object="${form}" th:action="@{/activate-cid}" th:method="post" >
+        <article>
+            <header>
+                Activate cid
+            </header>
+            <p>Enter cid to start process of creating an account. </p>
+            <p>If you are an IT student, your cid should be on the allowed list of people who can create an account.</p>
+            <p></p>
+            <div th:replace="~{common/input :: textInput2('cid', 'Cid')}"></div>
+            <footer>
+                <button class="outline" data-loading-disable>Activate cid</button>
+            </footer>
+        </article>
+    </form>
+</main>

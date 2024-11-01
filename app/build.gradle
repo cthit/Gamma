@@ -1,0 +1,99 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.3.0"
+    }
+}
+
+plugins {
+    id "java"
+    id "org.springframework.boot" version "3.3.0"
+    id "io.spring.dependency-management" version "1.1.5"
+    id "com.diffplug.spotless" version "6.25.0"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+apply plugin: "org.springframework.boot"
+apply plugin: "io.spring.dependency-management"
+group = "it.chalmers"
+version = "2.0.0-SNAPSHOT"
+
+dependencies {
+    annotationProcessor(
+            // Used to generate Record Builder classes
+            "io.soabase.record-builder:record-builder-processor:41",
+    )
+
+    implementation(
+            // Used to generate Record Builder classes
+            "io.soabase.record-builder:record-builder-core:41",
+
+            // Used to handle SQL specific errors
+            "org.postgresql:postgresql:42.7.3",
+
+            // Spring Boot
+            "org.springframework.boot:spring-boot:3.3.0",
+            "org.springframework.boot:spring-boot-autoconfigure:3.3.0",
+            "org.springframework.boot:spring-boot-starter-data-jpa:3.3.0",
+            "org.springframework.boot:spring-boot-starter-security:3.3.0",
+            "org.springframework.boot:spring-boot-starter-validation:3.3.0",
+            "org.springframework.boot:spring-boot-starter-web:3.3.0",
+            "org.springframework.boot:spring-boot-starter-oauth2-authorization-server:3.3.0",
+
+            // Spring session
+            "org.springframework.session:spring-session-core:3.3.0",
+            "org.springframework.session:spring-session-data-redis:3.3.0",
+
+            // Redis
+            "org.springframework.data:spring-data-redis:3.3.0",
+    )
+
+   runtimeOnly(
+            // FlywayDB (Database migration)
+            "org.flywaydb:flyway-core:9.21.0",
+
+            // Spring Boot
+            "org.springframework.boot:spring-boot-devtools:3.3.0",
+            "org.springframework.boot:spring-boot-starter-data-redis:3.3.0",
+
+            // Thymeleaf
+            "org.springframework.boot:spring-boot-starter-thymeleaf:3.3.0",
+            "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE",
+
+            // web dependencies
+            "org.webjars.npm:htmx.org:1.9.12",
+            "org.webjars.npm:hyperscript.org:0.9.12",
+            "org.webjars.npm:picocss__pico:2.0.6",
+            "org.webjars.npm:sortablejs:1.15.3"
+    )
+}
+
+repositories {
+    mavenCentral()
+}
+
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat()
+        formatAnnotations()
+    }
+
+    yaml {
+        target "src/**/*.yml"
+        jackson()
+    }
+
+    json {
+        target "src/**/*.json"
+        jackson()
+    }
+}

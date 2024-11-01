@@ -1,0 +1,115 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article th:fragment="group-details-article">
+        <header>
+            Group details
+        </header>
+        <ul class="tuple">
+            <li>
+                <b>Name:</b>
+                <span th:text="${group.name()}"></span>
+            </li>
+            <li>
+                <b>Pretty name:</b>
+                <span th:text="${group.prettyName()}"></span>
+            </li>
+            <li>
+                <b>Super group:</b>
+                <a class="contrast" th:href="|/super-groups/${group.superGroup().id()}|">
+                    <span th:text="${group.superGroup().prettyName()}"></span>
+                </a>
+            </li>
+        </ul>
+        <p th:if="${members.size() > 0}">
+            Members:
+        </p>
+        <ul>
+            <li th:each="member : ${members}">
+                <a th:href="|/users/${member.userId()}|" th:text="${member.name()}"></a>
+                <span> - </span>
+                <a th:href="|/posts/${member.postId()}|" th:text="${member.post()}"></a>
+           </li>
+        </ul>
+
+        <footer th:if="${isAdmin}">
+            <form data-hx-confirm="Are you sure you want to delete this group?" th:action="|/groups/${group.id()}|" th:method="delete">
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
+            <button
+                    class="outline contrast"
+                    th:data-hx-get="@{/groups/{groupId}/edit(groupId=${group.id()})}"
+                    data-hx-target="closest article"
+                    data-hx-swap="outerHTML"
+                    data-loading-disable>Edit
+            </button>
+        </footer>
+    </article>
+
+    <article th:if="${myMembers.size() > 0}">
+        <header>
+            Change unofficial post name for your posts
+        </header>
+        <p>
+            Here you are able to update your unofficial post name for <span th:text="${group.prettyName()}"></span>.
+            They are a more fun variant of your post name, since 'Chairman' can be a bit boring.
+        </p>
+        <form id="update-unofficial-post-name" th:object="${myMembershipsForm}" th:action="|/groups/${group.id()}/my-posts|" th:method="put">
+            <th:block th:each="myMember : ${myMembers}">
+                <div th:replace="~{common/input :: textInput2(field='postNames['+${myMember.post().id()}+']', label=${myMember.post().enName()})}"></div>
+            </th:block>
+        </form>
+        <footer>
+            <button class="outline contained" form="update-unofficial-post-name">
+                Update unofficial post names
+            </button>
+        </footer>
+    </article>
+
+    <th:block th:with="groupId=${group.id()}">
+        <article th:fragment="group-avatar">
+            <header>
+                Group avatar
+            </header>
+            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+            <div class="image-input-container" th:if="${isAdmin || canEditImages}">
+                <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+                <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
+                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      enctype="multipart/form-data"
+                      data-hx-target="closest article"
+                      data-hx-swap="outerHTML"
+                      id="edit-group-avatar">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="put" />
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                </form>
+            </div>
+            <footer th:if="${isAdmin || canEditImages}">
+                <button class="outline" form="edit-group-avatar" disabled data-loading-disable>Upload avatar</button>
+            </footer>
+        </article>
+
+        <article th:fragment="group-banner">
+            <header>
+                Group banner
+            </header>
+            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+            <div class="image-input-container" th:if="${isAdmin || canEditImages}">
+                <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+                <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
+                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      enctype="multipart/form-data"
+                      data-hx-target="closest article"
+                      data-hx-swap="outerHTML"
+                      id="edit-group-banner">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="put" />
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                </form>
+            </div>
+            <footer th:if="${isAdmin || canEditImages}">
+                <button class="outline" form="edit-group-banner" disabled data-loading-disable>Upload banner</button>
+            </footer>
+        </article>
+    </th:block>
+</main>

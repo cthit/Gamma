@@ -1,0 +1,30 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            Create new client
+        </header>
+        <p>
+            This client will be created in your name, and will be shown everytime
+            a user attempts to authenticate with gamma to your client.
+        </p>
+        <form id="create-my-client" th:object="${form}" th:action="@{/my-clients}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
+            <label>
+                Generate api key
+                <input type="checkbox" th:field="*{generateApiKey}"/>
+            </label>
+            <label>
+                Include email scope
+                <input type="checkbox" th:field="*{emailScope}"/>
+            </label>
+        </form>
+        <footer>
+            <button class="outline contrast" form="create-my-client" data-loading-disable>Create</button>
+        </footer>
+    </article>
+
+</main>

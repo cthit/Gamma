@@ -1,0 +1,34 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <a th:if="${isAdmin}" href="/posts/create">Create posts</a>
+    <form data-hx-post="/posts/order" data-hx-trigger="end" data-hx-target="body">
+        <th:block th:replace="~{common/form-csrf}"></th:block>
+        <input type="hidden" name="_method" value="put" />
+        <table th:fragment="table">
+            <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Swedish name</th>
+                    <th>English name</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody th:class="${isAdmin} ? 'sortable' : ''">
+                <th:block th:each="post : ${posts}">
+                    <tr th:fragment="post-row"
+                        th:data-post-id="${post.id()}"
+                        class="sortable-item">
+                        <td>
+                            <span th:text="${post.order()}"></span>
+                            <input type="hidden" name="list" th:value="${post.id()}">
+                        </td>
+                        <td th:text="${post.svName()}"></td>
+                        <td th:text="${post.enName()}"></td>
+                        <td>
+                            <a th:href="|/posts/${post.id()}|">Details</a>
+                        </td>
+                </th:block>
+            </tbody>
+        </table>
+    </form>
+</main>

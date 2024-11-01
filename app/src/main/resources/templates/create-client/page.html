@@ -1,0 +1,30 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            Create client
+        </header>
+        <form id="create-clients"
+              th:object="${form}"
+              th:action="@{/clients/create}"
+              th:method="post"
+              _="on htmx:afterSwap call updateNames('restrictions', '.restriction')">
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
+            <label>
+                Generate api key
+                <input type="checkbox" th:field="*{generateApiKey}"/>
+            </label>
+            <label>
+                Include email scope
+                <input type="checkbox" th:field="*{emailScope}"/>
+            </label>
+            <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin" data-loading-disable>Add restriction</button>
+        </form>
+        <footer>
+            <button class="outline" form="create-clients" data-loading-disable>Create</button>
+        </footer>
+    </article>
+</main>

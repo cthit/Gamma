@@ -1,0 +1,24 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main>
+    <article>
+        <header>
+            An email should be sent to your student email
+        </header>
+        <p>
+            <b>
+                You should have received an email with a link to activate your IT account.
+            </b>
+        </p>
+        <p>
+            If you can't find it, please check your spam folder. There's also a chance that you might have typed your CID incorrectly.
+        </p>
+        <p>
+            If you're certain that you've entered your CID correctly but still haven't received the account activation email, it could be due to a rate limit. If you suspect this to be the case, please contact ita@chalmers.it for further assistance.
+        </p>
+        <footer>
+            <a th:href="@{/activate-cid}" >
+                I have not received a code
+            </a>
+        </footer>
+    </article>
+</main>

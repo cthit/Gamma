@@ -1,0 +1,68 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article th:fragment="super-group-info">
+        <header th:text="${superGroup.prettyName()}">
+        </header>
+        <ul class="tuple">
+            <li>
+                <b>Name:</b>
+                <span th:text="${superGroup.name()}"></span>
+            </li>
+            <li>
+                <b>Pretty name:</b>
+                <span th:text="${superGroup.prettyName()}"></span>
+            </li>
+            <li>
+                <b>Swedish description:</b>
+                <span th:text="${superGroup.svDescription()}"></span>
+            </li>
+            <li>
+                <b>English description:</b>
+                <span th:text="${superGroup.enDescription()}"></span>
+            </li>
+            <li>
+                <b>Type:</b>
+                <span th:text="${superGroup.type()}"></span>
+            </li>
+        </ul>
+        <footer th:if="${isAdmin}">
+            <button th:data-hx-get="@{/super-groups/{superGroupId}/edit(superGroupId=${superGroup.id()})}"
+                class="outline contrast"
+                data-hx-target="closest article"
+                data-hx-swap="outerHTML">
+                Edit
+            </button>
+            <form data-hx-confirm="Are you sure you want to delete this super group?"
+                  th:action="|/super-groups/${superGroup.id()}|" th:method="delete" th:if="${usages.size() == 0}">
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
+        </footer>
+    </article>
+    <article>
+        <header th:text="|${superGroup.prettyName()}s groups|">
+        </header>
+        <table>
+            <thead>
+                <tr>
+                    <th>
+                        Pretty name
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${usages.size() == 0}">
+                    <td colspan="2" th:text="|${superGroup.prettyName()} has no groups|"></td>
+                </tr>
+                <tr th:each="group : ${usages}">
+                    <td th:text="${group.prettyName()}"></td>
+                    <td>
+                        <a th:href="|/groups/${group.id()}|">View</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </article>
+</main>

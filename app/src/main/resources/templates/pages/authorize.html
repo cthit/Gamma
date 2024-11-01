@@ -1,0 +1,43 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main hx-boost="false">
+    <article>
+        <header th:text="'Do you want to authorize ' + ${clientName} + ' to access:'">
+        </header>
+        <div role="alert"
+             class="error"
+             th:if="${userOwner != null}">
+            <p>
+                Warning! This application you are authorizing Gamma with is not an approved, official client.
+            </p>
+            <p th:text="'It is created, and owned by ' + ${userOwner.name()}"></p>
+        </div>
+
+        <ul>
+            <li>First and last name</li>
+            <li th:if="${hasEmailScope}">Email</li>
+            <li>Nickname</li>
+            <li>Preferred language</li>
+            <li>Cid</li>
+            <li>Authorities</li>
+            <li>Groups that you're apart of</li>
+        </ul>
+
+        <form th:action="@{/oauth2/authorize}" th:method="post" id="confirmationForm" name="confirmationForm">
+            <input name="client_id" th:value="${clientId}" type="hidden">
+            <input name="state" th:value="${state}" type="hidden">
+
+            <th:block th:each="scope: ${scopes}">
+                <input class="form-check-input"
+                       name="scope"
+                       th:value="${scope}"
+                       type="checkbox">
+            </th:block>
+        </form>
+        <footer>
+            <button class="outline contrast" form="confirmationForm" data-loading-disable>Deny</button>
+            <button class="outline contrast" type="button" data-loading-disable
+                    _="on click set .form-check-input.checked to true then call document.confirmationForm.submit()">Authorize</button>
+        </footer>
+    </article>
+</main>
+

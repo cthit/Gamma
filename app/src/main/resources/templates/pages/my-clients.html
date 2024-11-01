@@ -1,0 +1,24 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <p>
+        Here you are able to create your own OAuth2 client to authenticate Gamma with!
+        Read more about how here: <br><a target="_blank" href="https://github.com/cthit/Gamma/wiki/Authenticating-With-Gamma">github.com/cthit/Gamma/wiki/Authenticating-With-Gamma</a>
+    </p>
+    <a href="/my-clients/create">Create client</a>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="client : ${clients}">
+            <td th:text="${client.prettyName()}"></td>
+            <td>
+                <a th:href="${'/clients/' + client.clientUid()}">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

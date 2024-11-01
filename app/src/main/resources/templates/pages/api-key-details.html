@@ -1,0 +1,53 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <th:block th:if="${apiKeyToken!= null}">
+        <article th:replace="~{partial/api-key-credentials}"></article>
+    </th:block>
+
+    <article th:fragment="details(details)">
+        <header>
+            Api key details
+        </header>
+        <ul class="tuple">
+            <li>
+                <b>Pretty name</b>
+                <span th:text="${apiKey.prettyName()}"></span>
+            </li>
+            <li>
+                <b>Type</b>
+                <span th:text="${apiKey.keyType()}"></span>
+            </li>
+            <li>
+                <b>Swedish description</b>
+                <span th:text="${apiKey.svDescription()}"></span>
+            </li>
+            <li>
+                <b>English description</b>
+                <span th:text="${apiKey.enDescription()}"></span>
+            </li>
+        </ul>
+        <footer th:if="${details != null && details}">
+            <a th:href="|/api-keys/${apiKey.id()}|">
+                <button class="outline contrast">
+                    More details
+                </button>
+            </a>
+        </footer>
+        <footer th:if="${details == null || !details}">
+            <form data-hx-confirm="Are you sure you want to reset the token? The old token will be immediately revoked."
+                  data-hx-target="body"
+                  th:data-hx-headers="${redirectUri != null} ? '{&quot;redirectUri&quot;: &quot;' + ${redirectUri} + '&quot;}' : null" th:data-hx-post="|/api-keys/${apiKey.id()}/reset|">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="outline contrast" data-loading-disable>Reset token</button>
+            </form>
+            <form data-hx-confirm="Are you sure you want to delete this api key?" th:data-hx-post="|/api-keys/${apiKey.id()}|">
+                <input type="hidden" name="_method" value="delete" />
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="outline contrast" data-loading-disable>Delete</button>
+            </form>
+        </footer>
+    </article>
+    <th:block th:if="${apiKey.keyType().equals('ACCOUNT_SCAFFOLD') || apiKey.keyType().equals('INFO')}">
+        <article th:replace="~{partial/api-key-super-group-types}"></article>
+    </th:block>
+</main>

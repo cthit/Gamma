@@ -1,0 +1,57 @@
+<article>
+    <header>
+        Edit group details
+    </header>
+    <form id="edit-group"
+          th:object="${form}"
+          th:action="@{/groups/{groupId}(groupId=${groupId})}"
+          th:method="put"
+          _="on htmx:afterSwap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
+        <input type="hidden" name="version" th:value="${form.version}"/>
+        <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
+        <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+        <label>
+            Super group
+            <select name="superGroupId">
+                <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}"
+                        th:value="${superGroup.id()}"
+                        th:selected="${superGroup.id() == form.superGroupId}"></option>
+            </select>
+        </label>
+        <div class="member-row" th:each="member, memberStat : *{members}">
+            <hr>
+            <p th:text="${users.get(member.userId)}"></p>
+            <div>
+                <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}"/>
+                <div>
+                    <label>
+                        Post
+                    </label>
+                    <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
+                        <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
+                    </select>
+                    <small th:if="${#fields.hasErrors('members[__${memberStat.index}__]')}" class="error-message" th:errors="*{members[__${memberStat.index}__]}">
+                    </small>
+                </div>
+                <div>
+                    <div th:replace="~{common/input :: textInput2(field='members[__${memberStat.index}__].unofficialPostName', label='Unofficial post name')}"></div>
+                </div>
+                <button class="outline contrast" _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')"
+                        type="button">Delete
+                </button>
+            </div>
+        </div>
+        <button class="outline contrast" type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">Add
+            member
+        </button>
+    </form>
+    <footer>
+        <button type="button"
+                class="outline contrast"
+                th:data-hx-get="|/groups/${groupId}/cancel-edit|"
+                data-hx-target="closest article"
+                data-hx-swap="outerHTML" data-loading-disable>Cancel
+        </button>
+        <button form="edit-group" class="outline contrast" data-loading-disable>Save</button>
+    </footer>
+</article>

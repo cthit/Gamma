@@ -1,0 +1,22 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            Create api key
+        </header>
+        <form id="create-api-key" th:object="${form}" th:action="@{/api-keys/create}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+            <label>
+                Key type
+                <select th:field="*{keyType}">
+                    <option th:each="type : ${keyTypes}" th:text="${type}" th:value="${type}"></option>
+                </select>
+            </label>
+        </form>
+        <footer>
+            <button form="create-api-key" data-loading-disable>Create api key</button>
+        </footer>
+    </article>
+</main>

@@ -1,0 +1,16 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            404 - Not Found
+        </header>
+        <p>
+            Group with the id: [<span th:text="${id}"></span>] was not found.
+        </p>
+        <footer>
+            <a href="/groups">
+                <button type="button">Go to all groups</button>
+            </a>
+        </footer>
+    </article>
+</main>

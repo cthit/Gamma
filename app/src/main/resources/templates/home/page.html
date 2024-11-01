@@ -1,0 +1,114 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article th:if="${me.cid() == 'admin'}">
+        <header>
+            Urgency for Deletion of This 'Admin' Account
+        </header>
+        <p>
+            The security of your system is paramount. Given that accounts with the "admin" username tend to
+            attract higher rates of brute-force attack attempts, we strongly advise you to delete this account promptly.
+        </p>
+    </article>
+
+    <article th:fragment="userinfo">
+        <header>
+            Your information
+        </header>
+        <ul class="tuple">
+            <li>
+                <b>First name:</b>
+                <span th:text="${me.firstName()}"></span>
+            </li>
+            <li>
+                <b>Last name:</b>
+                <span th:text="${me.lastName()}"></span>
+            </li>
+            <li>
+                <b>Nick</b>
+                <span th:text="${me.nick()}"></span>
+            </li>
+            <li>
+                <b>Email:</b>
+                <span th:text="${me.email()}"></span>
+            </li>
+            <li>
+                <b>Acceptance year:</b>
+                <span th:text="${me.acceptanceYear()}"></span>
+            </li>
+            <li>
+                <b>Cid:</b>
+                <span th:text="${me.cid()}"></span>
+            </li>
+            <li>
+                <b>Preferred language:</b>
+                <span th:text="${me.language() == 'EN' ? 'English' : (me.language() == 'SV' ? 'Swedish' : '')}"></span>
+            </li>
+            <li>
+                <b>Have you attended GDPR training?</b>
+                <span th:text="${gdpr ? 'Yes' : 'No'}"></span>
+            </li>
+            <li th:if="${me.isAdmin()}">
+                <b>Is admin?</b>
+                <span>Yes</span>
+            </li>
+        </ul>
+        <footer>
+            <button class="outline contrast" th:data-hx-get="@{/me/edit}" data-hx-target="closest <article/>" data-hx-swap="outerHTML" data-loading-disable>Edit</button>
+            <button class="outline contrast" th:data-hx-get="@{/me/edit-password}" data-hx-target="closest <article/>" data-hx-swap="outerHTML" data-loading-disable>Change password</button>
+        </footer>
+    </article>
+    <article>
+        <header>
+            My groups
+        </header>
+        <th:block th:if="${me.groups().size() == 0}">
+            You are not part of any groups
+        </th:block>
+        <ul th:if="${me.groups().size() > 0}">
+            <li th:each="group : ${me.groups()}">
+                <a th:href="|/groups/${group.group().id()}|" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></a>
+            </li>
+        </ul>
+    </article>
+    <article th:with="meId = ${me.id()}">
+        <header>
+            Your avatar
+        </header>
+        <div class="image-input-container" th:fragment="me-avatar">
+            <img th:src="@{|/images/user/avatar/${meId}?r=${random}|}" alt="Me avatar" />
+            <form id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
+                  _="on htmx:beforeRequest add @disabled to the next <button/> "
+                  enctype="multipart/form-data"
+                  data-hx-target="closest div"
+                  data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <input type="hidden" name="_method" value="put" />
+                <input _='on change remove @disabled from the next <button/>'  type='file' name='file'>
+            </form>
+        </div>
+        <footer>
+            <button disabled class="outline" form="update-me-avatar">Upload avatar</button>
+        </footer>
+    </article>
+    <article>
+        <header>
+            Do you want to delete your account?
+        </header>
+        <p>
+            Here you can delete your account and prevent further access for clients you have accepted.
+            You have the right to ensure all of your data is removed.
+            Please email <a href="mailto:ita@chalmers.it">ita@chalmers.it</a>, along with:
+        </p>
+        <p>
+            UserId: <span th:text="${me.id()}"></span>
+        </p>
+        <p>
+            Cid: <span th:text="${me.cid()}"></span>
+        </p>
+        <footer>
+            <a th:href="@{/delete-your-account}" >
+                Proceed to deleting your account
+            </a>
+        </footer>
+    </article>
+</main>

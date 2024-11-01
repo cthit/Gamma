@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+<head>
+    <title>Gamma</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark" />
+    <link rel="shortcut icon" type="image/svg" th:href="@{/img/itlogo.svg}" />
+
+    <link rel="stylesheet" th:href="@{/webjars/picocss__pico/2.0.6/css/pico.green.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+
+    <meta name="htmx-config"
+          content='{
+            "selfRequestsOnly": true,
+            "allowScriptTags": false,
+            "historyCacheSize": 0,
+            "allowEval": false,
+            "useTemplateFragments": true,
+            "includeIndicatorStyles": false
+          }'
+    >
+
+    <script th:src="@{/webjars/htmx.org/1.9.12/dist/htmx.min.js}"></script>
+    <script th:src="@{/webjars/htmx.org/1.9.12/dist/ext/loading-states.js}"></script>
+    <script th:src="@{/webjars/htmx.org/1.9.12/dist/ext/response-targets.js}"></script>
+    <script th:src="@{/webjars/hyperscript.org/0.9.12/dist/_hyperscript.min.js}"></script>
+    <script th:src="@{/webjars/sortablejs/1.15.3/Sortable.min.js}"></script>
+
+    <script th:src="@{/js/reorder.js}"></script>
+    <script th:src="@{/js/posts-sortable.js}"></script>
+</head>
+<body class="container-fluid"
+      hx-boost="true"
+      hx-history="false"
+      hx-ext="loading-states, response-targets"
+      _="on htmx:afterSwap remove .show-nav from document.body"
+      data-loading-delay="500">
+    <th:block th:replace="~{__${page}__}"></th:block>
+</body>
+</html>

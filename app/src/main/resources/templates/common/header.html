@@ -1,0 +1,96 @@
+<div id="alerts">
+</div>
+<div id="loader-container" data-loading data-loading-class="loading">
+    <progress></progress>
+</div>
+<nav>
+    <aside>
+        <ul>
+            <li>
+                <a th:href="@{/me/accepted-clients}">Your accepted clients</a>
+            </li>
+            <li>
+                <a th:href="@{/my-clients}">Your clients</a>
+            </li>
+            <li>
+                <a th:href="@{/users}">Users</a>
+            </li>
+            <li>
+                <a th:href="@{/groups}">Groups</a>
+            </li>
+            <li>
+                <a th:href="@{/super-groups}">Super groups</a>
+            </li>
+            <li>
+                <a th:href="@{/types}">Types</a>
+            </li>
+            <li>
+                <a th:href="@{/posts}">Posts</a>
+            </li>
+            <li>
+                <a th:href="@{/user-agreement}">User agreement</a>
+            </li>
+            <th:block th:if="${isAdmin}">
+                <hr>
+                <li>
+                    <a th:href="@{/clients}">Official clients</a>
+                </li>
+                <li>
+                    <a th:href="@{/user-clients}">User clients</a>
+                </li>
+                <li>
+                    <a th:href="@{/api-keys}">Api keys</a>
+                </li>
+                <li>
+                    <a th:href="@{/activation-codes}">Activation codes</a>
+                </li>
+                <li>
+                    <a th:href="@{/admins}">Admins</a>
+                </li>
+                <li>
+                    <a th:href="@{/gdpr}">Gdpr trained</a>
+                </li>
+                <li>
+                    <a th:href="@{/allow-list}">Allow lists</a>
+                </li>
+                <li>
+                    <a th:href="@{/throttling}">Throttling</a>
+                </li>
+            </th:block>
+            <hr>
+            <li>
+                <a href="https://github.com/cthit/gamma" target="_blank">GitHub</a>
+            </li>
+            <li>
+                Made by <span><a href="https://digit.chalmers.it">digIT</a></span>
+            </li>
+            <li>
+                <img src="/img/digit18.svg" alt="digit18 smurf" id="digit18-smurf"/>
+            </li>
+        </ul>
+    </aside>
+</nav>
+<header>
+    <button id="toggle-nav" class="outline contrast"
+            _="on click toggle .show-nav on document.body">
+        Menu
+    </button>
+    <div>
+        <a href="/">
+            <h1>
+                Gamma
+            </h1>
+        </a>
+    </div>
+    <div>
+        <th:block sec:authorize="isAuthenticated()">
+            <div th:text="|Hey, ${#authentication.getDetails().gammaUser().nick().value()}!|"></div>
+            <form th:action="@{/logout}" th:method="post" >
+                <button class="outline contrast" data-loading-disable>
+                    Logout
+                </button>
+            </form>
+        </th:block>
+    </div>
+</header>
+

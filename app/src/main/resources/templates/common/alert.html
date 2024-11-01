@@ -1,0 +1,27 @@
+<th:block th:fragment="success(text)">
+    <div data-hx-swap-oob="afterbegin:#alerts">
+        <div role="alert"
+             style="opacity: 0"
+             class="success"
+             th:text="${text}"
+             _="on load
+                transition opacity to 1
+                then wait 7s
+                then transition opacity to 0 then remove me">
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="error(text)">
+    <div data-hx-swap-oob="afterbegin:#alerts">
+        <div role="alert"
+             style="opacity: 0"
+             class="error"
+             th:text="${text}"
+             _="on load
+                transition opacity to 1
+                then wait 7s
+                then transition opacity to 0 then remove me">
+        </div>
+    </div>
+</th:block>

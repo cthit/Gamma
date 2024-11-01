@@ -1,0 +1,23 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <form th:object="${form}" th:action="@{/super-groups}" th:method="post">
+        <article>
+            <header>
+                Create super group
+            </header>
+            <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
+            <label>
+                Type
+                <select required name="type">
+                    <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
+                </select>
+            </label>
+            <footer>
+                <button data-loading-disable>Create</button>
+            </footer>
+        </article>
+    </form>
+</main>

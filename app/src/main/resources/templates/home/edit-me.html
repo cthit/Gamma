@@ -1,0 +1,29 @@
+<form th:object="${form}" th:data-hx-post="@{/me}" data-hx-target="this" data-hx-swap="outerHTML">
+    <article>
+        <header>
+            Editing your information
+        </header>
+        <div th:replace="~{common/form-csrf}"></div>
+        <input type="hidden" name="_method" value="put"/>
+        <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
+        <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
+        <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
+        <div th:replace="~{common/input :: emailInput2('email', 'Email')}"></div>
+        <label>
+            Language
+            <select th:field="*{language}">
+                <option value="SV">
+                    Swedish
+                </option>
+                <option value="EN">
+                    English
+                </option>
+            </select>
+        </label>
+        <div th:replace="~{common/error :: text}"></div>
+        <footer>
+            <button data-hx-get="/me/cancel-edit" data-hx-target="closest <form/>" data-hx-swap="outerHTML" class="outline contrast" type="button" data-loading-disable>Cancel</button>
+            <button data-loading-disable>Save</button>
+        </footer>
+    </article>
+</form>

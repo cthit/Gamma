@@ -1,0 +1,30 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <form th:action="@{/admins}" th:method="put" >
+        <button data-loading-disable>Save</button>
+        <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
+        <table>
+            <thead>
+            <tr>
+                <th>Admin</th>
+                <th>First Name</th>
+                <th>Nick</th>
+                <th>Last name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td>
+                    <input type="checkbox"
+                           th:name="${user.id()}"
+                           th:checked="${admins.contains(user.id())}"
+                    />
+                </td>
+                <td th:text="${user.firstName()}"></td>
+                <td th:text="${user.nick()}"></td>
+                <td th:text="${user.lastName()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</main>

@@ -1,0 +1,37 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            Allow new cid
+        </header>
+        <form id="allow-cid-form" th:action="@{/allow-list}" th:method="put" >
+            <div th:replace="~{common/input :: textInput(name='cid', label='Cid', errorMessage=${cidInputError}, value=${name})}"></div>
+        </form>
+        <footer>
+            <button form="allow-cid-form" class="outline contrast" data-loading-disable>Active</button>
+        </footer>
+    </article>
+    <table>
+        <thead>
+        <tr>
+            <th>Cid</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="allowedCid : ${allowList}">
+            <td th:text="${allowedCid.cid()}"></td>
+            <td class="table-align-right">
+                <span th:if="${allowedCid.hasActivationCode()}">
+                    Has activation code
+                </span>
+                <form th:if="${!allowedCid.hasActivationCode()}" th:data-hx-post="|/allow-list/${allowedCid.cid()}|" data-hx-target="closest tr" data-hx-swap="delete">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="delete" />
+                    <button class="outline contrast" data-loading-disable>Retract approval</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

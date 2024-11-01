@@ -1,0 +1,40 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <article>
+        <header>
+            Create user
+        </header>
+        <form id="create-user-form" th:object="${form}" th:action="@{/users/create}" th:method="post">
+            <div th:replace="~{common/input :: textInput2(field='firstName', label='First name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='lastName', label='Last name')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='nick', label='Nick')}"></div>
+            <div th:replace="~{common/input :: textInput2(field='cid', label='Cid')}"></div>
+            <div th:replace="~{common/input :: emailInput2(field='email', label='Email')}"></div>
+            <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Password')}"></div>
+            <label>
+                Which year did the user start at IT?
+                <select th:field="*{acceptanceYear}">
+                    <option th:each="year : ${#numbers.sequence(T(java.time.Year).now().getValue(), 2001)}"
+                            th:value="${year}"
+                            th:text="${year}">
+                    </option>
+                </select>
+            </label>
+            <label>
+                What language does the user prefer?
+                <select th:field="*{language}">
+                    <option value="SV">
+                        Swedish
+                    </option>
+                    <option value="EN">
+                        English
+                    </option>
+                </select>
+            </label>
+            <div th:replace="~{common/error :: text}"></div>
+        </form>
+        <footer>
+            <button form="create-user-form" data-loading-disable>Create user</button>
+        </footer>
+    </article>
+</main>

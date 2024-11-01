@@ -1,0 +1,22 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <a href="/api-keys/create">Create api key</a>
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="apiKey : ${apiKeys}">
+            <td th:text="${apiKey.prettyName()}"></td>
+            <td th:text="${apiKey.keyType()}"></td>
+            <td>
+                <a th:href="${'/api-keys/' + apiKey.id()}">Details</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

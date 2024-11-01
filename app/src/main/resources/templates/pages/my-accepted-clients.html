@@ -1,0 +1,30 @@
+<header th:replace="~{common/header}"></header>
+<main>
+    <p>
+        Here are the clients that you have agreed to shared your data from Gamma with.
+        You have the right to retract that approval at any time.
+        If you have any questions, please do not hesitate to contact <a href="mailto:ita@chalmers.it">ita@chalmers.it</a>.
+    </p>
+    <table>
+        <thead>
+        <tr>
+            <th>Client name</th>
+            <th>Description</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="acceptedClient : ${acceptedClients}">
+            <td th:text="${acceptedClient.name()}"></td>
+            <td th:text="${acceptedClient.enDescription()}"></td>
+            <td class="table-align-right">
+                <form th:data-hx-post="|/me/accepted-clients/${acceptedClient.clientUid()}|" data-hx-target="closest tr" data-hx-swap="delete">
+                    <div th:replace="~{common/form-csrf}"></div>
+                    <input type="hidden" name="_method" value="delete" />
+                    <button class="outline contrast" data-loading-disable>Retract approval</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

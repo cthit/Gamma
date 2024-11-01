@@ -1,0 +1,25 @@
+<article>
+    <header>
+        Create client authority
+    </header>
+    <form id="create-client-authority"
+          th:data-hx-post="@{/clients/{id}/authority(id=${clientUid})}"
+          data-hx-target="closest article"
+          data-hx-swap="outerHTML"
+          _="on htmx:afterSwap call updateNames('users', '.authority-user-row') then call updateNames('superGroups', '.authority-super-group-row')">
+        <div th:replace="~{common/form-csrf}"></div>
+        <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${null}, errorMessage=${null})}"></div>
+        <p>Super groups:</p>
+        <button class="outline contrast" data-hx-get="/clients/authority/new-super-group"
+                data-hx-target="previous p" data-hx-swap="afterend" type="button">Add super group authority
+        </button>
+        <p>Users:</p>
+        <button class="outline contrast" data-hx-get="/clients/authority/new-user" data-hx-target="previous p"
+                data-hx-swap="afterend" type="button">Add user authority
+        </button>
+    </form>
+    <footer>
+        <button class="outline" form="create-client-authority" data-loading-disable>Save</button>
+    </footer>
+</article>
+
