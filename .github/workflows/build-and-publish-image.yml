@@ -51,9 +51,8 @@ jobs:
       - name: Build Docker image
         run: ./gradlew bootBuildImage
 
-      - name: Push image
-        uses: akhilerm/tag-push-action@v2.1.0
-        with:
-          src: app:latest
-          dst: |
-            ${{ steps.meta.outputs.tags }}
+      - name: Create manifest list and push
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            app:latest    
