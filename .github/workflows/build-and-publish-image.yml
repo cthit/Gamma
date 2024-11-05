@@ -51,7 +51,9 @@ jobs:
       - name: Build Docker image
         run: ./gradlew bootBuildImage
 
-      - name: Create manifest list and push
+      - name: Push docker image
         run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            app:latest    
+          for tag in $(jq -r '.tags | join(" ")' <<< "${{ steps.meta.outputs.metadata }}"); do
+            docker image tag app:latest $tag
+          done
+          docker image push --all-tags ghcr.io/${{ github.repository_owner }}/gamma  
