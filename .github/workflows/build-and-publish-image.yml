@@ -53,7 +53,7 @@ jobs:
 
       - name: Push docker image
         run: |
-          for tag in $(jq -r '.tags | join(" ")' <<< "${{ steps.meta.outputs.metadata }}"); do
+          for tag in $(jq -r '.tags | join(" ")' <<< $DOCKER_METADATA_OUTPUT_JSON ); do
             docker image tag app:latest $tag
           done
           docker image push --all-tags ghcr.io/${{ github.repository_owner }}/gamma  
