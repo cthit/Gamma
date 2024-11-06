@@ -45,7 +45,7 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
-            type=ref,event=branch
+            type=edge
             type=ref,event=pr  
 
       - name: Build Docker image
