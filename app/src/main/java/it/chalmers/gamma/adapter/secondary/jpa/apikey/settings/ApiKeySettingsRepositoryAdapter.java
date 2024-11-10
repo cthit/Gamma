@@ -19,14 +19,18 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
   private final ApiKeyJpaRepository apiKeyJpaRepository;
   private final ApiKeySettingsJpaRepository apiKeySettingsJpaRepository;
   private final SuperGroupTypeJpaRepository superGroupTypeJpaRepository;
+  private final AccountScaffoldRequiresManagedJpaRepository
+      accountScaffoldRequiresManagedJpaRepository;
 
   public ApiKeySettingsRepositoryAdapter(
       ApiKeyJpaRepository apiKeyJpaRepository,
       ApiKeySettingsJpaRepository apiKeySettingsJpaRepository,
-      SuperGroupTypeJpaRepository superGroupTypeJpaRepository) {
+      SuperGroupTypeJpaRepository superGroupTypeJpaRepository,
+      AccountScaffoldRequiresManagedJpaRepository accountScaffoldRequiresManagedJpaRepository) {
     this.apiKeyJpaRepository = apiKeyJpaRepository;
     this.apiKeySettingsJpaRepository = apiKeySettingsJpaRepository;
     this.superGroupTypeJpaRepository = superGroupTypeJpaRepository;
+    this.accountScaffoldRequiresManagedJpaRepository = accountScaffoldRequiresManagedJpaRepository;
   }
 
   @Override
@@ -80,7 +84,13 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
     return new ApiKeyAccountScaffoldSettings(
         apiKeySettingsEntity.getVersion(),
         apiKeySettingsEntity.superGroupTypes.stream()
-            .map(ApiKeySettingsSuperGroupTypeEntity::getSuperGroupType)
+            .map(
+                entity ->
+                    new ApiKeyAccountScaffoldSettings.Row(
+                        entity.getSuperGroupType(),
+                        this.accountScaffoldRequiresManagedJpaRepository.existsById(
+                            new AccountScaffoldRequiresManagedPK(
+                                apiKeySettingsEntity.id, entity.getSuperGroupType().value()))))
             .toList());
   }
 
@@ -122,8 +132,20 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
                 superGroupType ->
                     new ApiKeySettingsSuperGroupTypeEntity(
                         apiKeySettingsEntity,
-                        superGroupTypeJpaRepository.getReferenceById(superGroupType.value())))
+                        superGroupTypeJpaRepository.getReferenceById(
+                            superGroupType.type().value())))
             .toList());
+
+    for (var row : settings.superGroupTypes()) {
+      var pk = new AccountScaffoldRequiresManagedPK(apiKeySettingsEntity.id, row.type().value());
+      var superGroupTypeRequiresManagedOptional = accountScaffoldRequiresManagedJpaRepository.findById(pk);
+      if (row.requiresManaged() && superGroupTypeRequiresManagedOptional.isEmpty()) {
+        accountScaffoldRequiresManagedJpaRepository.save(
+            new AccountScaffoldRequiresManagedEntity(apiKeySettingsEntity.id, row.type().value()));
+      } else if (!row.requiresManaged() && superGroupTypeRequiresManagedOptional.isPresent()) {
+        accountScaffoldRequiresManagedJpaRepository.deleteById(pk);
+      }
+    }
 
     apiKeySettingsEntity.increaseVersion(settings.version());
 

@@ -1,0 +1,41 @@
+<form th:object="${settings_form}"
+      method="post"
+      data-hx-target="this"
+      th:data-hx-post="|/api-keys/${apiKeyId}/account-scaffold-settings|"
+      _="on load or htmx:afterSwap call updateNames('superGroupTypes', '.type', '.requiresManaged')">
+    <input type="hidden" name="_method" value="put" />
+    <input type="hidden" name="version" th:value="${settings_form.version}" />
+    <div th:replace="~{common/form-csrf}"></div>
+
+    <article>
+        <header>
+            Account scaffold
+        </header>
+        <p>
+            Set the super group types from which the information will query from
+        </p>
+        <div class="super-group-type row"
+             th:each="type : ${settings_form.superGroupTypes}">
+            <div>
+            <select class="type">
+                <option disabled selected th:value="${type.getType()}" th:text="${type.getType()}"></option>
+            </select>
+            <label>
+                <input class="requiresManaged" type="checkbox" th:checked="${'on'.equals(type.getRequiresManaged())}"/>
+                Requires managed account for access
+            </label>
+            </div>
+            <button class="outline contrast"
+                    type="button"
+                    _="on click remove closest .super-group-type then call updateNames('superGroupTypes', '.type', '.requiresManaged')">
+                Remove
+            </button>
+        </div>
+        <footer>
+            <button class="outline contrast" type="button" data-hx-get="/api-keys/new-super-group-type/account-scaffold"
+                    data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
+            </button>
+            <button class="outline contrast" data-loading-disable>Save</button>
+        </footer>
+    </article>
+</form>

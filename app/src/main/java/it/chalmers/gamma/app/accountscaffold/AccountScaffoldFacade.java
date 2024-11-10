@@ -54,7 +54,10 @@ public class AccountScaffoldFacade extends Facade {
         this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
 
     this.groupRepository.getAll().stream()
-        .filter(group -> settings.superGroupTypes().contains(group.superGroup().type()))
+        .filter(
+            group ->
+                settings.superGroupTypes().stream()
+                    .anyMatch(row -> row.type().equals(group.superGroup().type())))
         .forEach(
             group -> {
               List<AccountScaffoldUserPostDTO> activeGroupMember =
@@ -80,7 +83,12 @@ public class AccountScaffoldFacade extends Facade {
             superGroupWithMembers ->
                 new AccountScaffoldSuperGroupDTO(
                     superGroupWithMembers.superGroup,
-                    new ArrayList<>(superGroupWithMembers.members)))
+                    new ArrayList<>(superGroupWithMembers.members),
+                    settings.superGroupTypes().stream()
+                        .anyMatch(
+                            row ->
+                                row.type().equals(superGroupWithMembers.superGroup.type())
+                                    && row.requiresManaged())))
         .toList();
   }
 
@@ -100,7 +108,13 @@ public class AccountScaffoldFacade extends Facade {
         this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
 
     return this.groupRepository.getAll().stream()
-        .filter(group -> settings.superGroupTypes().contains(group.superGroup().type()))
+        .filter(
+            group ->
+                settings.superGroupTypes().stream()
+                    .anyMatch(
+                        row ->
+                            (row.type().equals(group.superGroup().type()))
+                                && row.requiresManaged()))
         .flatMap(group -> group.groupMembers().stream())
         .map(GroupMember::user)
         .distinct()
@@ -143,14 +157,21 @@ public class AccountScaffoldFacade extends Facade {
   }
 
   public record AccountScaffoldSuperGroupDTO(
-      String name, String prettyName, String type, List<AccountScaffoldUserPostDTO> members) {
+      String name,
+      String prettyName,
+      String type,
+      List<AccountScaffoldUserPostDTO> members,
+      boolean useManagedAccount) {
     public AccountScaffoldSuperGroupDTO(
-        SuperGroup superGroup, List<AccountScaffoldUserPostDTO> members) {
+        SuperGroup superGroup,
+        List<AccountScaffoldUserPostDTO> members,
+        boolean useManagedAccount) {
       this(
           superGroup.name().value(),
           superGroup.prettyName().value(),
           superGroup.type().value(),
-          members);
+          members,
+          useManagedAccount);
     }
   }
 

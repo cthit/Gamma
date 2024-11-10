@@ -57,7 +57,7 @@
 
     <th:block th:if="${client.apiKey().isPresent()}" th:with="apiKey = ${client.apiKey().get()}">
         <div class="contents">
-            <article th:replace="~{pages/api-key-details :: details(details = true)}"></article>
+            <article th:replace="~{api-key-details/page :: details(details = true)}"></article>
         </div>
     </th:block>
 

@@ -1,0 +1,7 @@
+<select class="type">
+    <option th:each="type : ${superGroupTypes}" th:value="${type}" th:text="${type}"></option>
+</select>
+<label>
+    <input class="requiresManaged" type="checkbox"/>
+    Requires managed account for access
+</label>
