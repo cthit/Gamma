@@ -47,7 +47,10 @@
             </form>
         </footer>
     </article>
-    <th:block th:if="${apiKey.keyType().equals('ACCOUNT_SCAFFOLD') || apiKey.keyType().equals('INFO')}">
-        <article th:replace="~{partial/api-key-super-group-types}"></article>
+    <th:block th:if="${apiKey.keyType().equals('INFO')}">
+        <article th:replace="~{api-key-details/info-settings}"></article>
+    </th:block>
+    <th:block th:if="${apiKey.keyType().equals('ACCOUNT_SCAFFOLD')}">
+        <article th:replace="~{api-key-details/account-scaffold-settings}"></article>
     </th:block>
 </main>

@@ -48,7 +48,10 @@ public class ApiKeySettingsFacade extends Facade {
             settings.version, settings.superGroupTypes.stream().map(SuperGroupType::new).toList()));
   }
 
-  public record ApiKeySettingsAccountScaffoldDTO(int version, List<String> superGroupTypes) {}
+  public record AccountScaffoldTypeDTO(String type, boolean requiresManaged) {}
+
+  public record ApiKeySettingsAccountScaffoldDTO(
+      int version, List<AccountScaffoldTypeDTO> superGroupTypes) {}
 
   public ApiKeySettingsAccountScaffoldDTO getAccountScaffoldSettings(UUID apiKeyId) {
     ApiKeyId id = new ApiKeyId(apiKeyId);
@@ -60,7 +63,9 @@ public class ApiKeySettingsFacade extends Facade {
 
     return new ApiKeySettingsAccountScaffoldDTO(
         accountScaffoldSettings.version(),
-        accountScaffoldSettings.superGroupTypes().stream().map(SuperGroupType::value).toList());
+        accountScaffoldSettings.superGroupTypes().stream()
+            .map(row -> new AccountScaffoldTypeDTO(row.type().value(), row.requiresManaged()))
+            .toList());
   }
 
   public void setAccountScaffoldSettings(UUID apiKeyId, ApiKeySettingsAccountScaffoldDTO settings) {
@@ -69,6 +74,12 @@ public class ApiKeySettingsFacade extends Facade {
     this.apiKeySettingsRepository.setAccountScaffoldSettings(
         new ApiKeyId(apiKeyId),
         new ApiKeyAccountScaffoldSettings(
-            settings.version, settings.superGroupTypes.stream().map(SuperGroupType::new).toList()));
+            settings.version,
+            settings.superGroupTypes.stream()
+                .map(
+                    row ->
+                        new ApiKeyAccountScaffoldSettings.Row(
+                            new SuperGroupType(row.type), row.requiresManaged))
+                .toList()));
   }
 }
