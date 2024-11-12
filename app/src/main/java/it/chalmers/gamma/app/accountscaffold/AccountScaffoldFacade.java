@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyAccountScaffoldSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupMember;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.domain.Post;
@@ -39,14 +40,13 @@ public class AccountScaffoldFacade extends Facade {
   }
 
   /**
-   * Get all super groups that have the provided types and members that are a part of groups that
-   * has each supergroup
+   * Get all super groups that have the provided types and their "sub" groups with their members.
    */
   public List<AccountScaffoldSuperGroupDTO> getActiveSuperGroups() {
     this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
 
     List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
-    Map<SuperGroupId, SuperGroupWithMembers> superGroupMap = new HashMap<>();
+    Map<SuperGroupId, SuperGroupWithGroups> superGroupMap = new HashMap<>();
 
     ApiAuthentication apiAuthentication =
         (ApiAuthentication) AuthenticationExtractor.getAuthentication();
@@ -71,23 +71,23 @@ public class AccountScaffoldFacade extends Facade {
               if (!superGroupMap.containsKey(superGroupId)) {
                 superGroupMap.put(
                     superGroupId,
-                    new SuperGroupWithMembers(
-                        group.superGroup(), new HashSet<>(activeGroupMember)));
+                    new SuperGroupWithGroups(
+                        group.superGroup(), new ArrayList<>(List.of(new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
               } else {
-                superGroupMap.get(superGroupId).members.addAll(activeGroupMember);
+                superGroupMap.get(superGroupId).groups.add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
               }
             });
 
     return superGroupMap.values().stream()
         .map(
-            superGroupWithMembers ->
+            superGroupWithGroups ->
                 new AccountScaffoldSuperGroupDTO(
-                    superGroupWithMembers.superGroup,
-                    new ArrayList<>(superGroupWithMembers.members),
+                    superGroupWithGroups.superGroup,
+                    superGroupWithGroups.groups.stream().map(group -> new AccountScaffoldGroupDTO(group.group, new ArrayList<>(group.members))).toList(),
                     settings.superGroupTypes().stream()
                         .anyMatch(
                             row ->
-                                row.type().equals(superGroupWithMembers.superGroup.type())
+                                row.type().equals(superGroupWithGroups.superGroup.type())
                                     && row.requiresManaged())))
         .toList();
   }
@@ -156,32 +156,62 @@ public class AccountScaffoldFacade extends Facade {
     }
   }
 
+  public record AccountScaffoldGroupDTO(
+          String name,
+          String prettyName,
+          List<AccountScaffoldUserPostDTO> members
+  ) {
+    public AccountScaffoldGroupDTO(
+            Group group,
+            List<AccountScaffoldUserPostDTO> members
+    ) {
+      this(
+              group.name().value(),
+              group.prettyName().value(),
+              members
+      );
+    }
+  }
+
   public record AccountScaffoldSuperGroupDTO(
       String name,
       String prettyName,
       String type,
-      List<AccountScaffoldUserPostDTO> members,
+      List<AccountScaffoldGroupDTO> groups,
       boolean useManagedAccount) {
     public AccountScaffoldSuperGroupDTO(
         SuperGroup superGroup,
-        List<AccountScaffoldUserPostDTO> members,
+        List<AccountScaffoldGroupDTO> groups,
         boolean useManagedAccount) {
       this(
           superGroup.name().value(),
           superGroup.prettyName().value(),
           superGroup.type().value(),
-          members,
+          groups,
           useManagedAccount);
     }
   }
 
-  private static class SuperGroupWithMembers {
-    private final SuperGroup superGroup;
+
+  private static class GroupWithMembers {
+    private final Group group;
     private final Set<AccountScaffoldUserPostDTO> members;
 
-    private SuperGroupWithMembers(SuperGroup superGroup, Set<AccountScaffoldUserPostDTO> members) {
-      this.superGroup = superGroup;
+    private GroupWithMembers(Group group, Set<AccountScaffoldUserPostDTO> members) {
+      this.group = group;
       this.members = members;
     }
   }
+
+  private static class SuperGroupWithGroups {
+    private final SuperGroup superGroup;
+    private final List<GroupWithMembers> groups;
+
+    private SuperGroupWithGroups(SuperGroup superGroup, List<GroupWithMembers> groups) {
+      this.superGroup = superGroup;
+      this.groups = groups;
+    }
+  }
+
+
 }
