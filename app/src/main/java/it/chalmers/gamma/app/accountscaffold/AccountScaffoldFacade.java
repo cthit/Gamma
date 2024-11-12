@@ -62,7 +62,6 @@ public class AccountScaffoldFacade extends Facade {
             group -> {
               List<AccountScaffoldUserPostDTO> activeGroupMember =
                   group.groupMembers().stream()
-                      .filter(groupMember -> !groupMember.user().extended().locked())
                       .filter(groupMember -> gdprTrained.contains(groupMember.user().id()))
                       .map(AccountScaffoldUserPostDTO::new)
                       .toList();
@@ -94,7 +93,7 @@ public class AccountScaffoldFacade extends Facade {
 
   /**
    * Returns the users that are active right now. Takes in a list of super group types to help
-   * determine what kinds of groups that are deemed active. User must also be not locked, and have
+   * determine what kinds of groups that are deemed active. User must have
    * participated in gdpr training.
    */
   public List<AccountScaffoldUserDTO> getActiveUsers() {
@@ -118,7 +117,6 @@ public class AccountScaffoldFacade extends Facade {
         .flatMap(group -> group.groupMembers().stream())
         .map(GroupMember::user)
         .distinct()
-        .filter(user -> !user.extended().locked())
         .filter(groupMember -> gdprTrained.contains(groupMember.id()))
         .map(AccountScaffoldUserDTO::new)
         .toList();
