@@ -61,14 +61,6 @@ public class UserAccessGuard {
     return false;
   }
 
-  public boolean isApi(ApiKeyType apiKeyType) {
-      if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
-        return apiPrincipal.get().keyType() == apiKeyType;
-      }
-
-      return false;
-  }
-
   public boolean haveAccessToUser(UserId userId, boolean userLocked) {
     if (SecurityContextHolder.getContext().getAuthentication() == null
         || !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
@@ -83,10 +75,10 @@ public class UserAccessGuard {
     /*
      * If the user is locked then nothing should be returned
      * unless if and only if the signed-in user is an admin,
-     * or if we are using an API key of type ACCOUNT_SCAFFOLD.
+     * or if we are using an API with extended access.
      */
     if (userLocked) {
-      return isAdmin() || isApi(ApiKeyType.ACCOUNT_SCAFFOLD);
+      return isAdmin() || isApiKeyWithExtendedAccess();
     }
 
     // If one user is trying to access another user, then approve
