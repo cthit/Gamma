@@ -34,7 +34,7 @@
                     </small>
                 </div>
                 <div>
-                    <div th:replace="~{common/input :: textInput2(field='members[__${memberStat.index}__].unofficialPostName', label='Unofficial post name')}"></div>
+                    <div th:replace="~{common/input :: textInputWithClassName(field='members[__${memberStat.index}__].unofficialPostName', label='Unofficial post name', className='unofficialPostName')}"></div>
                 </div>
                 <button class="outline contrast" _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')"
                         type="button">Delete
