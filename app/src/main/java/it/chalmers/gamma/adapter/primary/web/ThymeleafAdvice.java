@@ -6,6 +6,9 @@ import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class ThymeleafAdvice {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ThymeleafAdvice.class);
+
   @ModelAttribute("isAdmin")
   public boolean isAdmin() {
     if (AuthenticationExtractor.getAuthentication()
@@ -26,6 +31,12 @@ public class ThymeleafAdvice {
     } else {
       return false;
     }
+  }
+
+@ExceptionHandler(IllegalArgumentException.class)
+public ModelAndView handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException ex) {
+    LOGGER.error("Caught IllegalArgumentException. This shouldn't happen as validators should catch these issues:", ex);
+    return new ModelAndView("redirect:/error");
   }
 
   @ExceptionHandler(AccessGuard.AccessDeniedException.class)
