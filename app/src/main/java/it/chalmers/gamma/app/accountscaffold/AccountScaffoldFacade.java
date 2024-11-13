@@ -41,6 +41,7 @@ public class AccountScaffoldFacade extends Facade {
 
   /**
    * Get all super groups that have the provided types and their "sub" groups with their members.
+   * For groups that require managed accounts, only users that have participated in gdpr training are included.
    */
   public List<AccountScaffoldSuperGroupDTO> getActiveSuperGroups() {
     this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
@@ -62,7 +63,9 @@ public class AccountScaffoldFacade extends Facade {
             group -> {
               List<AccountScaffoldUserPostDTO> activeGroupMember =
                   group.groupMembers().stream()
-                      .filter(groupMember -> gdprTrained.contains(groupMember.user().id()))
+                      .filter(groupMember ->
+                              gdprTrained.contains(groupMember.user().id()) ||
+                              !isGroupWithManagedAccounts(group, settings))
                       .map(AccountScaffoldUserPostDTO::new)
                       .toList();
 
@@ -107,13 +110,7 @@ public class AccountScaffoldFacade extends Facade {
         this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
 
     return this.groupRepository.getAll().stream()
-        .filter(
-            group ->
-                settings.superGroupTypes().stream()
-                    .anyMatch(
-                        row ->
-                            (row.type().equals(group.superGroup().type()))
-                                && row.requiresManaged()))
+        .filter(group -> isGroupWithManagedAccounts(group, settings))
         .flatMap(group -> group.groupMembers().stream())
         .map(GroupMember::user)
         .distinct()
@@ -209,6 +206,14 @@ public class AccountScaffoldFacade extends Facade {
       this.superGroup = superGroup;
       this.groups = groups;
     }
+  }
+
+  private boolean isGroupWithManagedAccounts(Group group, ApiKeyAccountScaffoldSettings settings) {
+    return settings.superGroupTypes().stream()
+        .anyMatch(
+            row ->
+                row.type().equals(group.superGroup().type())
+                    && row.requiresManaged());
   }
 
 
