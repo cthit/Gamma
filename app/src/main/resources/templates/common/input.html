@@ -31,6 +31,22 @@
     </small>
 </th:block>
 
+<th:block th:fragment="textInputWithClassName(field, label, className)"
+          th:assert="${field != null}">
+    <label th:if="${label != null}"
+           th:for="${field}"
+           th:text="${label}">
+    </label>
+    <input th:class="${className}"
+            type="text"
+            th:field="*{__${field}__}"
+            th:attr="aria-invalid=${#fields.hasErrors(field) ? 'true' : null},
+                    aria-describedby=${#fields.hasErrors(field) ? field : null}"
+    />
+    <small th:id="${field}" th:if="${#fields.hasErrors(field)}" th:errors="*{__${field}__}">
+    </small>
+</th:block>
+
 <th:block th:fragment="distantTextInput(name, label, errorMessage, value, form)"
           th:assert="${name != null}">
     <label th:if="${label != null}"
