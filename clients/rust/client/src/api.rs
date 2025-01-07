@@ -246,8 +246,6 @@ pub struct GammaUser {
 pub struct GammaPost {
     /// A unique identifier for the post.
     pub id: Uuid,
-    /// A version of the post(?), not entirely sure tbh.
-    pub version: i32,
     /// The swedish version of the name for this post (e.g. "Ordförande").
     pub sv_name: String,
     /// The english version of name the for this post (e.g. "Chairman").
