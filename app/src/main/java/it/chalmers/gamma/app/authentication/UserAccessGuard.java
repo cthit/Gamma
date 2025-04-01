@@ -103,7 +103,7 @@ public class UserAccessGuard {
     LOGGER.debug("tried to access the user: {}; ", userId);
 
     // Return false by default
-    return true;
+    return false;
   }
 
   private boolean isInternalAuthenticated() {
