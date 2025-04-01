@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
@@ -100,7 +101,7 @@ public class UserAccessGuard {
       return true;
     }
 
-    LOGGER.debug("tried to access the user: {}; ", userId);
+    LOGGER.info("tried to access the user: {}; ", userId);
 
     // Return false by default
     return false;
@@ -129,6 +130,19 @@ public class UserAccessGuard {
         return clientRepository.isApprovedByUser(
             userId, apiAuthenticationPrincipal.getClient().get().clientUid());
       }
+    }
+
+    if (SecurityContextHolder.getContext().getAuthentication()
+      instanceof OAuth2ClientAuthenticationToken token) {
+      var client = token.getRegisteredClient();
+
+      if (client == null) {
+        return false;
+      }
+
+      var clientUid = ClientUid.valueOf(client.getId());
+
+      return clientRepository.isApprovedByUser(userId, clientUid);
     }
 
     return false;
