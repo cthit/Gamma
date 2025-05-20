@@ -101,7 +101,7 @@ public class UserAccessGuard {
       return true;
     }
 
-    LOGGER.info("tried to access the user: {}; ", userId);
+    LOGGER.debug("tried to access the user: {}; ", userId);
 
     // Return false by default
     return false;
