@@ -1,0 +1,21 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.3",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@testcontainers/postgresql": "^11.7.1",
+    "@testcontainers/redis": "^11.7.1",
+    "@types/node": "^24.8.1",
+    "testcontainers": "^11.7.1"
+  }
+}
