@@ -108,8 +108,9 @@ export async function startGammaInstance(
       BASE_URL: `http://localhost:8080`,
       PRODUCTION: "true",
       IS_MOCKING: "false",
-      UPLOAD_FOLDER: "/uploads/",
+      UPLOAD_FOLDER: "/tmp/uploads/",
     })
+    .withTmpFs({ "/tmp/uploads": "rw,noexec,nosuid,size=100m" })
     .withExposedPorts(8080)
     .withLogConsumer((stream) => {
       stream.on("data", (line) => {
