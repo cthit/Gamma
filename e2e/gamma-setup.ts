@@ -1,5 +1,14 @@
-import { GenericContainer, Network, StartedNetwork, StartedTestContainer, Wait } from "testcontainers";
-import { PostgreSqlContainer, StartedPostgreSqlContainer } from "@testcontainers/postgresql";
+import {
+  GenericContainer,
+  Network,
+  StartedNetwork,
+  StartedTestContainer,
+  Wait,
+} from "testcontainers";
+import {
+  PostgreSqlContainer,
+  StartedPostgreSqlContainer,
+} from "@testcontainers/postgresql";
 import { RedisContainer, StartedRedisContainer } from "@testcontainers/redis";
 
 export interface GammaInstance {
@@ -71,7 +80,9 @@ export async function startDependencies(): Promise<GammaEnvironment> {
   };
 }
 
-export async function startGammaInstance(env: GammaEnvironment): Promise<GammaInstance> {
+export async function startGammaInstance(
+  env: GammaEnvironment,
+): Promise<GammaInstance> {
   const instanceId = instanceCounter++;
   console.log(`Starting Gamma instance ${instanceId}...`);
 
@@ -83,21 +94,21 @@ export async function startGammaInstance(env: GammaEnvironment): Promise<GammaIn
     .withNetwork(env.network)
     .withNetworkAliases(`gamma-${instanceId}`)
     .withEnvironment({
-      "DB_HOST": "db",
-      "DB_PORT": "5432",
-      "DB_NAME": "postgres",
-      "DB_USER": "postgres",
-      "DB_PASSWORD": "postgres",
-      "REDIS_HOST": "redis",
-      "REDIS_PORT": "6379",
-      "SERVER_PORT": "8080",
-      "GOTIFY_KEY": "123abc",
-      "GOTIFY_BASE_URL": "http://gotify:80",
-      "ADMIN_SETUP": "true",
-      "BASE_URL": `http://localhost:8080`,
-      "PRODUCTION": "true",
-      "IS_MOCKING": "false",
-      "UPLOAD_FOLDER": "/uploads/",
+      DB_HOST: "db",
+      DB_PORT: "5432",
+      DB_NAME: "postgres",
+      DB_USER: "postgres",
+      DB_PASSWORD: "postgres",
+      REDIS_HOST: "redis",
+      REDIS_PORT: "6379",
+      SERVER_PORT: "8080",
+      GOTIFY_KEY: "123abc",
+      GOTIFY_BASE_URL: "http://gotify:80",
+      ADMIN_SETUP: "true",
+      BASE_URL: `http://localhost:8080`,
+      PRODUCTION: "true",
+      IS_MOCKING: "false",
+      UPLOAD_FOLDER: "/uploads/",
     })
     .withExposedPorts(8080)
     .withLogConsumer((stream) => {
@@ -105,18 +116,30 @@ export async function startGammaInstance(env: GammaEnvironment): Promise<GammaIn
         const logLine = line.toString();
         console.log(`[GAMMA-${instanceId}] ${logLine}`);
 
-        const adminMatch = logLine.match(/Admin user created -> cid:([^,]+),password:(\S+)/);
+        const adminMatch = logLine.match(
+          /Admin user created -> cid:([^,]+),password:(\S+)/,
+        );
         if (adminMatch) {
           adminCid = adminMatch[1];
           adminPassword = adminMatch[2];
           credentialsFound = true;
-          console.log(`[GAMMA-${instanceId}] Captured admin credentials: cid=${adminCid}`);
+          console.log(
+            `[GAMMA-${instanceId}] Captured admin credentials: cid=${adminCid}`,
+          );
         }
       });
-      stream.on("err", (line) => console.error(`[GAMMA-${instanceId}] ${line}`));
-      stream.on("end", () => console.log(`[GAMMA-${instanceId}] Log stream ended`));
+      stream.on("err", (line) =>
+        console.error(`[GAMMA-${instanceId}] ${line}`),
+      );
+      stream.on("end", () =>
+        console.log(`[GAMMA-${instanceId}] Log stream ended`),
+      );
     })
-    .withWaitStrategy(Wait.forHttp("/", 8080).forStatusCodeMatching((status) => status >= 200 && status < 500))
+    .withWaitStrategy(
+      Wait.forHttp("/", 8080).forStatusCodeMatching(
+        (status) => status >= 200 && status < 500,
+      ),
+    )
     .start();
 
   const port = gammaContainer.getMappedPort(8080);
@@ -127,11 +150,13 @@ export async function startGammaInstance(env: GammaEnvironment): Promise<GammaIn
   const maxWaitTime = 30000;
   const startTime = Date.now();
   while (!credentialsFound && Date.now() - startTime < maxWaitTime) {
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   if (!credentialsFound) {
-      throw new Error(`[GAMMA-${instanceId}] Admin credentials not found in logs after ${maxWaitTime}ms`);
+    throw new Error(
+      `[GAMMA-${instanceId}] Admin credentials not found in logs after ${maxWaitTime}ms`,
+    );
   }
 
   return {
@@ -142,7 +167,9 @@ export async function startGammaInstance(env: GammaEnvironment): Promise<GammaIn
   };
 }
 
-export async function stopGammaInstance(instance: GammaInstance): Promise<void> {
+export async function stopGammaInstance(
+  instance: GammaInstance,
+): Promise<void> {
   console.log("Stopping Gamma instance...");
   await instance.container.stop();
 }

@@ -20,6 +20,9 @@ importers:
       '@types/node':
         specifier: ^24.8.1
         version: 24.8.1
+      prettier:
+        specifier: ^3.4.2
+        version: 3.6.2
       testcontainers:
         specifier: ^11.7.1
         version: 11.7.1
@@ -439,6 +442,11 @@ packages:
   playwright@1.56.1:
     resolution: {integrity: sha512-aFi5B0WovBHTEvpM3DzXTUaeN6eN0qWnTkKx4NQaH4Wvcmc153PdaY2UBdSYKaGYw+UyWXSVyxDUg5DoPEttjw==}
     engines: {node: '>=18'}
+    hasBin: true
+
+  prettier@3.6.2:
+    resolution: {integrity: sha512-I7AIg5boAr5R0FFtJ6rCfD+LFsWHp81dolrFD8S79U9tb8Az2nGrJncnMSnys+bpQJfRUzqs9hnA81OAA3hCuQ==}
+    engines: {node: '>=14'}
     hasBin: true
 
   process-nextick-args@2.0.1:
@@ -1048,6 +1056,8 @@ snapshots:
       playwright-core: 1.56.1
     optionalDependencies:
       fsevents: 2.3.2
+
+  prettier@3.6.2: {}
 
   process-nextick-args@2.0.1: {}
 
