@@ -3,14 +3,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.3.0"
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.4.1"
     }
 }
 
 plugins {
     id "java"
-    id "org.springframework.boot" version "3.3.0"
-    id "io.spring.dependency-management" version "1.1.5"
+    id "org.springframework.boot" version "3.4.1"
+    id "io.spring.dependency-management" version "1.1.7"
     id "com.diffplug.spotless" version "6.25.0"
 }
 
@@ -38,20 +38,20 @@ dependencies {
             "org.postgresql:postgresql:42.7.3",
 
             // Spring Boot
-            "org.springframework.boot:spring-boot:3.3.0",
-            "org.springframework.boot:spring-boot-autoconfigure:3.3.0",
-            "org.springframework.boot:spring-boot-starter-data-jpa:3.3.0",
-            "org.springframework.boot:spring-boot-starter-security:3.3.0",
-            "org.springframework.boot:spring-boot-starter-validation:3.3.0",
-            "org.springframework.boot:spring-boot-starter-web:3.3.0",
-            "org.springframework.boot:spring-boot-starter-oauth2-authorization-server:3.3.0",
+            "org.springframework.boot:spring-boot:3.4.1",
+            "org.springframework.boot:spring-boot-autoconfigure:3.4.1",
+            "org.springframework.boot:spring-boot-starter-data-jpa:3.4.1",
+            "org.springframework.boot:spring-boot-starter-security:3.4.1",
+            "org.springframework.boot:spring-boot-starter-validation:3.4.1",
+            "org.springframework.boot:spring-boot-starter-web:3.4.1",
+            "org.springframework.boot:spring-boot-starter-oauth2-authorization-server:3.4.1",
 
             // Spring session
-            "org.springframework.session:spring-session-core:3.3.0",
-            "org.springframework.session:spring-session-data-redis:3.3.0",
+            "org.springframework.session:spring-session-core:3.4.1",
+            "org.springframework.session:spring-session-data-redis:3.4.1",
 
             // Redis
-            "org.springframework.data:spring-data-redis:3.3.0",
+            "org.springframework.data:spring-data-redis:3.4.1",
     )
 
    runtimeOnly(
@@ -59,11 +59,11 @@ dependencies {
             "org.flywaydb:flyway-core:9.21.0",
 
             // Spring Boot
-            "org.springframework.boot:spring-boot-devtools:3.3.0",
-            "org.springframework.boot:spring-boot-starter-data-redis:3.3.0",
+            "org.springframework.boot:spring-boot-devtools:3.4.1",
+            "org.springframework.boot:spring-boot-starter-data-redis:3.4.1",
 
             // Thymeleaf
-            "org.springframework.boot:spring-boot-starter-thymeleaf:3.3.0",
+            "org.springframework.boot:spring-boot-starter-thymeleaf:3.4.1",
             "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE",
 
             // web dependencies
