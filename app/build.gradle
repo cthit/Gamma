@@ -78,15 +78,6 @@ repositories {
     mavenCentral()
 }
 
-bootBuildImage {
-    imageName = "app:latest"
-    imagePlatform = "linux/amd64"
-    builder = "paketobuildpacks/builder-jammy-base:latest"
-    environment = [
-        "BP_JVM_VERSION": "21"
-    ]
-}
-
 spotless {
     java {
         importOrder()
