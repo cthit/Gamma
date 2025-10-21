@@ -9,6 +9,10 @@ public final class Tokens {
   private Tokens() {}
 
   public static String generate(int length, CharacterTypes... types) {
+    if (length > 72) {
+      throw new IllegalArgumentException("length must be less than 72");
+    }
+
     String characters =
         Arrays.stream(types).map(CharacterTypes::getCharacters).collect(Collectors.joining());
     SecureRandom rand = new SecureRandom();
