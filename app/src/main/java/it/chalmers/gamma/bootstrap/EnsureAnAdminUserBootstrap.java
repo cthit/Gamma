@@ -94,9 +94,7 @@ public class EnsureAnAdminUserBootstrap {
     this.adminRepository.setAdmin(adminUser.id(), true);
     this.gdprTrainedRepository.setGdprTrainedStatus(adminUser.id(), true);
 
-    LOGGER.info("Admin user created!");
-    LOGGER.info("cid: " + name);
-    LOGGER.info("password: " + password);
+    LOGGER.info("Admin user created -> cid:" + name + ",password:" + password);
 
     LOGGER.info("==========                           ==========");
   }
