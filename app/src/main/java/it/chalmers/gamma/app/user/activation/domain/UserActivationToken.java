@@ -12,6 +12,6 @@ public record UserActivationToken(String value) {
   }
 
   public static UserActivationToken generate() {
-    return new UserActivationToken(Tokens.generate(100, UPPERCASE, NUMBERS, LOWERCASE));
+    return new UserActivationToken(Tokens.generate(72, UPPERCASE, NUMBERS, LOWERCASE));
   }
 }

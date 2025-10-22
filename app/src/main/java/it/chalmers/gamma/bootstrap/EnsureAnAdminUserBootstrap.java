@@ -63,7 +63,7 @@ public class EnsureAnAdminUserBootstrap {
     } else {
       password =
           Tokens.generate(
-              75,
+              72,
               Tokens.CharacterTypes.LOWERCASE,
               Tokens.CharacterTypes.UPPERCASE,
               Tokens.CharacterTypes.NUMBERS);

@@ -12,6 +12,6 @@ public record PasswordResetToken(String value) {
   }
 
   public static PasswordResetToken generate() {
-    return new PasswordResetToken(Tokens.generate(100, UPPERCASE, NUMBERS, LOWERCASE));
+    return new PasswordResetToken(Tokens.generate(72, UPPERCASE, NUMBERS, LOWERCASE));
   }
 }
