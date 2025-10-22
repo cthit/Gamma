@@ -164,7 +164,9 @@ public class HomeController {
             new MeFacade.UpdatePassword(
                 form.currentPassword, form.newPassword, form.confirmNewPassword));
       }
-    } catch (IllegalArgumentException | MeFacade.NewPasswordNotConfirmedException e) {
+    } catch (IllegalArgumentException e) {
+      bindingResult.addError(new FieldError("form", "newPassword", e.getMessage()));
+    } catch (MeFacade.NewPasswordNotConfirmedException e) {
       bindingResult.addError(
           new FieldError("form", "confirmNewPassword", "Passwords were not the same"));
     } catch (MeFacade.PasswordIncorrectException e) {
