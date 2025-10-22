@@ -133,7 +133,7 @@ public class UserAccessGuard {
     }
 
     if (SecurityContextHolder.getContext().getAuthentication()
-      instanceof OAuth2ClientAuthenticationToken token) {
+        instanceof OAuth2ClientAuthenticationToken token) {
       var client = token.getRegisteredClient();
 
       if (client == null) {

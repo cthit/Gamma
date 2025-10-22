@@ -41,7 +41,8 @@ public class AccountScaffoldFacade extends Facade {
 
   /**
    * Get all super groups that have the provided types and their "sub" groups with their members.
-   * For groups that require managed accounts, only users that have participated in gdpr training are included.
+   * For groups that require managed accounts, only users that have participated in gdpr training
+   * are included.
    */
   public List<AccountScaffoldSuperGroupDTO> getActiveSuperGroups() {
     this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
@@ -63,9 +64,10 @@ public class AccountScaffoldFacade extends Facade {
             group -> {
               List<AccountScaffoldUserPostDTO> activeGroupMember =
                   group.groupMembers().stream()
-                      .filter(groupMember ->
-                              gdprTrained.contains(groupMember.user().id()) ||
-                              !isGroupWithManagedAccounts(group, settings))
+                      .filter(
+                          groupMember ->
+                              gdprTrained.contains(groupMember.user().id())
+                                  || !isGroupWithManagedAccounts(group, settings))
                       .map(AccountScaffoldUserPostDTO::new)
                       .toList();
 
@@ -74,9 +76,15 @@ public class AccountScaffoldFacade extends Facade {
                 superGroupMap.put(
                     superGroupId,
                     new SuperGroupWithGroups(
-                        group.superGroup(), new ArrayList<>(List.of(new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
+                        group.superGroup(),
+                        new ArrayList<>(
+                            List.of(
+                                new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
               } else {
-                superGroupMap.get(superGroupId).groups.add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
+                superGroupMap
+                    .get(superGroupId)
+                    .groups
+                    .add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
               }
             });
 
@@ -85,7 +93,12 @@ public class AccountScaffoldFacade extends Facade {
             superGroupWithGroups ->
                 new AccountScaffoldSuperGroupDTO(
                     superGroupWithGroups.superGroup,
-                    superGroupWithGroups.groups.stream().map(group -> new AccountScaffoldGroupDTO(group.group, new ArrayList<>(group.members))).toList(),
+                    superGroupWithGroups.groups.stream()
+                        .map(
+                            group ->
+                                new AccountScaffoldGroupDTO(
+                                    group.group, new ArrayList<>(group.members)))
+                        .toList(),
                     settings.superGroupTypes().stream()
                         .anyMatch(
                             row ->
@@ -96,8 +109,8 @@ public class AccountScaffoldFacade extends Facade {
 
   /**
    * Returns the users that are active right now. Takes in a list of super group types to help
-   * determine what kinds of groups that are deemed active. User must have
-   * participated in gdpr training.
+   * determine what kinds of groups that are deemed active. User must have participated in gdpr
+   * training.
    */
   public List<AccountScaffoldUserDTO> getActiveUsers() {
     this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
@@ -152,19 +165,9 @@ public class AccountScaffoldFacade extends Facade {
   }
 
   public record AccountScaffoldGroupDTO(
-          String name,
-          String prettyName,
-          List<AccountScaffoldUserPostDTO> members
-  ) {
-    public AccountScaffoldGroupDTO(
-            Group group,
-            List<AccountScaffoldUserPostDTO> members
-    ) {
-      this(
-              group.name().value(),
-              group.prettyName().value(),
-              members
-      );
+      String name, String prettyName, List<AccountScaffoldUserPostDTO> members) {
+    public AccountScaffoldGroupDTO(Group group, List<AccountScaffoldUserPostDTO> members) {
+      this(group.name().value(), group.prettyName().value(), members);
     }
   }
 
@@ -175,9 +178,7 @@ public class AccountScaffoldFacade extends Facade {
       List<AccountScaffoldGroupDTO> groups,
       boolean useManagedAccount) {
     public AccountScaffoldSuperGroupDTO(
-        SuperGroup superGroup,
-        List<AccountScaffoldGroupDTO> groups,
-        boolean useManagedAccount) {
+        SuperGroup superGroup, List<AccountScaffoldGroupDTO> groups, boolean useManagedAccount) {
       this(
           superGroup.name().value(),
           superGroup.prettyName().value(),
@@ -186,7 +187,6 @@ public class AccountScaffoldFacade extends Facade {
           useManagedAccount);
     }
   }
-
 
   private static class GroupWithMembers {
     private final Group group;
@@ -210,11 +210,6 @@ public class AccountScaffoldFacade extends Facade {
 
   private boolean isGroupWithManagedAccounts(Group group, ApiKeyAccountScaffoldSettings settings) {
     return settings.superGroupTypes().stream()
-        .anyMatch(
-            row ->
-                row.type().equals(group.superGroup().type())
-                    && row.requiresManaged());
+        .anyMatch(row -> row.type().equals(group.superGroup().type()) && row.requiresManaged());
   }
-
-
 }

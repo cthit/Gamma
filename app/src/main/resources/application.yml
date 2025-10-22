@@ -22,7 +22,7 @@ spring:
     open-in-view: false
   servlet:
     multipart:
-      max-file-size: 50MB
+      max-file-size: "50MB"
   data:
     redis:
       host: "${REDIS_HOST:redis}"

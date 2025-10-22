@@ -138,7 +138,8 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
 
     for (var row : settings.superGroupTypes()) {
       var pk = new AccountScaffoldRequiresManagedPK(apiKeySettingsEntity.id, row.type().value());
-      var superGroupTypeRequiresManagedOptional = accountScaffoldRequiresManagedJpaRepository.findById(pk);
+      var superGroupTypeRequiresManagedOptional =
+          accountScaffoldRequiresManagedJpaRepository.findById(pk);
       if (row.requiresManaged() && superGroupTypeRequiresManagedOptional.isEmpty()) {
         accountScaffoldRequiresManagedJpaRepository.save(
             new AccountScaffoldRequiresManagedEntity(apiKeySettingsEntity.id, row.type().value()));
