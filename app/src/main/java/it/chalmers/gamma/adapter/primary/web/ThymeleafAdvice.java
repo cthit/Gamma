@@ -6,7 +6,6 @@ import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -33,9 +32,12 @@ public class ThymeleafAdvice {
     }
   }
 
-@ExceptionHandler(IllegalArgumentException.class)
-public ModelAndView handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException ex) {
-    LOGGER.error("Caught IllegalArgumentException. This shouldn't happen as validators should catch these issues:", ex);
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ModelAndView handleIllegalArgumentException(
+      HttpServletRequest request, IllegalArgumentException ex) {
+    LOGGER.error(
+        "Caught IllegalArgumentException. This shouldn't happen as validators should catch these issues:",
+        ex);
     return new ModelAndView("redirect:/error");
   }
 

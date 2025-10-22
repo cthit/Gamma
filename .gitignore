@@ -4,5 +4,6 @@
 .DS_Store
 uploads/
 .run
+build
 
 .pnpm-store
