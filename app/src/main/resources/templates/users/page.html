@@ -7,6 +7,7 @@
                 <th>First name</th>
                 <th>Nick</th>
                 <th>Last name</th>
+                <th>Cid</th>
                 <th>Acceptance year</th>
                 <th>Details</th>
             </tr>
@@ -16,6 +17,7 @@
                 <td th:text="${user.firstName()}"></td>
                 <td th:text="${user.nick()}"></td>
                 <td th:text="${user.lastName()}"></td>
+                <td th:text="${user.cid()}"></td>
                 <td th:text="${user.acceptanceYear()}"></td>
                 <td>
                     <a th:href="${'/users/' + user.id}">Details</a>
