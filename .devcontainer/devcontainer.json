@@ -1,18 +1,17 @@
 {
 	"name": "Gamma Devcontainer",
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"remoteUser": "root",
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
-			"version": "21",
+			"version": "25",
 			"jdkDistro": "open"
 		},
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "20"
-		},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20"
+        },
         "ghcr.io/devcontainers/features/docker-in-docker:2": {}
 	},
 
