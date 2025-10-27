@@ -67,6 +67,29 @@ dependencies {
             "org.webjars.npm:picocss__pico:2.0.6",
             "org.webjars.npm:sortablejs:1.15.3"
     )
+
+    testImplementation (
+            // Spring Boot
+            "org.springframework.boot:spring-boot-starter-test",
+    )
+
+    // Testcontainers
+    implementation platform('org.testcontainers:testcontainers-bom:2.0.1')
+
+    testImplementation(
+            "org.testcontainers:testcontainers",
+            "org.testcontainers:testcontainers-postgresql",
+            "org.testcontainers:testcontainers-junit-jupiter",
+            'org.testcontainers:junit-jupiter',
+            "org.springframework.boot:spring-boot-testcontainers",
+
+            "com.redis:testcontainers-redis:2.2.2",
+    )
+}
+
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 
