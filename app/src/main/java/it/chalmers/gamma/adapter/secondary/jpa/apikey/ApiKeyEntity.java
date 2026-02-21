@@ -21,6 +21,7 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
   protected String prettyName;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "key_type")
   protected ApiKeyType keyType;
 
   @JoinColumn(name = "description")

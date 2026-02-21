@@ -1,6 +1,5 @@
 package it.chalmers.gamma.bootstrap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import tools.jackson.databind.ObjectMapper;
 
 @Component
 public class MockBootstrap {

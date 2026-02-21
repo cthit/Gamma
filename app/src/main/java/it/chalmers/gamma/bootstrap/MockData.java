@@ -37,5 +37,5 @@ public record MockData(
       String firstName,
       String lastName,
       int acceptanceYear,
-      boolean admin) {}
+      Boolean admin) {}
 }
