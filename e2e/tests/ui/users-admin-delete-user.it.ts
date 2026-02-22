@@ -1,9 +1,14 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueEmail } from "../../helpers/strings";
 
-test("given a created user when admin deletes the user then it is removed from users list", async ({ page, gamma }) => {
-
+test("given a created user when admin deletes the user then it is removed from users list", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

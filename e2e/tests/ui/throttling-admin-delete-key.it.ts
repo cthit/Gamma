@@ -1,8 +1,10 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 
-test("given a throttling key when admin deletes it then it is removed from throttling", async ({ page, gamma }) => {
-
+test("given a throttling key when admin deletes it then it is removed from throttling", async ({
+  page,
+  gamma,
+}) => {
   await page.goto(`${gamma.url}/forgot-password`, { timeout: 30000 });
   await page.fill('input[name="cidOrEmail"]', "jhalpert");
 

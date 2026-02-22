@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given a generated password reset link when finalizing reset then the user can login with new password", async ({ page, gamma }) => {
-
+test("given a generated password reset link when finalizing reset then the user can login with new password", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

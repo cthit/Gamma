@@ -1,10 +1,15 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { createApiKeyViaUi } from "../../helpers/api-keys";
 import { login } from "../../helpers/auth";
 import { uniqueLabel } from "../../helpers/strings";
 
-test("given an admin user when creating an info api key then credentials are shown", async ({ page, gamma }) => {
-
+test("given an admin user when creating an info api key then credentials are shown", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

@@ -6,8 +6,10 @@ import {
 } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
 
-test("given an approved client when retracting approval then it is removed from accepted clients", async ({ page, gamma }) => {
-
+test("given an approved client when retracting approval then it is removed from accepted clients", async ({
+  page,
+  gamma,
+}) => {
   await login(page, gamma.url, "mscott", "password1337", "Boss");
 
   const prettyName = uniqueLabel("E2E Approval Client");

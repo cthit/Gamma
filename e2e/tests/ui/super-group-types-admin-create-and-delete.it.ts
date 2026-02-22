@@ -1,9 +1,14 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given an admin user when creating and deleting a super group type then the type is removed", async ({ page, gamma }) => {
-
+test("given an admin user when creating and deleting a super group type then the type is removed", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given a signed in user when editing profile info then home page shows updated values", async ({ page, gamma }) => {
-
+test("given a signed in user when editing profile info then home page shows updated values", async ({
+  page,
+  gamma,
+}) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
 
   const updatedNick = uniqueCid("nick");

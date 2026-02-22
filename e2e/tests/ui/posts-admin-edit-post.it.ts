@@ -1,9 +1,14 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
 
-test("given an admin user when editing a created post then updated values are shown", async ({ page, gamma }) => {
-
+test("given an admin user when editing a created post then updated values are shown", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

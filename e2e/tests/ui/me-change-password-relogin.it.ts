@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given a signed in user when changing password then old password fails and new password works", async ({ page, gamma }) => {
-
+test("given a signed in user when changing password then old password fails and new password works", async ({
+  page,
+  gamma,
+}) => {
   await login(page, gamma.url, "pbeesly", "password1337", "Pam-Pam");
 
   const newPassword = `${uniqueCid("newpass")}value`;
@@ -28,11 +30,9 @@ test("given a signed in user when changing password then old password fails and 
     page.getByRole("button", { name: "Save new password" }).click(),
   ]);
 
-  await expect(page.getByText("You have created a new password")).toBeVisible(
-    {
-      timeout: 10000,
-    },
-  );
+  await expect(page.getByText("You have created a new password")).toBeVisible({
+    timeout: 10000,
+  });
 
   await logout(page);
 

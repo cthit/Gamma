@@ -1,9 +1,14 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given an activation code when admin deletes it then it is removed from activation codes", async ({ page, gamma }) => {
-
+test("given an activation code when admin deletes it then it is removed from activation codes", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

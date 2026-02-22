@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given an admin user when editing another user then updated details are shown", async ({ page, gamma }) => {
-
+test("given an admin user when editing another user then updated details are shown", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,
@@ -43,10 +45,7 @@ test("given an admin user when editing another user then updated details are sho
   await expect(page.getByText("User updated")).toBeVisible({
     timeout: 10000,
   });
-  await expect(page.locator("article .tuple")).toContainText(
-    updatedFirstName,
-    {
-      timeout: 10000,
-    },
-  );
+  await expect(page.locator("article .tuple")).toContainText(updatedFirstName, {
+    timeout: 10000,
+  });
 });

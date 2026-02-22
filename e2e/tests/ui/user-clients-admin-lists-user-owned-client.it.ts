@@ -3,8 +3,10 @@ import { login, logout } from "../../helpers/auth";
 import { createUserClientViaUi } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
 
-test("given a user-owned client when admin opens user clients page then the client is listed", async ({ page, gamma }) => {
-
+test("given a user-owned client when admin opens user clients page then the client is listed", async ({
+  page,
+  gamma,
+}) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
 
   const prettyName = uniqueLabel("E2E User Client");

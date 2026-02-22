@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueLabel } from "../../helpers/strings";
 
-test("given a signed in user when creating a personal oauth client then client details are shown", async ({ page, gamma }) => {
-
+test("given a signed in user when creating a personal oauth client then client details are shown", async ({
+  page,
+  gamma,
+}) => {
   await login(page, gamma.url, "mscott", "password1337", "Boss");
 
   const prettyName = uniqueLabel("E2E My Client");
@@ -19,10 +21,7 @@ test("given a signed in user when creating a personal oauth client then client d
   await page.fill('input[name="prettyName"]', prettyName);
   await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
   await page.fill('input[name="enDescription"]', "E2E english description");
-  await page.fill(
-    'input[name="redirectUrl"]',
-    "https://example.org/callback",
-  );
+  await page.fill('input[name="redirectUrl"]', "https://example.org/callback");
 
   await Promise.all([
     page.waitForURL("**/clients/*", { timeout: 15000 }),

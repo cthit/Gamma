@@ -1,8 +1,13 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 
-test("given an admin user when viewing navigation then admin links are visible", async ({ page, gamma }) => {
-
+test("given an admin user when viewing navigation then admin links are visible", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

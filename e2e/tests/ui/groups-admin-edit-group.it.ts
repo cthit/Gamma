@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
 
-test("given an admin user when editing a group then updated group details are shown", async ({ page, gamma }) => {
-
+test("given an admin user when editing a group then updated group details are shown", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

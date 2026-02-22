@@ -1,8 +1,13 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 
-test("given a signed in session when logging out then protected routes require login", async ({ page, gamma }) => {
-
+test("given a signed in session when logging out then protected routes require login", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

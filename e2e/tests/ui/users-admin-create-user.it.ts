@@ -1,9 +1,14 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueEmail } from "../../helpers/strings";
 
-test("given an admin user when creating a user then the new user is visible in users and details", async ({ page, gamma }) => {
-
+test("given an admin user when creating a user then the new user is visible in users and details", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

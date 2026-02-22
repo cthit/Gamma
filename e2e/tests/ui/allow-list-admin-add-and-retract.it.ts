@@ -1,9 +1,14 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
-test("given an admin user when adding and retracting allow-list access then the cid is removed", async ({ page, gamma }) => {
-
+test("given an admin user when adding and retracting allow-list access then the cid is removed", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

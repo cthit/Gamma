@@ -425,7 +425,10 @@ function makeAuthHeader(credentials: { id: string; token: string }): string {
   return `pre-shared ${credentials.id}:${credentials.token}`;
 }
 
-async function createClientAuthHeader(page: Page, baseUrl: string): Promise<string> {
+async function createClientAuthHeader(
+  page: Page,
+  baseUrl: string,
+): Promise<string> {
   await login(page, baseUrl, "mscott", "password1337", "Boss");
   const createdClient = await createUserClientWithApiKeyViaUi(
     page,

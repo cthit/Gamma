@@ -2,8 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
 
-test("given an admin user when editing a super group then updated details are shown", async ({ page, gamma }) => {
-
+test("given an admin user when editing a super group then updated details are shown", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,
@@ -35,12 +37,9 @@ test("given an admin user when editing a super group then updated details are sh
   ]);
 
   await page.getByRole("button", { name: "Edit" }).click();
-  await expect(page.locator("article > header").first()).toContainText(
-    "Edit",
-    {
-      timeout: 10000,
-    },
-  );
+  await expect(page.locator("article > header").first()).toContainText("Edit", {
+    timeout: 10000,
+  });
 
   await page.fill('input[name="prettyName"]', updatedPrettyName);
   await page.fill('input[name="enDescription"]', updatedEnDescription);

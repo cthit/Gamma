@@ -59,7 +59,10 @@ const generatedTlsCertificatePath = path.join(
   generatedTlsDir,
   `${tlsFilePrefix}.crt`,
 );
-const generatedTlsPrivateKeyPath = path.join(generatedTlsDir, `${tlsFilePrefix}.key`);
+const generatedTlsPrivateKeyPath = path.join(
+  generatedTlsDir,
+  `${tlsFilePrefix}.key`,
+);
 let localhostTlsFilesPromise: Promise<boolean> | undefined;
 
 export async function startDependencies(): Promise<GammaEnvironment> {

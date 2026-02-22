@@ -1,8 +1,10 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 
-test("given an admin user when generating a password reset link then a link is shown", async ({ page, gamma }) => {
-
+test("given an admin user when generating a password reset link then a link is shown", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

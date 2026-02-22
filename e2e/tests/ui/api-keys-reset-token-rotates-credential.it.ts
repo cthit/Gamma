@@ -1,5 +1,11 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
-import { createApiKeyViaUi, readApiKeyCredentials } from "../../helpers/api-keys";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
+import {
+  createApiKeyViaUi,
+  readApiKeyCredentials,
+} from "../../helpers/api-keys";
 import { login } from "../../helpers/auth";
 import { uniqueLabel } from "../../helpers/strings";
 
@@ -8,7 +14,6 @@ test("given an api key when resetting its token then old token is rejected and n
   request,
   gamma,
 }) => {
-
   await login(
     page,
     gamma.url,
@@ -52,23 +57,17 @@ test("given an api key when resetting its token then old token is rejected and n
     originalCredentials.apiKeyToken,
   );
 
-  const oldTokenResponse = await request.get(
-    `${gamma.url}/api/info/v1/blob`,
-    {
-      headers: {
-        Authorization: `pre-shared ${originalCredentials.apiKeyId}:${originalCredentials.apiKeyToken}`,
-      },
+  const oldTokenResponse = await request.get(`${gamma.url}/api/info/v1/blob`, {
+    headers: {
+      Authorization: `pre-shared ${originalCredentials.apiKeyId}:${originalCredentials.apiKeyToken}`,
     },
-  );
+  });
   expect(oldTokenResponse.status()).toBe(401);
 
-  const newTokenResponse = await request.get(
-    `${gamma.url}/api/info/v1/blob`,
-    {
-      headers: {
-        Authorization: `pre-shared ${resetCredentials.apiKeyId}:${resetCredentials.apiKeyToken}`,
-      },
+  const newTokenResponse = await request.get(`${gamma.url}/api/info/v1/blob`, {
+    headers: {
+      Authorization: `pre-shared ${resetCredentials.apiKeyId}:${resetCredentials.apiKeyToken}`,
     },
-  );
+  });
   expect(newTokenResponse.ok()).toBe(true);
 });

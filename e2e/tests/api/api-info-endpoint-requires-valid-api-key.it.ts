@@ -1,7 +1,12 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 
-test("given missing or invalid api key when calling info blob then request is unauthorized", async ({ request, gamma }) => {
-
+test("given missing or invalid api key when calling info blob then request is unauthorized", async ({
+  request,
+  gamma,
+}) => {
   const missingAuthResponse = await request.get(
     `${gamma.url}/api/info/v1/blob`,
   );

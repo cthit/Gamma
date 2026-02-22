@@ -1,8 +1,10 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 
-test("given a user account when deleting it with correct password then login access is removed", async ({ page, gamma }) => {
-
+test("given a user account when deleting it with correct password then login access is removed", async ({
+  page,
+  gamma,
+}) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
 
   await page.goto(`${gamma.url}/delete-your-account`, { timeout: 30000 });

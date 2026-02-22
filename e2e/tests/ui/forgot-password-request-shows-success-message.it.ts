@@ -1,7 +1,9 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 
-test("given a cid when requesting forgot password then reset instructions are shown", async ({ page, gamma }) => {
-
+test("given a cid when requesting forgot password then reset instructions are shown", async ({
+  page,
+  gamma,
+}) => {
   await page.goto(`${gamma.url}/forgot-password`, { timeout: 30000 });
   await expect(
     page.locator("article > header", { hasText: "Reset password" }),

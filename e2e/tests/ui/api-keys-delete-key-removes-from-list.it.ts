@@ -1,10 +1,15 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 import { createApiKeyViaUi } from "../../helpers/api-keys";
 import { login } from "../../helpers/auth";
 import { uniqueLabel } from "../../helpers/strings";
 
-test("given an existing api key when deleting it then it is removed from the api keys list", async ({ page, gamma }) => {
-
+test("given an existing api key when deleting it then it is removed from the api keys list", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

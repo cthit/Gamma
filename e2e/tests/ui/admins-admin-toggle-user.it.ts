@@ -1,8 +1,10 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 
-test("given an admin user when toggling another admin then the new admin state is saved", async ({ page, gamma }) => {
-
+test("given an admin user when toggling another admin then the new admin state is saved", async ({
+  page,
+  gamma,
+}) => {
   await login(
     page,
     gamma.url,

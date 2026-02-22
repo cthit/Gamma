@@ -1,4 +1,7 @@
-import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
+import {
+  expect,
+  testWithDefaultGamma as test,
+} from "../../helpers/test-fixtures";
 
 test("login in with admin account", async ({ page, gamma }) => {
   if (!gamma.adminCid || !gamma.adminPassword) {
