@@ -29,13 +29,15 @@ public class MockBootstrap {
   }
 
   @Bean
-  public MockData mockData(BootstrapSettings bootstrapSettings) {
+  public MockData mockData(
+      BootstrapSettings bootstrapSettings,
+      @Value("${application.mock-data-resource:classpath:/mock/mock.json}") String mockDataResource) {
     if (!bootstrapSettings.mocking()) {
       LOGGER.info("Not running mock...");
       return MockData.empty();
     }
 
-    Resource resource = this.resourceLoader.getResource("classpath:/mock/mock.json");
+    Resource resource = this.resourceLoader.getResource(mockDataResource);
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       return objectMapper.readValue(resource.getInputStream(), MockData.class);

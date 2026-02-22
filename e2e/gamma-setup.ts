@@ -25,6 +25,18 @@ export interface GammaEnvironment {
   gotify: StartedTestContainer;
 }
 
+export interface GammaFileToCopy {
+  source: string;
+  target: string;
+  mode?: number;
+}
+
+export interface GammaStartOptions {
+  env?: Record<string, string>;
+  filesToCopy?: GammaFileToCopy[];
+  waitForAdminCredentials?: boolean;
+}
+
 let instanceCounter = 0;
 
 export async function startDependencies(): Promise<GammaEnvironment> {
@@ -82,6 +94,7 @@ export async function startDependencies(): Promise<GammaEnvironment> {
 
 export async function startGammaInstance(
   env: GammaEnvironment,
+  options: GammaStartOptions = {},
 ): Promise<GammaInstance> {
   const instanceId = instanceCounter++;
   console.log(`Starting Gamma instance ${instanceId}...`);
@@ -90,28 +103,41 @@ export async function startGammaInstance(
   let adminPassword: string | undefined;
   let credentialsFound = false;
 
-  const gammaContainer = await new GenericContainer("gamma-app:test")
+  const defaultEnvironment = {
+    DB_HOST: "db",
+    DB_PORT: "5432",
+    DB_NAME: "postgres",
+    DB_USER: "postgres",
+    DB_PASSWORD: "postgres",
+    REDIS_HOST: "redis",
+    REDIS_PORT: "6379",
+    SERVER_PORT: "8080",
+    GOTIFY_KEY: "123abc",
+    GOTIFY_BASE_URL: "http://gotify:80",
+    ADMIN_SETUP: "true",
+    BASE_URL: `http://localhost:8080`,
+    PRODUCTION: "true",
+    IS_MOCKING: "false",
+    UPLOAD_FOLDER: "/tmp/uploads/",
+  };
+
+  let gammaContainerBuilder = new GenericContainer("gamma-app:test")
     .withNetwork(env.network)
     .withNetworkAliases(`gamma-${instanceId}`)
     .withEnvironment({
-      DB_HOST: "db",
-      DB_PORT: "5432",
-      DB_NAME: "postgres",
-      DB_USER: "postgres",
-      DB_PASSWORD: "postgres",
-      REDIS_HOST: "redis",
-      REDIS_PORT: "6379",
-      SERVER_PORT: "8080",
-      GOTIFY_KEY: "123abc",
-      GOTIFY_BASE_URL: "http://gotify:80",
-      ADMIN_SETUP: "true",
-      BASE_URL: `http://localhost:8080`,
-      PRODUCTION: "true",
-      IS_MOCKING: "false",
-      UPLOAD_FOLDER: "/tmp/uploads/",
+      ...defaultEnvironment,
+      ...options.env,
     })
     .withTmpFs({ "/tmp/uploads": "rw,noexec,nosuid,size=100m" })
-    .withExposedPorts(8080)
+    .withExposedPorts(8080);
+
+  if (options.filesToCopy && options.filesToCopy.length > 0) {
+    gammaContainerBuilder = gammaContainerBuilder.withCopyFilesToContainer(
+      options.filesToCopy,
+    );
+  }
+
+  const gammaContainer = await gammaContainerBuilder
     .withLogConsumer((stream) => {
       stream.on("data", (line) => {
         const logLine = line.toString();
@@ -144,20 +170,22 @@ export async function startGammaInstance(
     .start();
 
   const port = gammaContainer.getMappedPort(8080);
-  const url = `http://localhost:${port}`;
+  const url = `http://127.0.0.1:${port}`;
 
   console.log(`Gamma instance ${instanceId} started at ${url}`);
 
-  const maxWaitTime = 30000;
-  const startTime = Date.now();
-  while (!credentialsFound && Date.now() - startTime < maxWaitTime) {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
+  if (options.waitForAdminCredentials ?? true) {
+    const maxWaitTime = 30000;
+    const startTime = Date.now();
+    while (!credentialsFound && Date.now() - startTime < maxWaitTime) {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
 
-  if (!credentialsFound) {
-    throw new Error(
-      `[GAMMA-${instanceId}] Admin credentials not found in logs after ${maxWaitTime}ms`,
-    );
+    if (!credentialsFound) {
+      throw new Error(
+        `[GAMMA-${instanceId}] Admin credentials not found in logs after ${maxWaitTime}ms`,
+      );
+    }
   }
 
   return {
