@@ -1,7 +1,8 @@
 plugins {
     id "java"
     id "com.diffplug.spotless" version "8.0.0"
-    id 'org.springframework.boot' version '3.5.6'
+    id "io.spring.dependency-management" version "1.1.7"
+    id 'org.springframework.boot' version '4.0.0'
 }
 
 repositories {
@@ -13,9 +14,6 @@ java {
         languageVersion = JavaLanguageVersion.of(25)
     }
 }
-
-apply plugin: "org.springframework.boot"
-apply plugin: "io.spring.dependency-management"
 
 group = "it.chalmers"
 
@@ -33,29 +31,40 @@ dependencies {
             "org.postgresql:postgresql:42.7.3",
 
             // Spring Boot
-            "org.springframework.boot:spring-boot",
-            "org.springframework.boot:spring-boot-autoconfigure",
             "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-data-redis",
             "org.springframework.boot:spring-boot-starter-security",
             "org.springframework.boot:spring-boot-starter-validation",
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-oauth2-authorization-server",
 
             // Spring session
-            "org.springframework.session:spring-session-core:3.5.2",
-            "org.springframework.session:spring-session-data-redis:3.5.2",
+            "org.springframework.session:spring-session-core",
+            "org.springframework.session:spring-session-data-redis",
 
             // Redis
-            "org.springframework.data:spring-data-redis:3.5.5",
+            "org.springframework.data:spring-data-redis",
+    )
+
+    compileOnly(
+            // Testcontainers for local dev service startup
+            "org.testcontainers:testcontainers:1.21.4",
+            "org.testcontainers:postgresql:1.21.4",
+    )
+
+    developmentOnly(
+            // Testcontainers for local dev service startup
+            "org.testcontainers:testcontainers:1.21.4",
+            "org.testcontainers:postgresql:1.21.4",
     )
 
    runtimeOnly(
             // FlywayDB (Database migration)
-            "org.flywaydb:flyway-core:9.21.0",
+            "org.springframework.boot:spring-boot-starter-flyway",
+            "org.flywaydb:flyway-database-postgresql",
 
             // Spring Boot
             "org.springframework.boot:spring-boot-devtools",
-            "org.springframework.boot:spring-boot-starter-data-redis",
             "org.springframework.boot:spring-boot-starter-thymeleaf",
 
             // Thymeleaf
@@ -67,6 +76,10 @@ dependencies {
             "org.webjars.npm:picocss__pico:2.0.6",
             "org.webjars.npm:sortablejs:1.15.3"
     )
+}
+
+tasks.named("bootBuildImage") {
+    environment = ["BP_JVM_VERSION": "25.*"]
 }
 
 

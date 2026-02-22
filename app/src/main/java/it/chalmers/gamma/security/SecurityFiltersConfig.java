@@ -24,11 +24,10 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -51,17 +50,23 @@ public class SecurityFiltersConfig {
   @Bean
   public SecurityFilterChain authorizationServerSecurityFilterChain(
       HttpSecurity http, UserInfoMapper userInfoMapper) throws Exception {
-    OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
+    OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
+        new OAuth2AuthorizationServerConfigurer();
 
-    http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-        .authorizationEndpoint(
-            authorizationEndpoint -> authorizationEndpoint.consentPage("/oauth2/consent"))
-        .oidc(
-            oidcConfigurer ->
-                oidcConfigurer.userInfoEndpoint(
-                    userInfo -> userInfo.userInfoMapper(userInfoMapper)));
-
-    http.exceptionHandling(
+    http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+        .with(
+            authorizationServerConfigurer,
+            authorizationServer ->
+                authorizationServer
+                    .authorizationEndpoint(
+                        authorizationEndpoint ->
+                            authorizationEndpoint.consentPage("/oauth2/consent"))
+                    .oidc(
+                        oidcConfigurer ->
+                            oidcConfigurer.userInfoEndpoint(
+                                userInfo -> userInfo.userInfoMapper(userInfoMapper))))
+        .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
+        .exceptionHandling(
             (exceptions) ->
                 exceptions.defaultAuthenticationEntryPointFor(
                     new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
@@ -149,8 +154,8 @@ public class SecurityFiltersConfig {
     TrustedUserDetailsRepository trustedUserDetails =
         new TrustedUserDetailsRepository(userJpaRepository);
 
-    DaoAuthenticationProvider userAuthenticationProvider = new DaoAuthenticationProvider();
-    userAuthenticationProvider.setUserDetailsService(trustedUserDetails);
+    DaoAuthenticationProvider userAuthenticationProvider =
+        new DaoAuthenticationProvider(trustedUserDetails);
     userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
     HttpSessionRequestCache requestCache = new HttpSessionRequestCache();

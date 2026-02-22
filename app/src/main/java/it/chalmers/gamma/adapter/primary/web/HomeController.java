@@ -116,6 +116,7 @@ public class HomeController {
             me.groups(),
             form.language,
             me.isAdmin()));
+    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
 
     return mv;
   }
@@ -129,6 +130,7 @@ public class HomeController {
 
     mv.setViewName("home/page :: userinfo");
     mv.addObject("me", me);
+    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
 
     return mv;
   }
@@ -185,6 +187,7 @@ public class HomeController {
 
     mv.setViewName("home/edited-me-password");
     mv.addObject("me", me);
+    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
 
     return mv;
   }

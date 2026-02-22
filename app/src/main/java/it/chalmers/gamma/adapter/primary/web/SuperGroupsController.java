@@ -192,6 +192,7 @@ public class SuperGroupsController {
             form.type,
             form.svDescription,
             form.enDescription));
+    mv.addObject("usages", this.groupFacade.getAllBySuperGroup(id));
 
     return mv;
   }

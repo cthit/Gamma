@@ -83,6 +83,12 @@ jobs:
       - name: Check code formatting
         run: cd e2e && pnpm run format:check
 
+      - name: Typecheck E2E
+        run: cd e2e && pnpm run typecheck
+
+      - name: Lint E2E
+        run: cd e2e && pnpm run lint
+
       - name: Install Playwright Browsers
         run: cd e2e && pnpm exec playwright install --with-deps chromium
 

@@ -32,8 +32,12 @@ spring:
         enabled: true
   thymeleaf:
     cache: "${PRODUCTION:false}"
-    enabled: true
     encoding: "UTF-8"
+  web:
+    error:
+      whitelabel:
+        enabled: false
+      path: "/error"
   session:
     store-type: "redis"
     timeout: "${SESSION_TIMEOUT:43200}"
@@ -46,10 +50,6 @@ spring:
       enabled: true
 server:
   port: "${SERVER_PORT:8081}"
-  error:
-    whitelabel:
-      enabled: false
-    path: "/error"
   http2:
     enabled: true
   forward-headers-strategy: "native"
@@ -58,7 +58,9 @@ logging:
     root: "${ROOT_DEBUG_LEVEL:INFO}"
 application:
   base-url: "${BASE_URL:http://localhost:8081}"
-  production: "${PRODUCTION:false}"
+  production: "${PRODUCTION:true}"
+  mocking: "${IS_MOCKING:false}"
+  mock-data-resource: "${MOCK_DATA_RESOURCE:classpath:/mock/mock.json}"
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"
   cookie:
@@ -67,3 +69,6 @@ application:
   gotify:
     key: "${GOTIFY_KEY:123abc}"
     url: "${GOTIFY_BASE_URL:http://gotify:80}"
+gamma:
+  dev-services:
+    enabled: "${DEV_SERVICES_ENABLED:false}"

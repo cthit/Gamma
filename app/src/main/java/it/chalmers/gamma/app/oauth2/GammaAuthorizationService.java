@@ -10,9 +10,8 @@ import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationToken;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
+import java.security.Principal;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationService.class);
   private final GammaAuthorizationRepository gammaAuthorizationRepository;
   private final ClientRepository clientRepository;
   private final GroupRepository groupRepository;
@@ -40,7 +38,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
   @Override
   public void save(OAuth2Authorization authorization) {
     UsernamePasswordAuthenticationToken authenticationToken =
-        authorization.getAttribute("java.security.Principal");
+        authorization.getAttribute(Principal.class.getName());
 
     if (authenticationToken != null && authenticationToken.getPrincipal() instanceof User user) {
       Client client =
@@ -56,7 +54,22 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
       }
     }
 
-    gammaAuthorizationRepository.save(authorization);
+    OAuth2Authorization authorizationToSave = authorization;
+    if (authenticationToken != null) {
+      UsernamePasswordAuthenticationToken sanitizedAuthenticationToken =
+          new UsernamePasswordAuthenticationToken(
+              authenticationToken.getPrincipal(),
+              authenticationToken.getCredentials(),
+              authenticationToken.getAuthorities());
+      sanitizedAuthenticationToken.setDetails(null);
+
+      authorizationToSave =
+          OAuth2Authorization.from(authorization)
+              .attribute(Principal.class.getName(), sanitizedAuthenticationToken)
+              .build();
+    }
+
+    gammaAuthorizationRepository.save(authorizationToSave);
   }
 
   private boolean userPassesRestriction(ClientRestriction restriction, User user) {
