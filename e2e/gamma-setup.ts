@@ -54,9 +54,13 @@ export type GammaBootstrapApiKeyType =
 
 let instanceCounter = 0;
 const generatedTlsDir = path.resolve(__dirname, ".generated", "tls");
-const generatedTlsCertificatePath = path.join(generatedTlsDir, "localhost.crt");
-const generatedTlsPrivateKeyPath = path.join(generatedTlsDir, "localhost.key");
-let localhostTlsFilesPromise: Promise<void> | undefined;
+const tlsFilePrefix = `localhost-${process.pid}`;
+const generatedTlsCertificatePath = path.join(
+  generatedTlsDir,
+  `${tlsFilePrefix}.crt`,
+);
+const generatedTlsPrivateKeyPath = path.join(generatedTlsDir, `${tlsFilePrefix}.key`);
+let localhostTlsFilesPromise: Promise<boolean> | undefined;
 
 export async function startDependencies(): Promise<GammaEnvironment> {
   const network = await new Network().start();
@@ -115,7 +119,7 @@ export async function startGammaInstance(
   env: GammaEnvironment,
   options: GammaStartOptions = {},
 ): Promise<GammaInstance> {
-  await ensureLocalhostTlsFiles();
+  const localhostTlsFilesAvailable = await ensureLocalhostTlsFiles();
 
   const instanceId = instanceCounter++;
   console.log(`Starting Gamma instance ${instanceId}...`);
@@ -127,7 +131,7 @@ export async function startGammaInstance(
     Record<GammaBootstrapApiKeyType, GammaApiKeyCredentials>
   > = {};
 
-  const defaultEnvironment = {
+  const defaultEnvironment: Record<string, string> = {
     DB_HOST: "db",
     DB_PORT: "5432",
     DB_NAME: "postgres",
@@ -143,23 +147,29 @@ export async function startGammaInstance(
     PRODUCTION: "true",
     IS_MOCKING: "false",
     SERVER_SSL_ENABLED: "true",
-    SERVER_SSL_CERTIFICATE: "file:/tmp/tls/localhost.crt",
-    SERVER_SSL_CERTIFICATE_PRIVATE_KEY: "file:/tmp/tls/localhost.key",
     UPLOAD_FOLDER: "/tmp/uploads/",
   };
 
-  const tlsFiles: GammaFileToCopy[] = [
-    {
-      source: generatedTlsCertificatePath,
-      target: "/tmp/tls/localhost.crt",
-      mode: 0o644,
-    },
-    {
-      source: generatedTlsPrivateKeyPath,
-      target: "/tmp/tls/localhost.key",
-      mode: 0o644,
-    },
-  ];
+  if (localhostTlsFilesAvailable) {
+    defaultEnvironment.SERVER_SSL_CERTIFICATE = "file:/tmp/tls/localhost.crt";
+    defaultEnvironment.SERVER_SSL_CERTIFICATE_PRIVATE_KEY =
+      "file:/tmp/tls/localhost.key";
+  }
+
+  const tlsFiles: GammaFileToCopy[] = localhostTlsFilesAvailable
+    ? [
+        {
+          source: generatedTlsCertificatePath,
+          target: "/tmp/tls/localhost.crt",
+          mode: 0o644,
+        },
+        {
+          source: generatedTlsPrivateKeyPath,
+          target: "/tmp/tls/localhost.key",
+          mode: 0o644,
+        },
+      ]
+    : [];
 
   const filesToCopy = [...tlsFiles, ...(options.filesToCopy ?? [])];
 
@@ -315,7 +325,7 @@ function isGammaBootstrapApiKeyType(
   );
 }
 
-async function ensureLocalhostTlsFiles(): Promise<void> {
+async function ensureLocalhostTlsFiles(): Promise<boolean> {
   if (localhostTlsFilesPromise === undefined) {
     localhostTlsFilesPromise = createOrReuseLocalhostTlsFiles().catch(
       (error: unknown) => {
@@ -325,17 +335,17 @@ async function ensureLocalhostTlsFiles(): Promise<void> {
     );
   }
 
-  await localhostTlsFilesPromise;
+  return localhostTlsFilesPromise;
 }
 
-async function createOrReuseLocalhostTlsFiles(): Promise<void> {
+async function createOrReuseLocalhostTlsFiles(): Promise<boolean> {
   const [certificateExists, privateKeyExists] = await Promise.all([
     fileExists(generatedTlsCertificatePath),
     fileExists(generatedTlsPrivateKeyPath),
   ]);
 
   if (certificateExists && privateKeyExists) {
-    return;
+    return true;
   }
 
   await mkdir(generatedTlsDir, { recursive: true });
@@ -351,12 +361,24 @@ async function createOrReuseLocalhostTlsFiles(): Promise<void> {
   );
 
   try {
-    await runOpenSslGenerateLocalhostCertificate(
-      tempCertificatePath,
-      tempPrivateKeyPath,
-    );
+    try {
+      await runOpenSslGenerateLocalhostCertificate(
+        tempCertificatePath,
+        tempPrivateKeyPath,
+      );
+    } catch (error: unknown) {
+      if (error instanceof OpenSslMissingError) {
+        console.warn(
+          "OpenSSL is not available; continuing with app default TLS certificate.",
+        );
+        return false;
+      }
+      throw error;
+    }
+
     await rename(tempCertificatePath, generatedTlsCertificatePath);
     await rename(tempPrivateKeyPath, generatedTlsPrivateKeyPath);
+    return true;
   } finally {
     await Promise.all([
       rm(tempCertificatePath, { force: true }),
@@ -404,6 +426,10 @@ async function runOpenSslGenerateLocalhostCertificate(
       { encoding: "utf8" },
       (error, _stdout, stderr) => {
         if (error) {
+          if (error.code === "ENOENT") {
+            reject(new OpenSslMissingError("OpenSSL command was not found"));
+            return;
+          }
           reject(
             new Error(
               `Failed to generate localhost TLS certificate with OpenSSL: ${stderr}`,
@@ -417,3 +443,5 @@ async function runOpenSslGenerateLocalhostCertificate(
     );
   });
 }
+
+class OpenSslMissingError extends Error {}

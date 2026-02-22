@@ -32,7 +32,8 @@ public class MockBootstrap {
   @Bean
   public MockData mockData(
       BootstrapSettings bootstrapSettings,
-      @Value("${application.mock-data-resource:classpath:/mock/mock.json}") String mockDataResource) {
+      @Value("${application.mock-data-resource:classpath:/mock/mock.json}")
+          String mockDataResource) {
     if (!bootstrapSettings.mocking()) {
       LOGGER.info("Not running mock...");
       return MockData.empty();
