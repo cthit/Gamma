@@ -1,16 +1,16 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startMockGamma } from "../helpers/gamma";
+import { login } from "../../helpers/auth";
+import { startMockGamma } from "../../helpers/gamma";
 import {
   authorizeClientWithPkce,
   createUserClientViaUi,
-} from "../helpers/oauth";
-import { uniqueLabel } from "../helpers/strings";
+} from "../../helpers/oauth";
+import { uniqueLabel } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an approved client when retracting approval then it is removed from accepted clients", async ({
   page,

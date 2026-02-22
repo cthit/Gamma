@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { login, logout } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
+import { login, logout } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given a signed in session when logging out then protected routes require login", async ({
   page,

@@ -1,10 +1,10 @@
 import { expect, test } from "@playwright/test";
-import { startDefaultGamma } from "../helpers/gamma";
+import { startDefaultGamma } from "../../helpers/gamma";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given missing or invalid api key when calling info blob then request is unauthorized", async ({
   request,

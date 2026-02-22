@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startMockGamma } from "../helpers/gamma";
-import { uniqueCid, uniqueLabel } from "../helpers/strings";
+import { login } from "../../helpers/auth";
+import { startMockGamma } from "../../helpers/gamma";
+import { uniqueCid, uniqueLabel } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an admin user when creating a group then it is visible in groups and details", async ({
   page,

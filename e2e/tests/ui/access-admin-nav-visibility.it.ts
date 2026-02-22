@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
+import { login } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an admin user when viewing navigation then admin links are visible", async ({
   page,

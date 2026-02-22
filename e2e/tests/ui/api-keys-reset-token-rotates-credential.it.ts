@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { createApiKeyViaUi, readApiKeyCredentials } from "../helpers/api-keys";
-import { login } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
-import { uniqueLabel } from "../helpers/strings";
+import { createApiKeyViaUi, readApiKeyCredentials } from "../../helpers/api-keys";
+import { login } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
+import { uniqueLabel } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an api key when resetting its token then old token is rejected and new token is accepted", async ({
   page,

@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
-import { uniqueCid } from "../helpers/strings";
+import { login } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
+import { uniqueCid } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an admin user when creating and deleting a super group type then the type is removed", async ({
   page,

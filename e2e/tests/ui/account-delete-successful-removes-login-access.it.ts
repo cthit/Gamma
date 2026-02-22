@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startMockGamma } from "../helpers/gamma";
+import { login } from "../../helpers/auth";
+import { startMockGamma } from "../../helpers/gamma";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given a user account when deleting it with correct password then login access is removed", async ({
   page,
@@ -37,7 +37,7 @@ test("given a user account when deleting it with correct password then login acc
     await page.fill('input[name="password"]', "password1337");
 
     await Promise.all([
-      page.waitForNavigation({ timeout: 15000 }),
+      page.waitForURL("**/login?error**", { timeout: 15000 }),
       page.getByRole("button", { name: "Login" }).click(),
     ]);
 

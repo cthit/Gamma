@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { login, logout } from "../helpers/auth";
-import { startMockGamma } from "../helpers/gamma";
+import { login, logout } from "../../helpers/auth";
+import { startMockGamma } from "../../helpers/gamma";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given a user account when deleting it with wrong password then deletion is rejected and account remains", async ({
   page,

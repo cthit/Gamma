@@ -1,13 +1,13 @@
 import { expect, test } from "@playwright/test";
-import { createApiKeyViaUi } from "../helpers/api-keys";
-import { login } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
-import { uniqueLabel } from "../helpers/strings";
+import { createApiKeyViaUi } from "../../helpers/api-keys";
+import { login } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
+import { uniqueLabel } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an existing api key when deleting it then it is removed from the api keys list", async ({
   page,

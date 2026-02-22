@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
-import { uniqueCid, uniqueEmail } from "../helpers/strings";
+import { login } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
+import { uniqueCid, uniqueEmail } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given an admin user when creating a user then the new user is visible in users and details", async ({
   page,

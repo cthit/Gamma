@@ -6,7 +6,7 @@ import {
   startGammaInstance,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("oauth2 userinfo returns expected claims for mscott", async ({
   page,
@@ -15,7 +15,7 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
   const env = await startDependencies();
   const gamma = await startGammaInstance(env, {
     env: {
-      PRODUCTION: "false",
+      PRODUCTION: "true",
       IS_MOCKING: "true",
       MOCK_DATA_RESOURCE: "file:/tmp/e2e-mock.json",
     },
@@ -41,7 +41,7 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
     await page.fill('input[name="password"]', "password1337");
 
     await Promise.all([
-      page.waitForNavigation({ timeout: 15000 }),
+      page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
       page.click('button:has-text("Login")'),
     ]);
 

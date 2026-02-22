@@ -1,12 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { login } from "../helpers/auth";
-import { startDefaultGamma } from "../helpers/gamma";
-import { uniqueCid, uniqueEmail } from "../helpers/strings";
+import { login } from "../../helpers/auth";
+import { startDefaultGamma } from "../../helpers/gamma";
+import { uniqueCid, uniqueEmail } from "../../helpers/strings";
 import {
   startDependencies,
   stopDependencies,
   stopGammaInstance,
-} from "../gamma-setup";
+} from "../../gamma-setup";
 
 test("given a created user when admin deletes the user then it is removed from users list", async ({
   page,
