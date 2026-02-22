@@ -1,14 +1,6 @@
-import { test, expect } from "@playwright/test";
-import {
-  startDependencies,
-  startGammaInstance,
-  stopGammaInstance,
-  stopDependencies,
-} from "../../gamma-setup";
+import { expect, testWithDefaultGamma as test } from "../../helpers/test-fixtures";
 
-test("login in with admin account", async ({ page }) => {
-  const env = await startDependencies();
-  const gamma = await startGammaInstance(env);
+test("login in with admin account", async ({ page, gamma }) => {
   if (!gamma.adminCid || !gamma.adminPassword) {
     throw new Error(
       "Admin credentials were not captured from Gamma startup logs",
@@ -27,7 +19,4 @@ test("login in with admin account", async ({ page }) => {
   ]);
 
   await expect(page.getByText("Hey, admin!")).toBeVisible({ timeout: 10000 });
-
-  await stopGammaInstance(gamma);
-  await stopDependencies(env);
 });

@@ -1,19 +1,15 @@
 import {
   expect,
-  test,
+  type Page,
   type APIRequestContext,
   type APIResponse,
 } from "@playwright/test";
+import { testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { createUserClientWithApiKeyViaUi } from "../../helpers/client-api";
-import { startMockGamma } from "../../helpers/gamma";
 import { authorizeClientWithPkce } from "../../helpers/oauth";
 import {
-  startDependencies,
-  stopDependencies,
-  stopGammaInstance,
   type GammaBootstrapApiKeyType,
-  type GammaEnvironment,
   type GammaInstance,
 } from "../../gamma-setup";
 
@@ -241,59 +237,11 @@ const CLIENT_GROUPS = [
 ];
 
 test.describe.serial("api snapshots", () => {
-  let env: GammaEnvironment | undefined;
-  let gamma: GammaInstance | undefined;
-  let infoAuthHeader = "";
-  let accountScaffoldAuthHeader = "";
-  let allowListAuthHeader = "";
-  let clientAuthHeader = "";
-
-  test.beforeAll(async ({ browser }) => {
-    env = await startDependencies();
-    gamma = await startMockGamma(env);
-
-    infoAuthHeader = makeAuthHeader(getApiKeyCredentials(gamma, "INFO"));
-    accountScaffoldAuthHeader = makeAuthHeader(
-      getApiKeyCredentials(gamma, "ACCOUNT_SCAFFOLD"),
-    );
-    allowListAuthHeader = makeAuthHeader(
-      getApiKeyCredentials(gamma, "ALLOW_LIST"),
-    );
-
-    const context = await browser.newContext({ ignoreHTTPSErrors: true });
-    const page = await context.newPage();
-    await login(page, gamma.url, "mscott", "password1337", "Boss");
-    const createdClient = await createUserClientWithApiKeyViaUi(
-      page,
-      gamma.url,
-      "API Snapshot Client",
-    );
-    await authorizeClientWithPkce(
-      page,
-      gamma.url,
-      createdClient.clientId,
-      createdClient.redirectUri,
-    );
-    clientAuthHeader = makeAuthHeader({
-      id: createdClient.apiKeyId,
-      token: createdClient.apiKeyToken,
-    });
-    await context.close();
-  });
-
-  test.afterAll(async () => {
-    if (gamma) {
-      await stopGammaInstance(gamma);
-    }
-    if (env) {
-      await stopDependencies(env);
-    }
-  });
-
   test("given info api key when requesting info v1 endpoints then responses match snapshots", async ({
     request,
+    gamma,
   }) => {
-    const target = requireGamma(gamma);
+    const infoAuthHeader = makeAuthHeader(getApiKeyCredentials(gamma, "INFO"));
     const testCases: ApiSnapshotCase[] = [
       {
         method: "GET",
@@ -323,14 +271,17 @@ test.describe.serial("api snapshots", () => {
     ];
 
     for (const testCase of testCases) {
-      await assertApiSnapshot(request, target.url, testCase);
+      await assertApiSnapshot(request, gamma.url, testCase);
     }
   });
 
   test("given account scaffold api key when requesting account scaffold v1 endpoints then responses match snapshots", async ({
     request,
+    gamma,
   }) => {
-    const target = requireGamma(gamma);
+    const accountScaffoldAuthHeader = makeAuthHeader(
+      getApiKeyCredentials(gamma, "ACCOUNT_SCAFFOLD"),
+    );
     const testCases: ApiSnapshotCase[] = [
       {
         method: "GET",
@@ -347,14 +298,17 @@ test.describe.serial("api snapshots", () => {
     ];
 
     for (const testCase of testCases) {
-      await assertApiSnapshot(request, target.url, testCase);
+      await assertApiSnapshot(request, gamma.url, testCase);
     }
   });
 
   test("given allow list api route when requesting allow list v1 endpoints then responses match snapshots", async ({
     request,
+    gamma,
   }) => {
-    const target = requireGamma(gamma);
+    const allowListAuthHeader = makeAuthHeader(
+      getApiKeyCredentials(gamma, "ALLOW_LIST"),
+    );
     const testCases: ApiSnapshotCase[] = [
       {
         method: "GET",
@@ -375,14 +329,16 @@ test.describe.serial("api snapshots", () => {
     ];
 
     for (const testCase of testCases) {
-      await assertApiSnapshot(request, target.url, testCase);
+      await assertApiSnapshot(request, gamma.url, testCase);
     }
   });
 
   test("given client api key when requesting client v1 endpoints then responses match snapshots", async ({
+    page,
     request,
+    gamma,
   }) => {
-    const target = requireGamma(gamma);
+    const clientAuthHeader = await createClientAuthHeader(page, gamma.url);
     const testCases: ApiSnapshotCase[] = [
       {
         method: "GET",
@@ -449,17 +405,10 @@ test.describe.serial("api snapshots", () => {
     ];
 
     for (const testCase of testCases) {
-      await assertApiSnapshot(request, target.url, testCase);
+      await assertApiSnapshot(request, gamma.url, testCase);
     }
   });
 });
-
-function requireGamma(gamma: GammaInstance | undefined): GammaInstance {
-  if (!gamma) {
-    throw new Error("Gamma instance was not started");
-  }
-  return gamma;
-}
 
 function getApiKeyCredentials(
   gamma: GammaInstance,
@@ -474,6 +423,26 @@ function getApiKeyCredentials(
 
 function makeAuthHeader(credentials: { id: string; token: string }): string {
   return `pre-shared ${credentials.id}:${credentials.token}`;
+}
+
+async function createClientAuthHeader(page: Page, baseUrl: string): Promise<string> {
+  await login(page, baseUrl, "mscott", "password1337", "Boss");
+  const createdClient = await createUserClientWithApiKeyViaUi(
+    page,
+    baseUrl,
+    "API Snapshot Client",
+  );
+  await authorizeClientWithPkce(
+    page,
+    baseUrl,
+    createdClient.clientId,
+    createdClient.redirectUri,
+  );
+
+  return makeAuthHeader({
+    id: createdClient.apiKeyId,
+    token: createdClient.apiKeyToken,
+  });
 }
 
 function jsonSnapshot(status: number, body: unknown): ApiSnapshot {
