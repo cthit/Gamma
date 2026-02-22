@@ -65,9 +65,13 @@ export async function readApiKeyCredentials(
   if (!apiKeyIdMatch) {
     throw new Error("Could not parse api key id from reset form path");
   }
+  const apiKeyId = apiKeyIdMatch[1];
+  if (!apiKeyId) {
+    throw new Error("Could not parse api key id from reset form path");
+  }
 
   return {
-    apiKeyId: apiKeyIdMatch[1],
+    apiKeyId,
     apiKeyToken,
   };
 }

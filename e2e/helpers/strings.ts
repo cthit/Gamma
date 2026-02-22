@@ -8,7 +8,7 @@ export function uniqueLabel(prefix: string): string {
 export function uniqueCid(prefix = "e2e"): string {
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const digitToLetter = (value: string) =>
-    value.replace(/[0-9]/g, (digit) => alphabet[Number(digit)]);
+    value.replace(/[0-9]/g, (digit) => alphabet[Number(digit)] ?? "a");
   const normalizedPrefix = prefix.toLowerCase().replace(/[^a-z]/g, "");
   const entropy = digitToLetter(
     `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`,

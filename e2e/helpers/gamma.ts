@@ -16,10 +16,11 @@ export async function startMockGamma(
 ): Promise<GammaInstance> {
   return startGammaInstance(env, {
     env: {
-      PRODUCTION: "false",
+      PRODUCTION: "true",
       IS_MOCKING: "true",
       MOCK_DATA_RESOURCE: "file:/tmp/e2e-mock.json",
     },
+    waitForBootstrapApiKeys: true,
     filesToCopy: [
       {
         source: path.resolve(

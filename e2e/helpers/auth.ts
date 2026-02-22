@@ -14,7 +14,7 @@ export async function login(
   await page.fill('input[name="password"]', password);
 
   await Promise.all([
-    page.waitForNavigation({ timeout: 15000 }),
+    page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
     page.click('button:has-text("Login")'),
   ]);
 
@@ -26,10 +26,7 @@ export async function login(
 }
 
 export async function logout(page: Page): Promise<void> {
-  await Promise.all([
-    page.waitForNavigation({ timeout: 15000 }),
-    page.getByRole("button", { name: "Logout" }).click(),
-  ]);
+  await page.getByRole("button", { name: "Logout" }).click();
   await expect(page.locator('input[name="username"]')).toBeVisible({
     timeout: 10000,
   });
