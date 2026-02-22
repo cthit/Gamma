@@ -59,6 +59,7 @@ logging:
 application:
   base-url: "${BASE_URL:http://localhost:8081}"
   production: "${PRODUCTION:true}"
+  mocking: "${IS_MOCKING:false}"
   mock-data-resource: "${MOCK_DATA_RESOURCE:classpath:/mock/mock.json}"
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"
