@@ -1,8 +1,8 @@
 plugins {
     id "java"
-    id "com.diffplug.spotless" version "8.0.0"
+    id "com.diffplug.spotless" version "8.4.0"
     id "io.spring.dependency-management" version "1.1.7"
-    id 'org.springframework.boot' version '4.0.0'
+    id 'org.springframework.boot' version '4.0.6'
 }
 
 repositories {
@@ -20,15 +20,15 @@ group = "it.chalmers"
 dependencies {
     annotationProcessor(
             // Used to generate Record Builder classes
-            "io.soabase.record-builder:record-builder-processor:41",
+            "io.soabase.record-builder:record-builder-processor:52",
     )
 
     implementation(
             // Used to generate Record Builder classes
-            "io.soabase.record-builder:record-builder-core:41",
+            "io.soabase.record-builder:record-builder-core:52",
 
             // Used to handle SQL specific errors
-            "org.postgresql:postgresql:42.7.3",
+            "org.postgresql:postgresql:42.7.11",
 
             // Spring Boot
             "org.springframework.boot:spring-boot-starter-data-jpa",
@@ -48,14 +48,14 @@ dependencies {
 
     compileOnly(
             // Testcontainers for local dev service startup
-            "org.testcontainers:testcontainers:1.21.4",
-            "org.testcontainers:postgresql:1.21.4",
+            "org.testcontainers:testcontainers:2.0.5",
+            "org.testcontainers:testcontainers-postgresql:2.0.5",
     )
 
     developmentOnly(
             // Testcontainers for local dev service startup
-            "org.testcontainers:testcontainers:1.21.4",
-            "org.testcontainers:postgresql:1.21.4",
+            "org.testcontainers:testcontainers:2.0.5",
+            "org.testcontainers:testcontainers-postgresql:2.0.5",
     )
 
    runtimeOnly(
@@ -68,13 +68,13 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-thymeleaf",
 
             // Thymeleaf
-            "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE",
+            "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.5.RELEASE",
 
             // web dependencies
-            "org.webjars.npm:htmx.org:1.9.12",
-            "org.webjars.npm:hyperscript.org:0.9.12",
-            "org.webjars.npm:picocss__pico:2.0.6",
-            "org.webjars.npm:sortablejs:1.15.3"
+            "org.webjars.npm:htmx.org:2.0.10",
+            "org.webjars.npm:hyperscript.org:0.9.91",
+            "org.webjars.npm:picocss__pico:2.1.1",
+            "org.webjars.npm:sortablejs:1.15.7"
     )
 }
 
