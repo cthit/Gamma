@@ -45,7 +45,7 @@
             </li>
         </ul>
         <footer>
-            <form data-hx-confirm="Are you sure you want to reset the client secret? The old client secret will be immediately revoked." th:data-hx-post="|/clients/${client.clientUid()}/reset|" data-hx-target="body">
+            <form data-hx-confirm="Are you sure you want to reset the client secret? The old client secret will be immediately revoked." th:data-hx-post="|/clients/${client.clientUid()}/reset|" th:action="|/clients/${client.clientUid()}/reset|" th:method="post" data-hx-target="body">
                 <div th:replace="~{common/form-csrf}"></div>
                 <button class="outline contrast" data-loading-disable>Reset client secret</button>
             </form>
