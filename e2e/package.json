@@ -17,7 +17,7 @@
   "packageManager": "pnpm@10.18.3",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.60.0",
     "@testcontainers/postgresql": "^11.7.1",
     "@testcontainers/redis": "^11.7.1",
     "@types/node": "^24.8.1",
