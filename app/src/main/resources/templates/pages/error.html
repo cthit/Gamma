@@ -5,6 +5,16 @@
             500 - Internal Server Error
         </header>
         <p>Something went wrong...</p>
+        <th:block th:if="${exceptionMessage != null}">
+            <details>
+                <summary>Error details</summary>
+                <p th:text="${exceptionMessage}"></p>
+                <pre th:text="${exceptionStackTrace}"></pre>
+            </details>
+        </th:block>
+        <th:block th:unless="${exceptionMessage != null}">
+            <p>No additional error information is available.</p>
+        </th:block>
         <footer>
             <a href="/">
                 <button type="button">Go home</button>

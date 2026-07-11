@@ -1,9 +1,13 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.oauth2.GammaAuthorizationService;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.webmvc.error.ErrorController;
@@ -49,6 +53,23 @@ public class GammaErrorController implements ErrorController {
     } else {
       mv.setViewName("index");
       mv.addObject("page", page);
+    }
+
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuth
+        && userAuth.isAdmin()) {
+      if (exception != null) {
+        mv.addObject("exceptionMessage", exception.getMessage());
+
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        exception.printStackTrace(pw);
+        mv.addObject("exceptionStackTrace", sw.toString());
+      } else {
+        Object errorMessage = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+        if (errorMessage != null) {
+          mv.addObject("exceptionMessage", errorMessage.toString());
+        }
+      }
     }
 
     return mv;
