@@ -60,6 +60,7 @@ public class GammaRegisteredClientRepository implements RegisteredClientReposito
             .clientName(client.prettyName().value())
             .clientSettings(
                 ClientSettings.builder()
+                    .requireProofKey(false)
                     .requireAuthorizationConsent(true)
                     .setting(IS_OFFICIAL, client.owner() instanceof ClientOwnerOfficial)
                     .build());
