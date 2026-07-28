@@ -1,0 +1,41 @@
+<form th:object="${form}"
+      method="post"
+      data-hx-target="this"
+      th:data-hx-post="|/api-keys/${apiKeyId}/unified-settings|"
+      _="on load or htmx:afterSwap call updateNames('superGroupTypes', '.type', '.gdprFilter')">
+    <input type="hidden" name="_method" value="put" />
+    <div th:replace="~{common/form-csrf}"></div>
+
+    <article>
+        <header>
+            Super group type restrictions
+        </header>
+        <p>
+            Only super groups of selected types will be included in responses.
+        </p>
+        <div class="super-group-type row"
+             th:each="typeConfig : ${form.superGroupTypes}">
+            <div>
+            <select class="type">
+                <option disabled selected th:value="${typeConfig.type}" th:text="${typeConfig.type}"></option>
+            </select>
+            <label th:if="${showGdprFilter}">
+                <input class="gdprFilter" type="checkbox" th:checked="${typeConfig.gdprFilter}"/>
+                GDPR filter
+            </label>
+            </div>
+            <button class="outline contrast"
+                    type="button"
+                    _="on click remove closest .super-group-type then call updateNames('superGroupTypes', '.type', '.gdprFilter')">
+                Remove
+            </button>
+        </div>
+        <footer>
+            <button class="outline contrast" type="button"
+                    th:data-hx-get="|/api-keys/${apiKeyId}/new-super-group-type/unified|"
+                    data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
+            </button>
+            <button class="outline contrast" data-loading-disable>Save</button>
+        </footer>
+    </article>
+</form>

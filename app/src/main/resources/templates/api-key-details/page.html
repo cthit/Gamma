@@ -58,42 +58,8 @@
         </footer>
     </article>
 
-    <th:block th:if="${unifiedIncludedTypes != null}">
-        <article>
-            <header>Super group type restrictions</header>
-            <p>Only super groups of selected types will be included in responses.</p>
-            <form data-hx-put="|/api-keys/${apiKeyId}/unified-settings|"
-                  data-hx-target="body"
-                  data-hx-swap="innerHTML">
-                <input type="hidden" name="_method" value="PUT" />
-                <div th:replace="~{common/form-csrf}"></div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Type</th>
-                            <th>Included</th>
-                            <th th:if="${showGdprFilter}">GDPR filter</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="sgType : ${allSuperGroupTypes}">
-                            <td th:text="${sgType}"></td>
-                            <td>
-                                <input type="checkbox" name="includedType"
-                                       th:value="${sgType}"
-                                       th:checked="${#lists.contains(unifiedIncludedTypes, sgType)}" />
-                            </td>
-                            <td th:if="${showGdprFilter}">
-                                <input type="checkbox" name="gdprFilteredType"
-                                       th:value="${sgType}"
-                                       th:checked="${#lists.contains(unifiedGdprFilteredTypes, sgType)}" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="submit" data-loading-disable>Save restrictions</button>
-            </form>
-        </article>
+    <th:block th:if="${form != null}">
+        <div th:replace="~{api-key-details/unified-settings}"></div>
     </th:block>
 
     <th:block th:if="${settings_form != null and (apiKey.keyType().equals('INFO') or apiKey.keyType().equals('ACCOUNT_SCAFFOLD'))}">

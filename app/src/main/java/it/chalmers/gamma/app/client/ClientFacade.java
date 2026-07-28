@@ -24,6 +24,7 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -84,6 +85,13 @@ public class ClientFacade extends Facade {
     if (newClient.generateApiKey) {
       generatedApiKeyToken = ApiKeyToken.generate(passwordEncoder);
 
+      Set<it.chalmers.gamma.app.apikey.domain.Scope> keyScopes = new java.util.HashSet<>();
+      if (newClient.apiKeyScopes != null) {
+        newClient.apiKeyScopes.stream()
+            .map(it.chalmers.gamma.app.apikey.domain.Scope::valueOf)
+            .forEach(keyScopes::add);
+      }
+
       apiKey =
           new ApiKey(
               ApiKeyId.generate(),
@@ -93,7 +101,7 @@ public class ClientFacade extends Facade {
                   "Api key for client: " + newClient.prettyName),
               ApiKeyType.CLIENT,
               generatedApiKeyToken.apiKeyToken(),
-              Set.of(it.chalmers.gamma.app.apikey.domain.Scope.CLIENTS_SELF));
+              Set.copyOf(keyScopes));
     }
 
     List<Scope> scopes = new ArrayList<>();
@@ -215,7 +223,21 @@ public class ClientFacade extends Facade {
       String enDescription,
       boolean generateApiKey,
       boolean emailScope,
-      NewClientRestrictions restrictions) {}
+      NewClientRestrictions restrictions,
+      List<String> apiKeyScopes) {
+    public NewClient {
+      if (apiKeyScopes == null) {
+        apiKeyScopes = List.of();
+      }
+    }
+
+    public NewClient(
+        String redirectUrl, String prettyName, String svDescription, String enDescription,
+        boolean generateApiKey, boolean emailScope, NewClientRestrictions restrictions) {
+      this(redirectUrl, prettyName, svDescription, enDescription, generateApiKey, emailScope,
+          restrictions, generateApiKey ? List.of("CLIENTS_SELF") : List.of());
+    }
+  }
 
   public record CreatedClientDTO(ClientDTO client, String clientSecret, String apiKeyToken) {}
 

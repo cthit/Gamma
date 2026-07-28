@@ -69,6 +69,10 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
     return prettyName;
   }
 
+  public void setScopes(Set<Scope> scopes) {
+    this.scopes = scopes;
+  }
+
   public ApiKeyType getKeyType() {
     return keyType;
   }

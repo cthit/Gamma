@@ -1,30 +1,90 @@
 <header th:replace="~{common/header}"></header>
 <main>
-    <article>
-        <header>
-            Create client
-        </header>
-        <form id="create-clients"
-              th:object="${form}"
-              th:action="@{/clients/create}"
-              th:method="post"
-              _="on htmx:afterSwap call updateNames('restrictions', '.restriction')">
+    <form id="create-clients"
+          th:object="${form}"
+          th:action="@{/clients/create}"
+          th:method="post"
+          _="on htmx:afterSwap call updateNames('restrictions', '.restriction')">
+        <article>
+            <header>
+                Create client
+            </header>
             <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
             <label>
-                Generate api key
-                <input type="checkbox" th:field="*{generateApiKey}"/>
-            </label>
-            <label>
-                Include email scope
+                Allow email scope
                 <input type="checkbox" th:field="*{emailScope}"/>
             </label>
+            <footer>
+                <button form="create-clients" data-loading-disable>Create client</button>
+            </footer>
+        </article>
+        <article>
+            <header>
+                API key
+            </header>
+            <label>
+                Generate API key
+                <input type="checkbox" th:field="*{generateApiKey}" id="generateApiKey"
+                       _="on change
+                            if my.checked
+                              show #api-key-section
+                            else
+                              hide #api-key-section
+                            end" />
+            </label>
+            <div id="api-key-section" style="display:none" _="on load hide me">
+                <label>
+                    Key preset
+                    <select th:field="*{keyType}" id="bundle-select"
+                            _="on load
+                                 if my.value is not 'CUSTOM'
+                                   hide #scope-checkboxes
+                                   show #bundle-scope-info
+                                   set #bundle-scope-list.innerText to my.options[my.selectedIndex].getAttribute('data-scopes')
+                                 end
+                               on change
+                                 if my.value is 'CUSTOM'
+                                   show #scope-checkboxes
+                                   hide #bundle-scope-info
+                                 else
+                                   hide #scope-checkboxes
+                                   show #bundle-scope-info
+                                   set #bundle-scope-list.innerText to my.options[my.selectedIndex].getAttribute('data-scopes')
+                                 end">
+                        <option th:each="type : ${keyTypes}"
+                                th:value="${type}"
+                                th:text="${type}"
+                                th:attr="data-scopes=${bundleScopeMap.get(type)}"></option>
+                    </select>
+                </label>
+                <div id="bundle-scope-info" style="display:none" class="note">
+                    <strong>Included scopes:</strong><br/>
+                    <span id="bundle-scope-list"></span>
+                </div>
+                <fieldset id="scope-checkboxes">
+                    <div th:each="scopeInfo : ${allApiKeyScopes}">
+                        <label>
+                            <input type="checkbox" th:name="${'apiKeyScopes'}" th:value="${scopeInfo.name()}" />
+                            <span th:text="${scopeInfo.name()}"></span>
+                            <span th:if="${scopeInfo.sensitive()}" class="badge sensitive">(Sensitive)</span>
+                        </label>
+                    </div>
+                    <label>
+                        <input type="checkbox" checked disabled />
+                        <span>CLIENTS_SELF</span>
+                    </label>
+                    <input type="hidden" name="_apiKeyScopes" value="on" />
+                </fieldset>
+            </div>
+        </article>
+        <article>
+            <header>
+                Restrictions
+            </header>
             <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin" data-loading-disable>Add restriction</button>
-        </form>
-        <footer>
-            <button class="outline" form="create-clients" data-loading-disable>Create</button>
-        </footer>
-    </article>
+        </article>
+    </form>
 </main>

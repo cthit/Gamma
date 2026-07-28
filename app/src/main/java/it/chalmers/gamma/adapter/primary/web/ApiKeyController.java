@@ -106,10 +106,12 @@ public class ApiKeyController {
   private void loadApiKeyScopeSettings(ModelAndView mv, UUID apiKeyId, boolean showGdprFilter) {
     var configs = this.apiKeySettingsFacade.getUnifiedSettings(apiKeyId);
     mv.addObject("showGdprFilter", showGdprFilter);
-    mv.addObject("unifiedIncludedTypes", configs.stream().map(c -> c.type()).toList());
     mv.addObject(
-        "unifiedGdprFilteredTypes",
-        configs.stream().filter(c -> c.gdprFilter()).map(c -> c.type()).toList());
+        "form",
+        new UnifiedSettingsForm(
+            configs.stream()
+                .map(c -> new UnifiedTypeConfig(c.type(), c.gdprFilter()))
+                .toList()));
     mv.addObject(
         "allSuperGroupTypes",
         this.superGroupFacade.getAllTypes().stream()
@@ -196,7 +198,13 @@ public class ApiKeyController {
     mv.addObject("form", form);
     mv.addObject("keyTypes", this.apiKeyFacade.getApiKeyTypes());
     mv.addObject("scopeBundles", this.apiKeyFacade.getScopeBundles());
-    mv.addObject("allScopes", this.apiKeyFacade.getAllScopes());
+    mv.addObject("allScopes", this.apiKeyFacade.getDataScopes());
+
+    var bundleScopeMap = new LinkedHashMap<String, String>();
+    for (var bundle : this.apiKeyFacade.getScopeBundles()) {
+      bundleScopeMap.put(bundle.name(), String.join("\n", bundle.scopes()));
+    }
+    mv.addObject("bundleScopeMap", bundleScopeMap);
 
     if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -341,12 +349,57 @@ public class ApiKeyController {
     }
   }
 
+  public static final class UnifiedTypeConfig {
+    public String type;
+    public boolean gdprFilter;
+
+    public UnifiedTypeConfig() {}
+
+    public UnifiedTypeConfig(String type, boolean gdprFilter) {
+      this.type = type;
+      this.gdprFilter = gdprFilter;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public void setType(String type) {
+      this.type = type;
+    }
+
+    public boolean isGdprFilter() {
+      return gdprFilter;
+    }
+
+    public void setGdprFilter(boolean gdprFilter) {
+      this.gdprFilter = gdprFilter;
+    }
+  }
+
+  public static final class UnifiedSettingsForm {
+    public List<UnifiedTypeConfig> superGroupTypes = new ArrayList<>();
+
+    public UnifiedSettingsForm() {}
+
+    public UnifiedSettingsForm(List<UnifiedTypeConfig> superGroupTypes) {
+      this.superGroupTypes = superGroupTypes;
+    }
+
+    public List<UnifiedTypeConfig> getSuperGroupTypes() {
+      return superGroupTypes;
+    }
+
+    public void setSuperGroupTypes(List<UnifiedTypeConfig> superGroupTypes) {
+      this.superGroupTypes = superGroupTypes;
+    }
+  }
+
   @PutMapping("/api-keys/{apiKeyId}/unified-settings")
   public ModelAndView updateUnifiedSettings(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @PathVariable("apiKeyId") UUID apiKeyId,
-      @RequestParam(value = "includedType", required = false) List<String> includedTypes,
-      @RequestParam(value = "gdprFilteredType", required = false) List<String> gdprFilteredTypes) {
+      UnifiedSettingsForm form) {
 
     Optional<ApiKeyFacade.ApiKeyDTO> apiKeyMaybe = this.apiKeyFacade.getById(apiKeyId);
 
@@ -356,23 +409,36 @@ public class ApiKeyController {
 
     ApiKeyFacade.ApiKeyDTO apiKey = apiKeyMaybe.get();
 
-    var gdprSet =
-        gdprFilteredTypes != null ? new HashSet<>(gdprFilteredTypes) : new HashSet<String>();
-
     this.apiKeySettingsFacade.setUnifiedSettings(
         apiKeyId,
-        (includedTypes != null ? includedTypes : List.<String>of()).stream()
-            .map(
-                type ->
-                    new ApiKeySettingsFacade.SuperGroupTypeConfigDTO(
-                        type, gdprSet.contains(type)))
+        form.superGroupTypes.stream()
+            .map(c -> new ApiKeySettingsFacade.SuperGroupTypeConfigDTO(c.type, c.gdprFilter))
             .toList());
 
-    ModelAndView mv = new ModelAndView("api-key-details/page");
+    ModelAndView mv = new ModelAndView("api-key-details/unified-settings");
 
-    boolean hasAccountsProvision = apiKey.scopes().contains("ACCOUNTS_PROVISION");
-    loadApiKeyScopeSettings(mv, apiKey.id(), hasAccountsProvision);
     mv.addObject("apiKeyId", apiKeyId);
+    boolean hasAccountsProvision = apiKey.scopes().contains("ACCOUNTS_PROVISION");
+    mv.addObject("showGdprFilter", hasAccountsProvision);
+    mv.addObject("form", form);
+
+    return mv;
+  }
+
+  @GetMapping("/api-keys/{apiKeyId}/new-super-group-type/unified")
+  public ModelAndView getNewSuperGroupTypeUnified(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("apiKeyId") UUID apiKeyId) {
+    ModelAndView mv = new ModelAndView();
+
+    mv.setViewName("api-key-details/new-type-to-unified-settings");
+    var apiKey = this.apiKeyFacade.getById(apiKeyId).orElseThrow();
+    mv.addObject("showGdprFilter", apiKey.scopes().contains("ACCOUNTS_PROVISION"));
+    mv.addObject(
+        "superGroupTypes",
+        this.superGroupFacade.getAllTypes().stream()
+            .sorted(Comparator.comparing(String::toLowerCase))
+            .toList());
 
     return mv;
   }

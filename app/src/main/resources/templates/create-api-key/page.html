@@ -9,18 +9,39 @@
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
             <label>
-                Bundle / Preset
-                <select th:field="*{keyType}" id="bundle-select">
-                    <option th:each="type : ${keyTypes}" th:value="${type}" th:text="${type}"></option>
+                Key scope
+                <select th:field="*{keyType}" id="bundle-select"
+                        _="on load 
+                             if my.value is not 'CUSTOM'
+                               hide #scope-checkboxes
+                               show #bundle-scope-info
+                               set #bundle-scope-list.innerText to my.options[my.selectedIndex].getAttribute('data-scopes')
+                             end
+                           on change
+                             if my.value is 'CUSTOM'
+                               show #scope-checkboxes
+                               hide #bundle-scope-info
+                             else
+                               hide #scope-checkboxes
+                               show #bundle-scope-info
+                               set #bundle-scope-list.innerText to my.options[my.selectedIndex].getAttribute('data-scopes')
+                             end">
+                    <option th:each="type : ${keyTypes}"
+                            th:value="${type}"
+                            th:text="${type}"
+                            th:attr="data-scopes=${bundleScopeMap.get(type)}"></option>
                 </select>
             </label>
-            <fieldset>
-                <legend>Scopes</legend>
+            <div id="bundle-scope-info" style="display:none" class="note">
+                <strong>Included scopes:</strong><br/>
+                <span id="bundle-scope-list"></span>
+            </div>
+            <fieldset id="scope-checkboxes">
                 <div th:each="scopeInfo : ${allScopes}">
                     <label>
                         <input type="checkbox" th:name="${'scopes'}" th:value="${scopeInfo.name()}" />
                         <span th:text="${scopeInfo.name()}"></span>
-                        <span th:if="${scopeInfo.sensitive()}" class="badge sensitive">Sensitive</span>
+                        <span th:if="${scopeInfo.sensitive()}" class="badge sensitive">(Sensitive)</span>
                     </label>
                 </div>
             </fieldset>
@@ -29,18 +50,4 @@
             <button form="create-api-key" data-loading-disable>Create api key</button>
         </footer>
     </article>
-    <script>
-        const bundles = /*[[${scopeBundles}]]*/ [];
-        const bundleSelect = document.getElementById('bundle-select');
-        const checkboxes = document.querySelectorAll('input[name="scopes"]');
-
-        bundleSelect.addEventListener('change', function() {
-            const selected = bundles.find(b => b.name === this.value);
-            if (selected) {
-                checkboxes.forEach(cb => {
-                    cb.checked = selected.scopes.includes(cb.value);
-                });
-            }
-        });
-    </script>
 </main>

@@ -40,23 +40,20 @@ public class ApiKeyFacade extends Facade {
   }
 
   public String[] getApiKeyTypes() {
-    return new String[] {"DIRECTORY_INTEGRATION", "ALLOW_LIST_MANAGER", "ACCOUNT_PROVISIONER", "CUSTOM"};
+    return new String[] {"INFO", "ALLOW_LIST", "ACCOUNT_SCAFFOLD", "CUSTOM"};
   }
 
   public record ScopeBundle(String name, List<String> scopes, String description) {}
 
   public List<ScopeBundle> getScopeBundles() {
     return List.of(
-        new ScopeBundle("DIRECTORY_INTEGRATION",
+        new ScopeBundle("INFO",
             List.of("PROFILES_READ", "DIRECTORY_READ", "SUPER_GROUPS_READ", "GROUPS_READ", "MEMBERSHIPS_READ"),
             "Read user profiles, directory, groups, and organization structure."),
-        new ScopeBundle("OAUTH_CLIENT",
-            List.of("CLIENTS_SELF"),
-            "Access for OAuth2 client applications."),
-        new ScopeBundle("ALLOW_LIST_MANAGER",
+        new ScopeBundle("ALLOW_LIST",
             List.of("ALLOWLIST_WRITE"),
             "Add entries to the registration allow list."),
-        new ScopeBundle("ACCOUNT_PROVISIONER",
+        new ScopeBundle("ACCOUNT_SCAFFOLD",
             List.of("ACCOUNTS_PROVISION"),
             "Provision accounts with GDPR-filtered data."),
         new ScopeBundle("CUSTOM",
@@ -67,6 +64,12 @@ public class ApiKeyFacade extends Facade {
   public List<ScopeInfo> getAllScopes() {
     return Arrays.stream(Scope.values())
         .map(s -> new ScopeInfo(s.name(), isSensitiveScope(s)))
+        .toList();
+  }
+
+  public List<ScopeInfo> getDataScopes() {
+    return getAllScopes().stream()
+        .filter(s -> !s.name().equals("CLIENTS_SELF"))
         .toList();
   }
 
@@ -164,10 +167,9 @@ public class ApiKeyFacade extends Facade {
 
   private static ApiKeyType legacyTypeForBundle(String bundleName) {
     return switch (bundleName) {
-      case "DIRECTORY_INTEGRATION" -> ApiKeyType.INFO;
-      case "OAUTH_CLIENT" -> ApiKeyType.CLIENT;
-      case "ALLOW_LIST_MANAGER" -> ApiKeyType.ALLOW_LIST;
-      case "ACCOUNT_PROVISIONER" -> ApiKeyType.ACCOUNT_SCAFFOLD;
+      case "INFO" -> ApiKeyType.INFO;
+      case "ALLOW_LIST" -> ApiKeyType.ALLOW_LIST;
+      case "ACCOUNT_SCAFFOLD" -> ApiKeyType.ACCOUNT_SCAFFOLD;
       default -> ApiKeyType.INFO;
     };
   }

@@ -1,0 +1,7 @@
+<select class="type">
+    <option th:each="type : ${superGroupTypes}" th:value="${type}" th:text="${type}"></option>
+</select>
+<label th:if="${showGdprFilter}">
+    <input class="gdprFilter" type="checkbox"/>
+    GDPR filter
+</label>

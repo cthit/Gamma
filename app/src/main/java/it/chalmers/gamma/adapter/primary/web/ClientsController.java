@@ -17,6 +17,7 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
@@ -32,18 +33,21 @@ public class ClientsController {
   private final ClientApprovalFacade clientApprovalFacade;
   private final SuperGroupFacade superGroupFacade;
   private final UserFacade userFacade;
+  private final ApiKeyFacade apiKeyFacade;
 
   public ClientsController(
       ClientFacade clientFacade,
       ClientAuthorityFacade clientAuthorityFacade,
       ClientApprovalFacade clientApprovalFacade,
       SuperGroupFacade superGroupFacade,
-      UserFacade userFacade) {
+      UserFacade userFacade,
+      ApiKeyFacade apiKeyFacade) {
     this.clientFacade = clientFacade;
     this.clientAuthorityFacade = clientAuthorityFacade;
     this.clientApprovalFacade = clientApprovalFacade;
     this.superGroupFacade = superGroupFacade;
     this.userFacade = userFacade;
+    this.apiKeyFacade = apiKeyFacade;
   }
 
   @GetMapping("/clients")
@@ -117,6 +121,12 @@ public class ClientsController {
 
     mv.addObject("clientSecret", clientSecret);
     mv.addObject("apiKeyToken", apiKeyToken);
+    mv.addObject(
+        "sensitiveScopes",
+        this.apiKeyFacade.getAllScopes().stream()
+            .filter(s -> s.sensitive())
+            .map(s -> s.name())
+            .toList());
 
     return mv;
   }
@@ -158,11 +168,13 @@ public class ClientsController {
 
     private boolean generateApiKey;
     private boolean emailScope;
+    private String keyType;
+    private List<String> apiKeyScopes;
 
     private List<UUID> restrictions;
 
     public CreateClient() {
-      this("", "", "", "", false, false, new ArrayList<>());
+      this("", "", "", "", false, false, "CLIENT", new ArrayList<>(), List.of());
     }
 
     public CreateClient(
@@ -172,14 +184,18 @@ public class ClientsController {
         String enDescription,
         boolean generateApiKey,
         boolean emailScope,
-        List<UUID> restrictions) {
+        String keyType,
+        List<UUID> restrictions,
+        List<String> apiKeyScopes) {
       this.redirectUrl = redirectUrl;
       this.prettyName = prettyName;
       this.svDescription = svDescription;
       this.enDescription = enDescription;
       this.generateApiKey = generateApiKey;
       this.emailScope = emailScope;
+      this.keyType = keyType;
       this.restrictions = restrictions;
+      this.apiKeyScopes = apiKeyScopes;
     }
 
     public String getRedirectUrl() {
@@ -230,6 +246,22 @@ public class ClientsController {
       this.emailScope = emailScope;
     }
 
+    public String getKeyType() {
+      return keyType;
+    }
+
+    public void setKeyType(String keyType) {
+      this.keyType = keyType;
+    }
+
+    public List<String> getApiKeyScopes() {
+      return apiKeyScopes;
+    }
+
+    public void setApiKeyScopes(List<String> apiKeyScopes) {
+      this.apiKeyScopes = apiKeyScopes;
+    }
+
     public List<UUID> getRestrictions() {
       return restrictions;
     }
@@ -255,6 +287,22 @@ public class ClientsController {
     }
 
     mv.addObject("form", form);
+
+    List<String> keyTypes = new ArrayList<>();
+    keyTypes.add("CLIENT");
+    keyTypes.addAll(List.of(this.apiKeyFacade.getApiKeyTypes()));
+    mv.addObject("keyTypes", keyTypes);
+    mv.addObject("scopeBundles", this.apiKeyFacade.getScopeBundles());
+    mv.addObject("allApiKeyScopes", this.apiKeyFacade.getDataScopes());
+
+    var bundleScopeMap = new LinkedHashMap<String, String>();
+    bundleScopeMap.put("CLIENT", "CLIENTS_SELF");
+    for (var bundle : this.apiKeyFacade.getScopeBundles()) {
+      List<String> scopes = new ArrayList<>(bundle.scopes());
+      scopes.add("CLIENTS_SELF");
+      bundleScopeMap.put(bundle.name(), String.join("\n", scopes));
+    }
+    mv.addObject("bundleScopeMap", bundleScopeMap);
 
     if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -308,6 +356,23 @@ public class ClientsController {
 
     ModelAndView mv = new ModelAndView();
 
+    List<String> resolvedScopes = new ArrayList<>();
+    if (form.generateApiKey && form.keyType != null) {
+      resolvedScopes.add("CLIENTS_SELF");
+      if (form.keyType.equals("CUSTOM")) {
+        if (form.apiKeyScopes != null) {
+          resolvedScopes.addAll(form.apiKeyScopes);
+        }
+      } else if (!form.keyType.equals("CLIENT")) {
+        for (var bundle : this.apiKeyFacade.getScopeBundles()) {
+          if (bundle.name().equals(form.keyType)) {
+            resolvedScopes.addAll(bundle.scopes());
+            break;
+          }
+        }
+      }
+    }
+
     ClientFacade.CreatedClientDTO result =
         this.clientFacade.createOfficialClient(
             new ClientFacade.NewClient(
@@ -317,7 +382,8 @@ public class ClientsController {
                 form.enDescription,
                 form.generateApiKey,
                 form.emailScope,
-                new ClientFacade.NewClientRestrictions(form.restrictions)));
+                new ClientFacade.NewClientRestrictions(form.restrictions),
+                resolvedScopes));
 
     mv.setViewName("client-details/page");
 
