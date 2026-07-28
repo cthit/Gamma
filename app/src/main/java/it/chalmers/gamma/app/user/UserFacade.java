@@ -111,7 +111,9 @@ public class UserFacade extends Facade {
   /** For v2 — no access guard. */
   public Optional<UserWithGroupsDTO> fetchUserWithGroups(UUID id) {
     UserId userId = new UserId(id);
-    return this.userRepository.get(userId).map(u -> new UserWithGroupsDTO(new UserDTO(u), getUserGroups(userId)));
+    return this.userRepository
+        .get(userId)
+        .map(u -> new UserWithGroupsDTO(new UserDTO(u), getUserGroups(userId)));
   }
 
   /** For v2 — no access guard. */
@@ -121,7 +123,9 @@ public class UserFacade extends Facade {
 
   /** For v2 — returns users who accepted a specific client, no access guard. */
   public List<UserDTO> fetchUsersByClientApproval(ClientUid clientUid) {
-    return clientApprovalsRepository.getAllByClientUid(clientUid).stream().map(UserDTO::new).toList();
+    return clientApprovalsRepository.getAllByClientUid(clientUid).stream()
+        .map(UserDTO::new)
+        .toList();
   }
 
   public void updateUser(UpdateUser updateUser) {

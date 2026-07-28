@@ -1,7 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.apikey.settings;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings.SuperGroupTypeConfig;
+import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -13,16 +13,17 @@ public class ApiKeySuperGroupTypeRepositoryAdapter implements ApiKeySuperGroupTy
 
   private final ApiKeySuperGroupTypeJpaRepository jpaRepository;
 
-  public ApiKeySuperGroupTypeRepositoryAdapter(
-      ApiKeySuperGroupTypeJpaRepository jpaRepository) {
+  public ApiKeySuperGroupTypeRepositoryAdapter(ApiKeySuperGroupTypeJpaRepository jpaRepository) {
     this.jpaRepository = jpaRepository;
   }
 
   @Override
   public List<SuperGroupTypeConfig> get(UUID apiKeyId) {
     return this.jpaRepository.findById_ApiKeyId(apiKeyId).stream()
-        .map(e -> new SuperGroupTypeConfig(
-            new SuperGroupType(e.getId().superGroupTypeName), e.isGdprFilter()))
+        .map(
+            e ->
+                new SuperGroupTypeConfig(
+                    new SuperGroupType(e.getId().superGroupTypeName), e.isGdprFilter()))
         .toList();
   }
 

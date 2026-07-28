@@ -6,8 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "g_api_key_super_group_type")
 public class ApiKeySuperGroupTypeEntity {
 
-  @EmbeddedId
-  protected ApiKeySuperGroupTypePK id;
+  @EmbeddedId protected ApiKeySuperGroupTypePK id;
 
   @Column(name = "gdpr_filter", nullable = false)
   protected boolean gdprFilter;

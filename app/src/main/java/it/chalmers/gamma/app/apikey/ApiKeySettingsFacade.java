@@ -5,7 +5,6 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSpecificApi;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings.SuperGroupTypeConfig;
 import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyAccountScaffoldSettings;

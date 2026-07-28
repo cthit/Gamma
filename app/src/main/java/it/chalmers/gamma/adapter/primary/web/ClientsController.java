@@ -3,6 +3,7 @@ package it.chalmers.gamma.adapter.primary.web;
 import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
@@ -17,7 +18,6 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
-import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;

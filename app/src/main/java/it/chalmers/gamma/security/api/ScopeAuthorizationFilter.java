@@ -24,9 +24,7 @@ public class ScopeAuthorizationFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      FilterChain filterChain)
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -50,8 +48,7 @@ public class ScopeAuthorizationFilter extends OncePerRequestFilter {
 
       if (!apiAuth.getScopes().containsAll(rule.requiredScopes)) {
         response.sendError(
-            HttpStatus.FORBIDDEN.value(),
-            "Insufficient scopes. Required: " + rule.requiredScopes);
+            HttpStatus.FORBIDDEN.value(), "Insufficient scopes. Required: " + rule.requiredScopes);
         return;
       }
 
@@ -64,10 +61,8 @@ public class ScopeAuthorizationFilter extends OncePerRequestFilter {
   public record PathScopeRule(String method, Pattern pathPattern, Set<Scope> requiredScopes) {
 
     public static PathScopeRule of(String method, String pathPattern, Scope first, Scope... rest) {
-      String regex =
-          "^" + pathPattern.replaceAll("\\{[^}]+}", "[^/]+") + "$";
-      return new PathScopeRule(
-          method, Pattern.compile(regex), EnumSet.of(first, rest));
+      String regex = "^" + pathPattern.replaceAll("\\{[^}]+}", "[^/]+") + "$";
+      return new PathScopeRule(method, Pattern.compile(regex), EnumSet.of(first, rest));
     }
   }
 }

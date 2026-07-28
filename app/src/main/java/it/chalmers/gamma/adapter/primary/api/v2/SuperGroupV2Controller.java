@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.primary.api.v2;
 
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +37,10 @@ public class SuperGroupV2Controller {
       throw new V2NotFoundResponse();
     }
     return this.groupFacade.fetchGroupsBySuperGroup(id).stream()
-        .map(gwm -> new GroupFacade.GroupDTO(gwm.id(), gwm.name(), gwm.prettyName(), gwm.superGroup(), gwm.version()))
+        .map(
+            gwm ->
+                new GroupFacade.GroupDTO(
+                    gwm.id(), gwm.name(), gwm.prettyName(), gwm.superGroup(), gwm.version()))
         .toList();
   }
 

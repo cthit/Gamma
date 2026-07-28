@@ -5,7 +5,6 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
-import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import jakarta.annotation.Nullable;
@@ -109,9 +108,7 @@ public class ApiKeyController {
     mv.addObject(
         "form",
         new UnifiedSettingsForm(
-            configs.stream()
-                .map(c -> new UnifiedTypeConfig(c.type(), c.gdprFilter()))
-                .toList()));
+            configs.stream().map(c -> new UnifiedTypeConfig(c.type(), c.gdprFilter())).toList()));
     mv.addObject(
         "allSuperGroupTypes",
         this.superGroupFacade.getAllTypes().stream()

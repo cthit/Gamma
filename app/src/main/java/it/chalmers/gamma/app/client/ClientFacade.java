@@ -24,7 +24,6 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -232,10 +231,22 @@ public class ClientFacade extends Facade {
     }
 
     public NewClient(
-        String redirectUrl, String prettyName, String svDescription, String enDescription,
-        boolean generateApiKey, boolean emailScope, NewClientRestrictions restrictions) {
-      this(redirectUrl, prettyName, svDescription, enDescription, generateApiKey, emailScope,
-          restrictions, generateApiKey ? List.of("CLIENTS_SELF") : List.of());
+        String redirectUrl,
+        String prettyName,
+        String svDescription,
+        String enDescription,
+        boolean generateApiKey,
+        boolean emailScope,
+        NewClientRestrictions restrictions) {
+      this(
+          redirectUrl,
+          prettyName,
+          svDescription,
+          enDescription,
+          generateApiKey,
+          emailScope,
+          restrictions,
+          generateApiKey ? List.of("CLIENTS_SELF") : List.of());
     }
   }
 

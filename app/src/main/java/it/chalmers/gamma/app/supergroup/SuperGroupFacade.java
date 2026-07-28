@@ -205,14 +205,25 @@ public class SuperGroupFacade extends Facade {
       List<SuperGroupWithMembersDTO> superGroupsOutput = new ArrayList<>();
       for (SuperGroup superGroup : this.superGroupRepository.getAllByType(type)) {
         List<Group> groups = this.groupRepository.getAllBySuperGroup(superGroup.id());
-        boolean hasAvatar = groups.stream().map(Group::avatarUri).map(Optional::isPresent).reduce(false, (a, b) -> a || b);
-        boolean hasBanner = groups.stream().map(Group::bannerUri).map(Optional::isPresent).reduce(false, (a, b) -> a || b);
-        List<GroupFacade.GroupMemberDTO> members = groups.stream()
-            .flatMap(group -> group.groupMembers().stream())
-            .map(GroupFacade.GroupMemberDTO::new)
-            .sorted(Comparator.comparingInt(m -> m.post().order()))
-            .toList();
-        superGroupsOutput.add(new SuperGroupWithMembersDTO(new SuperGroupDTO(superGroup), hasBanner, hasAvatar, members));
+        boolean hasAvatar =
+            groups.stream()
+                .map(Group::avatarUri)
+                .map(Optional::isPresent)
+                .reduce(false, (a, b) -> a || b);
+        boolean hasBanner =
+            groups.stream()
+                .map(Group::bannerUri)
+                .map(Optional::isPresent)
+                .reduce(false, (a, b) -> a || b);
+        List<GroupFacade.GroupMemberDTO> members =
+            groups.stream()
+                .flatMap(group -> group.groupMembers().stream())
+                .map(GroupFacade.GroupMemberDTO::new)
+                .sorted(Comparator.comparingInt(m -> m.post().order()))
+                .toList();
+        superGroupsOutput.add(
+            new SuperGroupWithMembersDTO(
+                new SuperGroupDTO(superGroup), hasBanner, hasAvatar, members));
       }
       output.add(new SuperGroupTypeDTO(type.value(), superGroupsOutput));
     }

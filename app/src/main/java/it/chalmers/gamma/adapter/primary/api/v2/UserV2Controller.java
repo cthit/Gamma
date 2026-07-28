@@ -35,8 +35,8 @@ public class UserV2Controller {
 
   @GetMapping("/{id}/groups")
   public List<V2UserGroup> getUserGroups(@PathVariable("id") UUID id) {
-    UserFacade.UserWithGroupsDTO user = this.userFacade.fetchUserWithGroups(id)
-        .orElseThrow(V2NotFoundResponse::new);
+    UserFacade.UserWithGroupsDTO user =
+        this.userFacade.fetchUserWithGroups(id).orElseThrow(V2NotFoundResponse::new);
     return user.groups().stream().map(V2UserGroup::new).toList();
   }
 
@@ -47,7 +47,12 @@ public class UserV2Controller {
       SuperGroupFacade.SuperGroupDTO superGroup,
       PostFacade.PostDTO post) {
     public V2UserGroup(UserFacade.UserGroupDTO ug) {
-      this(ug.group().id(), ug.group().name(), ug.group().prettyName(), ug.group().superGroup(), ug.post());
+      this(
+          ug.group().id(),
+          ug.group().name(),
+          ug.group().prettyName(),
+          ug.group().superGroup(),
+          ug.post());
     }
   }
 }

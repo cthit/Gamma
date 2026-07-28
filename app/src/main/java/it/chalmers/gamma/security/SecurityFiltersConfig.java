@@ -157,9 +157,7 @@ public class SecurityFiltersConfig {
                 ScopeAuthorizationFilter.PathScopeRule.of(
                     "GET", "/api/v2/clients/self/authorities", Scope.CLIENTS_SELF),
                 ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET",
-                    "/api/v2/clients/self/authorities/for/{id}",
-                    Scope.CLIENTS_SELF)));
+                    "GET", "/api/v2/clients/self/authorities/for/{id}", Scope.CLIENTS_SELF)));
 
     http.securityMatcher(new RegexRequestMatcher("\\/api/v2/.*", null))
         .addFilterBefore(
@@ -167,8 +165,7 @@ public class SecurityFiltersConfig {
             BasicAuthenticationFilter.class)
         .addFilterAfter(scopeFilter, ApiAuthenticationFilter.class)
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .sessionManagement(
-            sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf -> csrf.disable())
         .exceptionHandling(
             config ->
@@ -193,8 +190,7 @@ public class SecurityFiltersConfig {
             new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
             BasicAuthenticationFilter.class)
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .sessionManagement(
-            sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf -> csrf.disable())
         .exceptionHandling(
             config ->

@@ -32,9 +32,7 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
   protected TextEntity description;
 
   @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(
-      name = "g_api_key_scope",
-      joinColumns = @JoinColumn(name = "api_key_id"))
+  @CollectionTable(name = "g_api_key_scope", joinColumns = @JoinColumn(name = "api_key_id"))
   @Enumerated(EnumType.STRING)
   @Column(name = "scope")
   protected Set<Scope> scopes = new HashSet<>();

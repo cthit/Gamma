@@ -1,7 +1,6 @@
 package it.chalmers.gamma.adapter.primary.api.v2;
 
 import it.chalmers.gamma.app.user.allowlist.AllowListFacade;
-import it.chalmers.gamma.app.user.allowlist.AllowListRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;

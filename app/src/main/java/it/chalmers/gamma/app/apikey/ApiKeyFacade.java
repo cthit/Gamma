@@ -6,7 +6,6 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.*;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import jakarta.transaction.Transactional;
@@ -47,18 +46,24 @@ public class ApiKeyFacade extends Facade {
 
   public List<ScopeBundle> getScopeBundles() {
     return List.of(
-        new ScopeBundle("INFO",
-            List.of("PROFILES_READ", "DIRECTORY_READ", "SUPER_GROUPS_READ", "GROUPS_READ", "MEMBERSHIPS_READ"),
+        new ScopeBundle(
+            "INFO",
+            List.of(
+                "PROFILES_READ",
+                "DIRECTORY_READ",
+                "SUPER_GROUPS_READ",
+                "GROUPS_READ",
+                "MEMBERSHIPS_READ"),
             "Read user profiles, directory, groups, and organization structure."),
-        new ScopeBundle("ALLOW_LIST",
+        new ScopeBundle(
+            "ALLOW_LIST",
             List.of("ALLOWLIST_WRITE"),
             "Add entries to the registration allow list."),
-        new ScopeBundle("ACCOUNT_SCAFFOLD",
+        new ScopeBundle(
+            "ACCOUNT_SCAFFOLD",
             List.of("ACCOUNTS_PROVISION"),
             "Provision accounts with GDPR-filtered data."),
-        new ScopeBundle("CUSTOM",
-            List.of(),
-            "Manually select individual scopes."));
+        new ScopeBundle("CUSTOM", List.of(), "Manually select individual scopes."));
   }
 
   public List<ScopeInfo> getAllScopes() {
@@ -68,9 +73,7 @@ public class ApiKeyFacade extends Facade {
   }
 
   public List<ScopeInfo> getDataScopes() {
-    return getAllScopes().stream()
-        .filter(s -> !s.name().equals("CLIENTS_SELF"))
-        .toList();
+    return getAllScopes().stream().filter(s -> !s.name().equals("CLIENTS_SELF")).toList();
   }
 
   private static boolean isSensitiveScope(Scope scope) {
@@ -92,7 +95,10 @@ public class ApiKeyFacade extends Facade {
     ApiKeyType type;
 
     if (!newApiKey.scopes.isEmpty()) {
-      scopes = newApiKey.scopes.stream().map(Scope::valueOf).collect(java.util.stream.Collectors.toSet());
+      scopes =
+          newApiKey.scopes.stream()
+              .map(Scope::valueOf)
+              .collect(java.util.stream.Collectors.toSet());
       type = legacyTypeForBundle(newApiKey.keyType);
     } else {
       type = ApiKeyType.valueOf(newApiKey.keyType);
@@ -124,7 +130,8 @@ public class ApiKeyFacade extends Facade {
     }
 
     if (this.apiKeySuperGroupTypeRepository.get(apiKeyId.value()).isEmpty()
-        && (scopes.contains(Scope.SUPER_GROUPS_READ) || scopes.contains(Scope.ACCOUNTS_PROVISION))) {
+        && (scopes.contains(Scope.SUPER_GROUPS_READ)
+            || scopes.contains(Scope.ACCOUNTS_PROVISION))) {
       this.apiKeySuperGroupTypeRepository.set(apiKeyId.value(), List.of());
     }
 
@@ -204,7 +211,8 @@ public class ApiKeyFacade extends Facade {
       }
     }
 
-    public NewApiKey(String prettyName, String svDescription, String enDescription, String keyType) {
+    public NewApiKey(
+        String prettyName, String svDescription, String enDescription, String keyType) {
       this(prettyName, svDescription, enDescription, keyType, List.of());
     }
   }
