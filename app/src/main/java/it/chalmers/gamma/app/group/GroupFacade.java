@@ -193,6 +193,28 @@ public class GroupFacade extends Facade {
         .toList();
   }
 
+  /** For v2 — no access guard. */
+  public List<GroupDTO> fetchAllGroups() {
+    return this.groupRepository.getAll().stream().map(GroupDTO::new).toList();
+  }
+
+  /** For v2 — no access guard. */
+  public Optional<GroupDTO> fetchGroup(UUID id) {
+    return this.groupRepository.get(new GroupId(id)).map(GroupDTO::new);
+  }
+
+  /** For v2 — no access guard. */
+  public Optional<GroupWithMembersDTO> fetchGroupWithMembers(UUID id) {
+    return this.groupRepository.get(new GroupId(id)).map(GroupWithMembersDTO::new);
+  }
+
+  /** For v2 — no access guard. */
+  public List<GroupWithMembersDTO> fetchGroupsBySuperGroup(UUID superGroupId) {
+    return this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId)).stream()
+        .map(GroupWithMembersDTO::new)
+        .toList();
+  }
+
   public record NewGroup(String name, String prettyName, UUID superGroup) {}
 
   public record UpdateGroup(

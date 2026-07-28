@@ -7,6 +7,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
@@ -14,6 +15,8 @@ import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import it.chalmers.gamma.security.api.ScopeAuthorizationFilter;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -101,7 +104,7 @@ public class SecurityFiltersConfig {
 
   @Order(2)
   @Bean
-  SecurityFilterChain externalSecurityFilterChain(
+  SecurityFilterChain v2ApiSecurityFilterChain(
       HttpSecurity http,
       ApiKeyRepository apiKeyRepository,
       ClientRepository clientRepository,
@@ -111,16 +114,61 @@ public class SecurityFiltersConfig {
     ApiAuthenticationProvider apiAuthenticationProvider =
         new ApiAuthenticationProvider(apiKeyRepository, clientRepository, passwordEncoder);
 
-    RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api/.+", null);
-    http.securityMatcher(regexRequestMatcher)
+    ScopeAuthorizationFilter scopeFilter =
+        new ScopeAuthorizationFilter(
+            List.of(
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/users", Scope.DIRECTORY_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/users/{id}", Scope.PROFILES_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/users/{id}/groups", Scope.MEMBERSHIPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/super-groups", Scope.SUPER_GROUPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/super-groups/{id}", Scope.SUPER_GROUPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/super-groups/{id}/groups", Scope.SUPER_GROUPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/super-groups/{id}/members", Scope.MEMBERSHIPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET",
+                    "/api/v2/super-groups/tree",
+                    Scope.SUPER_GROUPS_READ,
+                    Scope.MEMBERSHIPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/groups", Scope.GROUPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/groups/{id}", Scope.GROUPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/groups/{id}/members", Scope.MEMBERSHIPS_READ),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "POST", "/api/v2/allowlist", Scope.ALLOWLIST_WRITE),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/provision/users", Scope.ACCOUNTS_PROVISION),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/provision/super-groups", Scope.ACCOUNTS_PROVISION),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/clients/self/users", Scope.CLIENTS_SELF),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/clients/self/users/{id}", Scope.CLIENTS_SELF),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/clients/self/users/{id}/groups", Scope.CLIENTS_SELF),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET", "/api/v2/clients/self/authorities", Scope.CLIENTS_SELF),
+                ScopeAuthorizationFilter.PathScopeRule.of(
+                    "GET",
+                    "/api/v2/clients/self/authorities/for/{id}",
+                    Scope.CLIENTS_SELF)));
+
+    http.securityMatcher(new RegexRequestMatcher("\\/api/v2/.*", null))
         .addFilterBefore(
             new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
             BasicAuthenticationFilter.class)
+        .addFilterAfter(scopeFilter, ApiAuthenticationFilter.class)
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
         .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // Since only backends will call this
+            sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf -> csrf.disable())
         .exceptionHandling(
             config ->
@@ -129,6 +177,32 @@ public class SecurityFiltersConfig {
   }
 
   @Order(3)
+  @Bean
+  SecurityFilterChain v1ApiSecurityFilterChain(
+      HttpSecurity http,
+      ApiKeyRepository apiKeyRepository,
+      ClientRepository clientRepository,
+      PasswordEncoder passwordEncoder)
+      throws Exception {
+
+    ApiAuthenticationProvider apiAuthenticationProvider =
+        new ApiAuthenticationProvider(apiKeyRepository, clientRepository, passwordEncoder);
+
+    http.securityMatcher(new RegexRequestMatcher("\\/api/.+", null))
+        .addFilterBefore(
+            new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
+            BasicAuthenticationFilter.class)
+        .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
+        .sessionManagement(
+            sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf -> csrf.disable())
+        .exceptionHandling(
+            config ->
+                config.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+    return http.build();
+  }
+
+  @Order(4)
   @Bean
   SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(new RegexRequestMatcher("\\/images.+", null))
@@ -141,7 +215,7 @@ public class SecurityFiltersConfig {
   }
 
   /** Sets up the security for web interface */
-  @Order(4)
+  @Order(5)
   @Bean
   SecurityFilterChain webSecurityFilterChain(
       HttpSecurity http,

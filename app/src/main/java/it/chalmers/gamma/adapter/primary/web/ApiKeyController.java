@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import jakarta.annotation.Nullable;
@@ -74,6 +75,20 @@ public class ApiKeyController {
 
     mv.addObject("apiKey", apiKey);
     mv.addObject("apiKeyId", apiKey.id());
+    mv.addObject("allScopes", this.apiKeyFacade.getAllScopes());
+    mv.addObject(
+        "sensitiveScopes",
+        this.apiKeyFacade.getAllScopes().stream()
+            .filter(s -> s.sensitive())
+            .map(s -> s.name())
+            .toList());
+
+    boolean hasSuperGroupsRead = apiKey.scopes().contains("SUPER_GROUPS_READ");
+    boolean hasAccountsProvision = apiKey.scopes().contains("ACCOUNTS_PROVISION");
+
+    if (hasAccountsProvision || hasSuperGroupsRead) {
+      loadApiKeyScopeSettings(mv, apiKey.id(), hasAccountsProvision);
+    }
 
     if (apiKey.keyType().equals("ACCOUNT_SCAFFOLD")) {
       loadApiKeySettingsAccountScaffold(mv, apiKey.id());
@@ -86,6 +101,20 @@ public class ApiKeyController {
     }
 
     return mv;
+  }
+
+  private void loadApiKeyScopeSettings(ModelAndView mv, UUID apiKeyId, boolean showGdprFilter) {
+    var configs = this.apiKeySettingsFacade.getUnifiedSettings(apiKeyId);
+    mv.addObject("showGdprFilter", showGdprFilter);
+    mv.addObject("unifiedIncludedTypes", configs.stream().map(c -> c.type()).toList());
+    mv.addObject(
+        "unifiedGdprFilteredTypes",
+        configs.stream().filter(c -> c.gdprFilter()).map(c -> c.type()).toList());
+    mv.addObject(
+        "allSuperGroupTypes",
+        this.superGroupFacade.getAllTypes().stream()
+            .sorted(Comparator.comparing(String::toLowerCase))
+            .toList());
   }
 
   private void loadApiKeySettingsInfo(ModelAndView mv, UUID apiKeyId) {
@@ -142,7 +171,12 @@ public class ApiKeyController {
       @ValidatedWith(PrettyNameValidator.class) String prettyName,
       String svDescription,
       String enDescription,
-      String keyType) {}
+      String keyType,
+      List<String> scopes) {
+    public CreateApiKey() {
+      this("", "", "", "DIRECTORY_INTEGRATION", List.of());
+    }
+  }
 
   public ModelAndView createGetCreateApiKey(
       boolean htmxRequest, CreateApiKey form, BindingResult bindingResult) {
@@ -156,11 +190,13 @@ public class ApiKeyController {
     }
 
     if (form == null) {
-      form = new CreateApiKey("", "", "", "");
+      form = new CreateApiKey();
     }
 
     mv.addObject("form", form);
     mv.addObject("keyTypes", this.apiKeyFacade.getApiKeyTypes());
+    mv.addObject("scopeBundles", this.apiKeyFacade.getScopeBundles());
+    mv.addObject("allScopes", this.apiKeyFacade.getAllScopes());
 
     if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -192,7 +228,11 @@ public class ApiKeyController {
     ApiKeyFacade.CreatedApiKey createdApiKey =
         this.apiKeyFacade.create(
             new ApiKeyFacade.NewApiKey(
-                form.prettyName, form.svDescription, form.enDescription, form.keyType));
+                form.prettyName,
+                form.svDescription,
+                form.enDescription,
+                form.keyType,
+                form.scopes != null ? form.scopes : List.of()));
 
     String apiKeyId = createdApiKey.apiKey().id().toString();
 
@@ -299,6 +339,42 @@ public class ApiKeyController {
     public void setVersion(int version) {
       this.version = version;
     }
+  }
+
+  @PutMapping("/api-keys/{apiKeyId}/unified-settings")
+  public ModelAndView updateUnifiedSettings(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @PathVariable("apiKeyId") UUID apiKeyId,
+      @RequestParam(value = "includedType", required = false) List<String> includedTypes,
+      @RequestParam(value = "gdprFilteredType", required = false) List<String> gdprFilteredTypes) {
+
+    Optional<ApiKeyFacade.ApiKeyDTO> apiKeyMaybe = this.apiKeyFacade.getById(apiKeyId);
+
+    if (apiKeyMaybe.isEmpty()) {
+      throw new RuntimeException();
+    }
+
+    ApiKeyFacade.ApiKeyDTO apiKey = apiKeyMaybe.get();
+
+    var gdprSet =
+        gdprFilteredTypes != null ? new HashSet<>(gdprFilteredTypes) : new HashSet<String>();
+
+    this.apiKeySettingsFacade.setUnifiedSettings(
+        apiKeyId,
+        (includedTypes != null ? includedTypes : List.<String>of()).stream()
+            .map(
+                type ->
+                    new ApiKeySettingsFacade.SuperGroupTypeConfigDTO(
+                        type, gdprSet.contains(type)))
+            .toList());
+
+    ModelAndView mv = new ModelAndView("api-key-details/page");
+
+    boolean hasAccountsProvision = apiKey.scopes().contains("ACCOUNTS_PROVISION");
+    loadApiKeyScopeSettings(mv, apiKey.id(), hasAccountsProvision);
+    mv.addObject("apiKeyId", apiKeyId);
+
+    return mv;
   }
 
   @GetMapping("/api-keys/new-super-group-type/info")

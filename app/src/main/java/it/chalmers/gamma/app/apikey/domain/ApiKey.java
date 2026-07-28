@@ -4,6 +4,7 @@ import io.soabase.recordbuilder.core.RecordBuilder;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import java.util.Objects;
+import java.util.Set;
 
 @RecordBuilder
 public record ApiKey(
@@ -11,7 +12,8 @@ public record ApiKey(
     PrettyName prettyName,
     Text description,
     ApiKeyType keyType,
-    ApiKeyToken apiKeyToken)
+    ApiKeyToken apiKeyToken,
+    Set<Scope> scopes)
     implements ApiKeyBuilder.With {
   public ApiKey {
     Objects.requireNonNull(id);
@@ -19,5 +21,6 @@ public record ApiKey(
     Objects.requireNonNull(description);
     Objects.requireNonNull(keyType);
     Objects.requireNonNull(apiKeyToken);
+    Objects.requireNonNull(scopes);
   }
 }

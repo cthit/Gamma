@@ -15,6 +15,7 @@ public class ApiKeyEntityConverter {
         new PrettyName(entity.getPrettyName()),
         entity.getDescription().toDomain(),
         entity.getKeyType(),
-        new ApiKeyToken(entity.getToken()));
+        new ApiKeyToken(entity.getToken()),
+        entity.scopes);
   }
 }

@@ -5,6 +5,9 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSpecificApi;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings.SuperGroupTypeConfig;
+import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyAccountScaffoldSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyInfoSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
@@ -18,11 +21,15 @@ import org.springframework.stereotype.Component;
 public class ApiKeySettingsFacade extends Facade {
 
   private final ApiKeySettingsRepository apiKeySettingsRepository;
+  private final ApiKeySuperGroupTypeRepository apiKeySuperGroupTypeRepository;
 
   public ApiKeySettingsFacade(
-      AccessGuard accessGuard, ApiKeySettingsRepository apiKeySettingsRepository) {
+      AccessGuard accessGuard,
+      ApiKeySettingsRepository apiKeySettingsRepository,
+      ApiKeySuperGroupTypeRepository apiKeySuperGroupTypeRepository) {
     super(accessGuard);
     this.apiKeySettingsRepository = apiKeySettingsRepository;
+    this.apiKeySuperGroupTypeRepository = apiKeySuperGroupTypeRepository;
   }
 
   public record ApiKeySettingsInfoDTO(int version, List<String> superGroupTypes) {}
@@ -81,5 +88,25 @@ public class ApiKeySettingsFacade extends Facade {
                         new ApiKeyAccountScaffoldSettings.Row(
                             new SuperGroupType(row.type), row.requiresManaged))
                 .toList()));
+  }
+
+  public record SuperGroupTypeConfigDTO(String type, boolean gdprFilter) {}
+
+  public List<SuperGroupTypeConfigDTO> getUnifiedSettings(UUID apiKeyId) {
+    accessGuard.requireEither(isAdmin(), isSpecificApi(new ApiKeyId(apiKeyId)));
+
+    return this.apiKeySuperGroupTypeRepository.get(apiKeyId).stream()
+        .map(c -> new SuperGroupTypeConfigDTO(c.type().value(), c.gdprFilter()))
+        .toList();
+  }
+
+  public void setUnifiedSettings(UUID apiKeyId, List<SuperGroupTypeConfigDTO> configs) {
+    accessGuard.require(isAdmin());
+
+    this.apiKeySuperGroupTypeRepository.set(
+        apiKeyId,
+        configs.stream()
+            .map(c -> new SuperGroupTypeConfig(new SuperGroupType(c.type), c.gdprFilter))
+            .toList());
   }
 }

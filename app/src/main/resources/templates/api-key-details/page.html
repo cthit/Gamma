@@ -18,6 +18,16 @@
                 <span th:text="${apiKey.keyType()}"></span>
             </li>
             <li>
+                <b>Scopes</b>
+                <ul>
+                    <li th:each="scopeName : ${apiKey.scopes()}">
+                        <span th:text="${scopeName}"></span>
+                        <span th:if="${#lists.contains(sensitiveScopes, scopeName)}"
+                              class="badge sensitive">Sensitive</span>
+                    </li>
+                </ul>
+            </li>
+            <li>
                 <b>Swedish description</b>
                 <span th:text="${apiKey.svDescription()}"></span>
             </li>
@@ -47,10 +57,53 @@
             </form>
         </footer>
     </article>
-    <th:block th:if="${apiKey.keyType().equals('INFO')}">
-        <article th:replace="~{api-key-details/info-settings}"></article>
+
+    <th:block th:if="${unifiedIncludedTypes != null}">
+        <article>
+            <header>Super group type restrictions</header>
+            <p>Only super groups of selected types will be included in responses.</p>
+            <form data-hx-put="|/api-keys/${apiKeyId}/unified-settings|"
+                  data-hx-target="body"
+                  data-hx-swap="innerHTML">
+                <input type="hidden" name="_method" value="PUT" />
+                <div th:replace="~{common/form-csrf}"></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Included</th>
+                            <th th:if="${showGdprFilter}">GDPR filter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="sgType : ${allSuperGroupTypes}">
+                            <td th:text="${sgType}"></td>
+                            <td>
+                                <input type="checkbox" name="includedType"
+                                       th:value="${sgType}"
+                                       th:checked="${#lists.contains(unifiedIncludedTypes, sgType)}" />
+                            </td>
+                            <td th:if="${showGdprFilter}">
+                                <input type="checkbox" name="gdprFilteredType"
+                                       th:value="${sgType}"
+                                       th:checked="${#lists.contains(unifiedGdprFilteredTypes, sgType)}" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" data-loading-disable>Save restrictions</button>
+            </form>
+        </article>
     </th:block>
-    <th:block th:if="${apiKey.keyType().equals('ACCOUNT_SCAFFOLD')}">
-        <article th:replace="~{api-key-details/account-scaffold-settings}"></article>
+
+    <th:block th:if="${settings_form != null and (apiKey.keyType().equals('INFO') or apiKey.keyType().equals('ACCOUNT_SCAFFOLD'))}">
+        <article>
+            <header>Super group type restrictions (legacy)</header>
+            <ul>
+                <li th:each="type : ${settings_form.superGroupTypes}">
+                    <span th:text="${type}"></span>
+                </li>
+            </ul>
+        </article>
     </th:block>
 </main>

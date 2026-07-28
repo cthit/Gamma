@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
+import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.approval.ClientApprovalsRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
@@ -100,6 +101,27 @@ public class UserFacade extends Facade {
     Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
     return maybeUser.map(
         userExtendedDTO -> new UserExtendedWithGroupsDTO(userExtendedDTO, getUserGroups(userId)));
+  }
+
+  /** For v2 — no access guard, scope already checked by filter. */
+  public Optional<UserDTO> fetchUser(UUID id) {
+    return this.userRepository.get(new UserId(id)).map(UserDTO::new);
+  }
+
+  /** For v2 — no access guard. */
+  public Optional<UserWithGroupsDTO> fetchUserWithGroups(UUID id) {
+    UserId userId = new UserId(id);
+    return this.userRepository.get(userId).map(u -> new UserWithGroupsDTO(new UserDTO(u), getUserGroups(userId)));
+  }
+
+  /** For v2 — no access guard. */
+  public List<UserDTO> fetchAllUsers() {
+    return this.userRepository.getAll().stream().map(UserDTO::new).toList();
+  }
+
+  /** For v2 — returns users who accepted a specific client, no access guard. */
+  public List<UserDTO> fetchUsersByClientApproval(ClientUid clientUid) {
+    return clientApprovalsRepository.getAllByClientUid(clientUid).stream().map(UserDTO::new).toList();
   }
 
   public void updateUser(UpdateUser updateUser) {

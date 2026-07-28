@@ -186,6 +186,39 @@ public class SuperGroupFacade extends Facade {
     return this.superGroupRepository.get(new SuperGroupId(superGroupId)).map(SuperGroupDTO::new);
   }
 
+  /** For v2 — no access guard. */
+  public List<SuperGroupDTO> fetchAllSuperGroups() {
+    return this.superGroupRepository.getAll().stream().map(SuperGroupDTO::new).toList();
+  }
+
+  /** For v2 — no access guard. */
+  public Optional<SuperGroupDTO> fetchSuperGroup(UUID id) {
+    return this.superGroupRepository.get(new SuperGroupId(id)).map(SuperGroupDTO::new);
+  }
+
+  /** For v2 — no access guard. Returns full super group tree grouped by type. */
+  public List<SuperGroupTypeDTO> fetchSuperGroupTree() {
+    List<SuperGroupType> superGroupTypes = this.superGroupTypeRepository.getAll();
+
+    List<SuperGroupTypeDTO> output = new ArrayList<>();
+    for (SuperGroupType type : superGroupTypes) {
+      List<SuperGroupWithMembersDTO> superGroupsOutput = new ArrayList<>();
+      for (SuperGroup superGroup : this.superGroupRepository.getAllByType(type)) {
+        List<Group> groups = this.groupRepository.getAllBySuperGroup(superGroup.id());
+        boolean hasAvatar = groups.stream().map(Group::avatarUri).map(Optional::isPresent).reduce(false, (a, b) -> a || b);
+        boolean hasBanner = groups.stream().map(Group::bannerUri).map(Optional::isPresent).reduce(false, (a, b) -> a || b);
+        List<GroupFacade.GroupMemberDTO> members = groups.stream()
+            .flatMap(group -> group.groupMembers().stream())
+            .map(GroupFacade.GroupMemberDTO::new)
+            .sorted(Comparator.comparingInt(m -> m.post().order()))
+            .toList();
+        superGroupsOutput.add(new SuperGroupWithMembersDTO(new SuperGroupDTO(superGroup), hasBanner, hasAvatar, members));
+      }
+      output.add(new SuperGroupTypeDTO(type.value(), superGroupsOutput));
+    }
+    return output;
+  }
+
   public record NewSuperGroup(
       String name,
       String prettyName,

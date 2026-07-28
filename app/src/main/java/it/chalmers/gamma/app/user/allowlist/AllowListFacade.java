@@ -45,6 +45,18 @@ public class AllowListFacade extends Facade {
     this.allowListRepository.allow(cid);
   }
 
+  /** For v2 — no access guard, scope already checked by filter. */
+  public void allowV2(String cidRaw)
+      throws AllowListRepository.AlreadyAllowedException, AlreadyAUserException {
+    Cid cid = new Cid(cidRaw);
+
+    if (this.userRepository.get(cid).isPresent()) {
+      throw new AlreadyAUserException();
+    }
+
+    this.allowListRepository.allow(cid);
+  }
+
   public void removeFromAllowList(String cid) throws AllowListRepository.NotOnAllowListException {
     this.accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.ALLOW_LIST));
 

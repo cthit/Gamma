@@ -76,10 +76,22 @@ dependencies {
             "org.webjars.npm:picocss__pico:2.0.6",
             "org.webjars.npm:sortablejs:1.15.3"
     )
+
+    testImplementation(
+            "org.springframework.boot:spring-boot-starter-test",
+    )
+
+    testRuntimeOnly(
+            "org.junit.platform:junit-platform-launcher",
+    )
 }
 
 tasks.named("bootBuildImage") {
     environment = ["BP_JVM_VERSION": "25.*"]
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
 }
 
 

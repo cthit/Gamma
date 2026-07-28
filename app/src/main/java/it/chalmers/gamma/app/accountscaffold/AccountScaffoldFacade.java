@@ -3,6 +3,8 @@ package it.chalmers.gamma.app.accountscaffold;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings.SuperGroupTypeConfig;
+import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeyAccountScaffoldSettings;
 import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
@@ -16,6 +18,7 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.gdpr.GdprTrainedRepository;
+import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import java.util.*;
@@ -27,16 +30,19 @@ public class AccountScaffoldFacade extends Facade {
   private final GroupRepository groupRepository;
   private final GdprTrainedRepository gdprTrainedRepository;
   private final ApiKeySettingsRepository apiKeySettingsRepository;
+  private final ApiKeySuperGroupTypeRepository apiKeySuperGroupTypeRepository;
 
   public AccountScaffoldFacade(
       AccessGuard accessGuard,
       GroupRepository groupRepository,
       GdprTrainedRepository gdprTrainedRepository,
-      ApiKeySettingsRepository apiKeySettingsRepository) {
+      ApiKeySettingsRepository apiKeySettingsRepository,
+      ApiKeySuperGroupTypeRepository apiKeySuperGroupTypeRepository) {
     super(accessGuard);
     this.groupRepository = groupRepository;
     this.gdprTrainedRepository = gdprTrainedRepository;
     this.apiKeySettingsRepository = apiKeySettingsRepository;
+    this.apiKeySuperGroupTypeRepository = apiKeySuperGroupTypeRepository;
   }
 
   /**
@@ -46,65 +52,7 @@ public class AccountScaffoldFacade extends Facade {
    */
   public List<AccountScaffoldSuperGroupDTO> getActiveSuperGroups() {
     this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
-
-    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
-    Map<SuperGroupId, SuperGroupWithGroups> superGroupMap = new HashMap<>();
-
-    ApiAuthentication apiAuthentication =
-        (ApiAuthentication) AuthenticationExtractor.getAuthentication();
-    ApiKeyAccountScaffoldSettings settings =
-        this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
-
-    this.groupRepository.getAll().stream()
-        .filter(
-            group ->
-                settings.superGroupTypes().stream()
-                    .anyMatch(row -> row.type().equals(group.superGroup().type())))
-        .forEach(
-            group -> {
-              List<AccountScaffoldUserPostDTO> activeGroupMember =
-                  group.groupMembers().stream()
-                      .filter(
-                          groupMember ->
-                              gdprTrained.contains(groupMember.user().id())
-                                  || !isGroupWithManagedAccounts(group, settings))
-                      .map(AccountScaffoldUserPostDTO::new)
-                      .toList();
-
-              SuperGroupId superGroupId = group.superGroup().id();
-              if (!superGroupMap.containsKey(superGroupId)) {
-                superGroupMap.put(
-                    superGroupId,
-                    new SuperGroupWithGroups(
-                        group.superGroup(),
-                        new ArrayList<>(
-                            List.of(
-                                new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
-              } else {
-                superGroupMap
-                    .get(superGroupId)
-                    .groups
-                    .add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
-              }
-            });
-
-    return superGroupMap.values().stream()
-        .map(
-            superGroupWithGroups ->
-                new AccountScaffoldSuperGroupDTO(
-                    superGroupWithGroups.superGroup,
-                    superGroupWithGroups.groups.stream()
-                        .map(
-                            group ->
-                                new AccountScaffoldGroupDTO(
-                                    group.group, new ArrayList<>(group.members)))
-                        .toList(),
-                    settings.superGroupTypes().stream()
-                        .anyMatch(
-                            row ->
-                                row.type().equals(superGroupWithGroups.superGroup.type())
-                                    && row.requiresManaged())))
-        .toList();
+    return getActiveSuperGroupsInternal();
   }
 
   /**
@@ -114,22 +62,7 @@ public class AccountScaffoldFacade extends Facade {
    */
   public List<AccountScaffoldUserDTO> getActiveUsers() {
     this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
-
-    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
-
-    ApiAuthentication apiAuthentication =
-        (ApiAuthentication) AuthenticationExtractor.getAuthentication();
-    ApiKeyAccountScaffoldSettings settings =
-        this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
-
-    return this.groupRepository.getAll().stream()
-        .filter(group -> isGroupWithManagedAccounts(group, settings))
-        .flatMap(group -> group.groupMembers().stream())
-        .map(GroupMember::user)
-        .distinct()
-        .filter(groupMember -> gdprTrained.contains(groupMember.id()))
-        .map(AccountScaffoldUserDTO::new)
-        .toList();
+    return getActiveUsersInternal();
   }
 
   public record AccountScaffoldPostDTO(
@@ -208,8 +141,134 @@ public class AccountScaffoldFacade extends Facade {
     }
   }
 
+  /** For v2 — no access guard, scope already checked by filter. */
+  public List<AccountScaffoldSuperGroupDTO> fetchActiveSuperGroups() {
+    return fetchActiveSuperGroupsInternal();
+  }
+
+  /** For v2 — no access guard, scope already checked by filter. */
+  public List<AccountScaffoldUserDTO> fetchActiveUsers() {
+    return fetchActiveUsersInternal();
+  }
+
+  private ApiKeyId getCurrentApiKeyId() {
+    if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiAuth) {
+      return apiAuth.get().id();
+    }
+    throw new IllegalStateException("No API key authentication found");
+  }
+
+  private List<AccountScaffoldSuperGroupDTO> getActiveSuperGroupsInternal() {
+    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+    Map<SuperGroupId, SuperGroupWithGroups> superGroupMap = new HashMap<>();
+
+    ApiKeyAccountScaffoldSettings settings =
+        this.apiKeySettingsRepository.getAccountScaffoldSettings(getCurrentApiKeyId());
+
+    this.groupRepository.getAll().stream()
+        .filter(group -> settings.superGroupTypes().stream()
+            .anyMatch(row -> row.type().equals(group.superGroup().type())))
+        .forEach(group -> {
+          List<AccountScaffoldUserPostDTO> activeGroupMember =
+              group.groupMembers().stream()
+                  .filter(gm -> gdprTrained.contains(gm.user().id())
+                      || !isGroupWithManagedAccounts(group, settings))
+                  .map(AccountScaffoldUserPostDTO::new)
+                  .toList();
+          SuperGroupId superGroupId = group.superGroup().id();
+          if (!superGroupMap.containsKey(superGroupId)) {
+            superGroupMap.put(superGroupId,
+                new SuperGroupWithGroups(group.superGroup(),
+                    new ArrayList<>(List.of(new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
+          } else {
+            superGroupMap.get(superGroupId).groups
+                .add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
+          }
+        });
+
+    return superGroupMap.values().stream()
+        .map(sgw -> new AccountScaffoldSuperGroupDTO(sgw.superGroup,
+            sgw.groups.stream().map(g -> new AccountScaffoldGroupDTO(g.group, new ArrayList<>(g.members))).toList(),
+            settings.superGroupTypes().stream()
+                .anyMatch(row -> row.type().equals(sgw.superGroup.type()) && row.requiresManaged())))
+        .toList();
+  }
+
+  private List<AccountScaffoldUserDTO> getActiveUsersInternal() {
+    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+
+    ApiKeyAccountScaffoldSettings settings =
+        this.apiKeySettingsRepository.getAccountScaffoldSettings(getCurrentApiKeyId());
+
+    return this.groupRepository.getAll().stream()
+        .filter(group -> isGroupWithManagedAccounts(group, settings))
+        .flatMap(group -> group.groupMembers().stream())
+        .map(GroupMember::user)
+        .distinct()
+        .filter(user -> gdprTrained.contains(user.id()))
+        .map(AccountScaffoldUserDTO::new)
+        .toList();
+  }
+
   private boolean isGroupWithManagedAccounts(Group group, ApiKeyAccountScaffoldSettings settings) {
     return settings.superGroupTypes().stream()
         .anyMatch(row -> row.type().equals(group.superGroup().type()) && row.requiresManaged());
+  }
+
+  private List<AccountScaffoldSuperGroupDTO> fetchActiveSuperGroupsInternal() {
+    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+    Map<SuperGroupId, SuperGroupWithGroups> superGroupMap = new HashMap<>();
+
+    List<SuperGroupTypeConfig> configs =
+        this.apiKeySuperGroupTypeRepository.get(getCurrentApiKeyId().value());
+
+    this.groupRepository.getAll().stream()
+        .filter(group -> configs.stream()
+            .anyMatch(c -> c.type().equals(group.superGroup().type())))
+        .forEach(group -> {
+          List<AccountScaffoldUserPostDTO> activeGroupMember =
+              group.groupMembers().stream()
+                  .filter(gm -> gdprTrained.contains(gm.user().id())
+                      || !isGroupWithManagedAccounts(group, configs))
+                  .map(AccountScaffoldUserPostDTO::new)
+                  .toList();
+          SuperGroupId superGroupId = group.superGroup().id();
+          if (!superGroupMap.containsKey(superGroupId)) {
+            superGroupMap.put(superGroupId,
+                new SuperGroupWithGroups(group.superGroup(),
+                    new ArrayList<>(List.of(new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
+          } else {
+            superGroupMap.get(superGroupId).groups
+                .add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
+          }
+        });
+
+    return superGroupMap.values().stream()
+        .map(sgw -> new AccountScaffoldSuperGroupDTO(sgw.superGroup,
+            sgw.groups.stream().map(g -> new AccountScaffoldGroupDTO(g.group, new ArrayList<>(g.members))).toList(),
+            configs.stream()
+                .anyMatch(c -> c.type().equals(sgw.superGroup.type()) && c.gdprFilter())))
+        .toList();
+  }
+
+  private List<AccountScaffoldUserDTO> fetchActiveUsersInternal() {
+    List<UserId> gdprTrained = this.gdprTrainedRepository.getAll();
+
+    List<SuperGroupTypeConfig> configs =
+        this.apiKeySuperGroupTypeRepository.get(getCurrentApiKeyId().value());
+
+    return this.groupRepository.getAll().stream()
+        .filter(group -> isGroupWithManagedAccounts(group, configs))
+        .flatMap(group -> group.groupMembers().stream())
+        .map(GroupMember::user)
+        .distinct()
+        .filter(user -> gdprTrained.contains(user.id()))
+        .map(AccountScaffoldUserDTO::new)
+        .toList();
+  }
+
+  private boolean isGroupWithManagedAccounts(Group group, List<SuperGroupTypeConfig> configs) {
+    return configs.stream()
+        .anyMatch(c -> c.type().equals(group.superGroup().type()) && c.gdprFilter());
   }
 }

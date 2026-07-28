@@ -180,34 +180,38 @@ public class ClientAuthorityFacade extends Facade {
 
   public List<String> getClientAuthorities() {
     this.accessGuard.require(isClientApi());
+    return fetchClientAuthorities();
+  }
 
+  /** For v2 — no access guard. */
+  public List<String> fetchClientAuthorities() {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthentication) {
       Client client = apiAuthentication.getClient().orElseThrow();
-
       return this.clientAuthorityRepository.getAllByClient(client.clientUid()).stream()
           .map(Authority::name)
           .map(AuthorityName::value)
           .toList();
     }
-
     throw new RuntimeException();
   }
 
   public List<String> getUserAuthorities(UUID userId) {
     this.accessGuard.require(isClientApi());
+    return fetchUserAuthorities(userId);
+  }
 
+  /** For v2 — no access guard. */
+  public List<String> fetchUserAuthorities(UUID userId) {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthentication) {
       Client client = apiAuthentication.getClient().orElseThrow();
-
       return this.clientAuthorityRepository
           .getAllByUser(client.clientUid(), new UserId(userId))
           .stream()
           .map(AuthorityName::value)
           .toList();
     }
-
     throw new RuntimeException();
   }
 

@@ -9,14 +9,38 @@
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
             <label>
-                Key type
-                <select th:field="*{keyType}">
-                    <option th:each="type : ${keyTypes}" th:text="${type}" th:value="${type}"></option>
+                Bundle / Preset
+                <select th:field="*{keyType}" id="bundle-select">
+                    <option th:each="type : ${keyTypes}" th:value="${type}" th:text="${type}"></option>
                 </select>
             </label>
+            <fieldset>
+                <legend>Scopes</legend>
+                <div th:each="scopeInfo : ${allScopes}">
+                    <label>
+                        <input type="checkbox" th:name="${'scopes'}" th:value="${scopeInfo.name()}" />
+                        <span th:text="${scopeInfo.name()}"></span>
+                        <span th:if="${scopeInfo.sensitive()}" class="badge sensitive">Sensitive</span>
+                    </label>
+                </div>
+            </fieldset>
         </form>
         <footer>
             <button form="create-api-key" data-loading-disable>Create api key</button>
         </footer>
     </article>
+    <script>
+        const bundles = /*[[${scopeBundles}]]*/ [];
+        const bundleSelect = document.getElementById('bundle-select');
+        const checkboxes = document.querySelectorAll('input[name="scopes"]');
+
+        bundleSelect.addEventListener('change', function() {
+            const selected = bundles.find(b => b.name === this.value);
+            if (selected) {
+                checkboxes.forEach(cb => {
+                    cb.checked = selected.scopes.includes(cb.value);
+                });
+            }
+        });
+    </script>
 </main>

@@ -26,6 +26,7 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -91,7 +92,8 @@ public class ClientFacade extends Facade {
                   "Api nyckel för klienten: " + newClient.prettyName,
                   "Api key for client: " + newClient.prettyName),
               ApiKeyType.CLIENT,
-              generatedApiKeyToken.apiKeyToken());
+              generatedApiKeyToken.apiKeyToken(),
+              Set.of(it.chalmers.gamma.app.apikey.domain.Scope.CLIENTS_SELF));
     }
 
     List<Scope> scopes = new ArrayList<>();
