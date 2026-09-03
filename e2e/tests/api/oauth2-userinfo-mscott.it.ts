@@ -63,6 +63,7 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
   expect(clientId).not.toEqual("");
 
   const state = "e2e-state";
+  const nonce = "e2e-nonce";
   const codeVerifier = randomBytes(32).toString("base64url");
   const codeChallenge = createHash("sha256")
     .update(codeVerifier)
@@ -75,6 +76,7 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
     redirect_uri: redirectUri,
     scope: "openid profile email",
     state,
+    nonce,
     code_challenge: codeChallenge,
     code_challenge_method: "S256",
   }).toString();
@@ -118,6 +120,7 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
     access_token: string;
     token_type: string;
     scope: string;
+    id_token: string;
   };
 
   expect(tokenJson.access_token).toBeTruthy();
@@ -125,6 +128,22 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
   expect(tokenJson.scope).toContain("openid");
   expect(tokenJson.scope).toContain("profile");
   expect(tokenJson.scope).toContain("email");
+  expect(tokenJson.id_token.split(".")).toHaveLength(3);
+  const encodedClaims = tokenJson.id_token.split(".")[1];
+  expect(encodedClaims).toBeTruthy();
+  const idTokenClaims = JSON.parse(
+    Buffer.from(encodedClaims ?? "", "base64url").toString("utf8"),
+  ) as Record<string, unknown>;
+  expect(idTokenClaims.nonce).toEqual(nonce);
+  expect(idTokenClaims.sub).toEqual("88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f");
+
+  const jwksResponse = await request.get(`${gamma.url}/oauth2/jwks`);
+  expect(jwksResponse.ok()).toBe(true);
+  const jwks = (await jwksResponse.json()) as {
+    keys: Array<{ kid: string; kty: string }>;
+  };
+  expect(jwks.keys).toHaveLength(1);
+  expect(jwks.keys[0]?.kty).toEqual("RSA");
 
   const userInfoResponse = await request.get(`${gamma.url}/oauth2/userinfo`, {
     headers: {
@@ -144,4 +163,28 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
   expect(userInfo.locale).toEqual("en");
   expect(String(userInfo.picture)).toContain("/images/user/avatar/");
   expect(userInfo.sub).toBeTruthy();
+
+  const bareLogoutResponse = await page.request.get(
+    `${gamma.url}/connect/logout`,
+  );
+  expect(bareLogoutResponse.status()).toBe(400);
+  await page.goto(`${gamma.url}/me`, { timeout: 30000 });
+  await expect(page.locator('input[name="username"]')).toHaveCount(0);
+
+  const logoutUrl = new URL("/connect/logout", gamma.url);
+  logoutUrl.searchParams.set("id_token_hint", tokenJson.id_token);
+  await page.goto(logoutUrl.toString(), { timeout: 30000 });
+  await expect(page.locator('input[name="username"]')).toBeVisible({
+    timeout: 10000,
+  });
+
+  const userInfoAfterBrowserLogout = await request.get(
+    `${gamma.url}/oauth2/userinfo`,
+    {
+      headers: {
+        Authorization: `Bearer ${tokenJson.access_token}`,
+      },
+    },
+  );
+  expect(userInfoAfterBrowserLogout.ok()).toBe(true);
 });

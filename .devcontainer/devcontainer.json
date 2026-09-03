@@ -1,25 +1,39 @@
 {
-	"name": "Gamma Devcontainer",
-    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+	"name": "Gamma Kotlin",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"remoteUser": "root",
+	"containerEnv": {
+		"GRADLE_OPTS": "-Dorg.gradle.jvmargs=-Xmx1g -XX:MaxMetaspaceSize=768m"
+	},
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
-			"version": "25",
-			"jdkDistro": "open"
+			"version": "21",
+			"additionalVersions": "25",
+			"jdkDistro": "tem"
 		},
-        "ghcr.io/devcontainers/features/node:1": {
-            "version": "20"
-        },
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+		"ghcr.io/devcontainers/features/node:2": {
+			"version": "24",
+			"pnpmVersion": "10.18.3"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:4": {}
 	},
+	"mounts": [
+		"source=gamma-e2e-node-modules,target=/workspaces/${localWorkspaceFolderBasename}/e2e/node_modules,type=volume"
+	],
+	"postCreateCommand": ["pnpm", "--dir", "e2e", "install", "--frozen-lockfile"],
 
 	"forwardPorts": [8081],
+	"portsAttributes": {
+		"8081": {
+			"label": "Gamma"
+		}
+	},
 
-	"customizations" : {
-    	"jetbrains" : {
-      		"backend" : "IntelliJ"
-    	}
-  }
+	"customizations": {
+		"jetbrains": {
+			"backend": "IntelliJ"
+		}
+	}
 }

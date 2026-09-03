@@ -2,7 +2,7 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
 
-test("given an admin user when editing a super group then updated details are shown", async ({
+test("an admin can create edit and delete a super group", async ({
   page,
   gamma,
 }) => {
@@ -58,4 +58,13 @@ test("given an admin user when editing a super group then updated details are sh
       timeout: 15000,
     },
   );
+
+  page.once("dialog", async (dialog) => dialog.accept());
+  await Promise.all([
+    page.waitForURL("**/super-groups", { timeout: 15000 }),
+    page.getByRole("button", { name: "Delete" }).click(),
+  ]);
+  await expect(
+    page.locator("tbody tr", { hasText: updatedPrettyName }),
+  ).toHaveCount(0);
 });

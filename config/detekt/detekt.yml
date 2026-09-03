@@ -1,0 +1,35 @@
+config:
+  validation: true
+  warningsAsErrors: true
+complexity:
+  CognitiveComplexMethod: { allowedComplexity: 20 }
+  ComplexCondition: { allowedConditions: 4 }
+  CyclomaticComplexMethod: { allowedComplexity: 20 }
+  LargeClass: { allowedLines: 500 }
+  LongMethod: { excludes: ['**/test/**'], allowedLines: 175 }
+  LongParameterList:
+    allowedFunctionParameters: 5
+    allowedConstructorParameters: 6
+    ignoreDataClasses: true
+  NestedBlockDepth: { allowedDepth: 4 }
+  TooManyFunctions:
+    excludes: ['**/test/**']
+    allowedFunctionsPerFile: 30
+    allowedFunctionsPerClass: 30
+    allowedFunctionsPerInterface: 30
+    allowedFunctionsPerObject: 30
+    allowedFunctionsPerEnum: 30
+naming:
+  MatchingDeclarationName: { active: false }
+style:
+  ForbiddenMethodCall:
+    active: true
+    excludes:
+      - '**/test/**'
+    methods:
+      - reason: 'Gamma uses blocking calls on virtual threads and must not reintroduce coroutine bridges.'
+        value: 'kotlinx.coroutines.runBlocking'
+  MagicNumber: { active: false }
+  MaxLineLength: { active: false }
+  ReturnCount: { active: false }
+  ThrowsCount: { active: false }

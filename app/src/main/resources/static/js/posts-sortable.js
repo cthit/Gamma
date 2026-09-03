@@ -1,12 +1,12 @@
-htmx.onLoad(function(content) {
-    var sortable = content.querySelector('.sortable');
+htmx.onLoad(function (content) {
+    const sortable = content.querySelector('.sortable');
 
     if (sortable != null) {
-        sortableInstance = new Sortable(sortable, {
+        new Sortable(sortable, {
             animation: 150,
             handle: '.sortable-item',
 
-            onEnd: function (evt) {
+            onEnd: function () {
                 this.option("disabled", true);
             }
         });

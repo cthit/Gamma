@@ -1,9 +1,11 @@
 {
   "name": "e2e",
-  "version": "1.0.0",
+  "version": "2.6.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "tsx dev.ts",
+    "dev:down": "node dev-down.mjs",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "lint": "eslint . --max-warnings=0",
@@ -16,15 +18,16 @@
   "license": "ISC",
   "packageManager": "pnpm@10.18.3",
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
-    "@playwright/test": "^1.60.0",
-    "@testcontainers/postgresql": "^11.7.1",
-    "@testcontainers/redis": "^11.7.1",
-    "@types/node": "^24.8.1",
-    "eslint": "^9.39.1",
-    "prettier": "^3.4.2",
-    "testcontainers": "^11.7.1",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
+    "@testcontainers/postgresql": "^12.1.0",
+    "@testcontainers/redis": "^12.1.0",
+    "@types/node": "^26.2.0",
+    "eslint": "^10.9.0",
+    "prettier": "^3.9.6",
+    "testcontainers": "^12.1.0",
+    "tsx": "^4.23.12",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.4"
+    "typescript-eslint": "^8.67.0"
   }
 }

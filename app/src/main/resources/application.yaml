@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: gamma
+  datasource:
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+    url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:postgres}
+  flyway:
+    baseline-on-migrate: true
+    locations: classpath:/db/migration
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+  session:
+    store-type: redis
+    timeout: ${SESSION_TIMEOUT:43200s}
+    redis:
+      namespace: gamma:session
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: ${SERVER_PORT:8081}
+  http2:
+    enabled: true
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH:}
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+        secure: true
+  forward-headers-strategy: native
+  tomcat:
+    remoteip:
+      remote-ip-header: X-Forwarded-For
+      internal-proxies: ${GAMMA_TRUSTED_PROXIES:}
+
+logging:
+  level:
+    root: ${ROOT_DEBUG_LEVEL:INFO}
+
+application:
+  base-url: ${BASE_URL:http://localhost:8081}
+  production: ${PRODUCTION:true}
+  mocking: ${IS_MOCKING:false}
+  mock-data-resource: ${MOCK_DATA_RESOURCE:classpath:/mock/mock.json}
+  admin-setup: ${ADMIN_SETUP:true}
+  files:
+    path: ${UPLOAD_FOLDER:./uploads/}
+  gotify:
+    base-url: ${GOTIFY_BASE_URL:}
+    api-key: ${GOTIFY_KEY:}
+    from: ${GOTIFY_FROM:no-reply@chalmers.it}
+
+gamma:
+  dev-services:
+    enabled: ${DEV_SERVICES_ENABLED:false}

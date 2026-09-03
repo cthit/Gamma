@@ -26,7 +26,12 @@ test("given an official client when an admin resets its secret then a new secret
   await page.fill('input[name="redirectUrl"]', "https://example.org/callback");
 
   await Promise.all([
-    page.waitForURL("**/clients/*", { timeout: 15000 }),
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        response.url().endsWith("/clients/create") &&
+        response.status() === 200,
+    ),
     page.getByRole("button", { name: "Create" }).click(),
   ]);
 

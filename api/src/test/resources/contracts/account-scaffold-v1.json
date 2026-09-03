@@ -1,0 +1,34 @@
+{
+  "supergroups": [{
+    "groups": [{
+      "members": [{
+        "post": {
+          "emailPrefix": "digit",
+          "enText": "President",
+          "postId": "20000000-0000-0000-0000-000000000001",
+          "svText": "Ordförande"
+        },
+        "user": {
+          "cid": "mscott",
+          "email": "mscott@example.org",
+          "firstName": "Michael",
+          "lastName": "Scott",
+          "nick": "Boss"
+        }
+      }],
+      "name": "digit2026",
+      "prettyName": "digIT2026"
+    }],
+    "name": "digit",
+    "prettyName": "digIT",
+    "type": "committee",
+    "useManagedAccount": true
+  }],
+  "users": [{
+    "cid": "mscott",
+    "email": "mscott@example.org",
+    "firstName": "Michael",
+    "lastName": "Scott",
+    "nick": "Boss"
+  }]
+}

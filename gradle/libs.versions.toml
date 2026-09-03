@@ -1,0 +1,61 @@
+[versions]
+kotlin = "2.4.10"
+exposed = "1.4.0"
+flyway = "13.3.0"
+hikari = "7.1.0"
+postgres = "42.7.13"
+testcontainers = "2.0.5"
+logback = "1.5.25"
+serialization = "1.11.0"
+micrometer = "1.17.0"
+bcrypt = "0.10.2"
+spring-boot = "4.1.0"
+kotlinx-html = "0.12.0"
+spotless = "8.9.0"
+ktlint = "1.8.0"
+detekt = "2.0.0-alpha.6"
+junit = "6.0.3"
+lettuce = "6.8.2.RELEASE"
+nettyLockOverride = "4.2.17.Final"
+log4jLockOverride = "2.25.5"
+jacksonLockOverride = "3.2.1"
+
+[libraries]
+kotlin-test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposed" }
+flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
+flyway-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+hikari = { module = "com.zaxxer:HikariCP", version.ref = "hikari" }
+postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+bcrypt = { module = "at.favre.lib:bcrypt", version.ref = "bcrypt" }
+micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometer" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-authorization-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-authorization-server" }
+spring-boot-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-security = { module = "org.springframework.boot:spring-boot-starter-security" }
+spring-boot-data-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+spring-boot-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-session-data-redis = { module = "org.springframework.session:spring-session-data-redis" }
+spring-session-core = { module = "org.springframework.session:spring-session-core" }
+kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinx-html" }
+lettuce = { module = "io.lettuce:lettuce-core", version.ref = "lettuce" }
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+
+[bundles]
+exposed = ["exposed-core", "exposed-jdbc", "exposed-java-time"]
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+detekt = { id = "dev.detekt", version.ref = "detekt" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

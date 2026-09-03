@@ -1,26 +1,18 @@
-.PHONY: build-image test-e2e e2e
+.PHONY: build-image test-e2e e2e dev dev-down
 
 build-image:
-	@echo "Building Gamma Docker image..."
-	./gradlew bootBuildImage
-	docker image tag app:latest gamma-app:test
+	@./gradlew bootBuildImage
+	@docker image tag app:latest gamma-app:test
 
 test-e2e:
-ifdef GAMMA_VERSION
-	@echo "Pulling Gamma Docker image from ghcr.io with version $(GAMMA_VERSION)..."
-	docker pull ghcr.io/cthit/gamma:$(GAMMA_VERSION)
-	docker image tag ghcr.io/cthit/gamma:$(GAMMA_VERSION) gamma-app:test
-	@echo "Running e2e tests with Gamma version $(GAMMA_VERSION)..."
-	cd e2e && pnpm test
-else
-	@echo "Running e2e tests..."
-	cd e2e && pnpm test
-endif
+	@cd e2e && pnpm test
 
 e2e:
-ifdef GAMMA_VERSION
-	$(MAKE) test-e2e
-else
-	$(MAKE) build-image test-e2e
-endif
+	@cd e2e && GAMMA_IMAGE="$${GAMMA_IMAGE:-gamma-app:test}" pnpm test
 	@echo "E2E tests completed!"
+
+dev: build-image
+	@cd e2e && pnpm install --frozen-lockfile && pnpm dev
+
+dev-down:
+	@cd e2e && pnpm dev:down

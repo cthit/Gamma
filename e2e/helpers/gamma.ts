@@ -1,4 +1,3 @@
-import path from "node:path";
 import {
   startGammaInstance,
   type GammaEnvironment,
@@ -13,25 +12,22 @@ export async function startDefaultGamma(
 
 export async function startMockGamma(
   env: GammaEnvironment,
+  environmentOverrides: Record<string, string> = {},
+  publicProtocol: "http" | "https" = "https",
+  publicHostname?: string,
+  image?: string,
+  logLabel?: string,
 ): Promise<GammaInstance> {
   return startGammaInstance(env, {
+    ...(image === undefined ? {} : { image }),
+    ...(logLabel === undefined ? {} : { logLabel }),
+    publicProtocol,
+    ...(publicHostname === undefined ? {} : { publicHostname }),
     env: {
-      PRODUCTION: "true",
       IS_MOCKING: "true",
-      MOCK_DATA_RESOURCE: "file:/tmp/e2e-mock.json",
+      MOCK_DATA_RESOURCE: "classpath:/mock/mock.json",
+      ...environmentOverrides,
     },
     waitForBootstrapApiKeys: true,
-    filesToCopy: [
-      {
-        source: path.resolve(
-          __dirname,
-          "..",
-          "fixtures",
-          "mock",
-          "e2e-mock.json",
-        ),
-        target: "/tmp/e2e-mock.json",
-      },
-    ],
   });
 }
