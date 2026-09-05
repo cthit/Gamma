@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class OAuthAuthorizationCodeFlowTest
+class OAuthAuthorizationCodeFlowIntegrationTest
     @Autowired
     constructor(
         private val dataSource: DataSource,

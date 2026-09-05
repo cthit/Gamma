@@ -10,6 +10,40 @@ import kotlin.test.assertFailsWith
 
 class ReplaceApiKeySettingsIntegrationTest {
     @Test
+    fun `legacy null settings version accepts zero once and then rejects a stale replacement`() {
+        PostgresTestEnvironment().use { postgres ->
+            DatabaseFactory(postgres.dataSource).use { database ->
+                database.executeSqlScript(
+                    "UPDATE g_api_key_settings SET version = NULL WHERE api_key_id = '${infoKey.value}'",
+                )
+                val operation = ReplaceApiKeySettings(database)
+                database.commitTransaction { operation.replaceIn(this, infoKey, replacement) }
+                val queries = ApiKeyQueries(database)
+                val saved =
+                    database.commitTransaction(
+                        readOnly = true,
+                        isolationLevel = java.sql.Connection.TRANSACTION_REPEATABLE_READ,
+                    ) {
+                        queries.infoSettingsIn(this, infoKey)
+                    }
+                assertEquals(replacement.copy(version = 1), saved)
+                assertFailsWith<ApiAccessConflict> {
+                    database.commitTransaction { operation.replaceIn(this, infoKey, replacement) }
+                }
+                assertEquals(
+                    saved,
+                    database.commitTransaction(
+                        readOnly = true,
+                        isolationLevel = java.sql.Connection.TRANSACTION_REPEATABLE_READ,
+                    ) {
+                        queries.infoSettingsIn(this, infoKey)
+                    },
+                )
+            }
+        }
+    }
+
+    @Test
     fun `settings participate in their callers rollback`() {
         PostgresTestEnvironment().use { postgres ->
             DatabaseFactory(postgres.dataSource).use { database ->

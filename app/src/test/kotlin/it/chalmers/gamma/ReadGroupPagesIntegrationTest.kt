@@ -150,6 +150,29 @@ class ReadGroupPagesIntegrationTest {
         }
     }
 
+    @Test
+    fun `new member options and editor include an unassigned user beyond the first directory page`() {
+        PostgresTestEnvironment().use { postgres ->
+            DatabaseFactory(postgres.dataSource).use { database ->
+                database.executeSqlScript(
+                    """
+                    INSERT INTO g_user (user_id, cid, nick, first_name, last_name, email, acceptance_year, version, created_at, updated_at)
+                    SELECT gen_random_uuid(), 'candidate' || chr(97 + n / 26) || chr(97 + n % 26), 'Candidate ' || n,
+                           'Candidate', 'Member', 'candidate' || n || '@example.org', 2020, 0, NOW(), NOW()
+                    FROM generate_series(1, 205) AS n;
+                    UPDATE g_user SET cid = 'zzcandidate' WHERE user_id = '${memberId.value}';
+                    DELETE FROM g_membership WHERE user_id = '${memberId.value}';
+                    """.trimIndent(),
+                )
+                val reads = reads(database)
+                val editor = assertNotNull(reads.editor(administrator, groupId))
+                assertTrue(editor.memberships.none { it.userId == memberId })
+                assertTrue(editor.users.indexOfFirst { it.id == memberId } >= 200)
+                assertTrue(reads.newMember(administrator).users.indexOfFirst { it.id == memberId } >= 200)
+            }
+        }
+    }
+
     private fun reads(database: DatabaseFactory) =
         ReadGroupPages(database, UserAccountAccess(database), OrganizationQueries(database), UserQueries(database))
 

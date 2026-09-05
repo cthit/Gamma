@@ -19,8 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class GroupReadEndpointIntegrationTest : SpringApplicationTest() {
     @Autowired
@@ -59,8 +59,11 @@ class GroupReadEndpointIntegrationTest : SpringApplicationTest() {
                     Regex("""<select\b[^>]*name="userId"[^>]*>(.*?)</select>""", RegexOption.DOT_MATCHES_ALL)
                         .find(newMember.body),
                 ).groupValues[1]
-            assertEquals(200, Regex("""<option\b""").findAll(candidates).count())
-            assertFalse(candidates.contains(memberId.value.toString()))
+            assertTrue(Regex("""<option\b""").findAll(candidates).count() > 200)
+            assertContains(candidates, memberId.value.toString())
+            val authorityOptions = admin.get("/clients/authority/new-user")
+            assertEquals(200, authorityOptions.status)
+            assertContains(authorityOptions.body, memberId.value.toString())
             val (page, csrf) = admin.csrf("/groups/${groupId.value}/edit")
             val option = assertNotNull(Regex("""<option\b[^>]*value="${memberId.value}"[^>]*>""").find(page.body))
             assertContains(option.value, "selected")

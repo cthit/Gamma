@@ -56,7 +56,8 @@ class PostEndpointIntegrationTest : SpringApplicationTest() {
                     "/posts/order",
                     mapOf("list" to reorderedIds.map { it.value.toString() }, "_csrf" to listOf(csrf)),
                 )
-            assertEquals(200, reordered.status)
+            assertEquals(302, reordered.status)
+            assertEquals("/posts", reordered.header("Location"))
             val edit = fields + mapOf("version" to original.version.toString(), "enName" to "Edited post")
             val updated = browser.form("PUT", "/posts/${id.value}", edit)
             assertEquals(302, updated.status)

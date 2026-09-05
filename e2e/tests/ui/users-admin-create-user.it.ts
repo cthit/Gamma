@@ -4,7 +4,6 @@ import {
 } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueEmail } from "../../helpers/strings";
-import { getGammaE2ERuntime } from "../../gamma-setup";
 
 test("an admin can create edit and delete a user", async ({ page, gamma }) => {
   await login(
@@ -52,16 +51,16 @@ test("an admin can create edit and delete a user", async ({ page, gamma }) => {
   });
 
   await page.goto(`${gamma.url}/users`, { timeout: 30000 });
-  if (getGammaE2ERuntime() === "kotlin") {
-    const userSearch = page.locator('form[action="/users"]');
-    await userSearch.locator('input[name="query"]').fill("Updated Created");
-    await Promise.all([
-      page.waitForURL(/\/users\?query=Updated(?:\+|%20)Created/, {
-        timeout: 15000,
-      }),
-      userSearch.getByRole("button", { name: "Search" }).click(),
-    ]);
-  }
+
+  const userSearch = page.locator('form[action="/users"]');
+  await userSearch.locator('input[name="query"]').fill("Updated Created");
+  await Promise.all([
+    page.waitForURL(/\/users\?query=Updated(?:\+|%20)Created/, {
+      timeout: 15000,
+    }),
+    userSearch.getByRole("button", { name: "Search" }).click(),
+  ]);
+
   await expect(page.getByText(cid)).toBeVisible({ timeout: 10000 });
 
   await page

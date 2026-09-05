@@ -1,7 +1,6 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
-import { getGammaE2ERuntime } from "../../gamma-setup";
 import { Buffer } from "node:buffer";
 
 test("a user can edit their profile and rotate their password", async ({
@@ -10,12 +9,11 @@ test("a user can edit their profile and rotate their password", async ({
 }) => {
   await login(page, gamma.url, "pbeesly", "password1337", "Pam-Pam");
 
-  if (getGammaE2ERuntime() === "kotlin") {
-    await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
-      "src",
-      /\?v=0$/,
-    );
-  }
+  await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
+    "src",
+    /\?v=0$/,
+  );
+
   await page.locator('form#update-me-avatar input[name="file"]').setInputFiles({
     name: "avatar.png",
     mimeType: "image/png",
@@ -32,12 +30,12 @@ test("a user can edit their profile and rotate their password", async ({
     ),
     page.getByRole("button", { name: "Upload avatar" }).click(),
   ]);
-  if (getGammaE2ERuntime() === "kotlin") {
-    await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
-      "src",
-      /\?v=1$/,
-    );
-  }
+
+  await page.reload();
+  await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
+    "src",
+    /\?v=1$/,
+  );
 
   const updatedNick = uniqueCid("nick");
   await page.getByRole("button", { name: "Edit" }).click();

@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.SharedLocalizedTextsTable as LocalizedTextsTable
@@ -11,15 +10,14 @@ import java.util.UUID
 
 class CreateSuperGroup(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun create(
         actor: Actor,
         input: NewSuperGroup,
-    ): SuperGroupId {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-
-        return database.commitTransaction {
+    ): SuperGroupId =
+        database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
             val superGroupId = SuperGroupId.generate()
             val textId = UUID.randomUUID()
             val now = LocalDateTime.now(ZoneOffset.UTC)
@@ -41,5 +39,4 @@ class CreateSuperGroup(
             }
             superGroupId
         }
-    }
 }

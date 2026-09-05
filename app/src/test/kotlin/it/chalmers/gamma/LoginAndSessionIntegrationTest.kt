@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 
-class LoginAndSessionTest : SpringApplicationTest() {
+class LoginAndSessionIntegrationTest : SpringApplicationTest() {
     @Test
     fun `login changes the session id and logout clears browser state`() {
         val browser = browser(uniqueAddress())

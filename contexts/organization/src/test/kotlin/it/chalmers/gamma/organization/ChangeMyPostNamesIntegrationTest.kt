@@ -17,7 +17,7 @@ class ChangeMyPostNamesIntegrationTest {
                 posts.map { groupMembership.copy(postId = it.id) } +
                     groupMembership.copy(userId = UserId(groupAdministrator.userId.value))
             val groupId =
-                CreateGroup(database).create(
+                CreateGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewGroup(OrganizationName("personal-posts"), PrettyName("Personal posts"), existingSuperGroupId),
                     memberships,
@@ -53,7 +53,7 @@ class ChangeMyPostNamesIntegrationTest {
         withGroupDatabase { database, queries ->
             val posts = queries.listPosts().take(2)
             val groupId =
-                CreateGroup(database).create(
+                CreateGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewGroup(OrganizationName("denied-posts"), PrettyName("Denied posts"), existingSuperGroupId),
                     listOf(
@@ -88,7 +88,7 @@ class ChangeMyPostNamesIntegrationTest {
         withGroupDatabase { database, queries ->
             val posts = queries.listPosts().take(2)
             val groupId =
-                CreateGroup(database).create(
+                CreateGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewGroup(OrganizationName("failed-posts"), PrettyName("Failed posts"), existingSuperGroupId),
                     posts.map { groupMembership.copy(postId = it.id) },

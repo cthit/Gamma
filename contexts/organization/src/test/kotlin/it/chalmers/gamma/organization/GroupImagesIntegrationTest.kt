@@ -33,6 +33,7 @@ class GroupImagesIntegrationTest {
             val old = storage.save(imageBytes, "image/png")
             GroupImagePointers(
                 database,
+                organizationAccess(database),
             ).change(groupAdministrator, GroupImageChange(existingGroupId, GroupImageKind.AVATAR, null, old.value))
             val failingStorage =
                 object : MediaStore by storage {
@@ -51,6 +52,7 @@ class GroupImagesIntegrationTest {
                 GroupImages(
                     database,
                     failingStorage,
+                    organizationAccess(database),
                 ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             }
 
@@ -70,6 +72,7 @@ class GroupImagesIntegrationTest {
                 GroupImages(
                     database,
                     storage,
+                    organizationAccess(database),
                 ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
                 val failingStorage =
                     object : MediaStore by storage {
@@ -80,6 +83,7 @@ class GroupImagesIntegrationTest {
                         GroupImages(
                             database,
                             failingStorage,
+                            organizationAccess(database),
                         ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
                     }
                 assertSame(failure, actual)
@@ -90,6 +94,7 @@ class GroupImagesIntegrationTest {
                         GroupImages(
                             database,
                             failingStorage,
+                            organizationAccess(database),
                         ).delete(groupAdministrator, existingGroupId, GroupImageKind.AVATAR)
                     }
                 assertSame(failure, deletionFailure)
@@ -101,7 +106,7 @@ class GroupImagesIntegrationTest {
     fun `membership revoked during upload rejects the image write and cleans staged bytes`() =
         withImages {
             val groupId =
-                CreateGroup(database).create(
+                CreateGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewGroup(OrganizationName("revoked-image"), PrettyName("Revoked image"), existingSuperGroupId),
                     listOf(groupMembership),
@@ -115,7 +120,7 @@ class GroupImagesIntegrationTest {
                     ): MediaUri {
                         val saved = storage.save(objectId, bytes, declaredContentType)
                         val current = assertNotNull(queries.findGroup(groupId))
-                        UpdateGroup(database).update(
+                        UpdateGroup(database, organizationAccess(database)).update(
                             groupAdministrator,
                             GroupUpdate(
                                 groupId,
@@ -133,6 +138,7 @@ class GroupImagesIntegrationTest {
                 GroupImages(
                     database,
                     revokingStorage,
+                    organizationAccess(database),
                 ).replace(ordinaryGroupUser, groupId, GroupImageKind.AVATAR, upload)
             }
             assertNull(queries.findGroup(groupId)?.avatarUri)
@@ -142,7 +148,11 @@ class GroupImagesIntegrationTest {
     @Test
     fun `ambiguous committed deletion cleans only the displaced image`() =
         withImages {
-            GroupImages(database, storage).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
+            GroupImages(
+                database,
+                storage,
+                organizationAccess(database),
+            ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             val old = assertNotNull(queries.findGroup(existingGroupId)?.avatarUri)
             commitFailure.armed = true
             commitFailure.commitsBeforeFailure = 1
@@ -150,6 +160,7 @@ class GroupImagesIntegrationTest {
                 GroupImages(
                     database,
                     storage,
+                    organizationAccess(database),
                 ).delete(groupAdministrator, existingGroupId, GroupImageKind.AVATAR)
             }
             assertEquals(1, commitFailure.failures)
@@ -160,7 +171,11 @@ class GroupImagesIntegrationTest {
     @Test
     fun `unavailable ownership read retains both staged and previously stored bytes`() =
         withImages {
-            GroupImages(database, storage).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
+            GroupImages(
+                database,
+                storage,
+                organizationAccess(database),
+            ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             val old = assertNotNull(queries.findGroup(existingGroupId)?.avatarUri)
             val failingStorage =
                 object : MediaStore by storage {
@@ -179,6 +194,7 @@ class GroupImagesIntegrationTest {
                 GroupImages(
                     database,
                     failingStorage,
+                    organizationAccess(database),
                 ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             }
             commitFailure.blockFollowingStatements = false
@@ -192,7 +208,11 @@ class GroupImagesIntegrationTest {
     @Test
     fun `failed upload removes bytes written before the storage error and preserves the pointer`() =
         withImages {
-            GroupImages(database, storage).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
+            GroupImages(
+                database,
+                storage,
+                organizationAccess(database),
+            ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             val old = assertNotNull(queries.findGroup(existingGroupId)?.avatarUri)
             val expected = IOException("save failed after writing bytes")
             val failingStorage =
@@ -211,6 +231,7 @@ class GroupImagesIntegrationTest {
                     GroupImages(
                         database,
                         failingStorage,
+                        organizationAccess(database),
                     ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
                 }
             assertSame(expected, failure)
@@ -238,6 +259,7 @@ class GroupImagesIntegrationTest {
                     GroupImages(
                         database,
                         failingStorage,
+                        organizationAccess(database),
                     ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
                 }
             assertSame(cancellation, failure)
@@ -248,7 +270,11 @@ class GroupImagesIntegrationTest {
     @Test
     fun `ordinary cleanup failure preserves a successful committed replacement`() =
         withImages {
-            GroupImages(database, storage).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
+            GroupImages(
+                database,
+                storage,
+                organizationAccess(database),
+            ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             val failingStorage =
                 object : MediaStore by storage {
                     override fun delete(uri: MediaUri): Unit = throw IOException("cleanup unavailable")
@@ -256,6 +282,7 @@ class GroupImagesIntegrationTest {
             GroupImages(
                 database,
                 failingStorage,
+                organizationAccess(database),
             ).replace(groupAdministrator, existingGroupId, GroupImageKind.AVATAR, upload)
             val current = assertNotNull(queries.findGroup(existingGroupId)?.avatarUri)
             assertTrue(Files.exists(root.resolve(current)))

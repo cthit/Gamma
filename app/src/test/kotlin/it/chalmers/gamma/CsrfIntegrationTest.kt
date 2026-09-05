@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class CsrfTest : SpringApplicationTest() {
+class CsrfIntegrationTest : SpringApplicationTest() {
     @Test
     fun `browser mutations require csrf while api requests do not`() {
         val browser = browser(uniqueAddress())

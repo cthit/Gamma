@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.SharedLocalizedTextsTable as LocalizedTextsTable
@@ -21,15 +20,14 @@ data class PostUpdate(
 
 class UpdatePost(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun update(
         actor: Actor,
         input: PostUpdate,
     ) {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-
         database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
             val nameId =
                 PostsTable
                     .selectAll()

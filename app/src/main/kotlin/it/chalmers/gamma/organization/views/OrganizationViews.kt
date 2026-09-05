@@ -364,7 +364,7 @@ fun renderPosts(
             csrfInput(page.requiredCsrfToken())
             methodOverrideInput("put")
             table {
-                tbody {
+                tbody(classes = "post-order") {
                     posts.forEach { post ->
                         tr {
                             td {
@@ -375,10 +375,23 @@ fun renderPosts(
                                 +post.name.en.value
                             }
                             td { a(href = "${page.contextPath}/posts/${post.id.value}") { +"Details" } }
+                            if (page.viewer?.isAdmin == true) {
+                                td {
+                                    button(type = ButtonType.button) {
+                                        attributes["data-post-move"] = "up"
+                                        +"Move up"
+                                    }
+                                    button(type = ButtonType.button) {
+                                        attributes["data-post-move"] = "down"
+                                        +"Move down"
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+            if (page.viewer?.isAdmin == true) button(type = ButtonType.submit) { +"Save order" }
         }
     }
 

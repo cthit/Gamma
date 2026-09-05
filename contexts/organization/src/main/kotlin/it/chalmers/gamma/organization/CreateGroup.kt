@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import org.jetbrains.exposed.v1.core.eq
@@ -11,16 +10,16 @@ import java.time.ZoneOffset
 
 class CreateGroup(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun create(
         actor: Actor,
         input: NewGroup,
         memberships: List<NewGroupMembership>,
-    ): GroupId {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-
-        return database.commitTransaction {
+    ): GroupId =
+        database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
+            requireUniqueMemberships(memberships)
             if (SuperGroupsTable.selectAll().where { SuperGroupsTable.id eq input.superGroupId.value }.count() != 1L) {
                 throw OrganizationNotFound("Super group does not exist")
             }
@@ -46,5 +45,4 @@ class CreateGroup(
             }
             groupId
         }
-    }
 }

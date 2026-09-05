@@ -14,7 +14,7 @@ class ReorderPostsIntegrationTest {
     @Test
     fun `reorders the complete list and rejects denied partial duplicate and unknown lists`() =
         withGroupDatabase { database, queries ->
-            val operation = ReorderPosts(database)
+            val operation = ReorderPosts(database, organizationAccess(database))
             val reversed = queries.listPosts().map { it.id }.reversed()
             operation.reorder(groupAdministrator, reversed)
             assertEquals(reversed, queries.listPosts().map { it.id })
@@ -55,7 +55,12 @@ class ReorderPostsIntegrationTest {
                     FOR EACH ROW EXECUTE FUNCTION reject_post_order();
                 """.trimIndent(),
             )
-            assertFails { ReorderPosts(database).reorder(groupAdministrator, before.map { it.id }.reversed()) }
+            assertFails {
+                ReorderPosts(
+                    database,
+                    organizationAccess(database),
+                ).reorder(groupAdministrator, before.map { it.id }.reversed())
+            }
             assertEquals(before, queries.listPosts())
         }
 
@@ -71,7 +76,7 @@ class ReorderPostsIntegrationTest {
                         workers.submit {
                             ready.countDown()
                             check(ready.await(10, TimeUnit.SECONDS))
-                            ReorderPosts(database).reorder(groupAdministrator, order)
+                            ReorderPosts(database, organizationAccess(database)).reorder(groupAdministrator, order)
                         }
                     }
                 changes.forEach { it.get(10, TimeUnit.SECONDS) }

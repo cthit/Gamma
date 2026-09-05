@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class ApiKeyAuthenticationTest : SpringApplicationTest() {
+class ApiKeyAuthenticationIntegrationTest : SpringApplicationTest() {
     @Test
     fun `api authentication distinguishes missing invalid wrong-type and valid credentials`() {
         val browser = browser(uniqueAddress())

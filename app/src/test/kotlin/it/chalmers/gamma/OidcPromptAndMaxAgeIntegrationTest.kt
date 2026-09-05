@@ -6,7 +6,7 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class OidcPromptAndMaxAgeTest
+class OidcPromptAndMaxAgeIntegrationTest
     @Autowired
     constructor(
         private val dataSource: DataSource,

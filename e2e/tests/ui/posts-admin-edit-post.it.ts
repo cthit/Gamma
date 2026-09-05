@@ -1,7 +1,6 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
-import { getGammaE2ERuntime } from "../../gamma-setup";
 
 test("an admin can create edit reorder and delete a post", async ({
   page,
@@ -42,39 +41,29 @@ test("an admin can create edit reorder and delete a post", async ({
   await expect(page.getByText(updatedEnName)).toBeVisible({ timeout: 10000 });
 
   await page.goto(`${gamma.url}/posts`, { timeout: 30000 });
-  if (getGammaE2ERuntime() === "kotlin") {
-    const inputs = page.locator('input[name="list"]');
-    const csrfToken = await page
-      .locator('form[action="/posts/order"] input[name="_csrf"]')
-      .first()
-      .inputValue();
-    const original = await Promise.all(
-      (await inputs.all()).map((input) => input.inputValue()),
-    );
-    expect(original.length).toBeGreaterThan(1);
-    const reversed = [...original].reverse();
-    const reorderStatus = await page.evaluate(
-      async ({ ids, csrfToken }) => {
-        const body = new URLSearchParams();
-        ids.forEach((id) => body.append("list", id));
-        body.append("_method", "put");
-        body.append("_csrf", csrfToken);
-        return fetch("/posts/order", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body,
-        }).then((result) => result.status);
-      },
-      { ids: reversed, csrfToken },
-    );
-    expect(reorderStatus).toBe(200);
-
-    await page.reload();
-    const persisted = await Promise.all(
-      (await inputs.all()).map((input) => input.inputValue()),
-    );
-    expect(persisted).toEqual(reversed);
-  }
+  const inputs = page.locator('input[name="list"]');
+  const original = await Promise.all(
+    (await inputs.all()).map((input) => input.inputValue()),
+  );
+  expect(original.length).toBeGreaterThan(1);
+  const lastRow = page.locator(".post-order tr").last();
+  await lastRow.getByRole("button", { name: "Move up" }).click();
+  const expected = original.slice(0, -2).concat(original.slice(-2).reverse());
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        response.url().endsWith("/posts/order") &&
+        response.status() === 302,
+    ),
+    page.getByRole("button", { name: "Save order" }).click(),
+  ]);
+  await page.goto(`${gamma.url}/posts`);
+  await page.reload();
+  await expect(inputs).toHaveCount(expected.length);
+  expect(
+    await Promise.all((await inputs.all()).map((input) => input.inputValue())),
+  ).toEqual(expected);
 
   await page
     .locator("tr", { hasText: updatedEnName })

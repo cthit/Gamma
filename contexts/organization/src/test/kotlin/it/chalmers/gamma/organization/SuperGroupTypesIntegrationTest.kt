@@ -11,7 +11,7 @@ class SuperGroupTypesIntegrationTest {
     @Test
     fun `creates and deletes unused types with explicit duplicate and missing outcomes`() =
         withGroupDatabase { database, queries ->
-            val operation = SuperGroupTypes(database)
+            val operation = SuperGroupTypes(database, organizationAccess(database))
             val type = SuperGroupType("testtype")
             operation.create(groupAdministrator, type)
             assertTrue(type in queries.listSuperGroupTypes())
@@ -25,7 +25,7 @@ class SuperGroupTypesIntegrationTest {
     fun `denies nonadministrators and refuses to delete types used by super groups`() =
         withGroupDatabase { database, queries ->
             val before = queries.listSuperGroupTypes()
-            val operation = SuperGroupTypes(database)
+            val operation = SuperGroupTypes(database, organizationAccess(database))
             val used = queries.listSuperGroups().first().type
             assertFailsWith<AccessDenied> { operation.create(ordinaryGroupUser, SuperGroupType("deniedtype")) }
             assertFailsWith<AccessDenied> { operation.delete(ordinaryGroupUser, used) }

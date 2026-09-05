@@ -63,6 +63,24 @@ class UserQueries(
             .map { it.toUserProfile() }
     }
 
+    fun administratorDirectoryUsers(administratorId: UserId): List<DirectoryUser> =
+        database.commitTransaction {
+            administratorDirectoryUsersIn(this, administratorId)
+        }
+
+    /** Complete options for the student organization's native member and authority selectors. */
+    fun administratorDirectoryUsersIn(
+        transaction: JdbcTransaction,
+        administratorId: UserId,
+    ): List<DirectoryUser> {
+        database.requireTransaction(transaction)
+        transaction.requireAdministratorForRead(administratorId)
+        return usersWithAvatars()
+            .selectAll()
+            .orderBy(UsersTable.cid, SortOrder.ASC)
+            .map { it.toUserProfile().toDirectoryUser() }
+    }
+
     fun directoryUserPage(request: DirectoryUserPageRequest): DirectoryUserPage {
         val scope = request.scope
         return database.commitTransaction(

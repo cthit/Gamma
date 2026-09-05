@@ -33,3 +33,19 @@ internal fun withGroupDatabase(test: (DatabaseFactory, OrganizationQueries) -> U
             ).use { database -> test(database, OrganizationQueries(database)) }
         }
 }
+
+// Real PostgreSQL authority for context tests; application tests cover UserAccountAccess composition.
+internal fun organizationAccess(database: DatabaseFactory): OrganizationAccess =
+    OrganizationAccess { transaction, actor ->
+        database.requireTransaction(transaction)
+        val user =
+            actor as? Actor.User ?: throw it.chalmers.gamma.platform.core
+                .AccessDenied()
+        transaction.exec("LOCK TABLE g_admin_user IN SHARE MODE")
+        transaction.exec(
+            "SELECT EXISTS (SELECT 1 FROM g_admin_user WHERE user_id = '${user.userId.value}')",
+        ) { result ->
+            check(result.next())
+            result.getBoolean(1)
+        } ?: false
+    }

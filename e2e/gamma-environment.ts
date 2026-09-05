@@ -21,8 +21,6 @@ export interface GammaEnvironment {
   mediaRoot?: string;
 }
 
-export type GammaE2ERuntime = "kotlin" | "spring";
-
 let databaseCounter = 0;
 const gammaMemoryLimitGigabytes = 2;
 
@@ -199,8 +197,4 @@ export async function stopDependencies(env: GammaEnvironment): Promise<void> {
   await env.network.stop();
 
   console.log("All dependencies stopped.");
-}
-
-export function getGammaE2ERuntime(): GammaE2ERuntime {
-  return "spring";
 }

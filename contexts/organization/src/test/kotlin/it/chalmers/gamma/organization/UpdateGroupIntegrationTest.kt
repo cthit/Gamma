@@ -10,11 +10,32 @@ import kotlin.test.assertNotNull
 
 class UpdateGroupIntegrationTest {
     @Test
+    fun `editing a legacy null version retains empty image pointers`() =
+        withGroupDatabase { database, queries ->
+            database.executeSqlScript(
+                """
+                UPDATE g_group SET version = NULL WHERE group_id = '${existingGroupId.value}';
+                INSERT INTO g_group_images_uri (created_at, updated_at, group_id, avatar_uri, banner_uri, version)
+                VALUES (NOW(), NOW(), '${existingGroupId.value}', NULL, NULL, NULL);
+                """.trimIndent(),
+            )
+            val original = assertNotNull(queries.findGroup(existingGroupId))
+            assertEquals(0, original.version)
+            assertEquals(null, original.avatarUri)
+            assertEquals(null, original.bannerUri)
+            UpdateGroup(database, organizationAccess(database)).update(groupAdministrator, edit(original))
+            val saved = assertNotNull(queries.findGroup(existingGroupId))
+            assertEquals(1, saved.version)
+            assertEquals(null, saved.avatarUri)
+            assertEquals(null, saved.bannerUri)
+        }
+
+    @Test
     fun `saves group metadata and replaces memberships together`() =
         withGroupDatabase { database, queries ->
             val original = assertNotNull(queries.findGroup(existingGroupId))
             val input = edit(original)
-            UpdateGroup(database).update(groupAdministrator, input)
+            UpdateGroup(database, organizationAccess(database)).update(groupAdministrator, input)
 
             val updated = assertNotNull(queries.findGroup(original.id))
             assertEquals(input.name, updated.name)
@@ -38,7 +59,7 @@ class UpdateGroupIntegrationTest {
     fun `stale edit cannot overwrite metadata or memberships`() =
         withGroupDatabase { database, queries ->
             val original = assertNotNull(queries.findGroup(existingGroupId))
-            val operation = UpdateGroup(database)
+            val operation = UpdateGroup(database, organizationAccess(database))
             operation.update(groupAdministrator, edit(original))
             val committed = queries.findGroup(original.id)
             val memberships =
@@ -71,7 +92,7 @@ class UpdateGroupIntegrationTest {
                     memberships = listOf(groupMembership, groupMembership.copy(userId = UserId.generate())),
                 )
 
-            assertFails { UpdateGroup(database).update(groupAdministrator, input) }
+            assertFails { UpdateGroup(database, organizationAccess(database)).update(groupAdministrator, input) }
             assertEquals(original, queries.findGroup(original.id))
             assertEquals(
                 memberships,
@@ -102,7 +123,12 @@ class UpdateGroupIntegrationTest {
                 """.trimIndent(),
             )
 
-            assertFails { UpdateGroup(database).update(groupAdministrator, edit(original)) }
+            assertFails {
+                UpdateGroup(
+                    database,
+                    organizationAccess(database),
+                ).update(groupAdministrator, edit(original))
+            }
             assertEquals(original, queries.findGroup(original.id))
             assertEquals(
                 memberships,
@@ -121,7 +147,7 @@ class UpdateGroupIntegrationTest {
                     readOnly = true,
                 ) { queries.membershipsForGroupIn(this, original.id) }
             assertFailsWith<AccessDenied> {
-                UpdateGroup(database).update(ordinaryGroupUser, edit(original))
+                UpdateGroup(database, organizationAccess(database)).update(ordinaryGroupUser, edit(original))
             }
             assertEquals(original, queries.findGroup(original.id))
             assertEquals(
@@ -130,6 +156,54 @@ class UpdateGroupIntegrationTest {
                     queries.membershipsForGroupIn(this, original.id)
                 },
             )
+        }
+
+    @Test
+    fun `duplicate user and post rejects the entire edit even with different unofficial names`() =
+        withGroupDatabase { database, queries ->
+            val original = assertNotNull(queries.findGroup(existingGroupId))
+            val memberships =
+                database.commitTransaction(
+                    readOnly = true,
+                ) { queries.membershipsForGroupIn(this, original.id) }
+            val duplicate = groupMembership.copy(unofficialPostName = UnofficialPostName("Another name"))
+            assertFailsWith<OrganizationConflict> {
+                UpdateGroup(database, organizationAccess(database)).update(
+                    groupAdministrator,
+                    edit(original).copy(memberships = listOf(groupMembership, duplicate)),
+                )
+            }
+            assertEquals(original, queries.findGroup(original.id))
+            assertEquals(
+                memberships,
+                database.commitTransaction(readOnly = true) {
+                    queries.membershipsForGroupIn(this, original.id)
+                },
+            )
+        }
+
+    @Test
+    fun `a user can hold different posts and users can share a post while edits retain and remove assignments`() =
+        withGroupDatabase { database, queries ->
+            val original = assertNotNull(queries.findGroup(existingGroupId))
+            val otherPost = queries.listPosts().first { it.id != groupMembership.postId }
+            val secondPost = groupMembership.copy(postId = otherPost.id)
+            val secondUser = groupMembership.copy(userId = UserId(groupAdministrator.userId.value))
+            val operation = UpdateGroup(database, organizationAccess(database))
+            val assignments = listOf(groupMembership, secondPost, secondUser)
+            operation.update(groupAdministrator, edit(original).copy(memberships = assignments))
+            assertEquals(
+                3,
+                database.commitTransaction(readOnly = true) { queries.membershipsForGroupIn(this, original.id) }.size,
+            )
+            val saved = assertNotNull(queries.findGroup(original.id))
+            operation.update(groupAdministrator, edit(saved).copy(memberships = listOf(groupMembership, secondUser)))
+            val remaining =
+                database.commitTransaction(
+                    readOnly = true,
+                ) { queries.membershipsForGroupIn(this, original.id) }
+            assertEquals(setOf(groupMembership.userId, secondUser.userId), remaining.map { it.userId }.toSet())
+            assertEquals(setOf(groupMembership.postId), remaining.map { it.postId }.toSet())
         }
 
     private fun edit(group: Group) =

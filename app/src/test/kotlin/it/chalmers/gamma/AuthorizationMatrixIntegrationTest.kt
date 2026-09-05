@@ -3,7 +3,7 @@ package it.chalmers.gamma
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class AuthorizationMatrixTest : SpringApplicationTest() {
+class AuthorizationMatrixIntegrationTest : SpringApplicationTest() {
     @Test
     fun `representative routes enforce anonymous user admin and owner access`() {
         val anonymous = browser(uniqueAddress())

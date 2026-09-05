@@ -31,7 +31,7 @@ class DeleteGroupIntegrationTest {
                 """.trimIndent(),
             )
 
-            DeleteGroup(database).delete(groupAdministrator, group.id)
+            DeleteGroup(database, organizationAccess(database)).delete(groupAdministrator, group.id)
 
             assertNull(queries.findGroup(group.id))
             assertEquals(
@@ -55,7 +55,7 @@ class DeleteGroupIntegrationTest {
                 database.commitTransaction(
                     readOnly = true,
                 ) { queries.membershipsForGroupIn(this, existingGroupId) }
-            val operation = DeleteGroup(database)
+            val operation = DeleteGroup(database, organizationAccess(database))
 
             assertFailsWith<AccessDenied> { operation.delete(ordinaryGroupUser, existingGroupId) }
             assertFailsWith<OrganizationNotFound> { operation.delete(groupAdministrator, GroupId.generate()) }

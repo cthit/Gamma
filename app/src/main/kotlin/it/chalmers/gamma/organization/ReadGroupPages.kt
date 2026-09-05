@@ -4,8 +4,6 @@ import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.users.DirectoryUser
-import it.chalmers.gamma.users.DirectoryUserPageRequest
-import it.chalmers.gamma.users.DirectoryUserScope
 import it.chalmers.gamma.users.UserAccountAccess
 import it.chalmers.gamma.users.UserId
 import it.chalmers.gamma.users.UserQueries
@@ -46,16 +44,10 @@ class ReadGroupPages(
             if (!account.isAdministrator) throw AccessDenied()
             val group = organizations.findGroupIn(this, groupId) ?: return@commitTransaction null
             val memberships = organizations.membershipsForGroupIn(this, groupId)
-            val scope = DirectoryUserScope.administrator(account.userId)
-            val candidates = users.directoryUserPageIn(this, DirectoryUserPageRequest("", null, scope)).users
-            // Existing members must remain selected even when their CID falls beyond the candidate page.
-            val candidateIds = candidates.map { it.id }.toSet()
-            val otherMemberIds = memberships.map { it.userId }.toSet() - candidateIds
-            val members = users.directoryUsersByIdsIn(this, otherMemberIds)
             GroupEditor(
                 superGroups = organizations.listSuperGroupsIn(this),
                 group = group,
-                users = (candidates + members).sortedBy { it.cid.value },
+                users = users.administratorDirectoryUsersIn(this, account.userId),
                 posts = organizations.listPostsIn(this),
                 memberships = memberships,
             )
@@ -65,9 +57,8 @@ class ReadGroupPages(
         database.commitTransaction(readOnly = false, isolationLevel = Connection.TRANSACTION_REPEATABLE_READ) {
             val account = accounts.requireIn(this, actor)
             if (!account.isAdministrator) throw AccessDenied()
-            val scope = DirectoryUserScope.administrator(account.userId)
             GroupMemberOptions(
-                users.directoryUserPageIn(this, DirectoryUserPageRequest("", null, scope)).users,
+                users.administratorDirectoryUsersIn(this, account.userId),
                 organizations.listPostsIn(this),
             )
         }

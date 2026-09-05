@@ -19,7 +19,7 @@ class CreatePostIntegrationTest {
     fun `creates names prefix and order as one committed post`() =
         withGroupDatabase { database, queries ->
             val expectedOrder = queries.listPosts().maxOf { it.order.value } + 1
-            val id = CreatePost(database).create(groupAdministrator, input)
+            val id = CreatePost(database, organizationAccess(database)).create(groupAdministrator, input)
             val saved = assertNotNull(queries.findPost(id))
             assertEquals(input.name, saved.name)
             assertEquals(input.emailPrefix, saved.emailPrefix)
@@ -32,7 +32,7 @@ class CreatePostIntegrationTest {
         withGroupDatabase { database, queries ->
             val before = queries.listPosts()
             val invalid = input.copy(name = LocalizedText.of())
-            val operation = CreatePost(database)
+            val operation = CreatePost(database, organizationAccess(database))
             assertFailsWith<AccessDenied> { operation.create(ordinaryGroupUser, invalid) }
             assertFailsWith<IllegalArgumentException> { operation.create(groupAdministrator, invalid) }
             assertEquals(before, queries.listPosts())
@@ -54,7 +54,7 @@ class CreatePostIntegrationTest {
                     FOR EACH ROW EXECUTE FUNCTION reject_post_insert();
                 """.trimIndent(),
             )
-            assertFails { CreatePost(database).create(groupAdministrator, input) }
+            assertFails { CreatePost(database, organizationAccess(database)).create(groupAdministrator, input) }
             assertEquals(before, queries.listPosts())
             assertEquals(
                 names,
@@ -65,12 +65,12 @@ class CreatePostIntegrationTest {
     @Test
     fun `creation appends after the last position when an earlier post was deleted`() =
         withGroupDatabase { database, queries ->
-            val operation = CreatePost(database)
+            val operation = CreatePost(database, organizationAccess(database))
             val first = operation.create(groupAdministrator, input)
             operation.create(groupAdministrator, input.copy(emailPrefix = EmailPrefix("second")))
             val last = operation.create(groupAdministrator, input.copy(emailPrefix = EmailPrefix("third")))
             val lastOrder = assertNotNull(queries.findPost(last)).order.value
-            DeletePost(database).delete(groupAdministrator, first)
+            DeletePost(database, organizationAccess(database)).delete(groupAdministrator, first)
             val appended = operation.create(groupAdministrator, input.copy(emailPrefix = EmailPrefix("fourth")))
             assertEquals(lastOrder + 1, assertNotNull(queries.findPost(appended)).order.value)
             val orders = queries.listPosts().map { it.order.value }
@@ -89,7 +89,7 @@ class CreatePostIntegrationTest {
                             workers.submit<PostId> {
                                 ready.countDown()
                                 check(ready.await(10, TimeUnit.SECONDS))
-                                CreatePost(database).create(groupAdministrator, input)
+                                CreatePost(database, organizationAccess(database)).create(groupAdministrator, input)
                             }
                         }
                     creations.map { it.get(10, TimeUnit.SECONDS) }

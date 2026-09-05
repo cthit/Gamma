@@ -14,6 +14,7 @@ import java.time.ZoneOffset
 /** Database phases for immutable group images. File ownership and cleanup stay in [GroupImages]. */
 internal class GroupImagePointers(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun readForEditor(
         actor: Actor,
@@ -21,8 +22,8 @@ internal class GroupImagePointers(
         kind: GroupImageKind,
     ): String? {
         val user = actor as? Actor.User ?: throw AccessDenied()
-        return database.commitTransaction(readOnly = true) {
-            if (!user.isAdministrator) {
+        return database.commitTransaction {
+            if (!access.isAdministratorIn(this, actor)) {
                 val isMember =
                     MembershipsTable
                         .selectAll()
@@ -78,6 +79,7 @@ internal class GroupImagePointers(
             }
         require(change.replacementUri == null || change.replacementUri.length <= 255) { "$imageName URI is too long" }
         database.commitTransaction {
+            val isAdministrator = access.isAdministratorIn(this, actor)
             val group =
                 GroupsTable
                     .selectAll()
@@ -88,7 +90,7 @@ internal class GroupImagePointers(
                     ?: throw OrganizationNotFound("Group does not exist")
             // Group saves lock this row before replacing memberships. Holding one membership also
             // prevents a concurrent user-deletion cascade from revoking it before this write commits.
-            if (!user.isAdministrator) {
+            if (!isAdministrator) {
                 val membership =
                     MembershipsTable
                         .selectAll()

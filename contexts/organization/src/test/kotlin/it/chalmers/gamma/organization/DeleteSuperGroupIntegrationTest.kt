@@ -20,7 +20,7 @@ class DeleteSuperGroupIntegrationTest {
                     readOnly = true,
                 ) { SharedLocalizedTextsTable.selectAll().count() }
             val id =
-                CreateSuperGroup(database).create(
+                CreateSuperGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewSuperGroup(
                         OrganizationName("deleted-super-group"),
@@ -29,7 +29,7 @@ class DeleteSuperGroupIntegrationTest {
                         LocalizedText.of("Beskrivning", "Description"),
                     ),
                 )
-            DeleteSuperGroup(database).delete(groupAdministrator, id)
+            DeleteSuperGroup(database, organizationAccess(database)).delete(groupAdministrator, id)
             assertNull(queries.superGroupDetails(id)?.superGroup)
             assertEquals(
                 textCount,
@@ -41,7 +41,7 @@ class DeleteSuperGroupIntegrationTest {
     fun `competing deletions report exactly one committed removal`() =
         withGroupDatabase { database, queries ->
             val id =
-                CreateSuperGroup(database).create(
+                CreateSuperGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewSuperGroup(
                         OrganizationName("competing-deletions"),
@@ -58,7 +58,7 @@ class DeleteSuperGroupIntegrationTest {
                             ready.countDown()
                             check(ready.await(10, TimeUnit.SECONDS))
                             try {
-                                DeleteSuperGroup(database).delete(groupAdministrator, id)
+                                DeleteSuperGroup(database, organizationAccess(database)).delete(groupAdministrator, id)
                                 null
                             } catch (missing: OrganizationNotFound) {
                                 missing
@@ -77,7 +77,7 @@ class DeleteSuperGroupIntegrationTest {
         withGroupDatabase { database, queries ->
             val before = queries.listSuperGroups()
             val groups = queries.listGroups(existingSuperGroupId)
-            val operation = DeleteSuperGroup(database)
+            val operation = DeleteSuperGroup(database, organizationAccess(database))
             assertFailsWith<AccessDenied> { operation.delete(ordinaryGroupUser, existingSuperGroupId) }
             assertFailsWith<OrganizationNotFound> { operation.delete(groupAdministrator, SuperGroupId.generate()) }
             assertFailsWith<OrganizationConflict> { operation.delete(groupAdministrator, existingSuperGroupId) }

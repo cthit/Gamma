@@ -9,11 +9,27 @@ import kotlin.test.assertNotNull
 
 class UpdateSuperGroupIntegrationTest {
     @Test
+    fun `editing a legacy null version and description creates its translations`() =
+        withGroupDatabase { database, queries ->
+            database.executeSqlScript(
+                "UPDATE g_super_group SET description = NULL, version = NULL WHERE super_group_id = '${existingSuperGroupId.value}'",
+            )
+            val original = assertNotNull(queries.superGroupDetails(existingSuperGroupId)?.superGroup)
+            assertEquals(0, original.version)
+            assertEquals(LocalizedText.of(), original.description)
+            val input = edit(original)
+            UpdateSuperGroup(database, organizationAccess(database)).update(groupAdministrator, input)
+            val saved = assertNotNull(queries.superGroupDetails(existingSuperGroupId)?.superGroup)
+            assertEquals(1, saved.version)
+            assertEquals(input.description, saved.description)
+        }
+
+    @Test
     fun `updates metadata and translations and rejects a stale edit`() =
         withGroupDatabase { database, queries ->
             val original = assertNotNull(queries.superGroupDetails(existingSuperGroupId)?.superGroup)
             val input = edit(original)
-            val operation = UpdateSuperGroup(database)
+            val operation = UpdateSuperGroup(database, organizationAccess(database))
             operation.update(groupAdministrator, input)
             val saved = assertNotNull(queries.superGroupDetails(original.id)?.superGroup)
             assertEquals(input.name, saved.name)
@@ -39,7 +55,12 @@ class UpdateSuperGroupIntegrationTest {
                     FOR EACH ROW EXECUTE FUNCTION reject_description_update();
                 """.trimIndent(),
             )
-            assertFails { UpdateSuperGroup(database).update(groupAdministrator, edit(original)) }
+            assertFails {
+                UpdateSuperGroup(
+                    database,
+                    organizationAccess(database),
+                ).update(groupAdministrator, edit(original))
+            }
             assertEquals(original, queries.superGroupDetails(original.id)?.superGroup)
         }
 
@@ -47,7 +68,9 @@ class UpdateSuperGroupIntegrationTest {
     fun `denied edit leaves metadata and translations unchanged`() =
         withGroupDatabase { database, queries ->
             val original = assertNotNull(queries.superGroupDetails(existingSuperGroupId)?.superGroup)
-            assertFailsWith<AccessDenied> { UpdateSuperGroup(database).update(ordinaryGroupUser, edit(original)) }
+            assertFailsWith<AccessDenied> {
+                UpdateSuperGroup(database, organizationAccess(database)).update(ordinaryGroupUser, edit(original))
+            }
             assertEquals(original, queries.superGroupDetails(original.id)?.superGroup)
         }
 

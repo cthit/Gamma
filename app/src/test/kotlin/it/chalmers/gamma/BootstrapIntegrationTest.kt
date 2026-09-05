@@ -15,7 +15,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class BootstrapTest : SpringApplicationTest() {
+class BootstrapIntegrationTest : SpringApplicationTest() {
     @Test
     fun `admin setup creates one usable administrator when the database is empty`() {
         PostgresTestEnvironment(loadRegressionFixture = false).use { environment ->

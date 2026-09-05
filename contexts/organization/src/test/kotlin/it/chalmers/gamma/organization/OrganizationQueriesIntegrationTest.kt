@@ -15,6 +15,17 @@ import kotlin.test.assertTrue
 
 class OrganizationQueriesIntegrationTest {
     @Test
+    fun `legacy memberships retain their absent unofficial names`() =
+        withGroupDatabase { database, queries ->
+            val memberships =
+                database.commitTransaction(readOnly = true) {
+                    queries.membershipsForGroupIn(this, GroupId.parse("ee4153d5-830d-445f-acb3-ec09c53e7c0c"))
+                }
+            assertEquals(4, memberships.size)
+            assertEquals(setOf(null), memberships.map { it.unofficialPostName.value }.toSet())
+        }
+
+    @Test
     fun `reads the deterministic organization snapshot through Exposed`() {
         val root = Path.of(checkNotNull(System.getProperty("gamma.root")))
         val migrations = root.resolve("app/src/main/resources/db/migration")
@@ -95,7 +106,7 @@ class OrganizationQueriesIntegrationTest {
                         assertEquals("didit", group.superGroup.name.value)
                         assertNull(group.avatarUri)
 
-                        val pointers = GroupImagePointers(database)
+                        val pointers = GroupImagePointers(database, organizationAccess(database))
                         pointers.change(
                             groupAdministrator,
                             GroupImageChange(
@@ -165,7 +176,7 @@ class OrganizationQueriesIntegrationTest {
                                 GroupId.parse("00000000-0000-0000-0000-000000000000"),
                             ),
                         )
-                        UpdateGroup(database).update(
+                        UpdateGroup(database, organizationAccess(database)).update(
                             groupAdministrator,
                             GroupUpdate(
                                 digit2026.id,

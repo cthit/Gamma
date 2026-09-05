@@ -10,8 +10,6 @@ import it.chalmers.gamma.oauth.views.renderNewAuthority
 import it.chalmers.gamma.oauth.views.renderSuperGroupAuthorityRow
 import it.chalmers.gamma.oauth.views.renderUserAuthorityRow
 import it.chalmers.gamma.organization.OrganizationQueries
-import it.chalmers.gamma.users.DirectoryUserPageRequest
-import it.chalmers.gamma.users.DirectoryUserScope
 import it.chalmers.gamma.users.UserId
 import it.chalmers.gamma.users.UserQueries
 import org.springframework.http.MediaType
@@ -43,16 +41,7 @@ class ClientAuthorityController(
 
     @GetMapping("/clients/authority/new-user", produces = [MediaType.TEXT_HTML_VALUE])
     fun newUserAuthority(authentication: Authentication): String =
-        renderUserAuthorityRow(
-            userQueries
-                .directoryUserPage(
-                    DirectoryUserPageRequest(
-                        "",
-                        null,
-                        DirectoryUserScope.administrator(authentication.userId()),
-                    ),
-                ).users,
-        )
+        renderUserAuthorityRow(userQueries.administratorDirectoryUsers(authentication.userId()))
 
     @PostMapping("/clients/{clientUid}/authority")
     fun createAuthority(

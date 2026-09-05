@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.SharedLocalizedTextsTable as LocalizedTextsTable
@@ -12,21 +11,20 @@ import java.util.UUID
 
 class CreatePost(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun create(
         actor: Actor,
         input: NewPost,
-    ): PostId {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-        require(
-            input.name.sv.value
-                .isNotEmpty() &&
-                input.name.en.value
-                    .isNotEmpty(),
-        ) { "Post names must not be empty" }
-
-        return database.commitTransaction {
+    ): PostId =
+        database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
+            require(
+                input.name.sv.value
+                    .isNotEmpty() &&
+                    input.name.en.value
+                        .isNotEmpty(),
+            ) { "Post names must not be empty" }
             // Creation, deletion, and reordering must agree on the complete post list.
             exec("LOCK TABLE g_post IN SHARE ROW EXCLUSIVE MODE")
             val highestOrder = PostsTable.selectAll().maxOfOrNull { it[PostsTable.order] ?: 0 }
@@ -51,5 +49,4 @@ class CreatePost(
             }
             postId
         }
-    }
 }

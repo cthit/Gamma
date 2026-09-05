@@ -38,6 +38,15 @@ Configuration uses Spring Boot environment-variable binding. The commonly needed
 
 ## Verify and package
 
-Run the Kotlin checks and tests with `./gradlew check`. Build the production image with
+Run the complete Kotlin checks and tests with `./gradlew check` (PostgreSQL and Redis containers
+require a running Docker-compatible engine). Use `./gradlew unitTest` for container-free tests and
+`./gradlew integrationTest` for all container-backed tests. To run one operation's regressions:
+
+```shell
+./gradlew :contexts:organization:test --tests '*UpdateGroupIntegrationTest'
+```
+
+New Kotlin tests belong in Git alongside the operations they cover; avoid local ignore rules for
+`src/test/kotlin` or test-support fixtures. Build the production image with
 `./gradlew bootBuildImage`; it creates `app:latest` with Java 25. Run the complete Playwright suite
 against the image with `make build-image e2e`.

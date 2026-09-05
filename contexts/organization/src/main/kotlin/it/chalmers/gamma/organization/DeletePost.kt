@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.SharedLocalizedTextsTable as LocalizedTextsTable
@@ -10,15 +9,14 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 
 class DeletePost(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun delete(
         actor: Actor,
         postId: PostId,
     ) {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-
         database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
             // Keep the post list stable for creation and complete-list reordering.
             exec("LOCK TABLE g_post IN SHARE ROW EXCLUSIVE MODE")
             val nameId =

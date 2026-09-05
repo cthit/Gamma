@@ -98,6 +98,27 @@ class GroupOperationEndpointIntegrationTest : SpringApplicationTest() {
                 memberships,
             )
 
+            val duplicate =
+                browser.formMulti(
+                    "PUT",
+                    "/groups/${groupId.value}",
+                    fields.mapValues { listOf(it.value) } +
+                        mapOf(
+                            "version" to listOf(saved.version.toString()),
+                            "userId" to listOf(MEMBER_ID, MEMBER_ID),
+                            "postId" to listOf(POST_ID, POST_ID),
+                            "unofficialPostName" to listOf("First name", "Second name"),
+                        ),
+                )
+            assertEquals(409, duplicate.status)
+            assertEquals(saved, organizations.findGroup(groupId))
+            assertEquals(
+                memberships,
+                database.commitTransaction(readOnly = true) {
+                    organizations.membershipsForGroupIn(this, groupId)
+                },
+            )
+
             val stale = browser.form("PUT", "/groups/${groupId.value}", fields - "userId" - "postId")
             assertEquals(409, stale.status)
             assertEquals(saved, organizations.findGroup(groupId))

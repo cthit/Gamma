@@ -34,6 +34,7 @@ import it.chalmers.gamma.organization.DeleteGroup
 import it.chalmers.gamma.organization.DeletePost
 import it.chalmers.gamma.organization.DeleteSuperGroup
 import it.chalmers.gamma.organization.GroupImages
+import it.chalmers.gamma.organization.OrganizationAccess
 import it.chalmers.gamma.organization.OrganizationQueries
 import it.chalmers.gamma.organization.ReadGroupPages
 import it.chalmers.gamma.organization.ReorderPosts
@@ -164,10 +165,14 @@ internal class GammaBeans {
     ) = ReadGroupPages(database, accounts, organizations, users)
 
     @Bean
+    fun organizationAccess(accounts: UserAccountAccess): OrganizationAccess = CurrentOrganizationAccess(accounts)
+
+    @Bean
     fun groupImages(
         database: DatabaseFactory,
         media: MediaStore,
-    ) = GroupImages(database, media)
+        access: OrganizationAccess,
+    ) = GroupImages(database, media, access)
 
     @Bean
     fun oauthClients(database: DatabaseFactory): OAuthClientQueries = OAuthClientQueries(database)
@@ -226,40 +231,73 @@ internal class GammaBeans {
         }
 
     @Bean
-    fun postCreation(database: DatabaseFactory) = CreatePost(database)
+    fun postCreation(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = CreatePost(database, access)
 
     @Bean
-    fun postUpdates(database: DatabaseFactory) = UpdatePost(database)
+    fun postUpdates(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = UpdatePost(database, access)
 
     @Bean
-    fun postDeletion(database: DatabaseFactory) = DeletePost(database)
+    fun postDeletion(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = DeletePost(database, access)
 
     @Bean
-    fun postOrdering(database: DatabaseFactory) = ReorderPosts(database)
+    fun postOrdering(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = ReorderPosts(database, access)
 
     @Bean
-    fun groupCreation(database: DatabaseFactory) = CreateGroup(database)
+    fun groupCreation(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = CreateGroup(database, access)
 
     @Bean
-    fun groupUpdates(database: DatabaseFactory) = UpdateGroup(database)
+    fun groupUpdates(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = UpdateGroup(database, access)
 
     @Bean
-    fun groupDeletion(database: DatabaseFactory) = DeleteGroup(database)
+    fun groupDeletion(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = DeleteGroup(database, access)
 
     @Bean
     fun personalPostNames(database: DatabaseFactory) = ChangeMyPostNames(database)
 
     @Bean
-    fun superGroupTypes(database: DatabaseFactory) = SuperGroupTypes(database)
+    fun superGroupTypes(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = SuperGroupTypes(database, access)
 
     @Bean
-    fun superGroupCreation(database: DatabaseFactory) = CreateSuperGroup(database)
+    fun superGroupCreation(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = CreateSuperGroup(database, access)
 
     @Bean
-    fun superGroupUpdates(database: DatabaseFactory) = UpdateSuperGroup(database)
+    fun superGroupUpdates(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = UpdateSuperGroup(database, access)
 
     @Bean
-    fun superGroupDeletion(database: DatabaseFactory) = DeleteSuperGroup(database)
+    fun superGroupDeletion(
+        database: DatabaseFactory,
+        access: OrganizationAccess,
+    ) = DeleteSuperGroup(database, access)
 
     @Bean
     fun apiAccess(database: DatabaseFactory) = ApiKeyQueries(database)

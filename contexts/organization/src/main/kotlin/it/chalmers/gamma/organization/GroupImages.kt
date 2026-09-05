@@ -10,8 +10,9 @@ import java.util.concurrent.CancellationException
 class GroupImages(
     database: DatabaseFactory,
     private val media: MediaStore,
+    access: OrganizationAccess,
 ) {
-    private val pointers = GroupImagePointers(database)
+    private val pointers = GroupImagePointers(database, access)
 
     // Keep the upload, committed pointer, and compensation decisions together; any phase can fail.
     @Suppress("TooGenericExceptionCaught")

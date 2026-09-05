@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class UpgradeFrom251Test {
+class UpgradeFrom251IntegrationTest {
     @Test
     fun `application starts on a 251 database and fixture user can log in`() {
         PostgresTestEnvironment(loadRegressionFixture = false, migrateOnStart = false).use { postgres ->

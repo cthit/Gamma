@@ -122,7 +122,7 @@ class PostController(
         @RequestParam list: List<String>,
     ): ResponseEntity<Void> {
         postOrdering.reorder(authentication.actor(), list.map(PostId::parse))
-        return ResponseEntity.ok().build()
+        return redirect("/posts")
     }
 }
 

@@ -5,12 +5,14 @@ import {
 } from "../../helpers/api-keys";
 import { login } from "../../helpers/auth";
 import { uniqueLabel } from "../../helpers/strings";
-import { getGammaE2ERuntime } from "../../gamma-setup";
+import type { GammaEnvironment } from "../../gamma-setup";
+import type { Page } from "@playwright/test";
 
 test("an admin can create configure rotate and delete an api key", async ({
   page,
   request,
   gamma,
+  env,
 }) => {
   await login(
     page,
@@ -72,46 +74,15 @@ test("an admin can create configure rotate and delete an api key", async ({
   });
   expect(newTokenResponse.ok()).toBe(true);
 
-  if (getGammaE2ERuntime() === "kotlin") {
-    await page.goto(`${gamma.url}/api-keys/${resetCredentials.apiKeyId}`);
-    const settingsForm = page.locator(
-      `form[action="/api-keys/${resetCredentials.apiKeyId}/info-settings"]`,
-    );
-    await settingsForm.getByRole("button", { name: "Add type" }).click();
-    await settingsForm.getByRole("button", { name: "Add type" }).click();
-    const typeSelectors = settingsForm.locator("select.type");
-    await expect(typeSelectors).toHaveCount(2);
-    await typeSelectors.nth(0).selectOption("committee");
-    await typeSelectors.nth(1).selectOption("society");
-    expect(await settingsEntries(settingsForm)).toEqual([
-      ["superGroupTypes[0].type", "committee"],
-      ["superGroupTypes[1].type", "society"],
-    ]);
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response.request().method() === "POST" &&
-          response
-            .url()
-            .endsWith(`/api-keys/${resetCredentials.apiKeyId}/info-settings`) &&
-          response.status() === 200,
-      ),
-      settingsForm.getByRole("button", { name: "Save" }).click(),
-    ]);
-    await expect(
-      settingsForm.locator(".super-group-type select").nth(0),
-    ).toHaveValue("committee");
-    await expect(
-      settingsForm.locator(".super-group-type select").nth(1),
-    ).toHaveValue("society");
-
-    await expect(settingsForm).toHaveCount(2);
-    const retainedSettingsForm = settingsForm.last();
-    // Released Gamma rendered retained selections as disabled options, so an untouched
-    // form omitted them. Its default inner swap also leaves both form roots in the DOM.
-    // Keep both behaviors visible until a compatibility change is explicitly approved.
-    expect(await settingsEntries(retainedSettingsForm)).toEqual([]);
-  }
+  await saveSettings(page, gamma.url, resetCredentials.apiKeyId, "info", {
+    version: "0",
+    "superGroupTypes[0].type": "committee",
+    "superGroupTypes[1].type": "society",
+  });
+  expect(await storedTypes(env, resetCredentials.apiKeyId)).toEqual([
+    "committee|f",
+    "society|f",
+  ]);
 
   page.once("dialog", async (dialog) => dialog.accept());
   await Promise.all([
@@ -121,12 +92,11 @@ test("an admin can create configure rotate and delete an api key", async ({
   await expect(page.getByText(prettyName)).toHaveCount(0);
 });
 
-test("account scaffold form keeps managed flags aligned with added types", async ({
+test("account scaffold settings keep managed flags aligned and clear removed flags", async ({
   page,
   gamma,
+  env,
 }) => {
-  if (getGammaE2ERuntime() !== "kotlin") return;
-
   await login(
     page,
     gamma.url,
@@ -140,63 +110,81 @@ test("account scaffold form keeps managed flags aligned with added types", async
     enDescription: "",
     keyType: "ACCOUNT_SCAFFOLD",
   });
-  await page.goto(`${gamma.url}/api-keys/${credentials.apiKeyId}`);
-  const settingsForm = page.locator(
-    `form[action="/api-keys/${credentials.apiKeyId}/account-scaffold-settings"]`,
+  await saveSettings(
+    page,
+    gamma.url,
+    credentials.apiKeyId,
+    "account-scaffold",
+    {
+      version: "0",
+      "superGroupTypes[0].type": "committee",
+      "superGroupTypes[0].requiresManaged": "on",
+      "superGroupTypes[1].type": "society",
+    },
   );
-  await settingsForm.getByRole("button", { name: "Add type" }).click();
-  await settingsForm.getByRole("button", { name: "Add type" }).click();
-  const types = settingsForm.locator("select.type");
-  const managed = settingsForm.locator("input.requiresManaged");
-  await types.nth(0).selectOption("committee");
-  await types.nth(1).selectOption("society");
-  await managed.nth(0).check();
-  expect(await settingsEntries(settingsForm)).toEqual([
-    ["superGroupTypes[0].type", "committee"],
-    ["superGroupTypes[0].requiresManaged", "on"],
-    ["superGroupTypes[1].type", "society"],
+  expect(await storedTypes(env, credentials.apiKeyId)).toEqual([
+    "committee|t",
+    "society|f",
   ]);
-
-  await Promise.all([
-    page.waitForResponse(
-      (response) =>
-        response.request().method() === "POST" &&
-        response
-          .url()
-          .endsWith(
-            `/api-keys/${credentials.apiKeyId}/account-scaffold-settings`,
-          ) &&
-        response.status() === 200,
-    ),
-    settingsForm.getByRole("button", { name: "Save" }).click(),
-  ]);
-  await expect(settingsForm).toHaveCount(2);
-  await expect(
-    settingsForm.last().locator(".super-group-type select"),
-  ).toHaveCount(2);
-  expect(await settingsEntries(settingsForm.last())).toEqual([
-    ["superGroupTypes[0].requiresManaged", "on"],
-  ]);
-
-  page.once("dialog", async (dialog) => dialog.accept());
-  await Promise.all([
-    page.waitForURL("**/api-keys", { timeout: 15000 }),
-    page.getByRole("button", { name: "Delete" }).click(),
+  await saveSettings(
+    page,
+    gamma.url,
+    credentials.apiKeyId,
+    "account-scaffold",
+    {
+      version: "1",
+      "superGroupTypes[0].type": "society",
+      "superGroupTypes[0].requiresManaged": "on",
+      "superGroupTypes[1].type": "committee",
+    },
+  );
+  expect(await storedTypes(env, credentials.apiKeyId)).toEqual([
+    "committee|f",
+    "society|t",
   ]);
 });
 
-async function settingsEntries(form: import("@playwright/test").Locator) {
-  return form.evaluate((element) => {
-    const BrowserFormData = FormData as unknown as new (
-      form: unknown,
-    ) => FormData;
-    return Array.from(new BrowserFormData(element).entries())
-      .filter(([name]) => name.startsWith("superGroupTypes"))
-      .map(([name, value]) => {
-        if (typeof value !== "string") {
-          throw new Error("Settings forms must not submit file values");
-        }
-        return [name, value];
-      });
-  });
+// These settings are exposed through HTTP endpoints; the current details page has no settings editor.
+async function saveSettings(
+  page: Page,
+  baseUrl: string,
+  keyId: string,
+  kind: string,
+  fields: Record<string, string>,
+) {
+  await page.goto(`${baseUrl}/api-keys/${keyId}`);
+  const csrf = await page.locator('input[name="_csrf"]').first().inputValue();
+  const response = await page.request.post(
+    `${baseUrl}/api-keys/${keyId}/${kind}-settings`,
+    {
+      form: { ...fields, _method: "put", _csrf: csrf },
+      maxRedirects: 0,
+    },
+  );
+  expect(response.status()).toBe(302);
+}
+
+async function storedTypes(
+  env: GammaEnvironment,
+  keyId: string,
+): Promise<string[]> {
+  if (!/^[0-9a-f-]{36}$/.test(keyId))
+    throw new Error("Expected a fixture key UUID");
+  const result = await env.postgres.exec([
+    "psql",
+    "--username",
+    "postgres",
+    "--dbname",
+    env.databaseName,
+    "-At",
+    "--command",
+    `SELECT types.super_group_type_name, managed.settings_id IS NOT NULL
+       FROM g_api_key_settings settings
+       JOIN g_api_key_to_super_group_type types USING (settings_id)
+       LEFT JOIN g_api_key_account_scaffold_requires_managed managed
+         ON managed.settings_id = settings.settings_id AND managed.super_group_type_name = types.super_group_type_name
+       WHERE settings.api_key_id = '${keyId}' ORDER BY types.super_group_type_name`,
+  ]);
+  expect(result.exitCode).toBe(0);
+  return result.output.trim().split("\n");
 }

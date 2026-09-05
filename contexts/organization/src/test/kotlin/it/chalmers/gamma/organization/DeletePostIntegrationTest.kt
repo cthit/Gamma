@@ -15,11 +15,11 @@ class DeletePostIntegrationTest {
             val before = queries.listPosts()
             val names = database.commitTransaction(readOnly = true) { SharedLocalizedTextsTable.selectAll().count() }
             val id =
-                CreatePost(database).create(
+                CreatePost(database, organizationAccess(database)).create(
                     groupAdministrator,
                     NewPost(LocalizedText.of("Tillfällig", "Temporary"), EmailPrefix("temporary")),
                 )
-            DeletePost(database).delete(groupAdministrator, id)
+            DeletePost(database, organizationAccess(database)).delete(groupAdministrator, id)
             assertNull(queries.findPost(id))
             assertEquals(before, queries.listPosts())
             assertEquals(
@@ -37,7 +37,7 @@ class DeletePostIntegrationTest {
                     readOnly = true,
                 ) { queries.membershipsForGroupIn(this, existingGroupId) }
             val used = memberships.first().postId
-            val operation = DeletePost(database)
+            val operation = DeletePost(database, organizationAccess(database))
             assertFailsWith<AccessDenied> { operation.delete(ordinaryGroupUser, used) }
             assertFailsWith<OrganizationNotFound> { operation.delete(groupAdministrator, PostId.generate()) }
             assertFailsWith<OrganizationConflict> { operation.delete(groupAdministrator, used) }

@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.SharedLocalizedTextsTable as LocalizedTextsTable
@@ -10,15 +9,14 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 
 class DeleteSuperGroup(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     fun delete(
         actor: Actor,
         superGroupId: SuperGroupId,
     ) {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-
         database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
             // Keep the description pointer stable while removing its owner and text.
             val row =
                 SuperGroupsTable

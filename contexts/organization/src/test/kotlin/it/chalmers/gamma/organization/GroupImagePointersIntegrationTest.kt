@@ -7,8 +7,6 @@ import it.chalmers.gamma.media.MediaObjectId
 import it.chalmers.gamma.media.MediaStore
 import it.chalmers.gamma.media.MediaUri
 import it.chalmers.gamma.platform.core.Actor
-import it.chalmers.gamma.platform.core.ActorUserId
-import it.chalmers.gamma.platform.core.UserId
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.DatabaseSettings
 import it.chalmers.gamma.testing.PostgresTestEnvironment
@@ -202,9 +200,8 @@ class GroupImagePointersIntegrationTest {
                     GroupImageChange(groupId, GroupImageKind.AVATAR, null, oldImage.value),
                 )
                 val storage = BarrierMediaStore(mediaStore)
-                val administratorId = UserId(UUID.fromString("20000000-0000-0000-0000-000000000001"))
-                val images = GroupImages(database, storage)
-                val actor = Actor.User(ActorUserId(administratorId.value), isAdministrator = true)
+                val images = GroupImages(database, storage, organizationAccess(database))
+                val actor = groupAdministrator
 
                 Executors.newFixedThreadPool(2).use { workers ->
                     val first =
@@ -236,7 +233,7 @@ class GroupImagePointersIntegrationTest {
                             }
                         }
 
-                    storage.bothUploadsSaved.await()
+                    assertTrue(storage.bothUploadsSaved.await(20, java.util.concurrent.TimeUnit.SECONDS))
                     val outcomes = listOf(first.get(), second.get())
                     assertEquals(1, outcomes.count { it == null })
                     assertEquals(1, outcomes.count { it is OrganizationConflict })
@@ -267,7 +264,7 @@ class GroupImagePointersIntegrationTest {
                 ).use { database ->
                     GroupImageCommandsFixture(
                         database,
-                        GroupImagePointers(database),
+                        GroupImagePointers(database, organizationAccess(database)),
                         OrganizationQueries(database),
                     ).test()
                 }

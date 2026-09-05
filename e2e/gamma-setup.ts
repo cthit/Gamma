@@ -1,10 +1,8 @@
 export {
   createIsolatedEnvironment,
-  getGammaE2ERuntime,
   removeIsolatedEnvironment,
   startDependencies,
   stopDependencies,
-  type GammaE2ERuntime,
   type GammaEnvironment,
 } from "./gamma-environment";
 export {

@@ -9,6 +9,24 @@ import kotlin.test.assertNotNull
 
 class UpdatePostIntegrationTest {
     @Test
+    fun `editing a legacy post treats null version order and prefix as defaults`() =
+        withGroupDatabase { database, queries ->
+            val id = groupMembership.postId
+            database.executeSqlScript(
+                "UPDATE g_post SET version = NULL, post_order = NULL, email_prefix = NULL WHERE post_id = '${id.value}'",
+            )
+            val original = assertNotNull(queries.findPost(id))
+            assertEquals(0, original.version)
+            assertEquals(0, original.order.value)
+            assertEquals("", original.emailPrefix.value)
+            val input = PostUpdate(id, original.version, original.name, EmailPrefix("restored"))
+            UpdatePost(database, organizationAccess(database)).update(groupAdministrator, input)
+            val saved = assertNotNull(queries.findPost(id))
+            assertEquals(1, saved.version)
+            assertEquals(input.emailPrefix, saved.emailPrefix)
+        }
+
+    @Test
     fun `editing names preserves a newer order and rejects stale metadata`() =
         withGroupDatabase { database, queries ->
             val original = queries.listPosts().first()
@@ -20,8 +38,8 @@ class UpdatePostIntegrationTest {
                     EmailPrefix("edited"),
                 )
             val newOrder = queries.listPosts().map { it.id }.reversed()
-            ReorderPosts(database).reorder(groupAdministrator, newOrder)
-            val operation = UpdatePost(database)
+            ReorderPosts(database, organizationAccess(database)).reorder(groupAdministrator, newOrder)
+            val operation = UpdatePost(database, organizationAccess(database))
             operation.update(groupAdministrator, input)
             val saved = assertNotNull(queries.findPost(original.id))
             assertEquals(input.name, saved.name)
@@ -48,7 +66,7 @@ class UpdatePostIntegrationTest {
                 """.trimIndent(),
             )
             assertFails {
-                UpdatePost(database).update(
+                UpdatePost(database, organizationAccess(database)).update(
                     groupAdministrator,
                     PostUpdate(
                         original.id,
@@ -67,9 +85,17 @@ class UpdatePostIntegrationTest {
             val before = queries.listPosts()
             val original = before.first()
             val input = PostUpdate(original.id, original.version, original.name, EmailPrefix("denied"))
-            assertFailsWith<AccessDenied> { UpdatePost(database).update(ordinaryGroupUser, input) }
+            assertFailsWith<AccessDenied> {
+                UpdatePost(
+                    database,
+                    organizationAccess(database),
+                ).update(ordinaryGroupUser, input)
+            }
             assertFailsWith<OrganizationConflict> {
-                UpdatePost(database).update(groupAdministrator, input.copy(postId = PostId.generate()))
+                UpdatePost(
+                    database,
+                    organizationAccess(database),
+                ).update(groupAdministrator, input.copy(postId = PostId.generate()))
             }
             assertEquals(before, queries.listPosts())
         }

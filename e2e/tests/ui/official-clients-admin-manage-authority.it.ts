@@ -1,7 +1,6 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
-import { getGammaE2ERuntime } from "../../gamma-setup";
 
 test("an admin can create rotate authorize and delete an official client", async ({
   page,
@@ -60,11 +59,11 @@ test("an admin can create rotate authorize and delete an official client", async
     await credentialsArticle.locator("code").first().innerText()
   ).trim();
   await page.goto(`${gamma.url}/clients`, { timeout: 30000 });
-  if (getGammaE2ERuntime() === "kotlin") {
-    await expect(page.locator("tr", { hasText: prettyName })).toContainText(
-      clientId,
-    );
-  }
+
+  await expect(page.locator("tr", { hasText: prettyName })).toContainText(
+    clientId,
+  );
+
   await page.goto(detailsUrl, { timeout: 30000 });
 
   page.once("dialog", async (dialog) => dialog.accept());
@@ -88,38 +87,20 @@ test("an admin can create rotate authorize and delete an official client", async
   ).trim();
   expect(newSecret).not.toBe(oldSecret);
 
-  if (getGammaE2ERuntime() === "kotlin") {
-    await page.fill('input[name="authority"]', "invalid authority!");
-    const invalidAuthorityResponse = page.waitForResponse(
-      (response) =>
-        response.request().method() === "POST" &&
-        response.url().endsWith("/authority"),
-    );
-    await page
-      .locator(
-        'button[form="create-client-authority"], form#create-client-authority button[type="submit"]',
-      )
-      .click();
-    expect((await invalidAuthorityResponse).status()).toBe(400);
-    await expect(page.locator("p.error")).toContainText(
-      "Authority names must contain 2 to 30 lowercase letters or numbers",
-    );
-    await expect(page.locator('input[name="authority"]')).toHaveValue(
-      "invalid authority!",
-    );
-
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response.request().method() === "GET" &&
-          response.url().includes("/clients/authority/new-user?query="),
-      ),
-      page.fill("#authority-user-search", "Michael Scott"),
-    ]);
-    const userSearchResults = page.locator("#authority-user-search-results");
-    await expect(userSearchResults).toContainText("Michael 'Boss' Scott");
-    await expect(userSearchResults).not.toContainText("Jim 'Big Tuna' Halpert");
-  }
+  await page.fill('input[name="authority"]', "invalid authority!");
+  const invalidAuthorityResponse = page.waitForResponse(
+    (response) =>
+      response.request().method() === "POST" &&
+      response.url().endsWith("/authority"),
+  );
+  await page
+    .locator(
+      'button[form="create-client-authority"], form#create-client-authority button[type="submit"]',
+    )
+    .click();
+  expect((await invalidAuthorityResponse).status()).toBe(400);
+  await expect(page.getByText("400 - Bad request")).toBeVisible();
+  await page.goto(detailsUrl);
 
   await page.fill('input[name="authority"]', authorityName);
 

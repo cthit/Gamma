@@ -43,30 +43,28 @@ class RedisThrottling(
         }
     }
 
-    override fun refund(reservation: ThrottleReservation) =
-        completeSecurityOperation {
-            val issuedReservation = requireIssuedReservation(reservation)
-            val result =
-                redis.evaluateLong(
-                    RedisThrottleScripts.REFUND,
-                    listOf(redis.key(RedisArea.THROTTLE_RESERVATION, issuedReservation.id.toString())) +
-                        issuedReservation.refundableKeys.flatMap { key -> counterKeys(key).asList() },
-                    emptyList(),
-                )
-            if (result !in 0L..1L) throw RedisUnavailable(INVALID_THROTTLE_STATE)
-        }
+    override fun refund(reservation: ThrottleReservation) {
+        val issuedReservation = requireIssuedReservation(reservation)
+        val result =
+            redis.evaluateLong(
+                RedisThrottleScripts.REFUND,
+                listOf(redis.key(RedisArea.THROTTLE_RESERVATION, issuedReservation.id.toString())) +
+                    issuedReservation.refundableKeys.flatMap { key -> counterKeys(key).asList() },
+                emptyList(),
+            )
+        if (result !in 0L..1L) throw RedisUnavailable(INVALID_THROTTLE_STATE)
+    }
 
-    override fun commit(reservation: ThrottleReservation) =
-        completeSecurityOperation {
-            val issuedReservation = requireIssuedReservation(reservation)
-            val result =
-                redis.evaluateLong(
-                    RedisThrottleScripts.COMPLETE_RESERVATION,
-                    listOf(redis.key(RedisArea.THROTTLE_RESERVATION, issuedReservation.id.toString())),
-                    emptyList(),
-                )
-            if (result !in 0L..1L) throw RedisUnavailable(INVALID_THROTTLE_STATE)
-        }
+    override fun commit(reservation: ThrottleReservation) {
+        val issuedReservation = requireIssuedReservation(reservation)
+        val result =
+            redis.evaluateLong(
+                RedisThrottleScripts.COMPLETE_RESERVATION,
+                listOf(redis.key(RedisArea.THROTTLE_RESERVATION, issuedReservation.id.toString())),
+                emptyList(),
+            )
+        if (result !in 0L..1L) throw RedisUnavailable(INVALID_THROTTLE_STATE)
+    }
 
     override fun charge(
         key: ThrottleKey,

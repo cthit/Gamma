@@ -1,6 +1,5 @@
 package it.chalmers.gamma.organization
 
-import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.platform.database.matchesStoredVersion
@@ -24,6 +23,7 @@ data class GroupUpdate(
 
 class UpdateGroup(
     private val database: DatabaseFactory,
+    private val access: OrganizationAccess,
 ) {
     // The version claim and membership replacement form one atomic group edit.
     @Suppress("LongMethod")
@@ -31,10 +31,9 @@ class UpdateGroup(
         actor: Actor,
         input: GroupUpdate,
     ) {
-        val administrator = actor as? Actor.User ?: throw AccessDenied()
-        if (!administrator.isAdministrator) throw AccessDenied()
-
         database.commitTransaction {
+            access.requireAdministratorIn(this, actor)
+            requireUniqueMemberships(input.memberships)
             if (SuperGroupsTable.selectAll().where { SuperGroupsTable.id eq input.superGroupId.value }.count() != 1L) {
                 throw OrganizationNotFound("Super group does not exist")
             }

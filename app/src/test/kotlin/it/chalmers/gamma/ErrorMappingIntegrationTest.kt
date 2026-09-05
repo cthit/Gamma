@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
 
-class ErrorMappingTest : SpringApplicationTest() {
+class ErrorMappingIntegrationTest : SpringApplicationTest() {
     @Test
     fun `browser errors use stable status codes and generic messages`() {
         val browser = browser(uniqueAddress())

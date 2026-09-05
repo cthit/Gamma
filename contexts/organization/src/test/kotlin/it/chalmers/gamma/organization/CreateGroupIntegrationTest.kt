@@ -15,7 +15,11 @@ class CreateGroupIntegrationTest {
     @Test
     fun `creates the group and initial memberships before returning`() =
         withGroupDatabase { database, queries ->
-            val id = CreateGroup(database).create(groupAdministrator, input, listOf(groupMembership))
+            val id =
+                CreateGroup(
+                    database,
+                    organizationAccess(database),
+                ).create(groupAdministrator, input, listOf(groupMembership))
 
             val group = assertNotNull(queries.findGroup(id))
             assertEquals(input.name, group.name)
@@ -35,7 +39,7 @@ class CreateGroupIntegrationTest {
         withGroupDatabase { database, queries ->
             val before = queries.listGroups()
             assertFailsWith<AccessDenied> {
-                CreateGroup(database).create(ordinaryGroupUser, input, emptyList())
+                CreateGroup(database, organizationAccess(database)).create(ordinaryGroupUser, input, emptyList())
             }
             assertEquals(before, queries.listGroups())
         }
@@ -45,7 +49,7 @@ class CreateGroupIntegrationTest {
         withGroupDatabase { database, queries ->
             val before = queries.listGroups()
             assertFailsWith<OrganizationNotFound> {
-                CreateGroup(database).create(
+                CreateGroup(database, organizationAccess(database)).create(
                     groupAdministrator,
                     input.copy(superGroupId = SuperGroupId.generate()),
                     emptyList(),
@@ -60,7 +64,23 @@ class CreateGroupIntegrationTest {
             val before = queries.listGroups()
             val invalidMember = groupMembership.copy(userId = UserId.generate())
             assertFails {
-                CreateGroup(database).create(groupAdministrator, input, listOf(groupMembership, invalidMember))
+                CreateGroup(
+                    database,
+                    organizationAccess(database),
+                ).create(groupAdministrator, input, listOf(groupMembership, invalidMember))
+            }
+            assertEquals(before, queries.listGroups())
+        }
+
+    @Test
+    fun `duplicate initial membership rejects creation without persisting a group`() =
+        withGroupDatabase { database, queries ->
+            val before = queries.listGroups()
+            assertFailsWith<OrganizationConflict> {
+                CreateGroup(
+                    database,
+                    organizationAccess(database),
+                ).create(groupAdministrator, input, listOf(groupMembership, groupMembership))
             }
             assertEquals(before, queries.listGroups())
         }
