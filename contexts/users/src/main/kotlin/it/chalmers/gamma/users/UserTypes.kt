@@ -143,22 +143,6 @@ data class UserProfile(
     override fun toString(): String = "UserProfile(<redacted>)"
 }
 
-data class MyProfileUpdate(
-    val nick: Nick,
-    val firstName: FirstName,
-    val lastName: LastName,
-    val acceptanceYear: AcceptanceYear,
-    val language: Language?,
-    val email: Email,
-    val expectedVersion: Int,
-) {
-    init {
-        require(expectedVersion >= 0) { "Expected version cannot be negative" }
-    }
-
-    override fun toString(): String = "MyProfileUpdate(<redacted>)"
-}
-
 private fun String.hasNoHtmlSensitiveCharacters(): Boolean = none { it in HTML_SENSITIVE_CHARACTERS }
 
 private val HTML_SENSITIVE_CHARACTERS = setOf('&', '<', '>', '"', '\'')

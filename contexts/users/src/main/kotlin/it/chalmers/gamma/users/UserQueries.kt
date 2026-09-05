@@ -1,5 +1,7 @@
 package it.chalmers.gamma.users
 
+import it.chalmers.gamma.platform.core.AccessDenied
+import it.chalmers.gamma.platform.core.Actor
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import org.jetbrains.exposed.v1.core.JoinType
 import org.jetbrains.exposed.v1.core.Op
@@ -13,14 +15,28 @@ import org.jetbrains.exposed.v1.core.isNull
 import org.jetbrains.exposed.v1.core.like
 import org.jetbrains.exposed.v1.core.lowerCase
 import org.jetbrains.exposed.v1.core.or
+import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.selectAll
+import java.sql.Connection
 import java.time.Year
 
-internal class UserQueries(
+class UserQueries(
     private val database: DatabaseFactory,
 ) {
+    fun myProfile(actor: Actor): UserProfile =
+        database.commitTransaction(readOnly = true) {
+            val user = actor as? Actor.User ?: throw AccessDenied()
+            usersWithAvatars()
+                .selectAll()
+                .where { UsersTable.id eq user.userId.value }
+                .limit(1)
+                .firstOrNull()
+                ?.toUserProfile()
+                ?: throw UserNotFound(USER_NOT_FOUND_MESSAGE)
+        }
+
     fun findUser(identifier: UserIdentifier): UserProfile? =
-        database.transaction(readOnly = true) {
+        database.commitTransaction(readOnly = true) {
             usersWithAvatars()
                 .selectAll()
                 .where {
@@ -35,62 +51,92 @@ internal class UserQueries(
                 ?.toUserProfile()
         }
 
-    fun usersByIds(userIds: Set<UserId>): List<UserProfile> {
+    fun usersByIdsIn(
+        transaction: JdbcTransaction,
+        userIds: Set<UserId>,
+    ): List<UserProfile> {
+        database.requireTransaction(transaction)
         if (userIds.isEmpty()) return emptyList()
-        return database.transaction(readOnly = true) {
-            usersWithAvatars()
-                .selectAll()
-                .where { UsersTable.id inList userIds.map(UserId::value) }
-                .map { it.toUserProfile() }
-        }
+        return usersWithAvatars()
+            .selectAll()
+            .where { UsersTable.id inList userIds.map(UserId::value) }
+            .map { it.toUserProfile() }
     }
 
     fun directoryUserPage(request: DirectoryUserPageRequest): DirectoryUserPage {
         val scope = request.scope
-        return database.transaction(readOnly = scope.access != DirectoryUserAccess.ADMINISTRATOR) {
-            if (scope.access == DirectoryUserAccess.ADMINISTRATOR) {
-                requireAdministratorForRead(scope.userId)
-            }
-            val users = usersWithAvatars().selectAll()
-            val conditions =
-                listOfNotNull(
-                    directoryTextCondition(request.query),
-                    request.afterCid?.let { UsersTable.cid greater it.value },
-                    directoryScopeCondition(request.scope),
-                )
-            conditions.reduceOrNull { combined, condition -> combined and condition }?.let { condition ->
-                users.where { condition }
-            }
-            val matchedUsers =
-                users
-                    .orderBy(UsersTable.cid, SortOrder.ASC)
-                    .limit(MAXIMUM_DIRECTORY_PAGE_SIZE + 1)
-                    .map { it.toUserProfile() }
-                    .map { it.toDirectoryUser() }
-            val pageUsers = matchedUsers.take(MAXIMUM_DIRECTORY_PAGE_SIZE)
-            DirectoryUserPage(
-                users = pageUsers,
-                nextCid = pageUsers.lastOrNull()?.cid?.takeIf { matchedUsers.size > MAXIMUM_DIRECTORY_PAGE_SIZE },
-            )
+        return database.commitTransaction(
+            readOnly = scope.access != DirectoryUserAccess.ADMINISTRATOR,
+            isolationLevel = Connection.TRANSACTION_REPEATABLE_READ,
+        ) {
+            directoryUserPageIn(this, request)
         }
     }
 
-    fun findDirectoryUser(userId: UserId): DirectoryUser? =
-        database.transaction(readOnly = true) {
-            usersWithAvatars()
-                .selectAll()
-                .where { UsersTable.id eq userId.value }
-                .limit(1)
-                .firstOrNull()
-                ?.toUserProfile()
-                ?.toDirectoryUser()
+    fun directoryUserPageIn(
+        transaction: JdbcTransaction,
+        request: DirectoryUserPageRequest,
+    ): DirectoryUserPage {
+        database.requireTransaction(transaction)
+        val scope = request.scope
+        if (scope.access == DirectoryUserAccess.ADMINISTRATOR) {
+            transaction.requireAdministratorForRead(scope.userId)
         }
+        val users = usersWithAvatars().selectAll()
+        val conditions =
+            listOfNotNull(
+                directoryTextCondition(request.query),
+                request.afterCid?.let { UsersTable.cid greater it.value },
+                directoryScopeCondition(request.scope),
+            )
+        conditions.reduceOrNull { combined, condition -> combined and condition }?.let { condition ->
+            users.where { condition }
+        }
+        val matchedUsers =
+            users
+                .orderBy(UsersTable.cid, SortOrder.ASC)
+                .limit(MAXIMUM_DIRECTORY_PAGE_SIZE + 1)
+                .map { it.toUserProfile() }
+                .map { it.toDirectoryUser() }
+        val pageUsers = matchedUsers.take(MAXIMUM_DIRECTORY_PAGE_SIZE)
+        return DirectoryUserPage(
+            users = pageUsers,
+            nextCid = pageUsers.lastOrNull()?.cid?.takeIf { matchedUsers.size > MAXIMUM_DIRECTORY_PAGE_SIZE },
+        )
+    }
+
+    fun directoryUsersByIdsIn(
+        transaction: JdbcTransaction,
+        userIds: Set<UserId>,
+    ): List<DirectoryUser> {
+        database.requireTransaction(transaction)
+        if (userIds.isEmpty()) return emptyList()
+        return usersWithAvatars()
+            .selectAll()
+            .where { UsersTable.id inList userIds.map(UserId::value) }
+            .orderBy(UsersTable.cid, SortOrder.ASC)
+            .map { it.toUserProfile().toDirectoryUser() }
+    }
+
+    fun findDirectoryUserIn(
+        transaction: JdbcTransaction,
+        userId: UserId,
+    ): DirectoryUser? {
+        database.requireTransaction(transaction)
+        return usersWithAvatars()
+            .selectAll()
+            .where { UsersTable.id eq userId.value }
+            .limit(1)
+            .firstOrNull()
+            ?.toUserProfile()
+            ?.toDirectoryUser()
+    }
 
     fun administrativeUser(
         administratorId: UserId,
         userId: UserId,
     ): AdministrativeUser? =
-        database.transaction {
+        database.commitTransaction(readOnly = false, isolationLevel = Connection.TRANSACTION_REPEATABLE_READ) {
             requireAdministratorForRead(administratorId)
             val gdprTrained =
                 GdprTrainedUsersTable
@@ -108,7 +154,7 @@ internal class UserQueries(
         }
 
     fun administrativeUsers(administratorId: UserId): List<UserProfile> =
-        database.transaction {
+        database.commitTransaction(readOnly = false, isolationLevel = Connection.TRANSACTION_REPEATABLE_READ) {
             requireAdministratorForRead(administratorId)
             usersWithAvatars()
                 .selectAll()
@@ -116,92 +162,55 @@ internal class UserQueries(
                 .map { it.toUserProfile() }
         }
 
-    fun apiUsers(): List<ApiUserProfile> =
-        database.transaction(readOnly = true) {
-            val gdprTrainedUserIds =
-                GdprTrainedUsersTable.selectAll().mapTo(
-                    mutableSetOf(),
-                ) { it[GdprTrainedUsersTable.userId] }
-            usersWithAvatars()
-                .selectAll()
-                .orderBy(UsersTable.cid, SortOrder.ASC)
-                .map { row -> row.toUserProfile().toApiUserProfile(row[UsersTable.id] in gdprTrainedUserIds) }
-        }
-
-    fun apiUsersByIds(userIds: Set<UserId>): List<ApiUserProfile> {
-        if (userIds.isEmpty()) return emptyList()
-        val ids = userIds.map(UserId::value)
-        return database.transaction(readOnly = true) {
-            val gdprTrainedUserIds =
-                GdprTrainedUsersTable
-                    .selectAll()
-                    .where { GdprTrainedUsersTable.userId inList ids }
-                    .mapTo(mutableSetOf()) { it[GdprTrainedUsersTable.userId] }
-            usersWithAvatars()
-                .selectAll()
-                .where { UsersTable.id inList ids }
-                .map { row -> row.toUserProfile().toApiUserProfile(row[UsersTable.id] in gdprTrainedUserIds) }
-        }
+    fun apiUsersIn(transaction: JdbcTransaction): List<ApiUserProfile> {
+        database.requireTransaction(transaction)
+        val gdprTrainedUserIds =
+            GdprTrainedUsersTable.selectAll().mapTo(
+                mutableSetOf(),
+            ) { it[GdprTrainedUsersTable.userId] }
+        return usersWithAvatars()
+            .selectAll()
+            .orderBy(UsersTable.cid, SortOrder.ASC)
+            .map { row -> row.toUserProfile().toApiUserProfile(row[UsersTable.id] in gdprTrainedUserIds) }
     }
 
-    fun apiUser(userId: UserId): ApiUserProfile? =
-        database.transaction(readOnly = true) {
-            val gdprTrained =
-                GdprTrainedUsersTable
-                    .selectAll()
-                    .where { GdprTrainedUsersTable.userId eq userId.value }
-                    .limit(1)
-                    .any()
-            usersWithAvatars()
+    fun apiUsersByIdsIn(
+        transaction: JdbcTransaction,
+        userIds: Set<UserId>,
+    ): List<ApiUserProfile> {
+        database.requireTransaction(transaction)
+        if (userIds.isEmpty()) return emptyList()
+        val ids = userIds.map(UserId::value)
+        val gdprTrainedUserIds =
+            GdprTrainedUsersTable
                 .selectAll()
-                .where { UsersTable.id eq userId.value }
-                .limit(1)
-                .firstOrNull()
-                ?.toUserProfile()
-                ?.toApiUserProfile(gdprTrained)
-        }
+                .where { GdprTrainedUsersTable.userId inList ids }
+                .mapTo(mutableSetOf()) { it[GdprTrainedUsersTable.userId] }
+        return usersWithAvatars()
+            .selectAll()
+            .where { UsersTable.id inList ids }
+            .map { row -> row.toUserProfile().toApiUserProfile(row[UsersTable.id] in gdprTrainedUserIds) }
+    }
 
-    fun userExists(cid: Cid): Boolean =
-        database.transaction(readOnly = true) {
-            UsersTable
-                .selectAll()
-                .where { UsersTable.cid eq cid.value }
-                .limit(1)
-                .any()
-        }
-
-    fun isAdministrator(userId: UserId): Boolean =
-        database.transaction(readOnly = true) {
-            AdminUsersTable.selectAll().where { AdminUsersTable.userId eq userId.value }.count() == 1L
-        }
-
-    fun sessionAccess(userId: UserId): SessionAccess? =
-        database.transaction(readOnly = true) {
-            UsersTable
-                .join(
-                    otherTable = AdminUsersTable,
-                    joinType = JoinType.LEFT,
-                    onColumn = UsersTable.id,
-                    otherColumn = AdminUsersTable.userId,
-                ).selectAll()
-                .where { UsersTable.id eq userId.value }
-                .limit(1)
-                .firstOrNull()
-                ?.let { row ->
-                    SessionAccess(
-                        locked = row[UsersTable.locked] == true,
-                        administrator = row.getOrNull(AdminUsersTable.userId) != null,
-                    )
-                }
-        }
-
-    fun isGdprTrained(userId: UserId): Boolean =
-        database.transaction(readOnly = true) {
+    fun apiUserIn(
+        transaction: JdbcTransaction,
+        userId: UserId,
+    ): ApiUserProfile? {
+        database.requireTransaction(transaction)
+        val gdprTrained =
             GdprTrainedUsersTable
                 .selectAll()
                 .where { GdprTrainedUsersTable.userId eq userId.value }
-                .count() == 1L
-        }
+                .limit(1)
+                .any()
+        return usersWithAvatars()
+            .selectAll()
+            .where { UsersTable.id eq userId.value }
+            .limit(1)
+            .firstOrNull()
+            ?.toUserProfile()
+            ?.toApiUserProfile(gdprTrained)
+    }
 
     private fun usersWithAvatars() =
         UsersTable.join(
@@ -268,8 +277,3 @@ internal class UserQueries(
         const val MAXIMUM_DIRECTORY_QUERY_TERMS = 5
     }
 }
-
-data class SessionAccess(
-    val locked: Boolean,
-    val administrator: Boolean,
-)

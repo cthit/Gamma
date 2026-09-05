@@ -78,11 +78,34 @@ internal fun JdbcTransaction.loadClients(clientUids: Set<ClientUid>? = null): Li
         }
 }
 
-internal fun JdbcTransaction.findClientUid(clientId: ClientId): ClientUid? =
-    ClientsTable
+internal fun JdbcTransaction.loadClientAuthorities(clientUid: ClientUid): List<ClientAuthority> {
+    val users =
+        ClientAuthorityUsersTable
+            .selectAll()
+            .where { ClientAuthorityUsersTable.clientUid eq clientUid.value }
+            .groupBy(
+                { it[ClientAuthorityUsersTable.authorityName] },
+                { UserId(it[ClientAuthorityUsersTable.userId]) },
+            )
+    val superGroups =
+        ClientAuthoritySuperGroupsTable
+            .selectAll()
+            .where { ClientAuthoritySuperGroupsTable.clientUid eq clientUid.value }
+            .groupBy(
+                { it[ClientAuthoritySuperGroupsTable.authorityName] },
+                { it[ClientAuthoritySuperGroupsTable.superGroupId] },
+            )
+    return ClientAuthoritiesTable
         .selectAll()
-        .where { ClientsTable.clientId eq clientId.value }
-        .limit(1)
-        .firstOrNull()
-        ?.get(ClientsTable.uid)
-        ?.let(::ClientUid)
+        .where { ClientAuthoritiesTable.clientUid eq clientUid.value }
+        .orderBy(ClientAuthoritiesTable.name, SortOrder.ASC)
+        .map {
+            val name = it[ClientAuthoritiesTable.name]
+            ClientAuthority(
+                clientUid,
+                AuthorityName(name),
+                users[name].orEmpty().toSet(),
+                superGroups[name].orEmpty().toSet(),
+            )
+        }
+}

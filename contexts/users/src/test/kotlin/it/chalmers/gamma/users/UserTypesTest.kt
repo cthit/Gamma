@@ -143,7 +143,6 @@ class UserTypesTest {
                 profile.nick,
                 profile.firstName,
                 profile.lastName,
-                profile.acceptanceYear,
                 profile.language,
                 profile.email,
                 expectedVersion = profile.version,

@@ -21,13 +21,34 @@ class OAuthClientRowQueriesIntegrationTest {
             DatabaseFactory(
                 DatabaseSettings(postgres.jdbcUrl, postgres.username, postgres.password),
             ).use { database ->
-                val clients = OAuthClientStore(database, bcryptCost = 10)
+                val clients = OAuthClientQueries(database)
                 val ownerId = UserId.parse("88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f")
 
                 run {
-                    val alpha = clients.createClient(newClient("Alpha client", ClientOwner.User(ownerId)))
-                    val middle = clients.createClient(newClient("Middle client", ClientOwner.User(ownerId)))
-                    val zulu = clients.createClient(newClient("Zulu client", ClientOwner.Official))
+                    val alpha =
+                        CreateClient(
+                            database,
+                            bcryptCost = 10,
+                        ).let { creation ->
+                            val prepared = creation.prepare(newClient("Alpha client", ClientOwner.User(ownerId)))
+                            database.commitTransaction { creation.insertIn(this, prepared) }
+                        }
+                    val middle =
+                        CreateClient(
+                            database,
+                            bcryptCost = 10,
+                        ).let { creation ->
+                            val prepared = creation.prepare(newClient("Middle client", ClientOwner.User(ownerId)))
+                            database.commitTransaction { creation.insertIn(this, prepared) }
+                        }
+                    val zulu =
+                        CreateClient(
+                            database,
+                            bcryptCost = 10,
+                        ).let { creation ->
+                            val prepared = creation.prepare(newClient("Zulu client", ClientOwner.Official))
+                            database.commitTransaction { creation.insertIn(this, prepared) }
+                        }
                     prepareLegacyRows(postgres, alpha.client.uid, middle.client.uid)
 
                     val expectedAlpha =
@@ -37,26 +58,42 @@ class OAuthClientRowQueriesIntegrationTest {
                         )
                     val expectedZulu = zulu.client.copy(scopes = setOf(Scope.OPENID, Scope.PROFILE))
 
-                    assertEquals(listOf(expectedAlpha, expectedZulu), clients.listClients(null))
-                    assertEquals(listOf(expectedAlpha), clients.listClients(ownerId))
-                    assertEquals(expectedAlpha, clients.findClient(alpha.client.uid))
-                    assertEquals(expectedAlpha, clients.findClient(alpha.client.clientId))
-                    assertNull(clients.findClient(middle.client.uid))
-                    assertNull(clients.findClient(middle.client.clientId))
+                    assertEquals(
+                        listOf(expectedAlpha, expectedZulu),
+                        database.commitTransaction(readOnly = true) {
+                            clients.listClientsIn(this)
+                        },
+                    )
+                    assertEquals(
+                        listOf(expectedAlpha),
+                        database.commitTransaction(readOnly = true) {
+                            clients.listClientsIn(this, ownerId)
+                        },
+                    )
+                    assertEquals(expectedAlpha, OAuthProtocolClients(database).serverClient(alpha.client.uid)?.client)
+                    assertEquals(
+                        expectedAlpha,
+                        OAuthProtocolClients(database).serverClient(alpha.client.clientId)?.client,
+                    )
+                    assertNull(OAuthProtocolClients(database).serverClient(middle.client.uid)?.client)
+                    assertNull(OAuthProtocolClients(database).serverClient(middle.client.clientId)?.client)
 
                     val expectedServerClient =
                         OAuthServerClient(
                             expectedAlpha,
                             readEncodedSecret(postgres, alpha.client.uid),
                         )
-                    assertEquals(expectedServerClient, clients.serverClient(alpha.client.uid))
-                    assertEquals(expectedServerClient, clients.serverClient(alpha.client.clientId))
+                    assertEquals(expectedServerClient, OAuthProtocolClients(database).serverClient(alpha.client.uid))
+                    assertEquals(
+                        expectedServerClient,
+                        OAuthProtocolClients(database).serverClient(alpha.client.clientId),
+                    )
                     assertNull(
-                        clients.serverClient(
+                        OAuthProtocolClients(database).serverClient(
                             ClientUid(UUID.fromString("59000000-0000-0000-0000-000000000010")),
                         ),
                     )
-                    assertNull(clients.serverClient(ClientId("Z".repeat(30))))
+                    assertNull(OAuthProtocolClients(database).serverClient(ClientId("Z".repeat(30))))
                 }
             }
         }

@@ -6,10 +6,10 @@ import it.chalmers.gamma.media.MediaStore
 import it.chalmers.gamma.media.MediaUri
 import it.chalmers.gamma.organization.Group
 import it.chalmers.gamma.organization.GroupId
-import it.chalmers.gamma.organization.OrganizationStore
+import it.chalmers.gamma.organization.OrganizationQueries
 import it.chalmers.gamma.organization.SuperGroupId
 import it.chalmers.gamma.users.UserId
-import it.chalmers.gamma.users.UserStore
+import it.chalmers.gamma.users.UserQueries
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,8 +20,8 @@ import java.util.concurrent.ThreadLocalRandom
 @RestController
 class MediaController(
     private val media: MediaStore,
-    private val users: UserStore,
-    private val organizations: OrganizationStore,
+    private val users: UserQueries,
+    private val organizations: OrganizationQueries,
 ) {
     @GetMapping("/images/user/avatar/{id}")
     fun userAvatar(

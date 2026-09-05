@@ -3,10 +3,12 @@ package it.chalmers.gamma.platform.database
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import com.zaxxer.hikari.util.PropertyElf
+import org.jetbrains.exposed.v1.core.DatabaseConfig
 import org.jetbrains.exposed.v1.core.Key
 import org.jetbrains.exposed.v1.core.statements.StatementInterceptor
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.TransactionManager
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction as exposedTransaction
 import java.sql.Connection
 import java.sql.SQLException
@@ -19,7 +21,7 @@ class DatabaseFactory private constructor(
 ) : AutoCloseable {
     private val ownedConnectionPool = resource.ownedConnectionPool
     internal val dataSource: DataSource = resource.dataSource
-    private val database = Database.connect(dataSource)
+    private val database = Database.connect(dataSource, databaseConfig = DatabaseConfig { defaultMaxAttempts = 3 })
     private val registeredInterceptorsKey = Key<Unit>()
     private val transactionDefaults =
         try {
@@ -53,17 +55,20 @@ class DatabaseFactory private constructor(
         }
 
     /**
-     * Runs [statement] in a database transaction.
+     * Owns a complete operation's transaction. Normal return means this transaction committed.
      *
-     * Exposed can execute [statement] up to three times when an attempt throws [SQLException].
-     * Transaction bodies must therefore be retry-safe and must not perform non-idempotent external effects.
+     * Rejects an enclosing transaction before running any operation code. SQL failures may retry
+     * the database phase up to three times, so external effects must remain outside this block.
      */
-    fun <T> transaction(
+    fun <T> commitTransaction(
         readOnly: Boolean = transactionDefaults.readOnly,
         isolationLevel: Int = transactionDefaults.isolationLevel,
         statement: JdbcTransaction.() -> T,
-    ): T =
-        exposedTransaction(
+    ): T {
+        check(TransactionManager.currentOrNull() == null) {
+            "A complete database operation cannot run inside another transaction"
+        }
+        return exposedTransaction(
             db = database,
             transactionIsolation = isolationLevel,
             readOnly = readOnly,
@@ -73,6 +78,14 @@ class DatabaseFactory private constructor(
             }
             statement()
         }
+    }
+
+    /** Validates a participant's explicit transaction before it reads or mutates context-owned tables. */
+    fun requireTransaction(transaction: JdbcTransaction) {
+        check(TransactionManager.currentOrNull() === transaction && transaction.db === database) {
+            "A database participant requires its caller's active transaction on the same database"
+        }
+    }
 
     fun isTableEmpty(tableName: String): Boolean {
         require(tableName.matches(Regex("^[a-z][a-z0-9_]*$"))) { "Invalid table name" }

@@ -1,13 +1,15 @@
 package it.chalmers.gamma.organization.views
 
 import it.chalmers.gamma.organization.Group
+import it.chalmers.gamma.organization.GroupDetailsPage
+import it.chalmers.gamma.organization.GroupEditor
 import it.chalmers.gamma.organization.Membership
+import it.chalmers.gamma.organization.PersonalPostName
 import it.chalmers.gamma.organization.Post
 import it.chalmers.gamma.organization.PostId
 import it.chalmers.gamma.organization.SuperGroup
 import it.chalmers.gamma.organization.UnofficialPostName
 import it.chalmers.gamma.platform.core.SuperGroupType
-import it.chalmers.gamma.platform.core.UserId
 import it.chalmers.gamma.platform.html.GammaPageContext
 import it.chalmers.gamma.platform.html.csrfInput
 import it.chalmers.gamma.platform.html.gammaPage
@@ -131,14 +133,6 @@ fun renderGroupEditor(
         }
     }
 
-data class GroupEditor(
-    val superGroups: List<SuperGroup>,
-    val group: Group? = null,
-    val users: List<DirectoryUser> = emptyList(),
-    val posts: List<Post> = emptyList(),
-    val memberships: List<Membership> = emptyList(),
-)
-
 fun renderNewMember(
     users: List<DirectoryUser>,
     posts: List<Post>,
@@ -147,28 +141,20 @@ fun renderNewMember(
         .createHTML()
         .div { memberRow(users, posts, null) }
 
-fun parsePersonalPostNames(parameters: Map<String, List<String>>): List<Pair<PostId, UnofficialPostName>> {
+fun parsePersonalPostNames(parameters: Map<String, List<String>>): List<PersonalPostName> {
     val flatPostIds = parameters["postId"].orEmpty()
     val flatNames = parameters["unofficialPostName"].orEmpty()
     require(flatPostIds.size == flatNames.size) { "Every personal post must have one name" }
     if (flatPostIds.isNotEmpty()) {
         return flatPostIds.zip(flatNames).map { (postId, name) ->
-            PostId.parse(postId) to UnofficialPostName(name.ifBlank { null })
+            PersonalPostName(PostId.parse(postId), UnofficialPostName(name.ifBlank { null }))
         }
     }
     return parameters.entries.mapNotNull { (name, values) ->
         val match = Regex("postNames\\[([^]]+)]").matchEntire(name) ?: return@mapNotNull null
-        PostId.parse(match.groupValues[1]) to UnofficialPostName(values.single().ifBlank { null })
+        PersonalPostName(PostId.parse(match.groupValues[1]), UnofficialPostName(values.single().ifBlank { null }))
     }
 }
-
-data class GroupDetailsPage(
-    val group: Group,
-    val memberships: List<Membership>,
-    val users: Map<UserId, DirectoryUser>,
-    val posts: Map<it.chalmers.gamma.organization.PostId, Post>,
-    val ownUserId: UserId? = null,
-)
 
 fun renderGroupDetails(
     page: GammaPageContext,

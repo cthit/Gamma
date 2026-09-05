@@ -1,5 +1,7 @@
 package it.chalmers.gamma.users
 
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -12,16 +14,16 @@ class AdministratorBootstrapConcurrencyIntegrationTest {
     fun `bootstrap attempts that reach password hashing together create one complete administrator`() =
         withTwoUserDatabases(loadRegressionFixture = false) { firstDatabase, secondDatabase ->
             val passwordHasher = ConcurrentBootstrapPasswordHasher()
-            val firstStore = UserStore(firstDatabase, passwordHasher)
-            val secondStore = UserStore(secondDatabase, passwordHasher)
+            val firstBootstrap = UserBootstrap(firstDatabase, passwordHasher)
+            val secondBootstrap = UserBootstrap(secondDatabase, passwordHasher)
 
             Executors.newFixedThreadPool(2).use { workers ->
                 val start = CountDownLatch(1)
                 val attempts =
-                    listOf(firstStore, secondStore).map { store ->
+                    listOf(firstBootstrap, secondBootstrap).map { bootstrap ->
                         workers.submit<AdministratorBootstrapResult> {
                             start.await()
-                            UserBootstrap(store).ensureAdministrator(PlainTextPassword("bootstrap password"))
+                            bootstrap.ensureAdministrator(PlainTextPassword("bootstrap password"))
                         }
                     }
                 start.countDown()
@@ -30,10 +32,22 @@ class AdministratorBootstrapConcurrencyIntegrationTest {
                     listOf(AdministratorBootstrapResult.ALREADY_CONFIGURED, AdministratorBootstrapResult.CREATED),
                     attempts.map { it.get() }.sortedBy(AdministratorBootstrapResult::name),
                 )
-                val queries = UserStoreForQueries(firstDatabase)
+                val queries = UserQueries(firstDatabase)
                 val administrator = checkNotNull(queries.findUser(Cid("admin")))
-                assertTrue(queries.isAdministrator(administrator.id))
-                assertTrue(queries.isGdprTrained(administrator.id))
+                firstDatabase.commitTransaction(readOnly = true) {
+                    assertTrue(
+                        AdminUsersTable
+                            .selectAll()
+                            .where { AdminUsersTable.userId eq administrator.id.value }
+                            .any(),
+                    )
+                    assertTrue(
+                        GdprTrainedUsersTable
+                            .selectAll()
+                            .where { GdprTrainedUsersTable.userId eq administrator.id.value }
+                            .any(),
+                    )
+                }
             }
         }
 }

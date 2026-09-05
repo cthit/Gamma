@@ -41,15 +41,19 @@ data class ApiKey(
     val version: Int,
 )
 
+sealed interface ApiKeySettingsUpdate {
+    val version: Int
+}
+
 data class ApiKeyInfoSettings(
-    val version: Int,
+    override val version: Int,
     val superGroupTypes: List<SuperGroupType>,
-)
+) : ApiKeySettingsUpdate
 
 data class ApiKeyAccountScaffoldSettings(
-    val version: Int,
+    override val version: Int,
     val superGroupTypes: List<SuperGroupTypeSetting>,
-)
+) : ApiKeySettingsUpdate
 
 data class SuperGroupTypeSetting(
     val type: SuperGroupType,

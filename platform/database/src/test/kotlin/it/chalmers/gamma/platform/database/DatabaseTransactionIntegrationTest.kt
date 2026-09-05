@@ -26,7 +26,7 @@ class DatabaseTransactionIntegrationTest {
             ).use { database ->
                 assertFailsWith<SQLException> {
                     run {
-                        database.transaction(readOnly = true) {
+                        database.commitTransaction(readOnly = true) {
                             exec("INSERT INTO gamma_read_only_test (value) VALUES (1)")
                         }
                     }
@@ -34,7 +34,7 @@ class DatabaseTransactionIntegrationTest {
                 assertTrue(database.isTableEmpty("gamma_read_only_test"))
 
                 run {
-                    database.transaction {
+                    database.commitTransaction {
                         exec("INSERT INTO gamma_read_only_test (value) VALUES (1)")
                     }
                 }
@@ -65,7 +65,7 @@ class DatabaseTransactionIntegrationTest {
             DatabaseFactory(settings).use { database ->
                 val transactionIsolation =
                     run {
-                        database.transaction {
+                        database.commitTransaction {
                             exec("SHOW transaction_isolation") { result ->
                                 check(result.next())
                                 result.getString(1)
@@ -76,7 +76,7 @@ class DatabaseTransactionIntegrationTest {
                 assertEquals("serializable", transactionIsolation)
                 assertFailsWith<SQLException> {
                     run {
-                        database.transaction {
+                        database.commitTransaction {
                             exec("INSERT INTO gamma_read_only_test (value) VALUES (1)")
                         }
                     }
@@ -102,11 +102,10 @@ class DatabaseTransactionIntegrationTest {
                 val actualFailure =
                     assertFailsWith<IllegalStateException> {
                         run {
-                            databaseUnitOfWork(database).run {
+                            database.commitTransaction {
                                 invocations += 1
-                                database.transaction {
-                                    exec("INSERT INTO gamma_boundary_test (value) VALUES (1)")
-                                }
+                                database.requireTransaction(this)
+                                exec("INSERT INTO gamma_boundary_test (value) VALUES (1)")
                                 throw expectedFailure
                             }
                         }
@@ -116,7 +115,7 @@ class DatabaseTransactionIntegrationTest {
                 assertTrue(database.isTableEmpty("gamma_boundary_test"))
                 assertFailsWith<IllegalStateException> {
                     run {
-                        database.transaction {
+                        database.commitTransaction {
                             exec("INSERT INTO gamma_boundary_test (value) VALUES (1)")
                             error("force rollback")
                         }
@@ -128,23 +127,22 @@ class DatabaseTransactionIntegrationTest {
     }
 
     @Test
-    fun `unit of work preserves database retries for SQL failures`() {
+    fun `complete operation preserves database retries for SQL failures`() {
         PostgresTestEnvironment(migrationLocations()).use { postgres ->
             DatabaseFactory(
                 DatabaseSettings(postgres.jdbcUrl, postgres.username, postgres.password, maximumPoolSize = 2),
             ).use { database ->
-                database.executeSqlScript("CREATE TABLE gamma_unit_of_work_test (value INTEGER NOT NULL)")
+                database.executeSqlScript("CREATE TABLE gamma_complete_operation_test (value INTEGER NOT NULL)")
                 var invocations = 0
                 val expectedFailure = SQLException("force rollback")
 
                 val actualFailure =
                     assertFailsWith<SQLException> {
                         run {
-                            databaseUnitOfWork(database).run {
+                            database.commitTransaction {
                                 invocations += 1
-                                database.transaction {
-                                    exec("INSERT INTO gamma_unit_of_work_test (value) VALUES (1)")
-                                }
+                                database.requireTransaction(this)
+                                exec("INSERT INTO gamma_complete_operation_test (value) VALUES (1)")
                                 throw expectedFailure
                             }
                         }
@@ -152,29 +150,28 @@ class DatabaseTransactionIntegrationTest {
 
                 assertSame(expectedFailure, actualFailure)
                 assertEquals(3, invocations)
-                assertTrue(database.isTableEmpty("gamma_unit_of_work_test"))
+                assertTrue(database.isTableEmpty("gamma_complete_operation_test"))
             }
         }
     }
 
     @Test
-    fun `unit of work preserves application failure and rolls back`() {
+    fun `complete operation preserves application failure and rolls back`() {
         PostgresTestEnvironment(migrationLocations()).use { postgres ->
             DatabaseFactory(
                 DatabaseSettings(postgres.jdbcUrl, postgres.username, postgres.password, maximumPoolSize = 2),
             ).use { database ->
-                database.executeSqlScript("CREATE TABLE gamma_unit_of_work_test (value INTEGER NOT NULL)")
+                database.executeSqlScript("CREATE TABLE gamma_complete_operation_test (value INTEGER NOT NULL)")
                 var invocations = 0
                 val expectedFailure = IllegalStateException("operation failed")
 
                 val actualFailure =
                     assertFailsWith<IllegalStateException> {
                         run {
-                            databaseUnitOfWork(database).run {
+                            database.commitTransaction {
                                 invocations += 1
-                                database.transaction {
-                                    exec("INSERT INTO gamma_unit_of_work_test (value) VALUES (1)")
-                                }
+                                database.requireTransaction(this)
+                                exec("INSERT INTO gamma_complete_operation_test (value) VALUES (1)")
                                 throw expectedFailure
                             }
                         }
@@ -182,7 +179,7 @@ class DatabaseTransactionIntegrationTest {
 
                 assertSame(expectedFailure, actualFailure)
                 assertEquals(1, invocations)
-                assertTrue(database.isTableEmpty("gamma_unit_of_work_test"))
+                assertTrue(database.isTableEmpty("gamma_complete_operation_test"))
             }
         }
     }

@@ -2,6 +2,8 @@ package it.chalmers.gamma.organization.views
 
 import it.chalmers.gamma.organization.EmailPrefix
 import it.chalmers.gamma.organization.Group
+import it.chalmers.gamma.organization.GroupDetailsPage
+import it.chalmers.gamma.organization.GroupEditor
 import it.chalmers.gamma.organization.GroupId
 import it.chalmers.gamma.organization.LocalizedText
 import it.chalmers.gamma.organization.Membership

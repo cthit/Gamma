@@ -1,8 +1,9 @@
 package it.chalmers.gamma
 
 import it.chalmers.gamma.apiaccess.ApiKeyName
-import it.chalmers.gamma.apiaccess.ApiKeyStore
+import it.chalmers.gamma.apiaccess.ApiKeyQueries
 import it.chalmers.gamma.apiaccess.ApiKeyType
+import it.chalmers.gamma.apiaccess.CreateApiKey
 import it.chalmers.gamma.organization.LocalizedText
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import org.slf4j.LoggerFactory
@@ -24,7 +25,8 @@ internal class MockDataBootstrap {
     fun mockDataBootstrapRunner(
         settings: AppSettings,
         database: DatabaseFactory,
-        apiAccess: ApiKeyStore,
+        apiAccess: ApiKeyQueries,
+        creation: CreateApiKey,
         objectMapper: ObjectMapper,
     ): ApplicationRunner =
         ApplicationRunner { _ ->
@@ -33,16 +35,18 @@ internal class MockDataBootstrap {
             val sql = fixture.toSql(database, Instant.now())
             if (sql.isNotBlank()) database.executeSqlScript(sql)
 
-            val existingNames = apiAccess.listApiKeys().mapTo(mutableSetOf()) { it.name }
+            val existingNames =
+                database.commitTransaction(readOnly = true) {
+                    apiAccess.listApiKeysIn(this).mapTo(mutableSetOf()) { it.name }
+                }
             ApiKeyType.entries.filterNot { it == ApiKeyType.CLIENT }.forEach { type ->
                 val name = ApiKeyName("${type.name.lowercase()}-mock")
                 if (name !in existingNames) {
-                    val created = apiAccess.createApiKey(name, LocalizedText.of(), type)
+                    val created = creation.create(name, LocalizedText.of(), type)
                     mockBootstrapLogger.info(
-                        "Api key of type {} has been generated with id: {} and code: {}",
+                        "Mock API key of type {} has been generated with id: {}",
                         type.name,
                         created.apiKey.id.value,
-                        created.token.value,
                     )
                 }
             }

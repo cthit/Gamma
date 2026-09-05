@@ -32,7 +32,7 @@ class DatabaseFactoryIntegrationTest {
                             }
                         }
                 }
-            assertEquals(listOf("1", "2", "3", "4", "5"), migrationVersions)
+            assertEquals(listOf("1", "2", "3", "4", "5", "6"), migrationVersions)
         }
     }
 

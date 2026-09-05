@@ -34,3 +34,20 @@ class OrganizationNotFound(
 class OrganizationConflict(
     message: String,
 ) : RuntimeException(message)
+
+data class NewGroupMembership(
+    val userId: UserId,
+    val postId: PostId,
+    val unofficialPostName: UnofficialPostName,
+)
+
+// These complete projections keep parent metadata and related rows in the same database snapshot.
+data class SuperGroupDetails(
+    val superGroup: SuperGroup,
+    val groups: List<Group>,
+)
+
+data class SuperGroupEditor(
+    val superGroup: SuperGroup,
+    val superGroupTypes: List<SuperGroupType>,
+)

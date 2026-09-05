@@ -29,7 +29,6 @@ export interface GammaStartOptions {
   env?: Record<string, string>;
   filesToCopy?: GammaFileToCopy[];
   waitForAdminCredentials?: boolean;
-  waitForBootstrapApiKeys?: boolean;
   apiKeys?: Partial<Record<GammaBootstrapApiKeyType, GammaApiKeyCredentials>>;
   publicProtocol?: "http" | "https";
   publicHostname?: string;
@@ -142,21 +141,6 @@ export async function startGammaInstance(
           adminPassword = adminMatch[2];
           credentialsFound = true;
         }
-
-        const apiKeyMatch = logLine.match(
-          /Api key of type ([A-Z_]+) has been generated with id: ([0-9a-fA-F-]+) and code: (\S+)/,
-        );
-        if (
-          apiKeyMatch?.[1] &&
-          isGammaBootstrapApiKeyType(apiKeyMatch[1]) &&
-          apiKeyMatch[2] &&
-          apiKeyMatch[3]
-        ) {
-          apiKeys[apiKeyMatch[1]] = {
-            id: apiKeyMatch[2],
-            token: apiKeyMatch[3],
-          };
-        }
       });
       stream.on("err", (line) => console.error(`[${logLabel}] ${line}`));
       stream.on("end", () => console.log(`[${logLabel}] Log stream ended`));
@@ -189,25 +173,6 @@ export async function startGammaInstance(
         );
       }
     }
-
-    if (options.waitForBootstrapApiKeys ?? false) {
-      const expectedApiKeyTypes = [
-        "INFO",
-        "ACCOUNT_SCAFFOLD",
-        "ALLOW_LIST",
-      ] as const;
-      await waitForCondition(() =>
-        expectedApiKeyTypes.every((type) => apiKeys[type] !== undefined),
-      );
-      const missingApiKeyTypes = expectedApiKeyTypes.filter(
-        (type) => apiKeys[type] === undefined,
-      );
-      if (missingApiKeyTypes.length > 0) {
-        throw new Error(
-          `[${logLabel}] Bootstrap API keys were not available after 60 seconds: ${missingApiKeyTypes.join(", ")}`,
-        );
-      }
-    }
   } catch (error) {
     await stopProxy(proxy);
     await gammaContainer.stop();
@@ -230,14 +195,6 @@ export async function stopGammaInstance(
   console.log("Stopping Gamma instance...");
   await stopProxy(instance.proxy);
   await instance.container.stop();
-}
-
-function isGammaBootstrapApiKeyType(
-  value: string,
-): value is GammaBootstrapApiKeyType {
-  return (
-    value === "INFO" || value === "ACCOUNT_SCAFFOLD" || value === "ALLOW_LIST"
-  );
 }
 
 async function waitForCondition(condition: () => boolean): Promise<void> {

@@ -17,7 +17,6 @@ import it.chalmers.gamma.oauth.views.ClientApiGroup
 import it.chalmers.gamma.oauth.views.ClientApiMembership
 import it.chalmers.gamma.oauth.views.ClientApiSuperGroup
 import it.chalmers.gamma.oauth.views.ClientApiUser
-import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.users.UserId
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
-import java.sql.Connection
 
 @RestController
 class RestApiController(
@@ -37,7 +35,6 @@ class RestApiController(
     private val accountScaffold: AccountScaffoldApi,
     private val allowList: AllowListApi,
     private val clientApi: ClientApi,
-    private val database: DatabaseFactory,
 ) {
     @GetMapping("/api/info/v1/blob")
     fun infoBlob(
@@ -86,15 +83,23 @@ class RestApiController(
     fun addAllowList(
         @RequestHeader(HttpHeaders.AUTHORIZATION, required = false) authorization: String?,
         @RequestBody body: AllowListRequest,
-    ): ResponseEntity<Any> =
-        withApiActor(authorization, ApiKeyType.ALLOW_LIST, readOnly = false) {
-            val failures = allowList.allow(body.cids.orEmpty())
-            if (failures.isEmpty()) {
-                AllowListAddedResponse("ALLOW_LIST_ADDED_RESPONSE", 200)
-            } else {
-                ApiFailure(HttpStatus.PARTIAL_CONTENT, failures)
-            }
+    ): ResponseEntity<Any> {
+        checkNotNull(authorization)
+        val authentication = checkNotNull(SecurityContextHolder.getContext().authentication)
+        val principal = authentication.principal as AuthenticatedApiKey
+        if (principal.key.type != ApiKeyType.ALLOW_LIST) {
+            return ResponseEntity.status(403).body(ApiError(403, "Forbidden", "FORBIDDEN"))
         }
+
+        // Each CID owns its commit or rollback. An outer transaction would let a caught
+        // item failure either retain rejected writes or roll back previously accepted items.
+        val failures = allowList.allow(body.cids.orEmpty())
+        return if (failures.isEmpty()) {
+            ResponseEntity.ok(AllowListAddedResponse("ALLOW_LIST_ADDED_RESPONSE", 200))
+        } else {
+            ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(failures)
+        }
+    }
 
     @GetMapping("/api/client/v1/groups")
     fun clientGroups(
@@ -158,7 +163,6 @@ class RestApiController(
     private fun withApiActor(
         authorization: String?,
         expectedType: ApiKeyType,
-        readOnly: Boolean = true,
         block: (ApiKeyId) -> Any,
     ): ResponseEntity<Any> {
         // The API security chain authenticates this header before a controller is invoked.
@@ -168,10 +172,7 @@ class RestApiController(
         if (principal.key.type != expectedType) {
             return ResponseEntity.status(403).body(ApiError(403, "Forbidden", "FORBIDDEN"))
         }
-        val result =
-            database.transaction(readOnly = readOnly, isolationLevel = Connection.TRANSACTION_REPEATABLE_READ) {
-                block(principal.key.id)
-            }
+        val result = block(principal.key.id)
         return when (result) {
             is ApiFailure -> ResponseEntity.status(result.status).body(result.body)
             else -> ResponseEntity.ok(result)

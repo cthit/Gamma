@@ -23,9 +23,9 @@ import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.charset.StandardCharsets
-import java.util.UUID
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicInteger
 
 @TestConfiguration(proxyBeanMethods = false)
 class TestInfrastructure {
@@ -219,7 +219,14 @@ internal fun extractCsrf(html: String): String =
         "Response did not contain a CSRF field"
     }
 
-internal fun uniqueAddress(): String = "10.${UUID.randomUUID().hashCode().ushr(16) and 255}.1.1"
+private val nextTestAddress = AtomicInteger()
+
+internal fun uniqueAddress(): String {
+    // Random selection from 256 addresses lets unrelated browsers share throttle state in a full run.
+    val address = nextTestAddress.incrementAndGet()
+    check(address in 1..0xFFFFFF) { "Test client address range exhausted" }
+    return "10.${address ushr 16 and 255}.${address ushr 8 and 255}.${address and 255}"
+}
 
 private fun encodeForm(fields: Map<String, List<String>>): String =
     fields.entries

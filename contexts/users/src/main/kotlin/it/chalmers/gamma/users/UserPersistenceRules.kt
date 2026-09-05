@@ -3,13 +3,9 @@ package it.chalmers.gamma.users
 import it.chalmers.gamma.platform.core.AccessDenied
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
-import org.jetbrains.exposed.v1.jdbc.deleteWhere
-import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
 import org.postgresql.util.PSQLException
 import java.sql.SQLException
-import java.time.LocalDateTime
 import java.util.Collections
 import java.util.IdentityHashMap
 
@@ -70,57 +66,6 @@ internal fun JdbcTransaction.requireNotFinalAdministrator(
     if (administrators.size == 1 && administrators.single() == userId.value) {
         throw UserConflict("Cannot $action the final administrator")
     }
-}
-
-internal fun JdbcTransaction.replaceUserAvatarPointer(
-    userId: UserId,
-    uri: String?,
-    now: LocalDateTime,
-    condition: UserAvatarWriteCondition,
-): String? {
-    require(uri == null || uri.length <= 255) { "Avatar URI is too long" }
-    val user =
-        UsersTable
-            .selectAll()
-            .where { UsersTable.id eq userId.value }
-            .forUpdate()
-            .limit(1)
-            .firstOrNull()
-            ?: throw UserNotFound(USER_NOT_FOUND_MESSAGE)
-    val previousAvatar =
-        UserAvatarsTable
-            .selectAll()
-            .where { UserAvatarsTable.userId eq userId.value }
-            .limit(1)
-            .firstOrNull()
-            ?.get(UserAvatarsTable.avatarUri)
-    if (condition is UserAvatarWriteCondition.CurrentUri && previousAvatar != condition.uri) {
-        throw UserConflict("User avatar has been changed")
-    }
-    UserAvatarsTable.deleteWhere { UserAvatarsTable.userId eq userId.value }
-    if (uri != null) {
-        UserAvatarsTable.insert {
-            it[UserAvatarsTable.userId] = userId.value
-            it[avatarUri] = uri
-            it[version] = 0
-            it[createdAt] = now
-            it[updatedAt] = now
-        }
-    }
-    val currentVersion = user[UsersTable.version] ?: 0
-    UsersTable.update({ UsersTable.id eq userId.value }) {
-        it[UsersTable.version] = currentVersion + 1
-        it[updatedAt] = now
-    }
-    return previousAvatar
-}
-
-internal sealed interface UserAvatarWriteCondition {
-    data object Unconditional : UserAvatarWriteCondition
-
-    data class CurrentUri(
-        val uri: String?,
-    ) : UserAvatarWriteCondition
 }
 
 @Suppress("TooGenericExceptionCaught") // Exposed may wrap the PostgreSQL exception below an intermediate exception.

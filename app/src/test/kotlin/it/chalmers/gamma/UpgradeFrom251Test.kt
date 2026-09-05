@@ -1,5 +1,6 @@
 package it.chalmers.gamma
 
+import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.testing.PostgresTestEnvironment
 import it.chalmers.gamma.testing.RedisTestEnvironment
 import org.springframework.boot.builder.SpringApplicationBuilder
@@ -29,6 +30,10 @@ class UpgradeFrom251Test {
                         "--application.mocking=false",
                         "--application.production=false",
                     ).use { context ->
+                        assertEquals(
+                            0,
+                            context.getBean(DatabaseFactory::class.java).tableRowCount("g_client_secret_rotation"),
+                        )
                         val port = requireNotNull((context as WebServerApplicationContext).webServer).port
                         val login = TestBrowser(port, uniqueAddress()).login("mscott", "password1337")
                         assertEquals(302, login.status)

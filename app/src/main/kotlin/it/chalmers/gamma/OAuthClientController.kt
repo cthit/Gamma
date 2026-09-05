@@ -3,11 +3,12 @@
 
 package it.chalmers.gamma
 
-import it.chalmers.gamma.oauth.AuthorityName
+import it.chalmers.gamma.oauth.ClientApprovals
 import it.chalmers.gamma.oauth.ClientOwner
 import it.chalmers.gamma.oauth.ClientUid
-import it.chalmers.gamma.oauth.OAuthClientAdministration
-import it.chalmers.gamma.oauth.RawClientSecret
+import it.chalmers.gamma.oauth.OAuthClientNotFound
+import it.chalmers.gamma.oauth.ReadOAuthClientDetails
+import it.chalmers.gamma.oauth.ReadOAuthClientLists
 import it.chalmers.gamma.oauth.views.OAuthClientForm
 import it.chalmers.gamma.oauth.views.newOAuthClient
 import it.chalmers.gamma.oauth.views.renderApprovedClients
@@ -15,34 +16,36 @@ import it.chalmers.gamma.oauth.views.renderClientDetails
 import it.chalmers.gamma.oauth.views.renderClientRestrictionRow
 import it.chalmers.gamma.oauth.views.renderClients
 import it.chalmers.gamma.oauth.views.renderCreateClient
-import it.chalmers.gamma.oauth.views.renderNewAuthority
-import it.chalmers.gamma.oauth.views.renderSuperGroupAuthorityRow
-import it.chalmers.gamma.oauth.views.renderUserAuthorityRow
 import it.chalmers.gamma.oauth.views.renderUserClients
-import it.chalmers.gamma.organization.OrganizationStore
-import it.chalmers.gamma.users.DirectoryUserPageRequest
-import it.chalmers.gamma.users.DirectoryUserScope
-import it.chalmers.gamma.users.UserId
-import it.chalmers.gamma.users.UserStore
+import it.chalmers.gamma.organization.OrganizationQueries
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+// Each dependency owns a distinct action or read; keep that wiring visible rather than hiding it in a bundle.
+@Suppress("LongParameterList")
 class OAuthClientController(
-    private val clients: OAuthClientAdministration,
-    private val userStore: UserStore,
-    private val organizations: OrganizationStore,
+    private val clients: ReadOAuthClientLists,
+    private val details: ReadOAuthClientDetails,
+    private val creation: CreateOAuthClient,
+    private val deletion: DeleteOAuthClient,
+    private val secretReset: ResetOAuthClientSecret,
+    private val approvals: ClientApprovals,
+    private val organizations: OrganizationQueries,
 ) {
+    @ExceptionHandler(OAuthClientNotFound::class)
+    fun missingClient(): ResponseEntity<Void> = ResponseEntity.notFound().build()
+
     @GetMapping("/clients", produces = [MediaType.TEXT_HTML_VALUE])
     fun officialClients(
         authentication: Authentication,
@@ -52,7 +55,7 @@ class OAuthClientController(
         pageContext(authentication, csrfToken, request),
         "Clients",
         "/clients/create",
-        clients.listOfficialClients(authentication.actor()),
+        clients.officialClients(authentication.actor()),
     )
 
     @GetMapping("/my-clients", produces = [MediaType.TEXT_HTML_VALUE])
@@ -64,7 +67,7 @@ class OAuthClientController(
         pageContext(authentication, csrfToken, request),
         "My clients",
         "/my-clients/create",
-        clients.listMyClients(authentication.actor()),
+        clients.myClients(authentication.actor()),
     )
 
     @GetMapping("/clients/create", produces = [MediaType.TEXT_HTML_VALUE])
@@ -92,7 +95,7 @@ class OAuthClientController(
         request: HttpServletRequest,
     ): ResponseEntity<String> {
         val created =
-            clients.createOfficialClient(
+            creation.create(
                 authentication.actor(),
                 newOAuthClient(
                     form,
@@ -117,7 +120,7 @@ class OAuthClientController(
         request: HttpServletRequest,
     ): ResponseEntity<String> {
         val created =
-            clients.createMyClient(
+            creation.create(
                 authentication.actor(),
                 newOAuthClient(
                     form.copy(restrictions = null),
@@ -142,10 +145,11 @@ class OAuthClientController(
         @PathVariable clientUid: String,
     ): String {
         val uid = ClientUid.parse(clientUid)
+        val result = details.read(authentication.actor(), uid)
         return renderClientDetails(
             pageContext(authentication, csrfToken, request),
-            clients.manageableClient(authentication.actor(), uid),
-            authorities = clients.authorities(authentication.actor(), uid),
+            result.client,
+            authorities = result.authorities,
         )
     }
 
@@ -157,25 +161,6 @@ class OAuthClientController(
         @PathVariable clientUid: String,
     ): String = clientDetails(authentication, csrfToken, request, clientUid)
 
-    @GetMapping("/clients/{clientUid}/new-authority", produces = [MediaType.TEXT_HTML_VALUE])
-    fun newAuthority(): String = renderNewAuthority()
-
-    @GetMapping("/clients/authority/new-super-group", produces = [MediaType.TEXT_HTML_VALUE])
-    fun newSuperGroupAuthority(): String = renderSuperGroupAuthorityRow(organizations.listSuperGroups())
-
-    @GetMapping("/clients/authority/new-user", produces = [MediaType.TEXT_HTML_VALUE])
-    fun newUserAuthority(authentication: Authentication): String =
-        renderUserAuthorityRow(
-            userStore
-                .directoryUserPage(
-                    DirectoryUserPageRequest(
-                        "",
-                        null,
-                        DirectoryUserScope.administrator(authentication.userId()),
-                    ),
-                ).users,
-        )
-
     @PostMapping("/clients/{clientUid}/reset")
     fun resetClientSecret(
         authentication: Authentication,
@@ -184,13 +169,13 @@ class OAuthClientController(
         @PathVariable clientUid: String,
     ): ResponseEntity<String> {
         val uid = ClientUid.parse(clientUid)
-        val secret = clients.resetSecret(authentication.actor(), uid)
+        val result = secretReset.reset(authentication.actor(), uid)
         return ResponseEntity.ok(
             renderClientDetails(
                 pageContext(authentication, csrfToken, request),
-                clients.manageableClient(authentication.actor(), uid),
-                secret,
-                authorities = clients.authorities(authentication.actor(), uid),
+                result.client,
+                result.secret,
+                authorities = result.authorities,
             ),
         )
     }
@@ -201,41 +186,8 @@ class OAuthClientController(
         @PathVariable clientUid: String,
     ): ResponseEntity<Void> {
         val uid = ClientUid.parse(clientUid)
-        val personal = clients.manageableClient(authentication.actor(), uid).owner is ClientOwner.User
-        clients.deleteClient(authentication.actor(), uid)
+        val personal = deletion.delete(authentication.actor(), uid) is ClientOwner.User
         return redirect(if (personal) "/my-clients" else "/clients")
-    }
-
-    @PostMapping("/clients/{clientUid}/authority")
-    fun createAuthority(
-        authentication: Authentication,
-        @PathVariable clientUid: String,
-        @RequestParam authority: String,
-        @RequestParam(required = false) users: List<String>?,
-        @RequestParam(required = false) superGroups: List<String>?,
-    ): ResponseEntity<Void> {
-        clients.createAuthority(
-            authentication.actor(),
-            ClientUid.parse(clientUid),
-            AuthorityName(authority),
-            users.orEmpty().mapTo(mutableSetOf(), UserId::parse),
-            superGroups.orEmpty().mapTo(mutableSetOf(), java.util.UUID::fromString),
-        )
-        return redirect("/clients/$clientUid")
-    }
-
-    @DeleteMapping("/clients/{clientUid}/authority/{authority}")
-    fun deleteAuthority(
-        authentication: Authentication,
-        @PathVariable clientUid: String,
-        @PathVariable authority: String,
-    ): ResponseEntity<Void> {
-        clients.deleteAuthority(
-            authentication.actor(),
-            ClientUid.parse(clientUid),
-            AuthorityName(authority),
-        )
-        return redirect("/clients/$clientUid")
     }
 
     @GetMapping("/user-clients", produces = [MediaType.TEXT_HTML_VALUE])
@@ -244,11 +196,7 @@ class OAuthClientController(
         csrfToken: CsrfToken,
         request: HttpServletRequest,
     ): String {
-        val owned =
-            clients.listPersonalClientsForAdministration(authentication.actor()).map { client ->
-                val owner = client.owner as ClientOwner.User
-                client to userStore.administrativeUser(authentication.userId(), owner.userId)?.profile
-            }
+        val owned = clients.personalClientsForAdministration(authentication.actor())
         return renderUserClients(pageContext(authentication, csrfToken, request), owned)
     }
 
@@ -267,7 +215,7 @@ class OAuthClientController(
         authentication: Authentication,
         @PathVariable clientUid: String,
     ): ResponseEntity<Void> {
-        clients.revokeMyApproval(authentication.actor(), ClientUid.parse(clientUid))
+        approvals.revoke(authentication.userId(), ClientUid.parse(clientUid))
         return redirect("/me/accepted-clients")
     }
 }

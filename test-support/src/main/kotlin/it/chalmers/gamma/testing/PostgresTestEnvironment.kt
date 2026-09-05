@@ -74,6 +74,9 @@ class PostgresTestEnvironment(
                 jdbcUrl = container.jdbcUrl
                 username = container.username
                 password = container.password
+                // A broken container port can accept TCP and then hang during authentication.
+                // Bound connection establishment without imposing a timeout on test queries.
+                addDataSourceProperty("loginTimeout", "30")
                 maximumPoolSize = 4
                 minimumIdle = 0
                 isAutoCommit = false

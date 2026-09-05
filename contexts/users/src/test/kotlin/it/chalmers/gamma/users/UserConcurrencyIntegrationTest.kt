@@ -14,14 +14,14 @@ class UserConcurrencyIntegrationTest {
     @Test
     fun `create rejects an existing email regardless of case`() =
         withUserDatabase { database ->
-            val queries = UserStoreForQueries(database)
-            val persistence = persistence(database)
+            val queries = UserQueries(database)
+            val persistence = RegisterUser(database, AlwaysMatchingPasswordHasher)
 
             run {
                 val existing = assertNotNull(queries.findUser(Cid("mscott")))
                 val failure =
                     assertFailsWith<UserConflict> {
-                        persistence.lifecycle.createActivatedTestUser(
+                        persistence.createActivatedTestUser(
                             database,
                             newUser(Cid("emailcase"), Email(existing.email.value.uppercase())),
                         )
@@ -34,17 +34,17 @@ class UserConcurrencyIntegrationTest {
     @Test
     fun `update rejects another users email regardless of case`() =
         withUserDatabase { database ->
-            val queries = UserStoreForQueries(database)
-            val commands = persistence(database).commands
+            val queries = UserQueries(database)
+            val emails = UpdateMyEmail(database)
 
             run {
                 val first = assertNotNull(queries.findUser(Cid("mscott")))
                 val second = assertNotNull(queries.findUser(Cid("jhalpert")))
-                commands.updateUser(first.copy(email = Email("shared@example.org")))
+                emails.update(first.profileActor(), Email("shared@example.org"))
 
                 val failure =
                     assertFailsWith<UserConflict> {
-                        commands.updateUser(second.copy(email = Email("SHARED@EXAMPLE.ORG")))
+                        emails.update(second.profileActor(), Email("SHARED@EXAMPLE.ORG"))
                     }
 
                 assertEquals("Email is already in use", failure.message)
@@ -56,9 +56,9 @@ class UserConcurrencyIntegrationTest {
     fun `concurrent creates expose one case insensitive email conflict and one winner`() =
         withTwoUserDatabases(maximumPoolSize = 2) { firstDatabase, secondDatabase ->
             firstDatabase.installEmailInsertGate()
-            val firstLifecycle = persistence(firstDatabase).lifecycle
-            val secondLifecycle = persistence(secondDatabase).lifecycle
-            val queries = UserStoreForQueries(firstDatabase)
+            val firstLifecycle = RegisterUser(firstDatabase, AlwaysMatchingPasswordHasher)
+            val secondLifecycle = RegisterUser(secondDatabase, AlwaysMatchingPasswordHasher)
+            val queries = UserQueries(firstDatabase)
 
             Executors.newFixedThreadPool(2).use { workers ->
                 val blocker = holdEmailInsertGate(firstDatabase)
@@ -100,12 +100,15 @@ class UserConcurrencyIntegrationTest {
     fun `password verification releases its database connection before hashing work`() =
         withUserDatabase(maximumPoolSize = 1) { database ->
             val hasher = BlockingPasswordHasher()
-            val commands = identityPersistenceTestAdapters(database, hasher).commands
-            val userId = run { assertNotNull(UserStoreForQueries(database).findUser(Cid("mscott"))).id }
+            val authentication = UserAuthentication(database, hasher)
+            val userId = run { assertNotNull(UserQueries(database).findUser(Cid("mscott"))).id }
 
             Executors.newSingleThreadExecutor().use { workers ->
                 val verification =
-                    workers.submit<Boolean> { commands.checkPassword(userId, PlainTextPassword("password1337")) }
+                    workers.submit<Boolean> {
+                        authentication.authenticate(userId, PlainTextPassword("password1337")) !=
+                            null
+                    }
                 assertTrue(hasher.awaitWork())
                 try {
                     assertTrue(database.ping())
@@ -115,37 +118,6 @@ class UserConcurrencyIntegrationTest {
                 assertTrue(verification.get())
             }
         }
-
-    @Test
-    fun `personal password change releases its database connection before password work`() =
-        withUserDatabase(maximumPoolSize = 1) { database ->
-            val hasher = BlockingPasswordHasher()
-            val commands = identityPersistenceTestAdapters(database, hasher).commands
-            val queries = UserStoreForQueries(database)
-            val user = run { assertNotNull(queries.findUser(Cid("mscott"))) }
-
-            Executors.newSingleThreadExecutor().use { workers ->
-                val replacement =
-                    workers.submit<Boolean> {
-                        commands.changePassword(
-                            user.id,
-                            PlainTextPassword("password1337"),
-                            PlainTextPassword("replacement password"),
-                        )
-                    }
-                assertTrue(hasher.awaitWork())
-                try {
-                    assertTrue(database.ping())
-                } finally {
-                    hasher.releaseWork()
-                }
-                assertTrue(replacement.get())
-                assertEquals(user.version + 1, queries.findUser(user.id)?.version)
-            }
-        }
-
-    private fun persistence(database: DatabaseFactory) =
-        identityPersistenceTestAdapters(database, AlwaysMatchingPasswordHasher)
 
     private fun newUser(
         cid: Cid,
@@ -163,7 +135,7 @@ class UserConcurrencyIntegrationTest {
 }
 
 private fun createUserOutcome(
-    lifecycle: UserStore,
+    lifecycle: RegisterUser,
     database: DatabaseFactory,
     user: NewUser,
 ): UserCreationOutcome =
@@ -199,7 +171,7 @@ private fun holdEmailInsertGate(database: DatabaseFactory): HeldEmailInsertGate 
     val release = CountDownLatch(1)
     val thread =
         Thread.startVirtualThread {
-            database.transaction {
+            database.commitTransaction {
                 exec("SELECT pg_advisory_xact_lock($EMAIL_INSERT_GATE_NAMESPACE, $EMAIL_INSERT_GATE_ID)")
                 acquired.countDown()
                 release.await()
@@ -218,7 +190,7 @@ private fun DatabaseFactory.awaitEmailInsertGateWaiters(expected: Int) {
 }
 
 private fun DatabaseFactory.emailInsertGateWaiterCount(): Int =
-    transaction(readOnly = true) {
+    commitTransaction(readOnly = true) {
         exec(
             """
             SELECT COUNT(*)

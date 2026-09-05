@@ -6,6 +6,7 @@ import it.chalmers.gamma.oauth.ClientOwner
 import it.chalmers.gamma.oauth.CreatedOAuthClient
 import it.chalmers.gamma.oauth.NewOAuthClient
 import it.chalmers.gamma.oauth.OAuthClient
+import it.chalmers.gamma.oauth.PersonalOAuthClient
 import it.chalmers.gamma.oauth.RawClientSecret
 import it.chalmers.gamma.oauth.RedirectUri
 import it.chalmers.gamma.organization.SuperGroup
@@ -15,7 +16,6 @@ import it.chalmers.gamma.platform.html.csrfInput
 import it.chalmers.gamma.platform.html.gammaPage
 import it.chalmers.gamma.platform.html.methodOverrideInput
 import it.chalmers.gamma.users.DirectoryUser
-import it.chalmers.gamma.users.UserProfile
 import kotlinx.html.ButtonType
 import kotlinx.html.FormMethod
 import kotlinx.html.InputType
@@ -243,7 +243,7 @@ fun renderClientDetails(
 
 fun renderUserClients(
     page: GammaPageContext,
-    clients: List<Pair<OAuthClient, UserProfile?>>,
+    clients: List<PersonalOAuthClient>,
 ): String =
     gammaPage("User clients", page) {
         table {

@@ -33,7 +33,12 @@ class GammaRedis private constructor(
     ) : this(standaloneRedisConnectionFactory(settings), ownsConnectionFactory = true)
 
     private val closed = AtomicBoolean(false)
-    private val connection: RedisCommandConnection = openRedisConnection(connectionFactory, ownsConnectionFactory)
+
+    @Volatile
+    private var connection: RedisCommandConnection = openRedisConnection(connectionFactory, ownsConnectionFactory)
+
+    @Volatile
+    private var running = true
     private val keyspace = RedisKeyspace()
 
     fun key(
@@ -204,12 +209,34 @@ class GammaRedis private constructor(
     val isClosed: Boolean
         get() = closed.get()
 
+    // Spring may stop and restart the Lettuce factory without recreating this bean.
+    // The application's lifecycle adapter orders these calls around the factory.
+    // A final close still cannot be reversed.
+    @Synchronized
+    fun start() {
+        check(!closed.get()) { "A closed Redis adapter cannot restart" }
+        if (running) return
+        // A failed resume may be retried. The existing adapter still owns final factory cleanup.
+        connection = openRedisConnection(connectionFactory, ownsConnectionFactory = false)
+        running = true
+    }
+
+    @Synchronized
+    fun stop() {
+        if (!running) return
+        running = false
+        connection.close()
+    }
+
+    fun isRunning(): Boolean = running
+
     @Suppress("TooGenericExceptionCaught") // Both resources must be attempted and the first failure retained.
+    @Synchronized
     override fun close() {
         if (!closed.compareAndSet(false, true)) return
         var firstFailure: RuntimeException? = null
         try {
-            connection.close()
+            stop()
         } catch (failure: RuntimeException) {
             firstFailure = failure
         }

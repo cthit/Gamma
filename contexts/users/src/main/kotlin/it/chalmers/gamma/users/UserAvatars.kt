@@ -5,38 +5,86 @@ import it.chalmers.gamma.media.MediaStore
 import it.chalmers.gamma.media.MediaUri
 import it.chalmers.gamma.platform.core.AccessDenied
 import it.chalmers.gamma.platform.core.Actor
+import it.chalmers.gamma.platform.database.DatabaseFactory
+import java.util.concurrent.CancellationException
 
 class UserAvatars(
-    private val users: UserStore,
+    database: DatabaseFactory,
     private val media: MediaStore,
 ) {
+    private val pointers = UserAvatarPointers(database)
+
+    // Keep upload, committed pointer, and compensation together so object ownership stays visible.
     @Suppress("TooGenericExceptionCaught")
     fun replaceMyAvatar(
         actor: Actor,
         upload: UserAvatarUpload,
     ) {
         val userId = actor.userId()
+        val oldAvatar = pointers.readForOwner(userId)
         val operationId = UserAvatarOperationId.generate()
-        val avatar = saveAvatar(operationId, upload)
-        val previousAvatar =
+        val saved =
             try {
-                users.replaceAvatar(userId, operationId, avatar)
+                StoredUserAvatar(
+                    media.save(MediaObjectId(operationId.value), upload.bytes, upload.declaredContentType).value,
+                )
             } catch (failure: Exception) {
-                completeFailedReplacement(failure, userId, operationId, avatar)
+                // Storage may have written the operation's bytes before reporting failure.
+                val cleanupFailure = runAvatarCleanup { media.delete(MediaObjectId(operationId.value)) }
+                throw combineAvatarFailures(failure, cleanupFailure)
             }
-        completeCommittedChange(previousAvatar)
+
+        try {
+            pointers.replaceAvatar(userId, operationId, saved, oldAvatar)
+        } catch (failure: Exception) {
+            // A retry conflict can follow an earlier committed attempt. Never infer ownership from the error type.
+            val current =
+                try {
+                    pointers.currentAvatar(userId)
+                } catch (ownershipFailure: Exception) {
+                    // If ownership cannot be established, keep both objects.
+                    throw combineAvatarFailures(failure, ownershipFailure)
+                }
+            var cleanupFailure: Throwable? = null
+            if (current != saved) {
+                cleanupFailure = runAvatarCleanup { media.delete(MediaObjectId(operationId.value)) }
+            }
+            if (oldAvatar != null && current != oldAvatar) {
+                val oldCleanupFailure = runAvatarCleanup { media.delete(MediaUri(oldAvatar.uri)) }
+                cleanupFailure =
+                    if (cleanupFailure == null) {
+                        oldCleanupFailure
+                    } else {
+                        combineAvatarFailures(cleanupFailure, oldCleanupFailure)
+                    }
+            }
+            throw combineAvatarFailures(failure, cleanupFailure)
+        }
+        if (oldAvatar != null) media.delete(MediaUri(oldAvatar.uri))
     }
 
     @Suppress("TooGenericExceptionCaught")
     fun deleteMyAvatar(actor: Actor) {
         val userId = actor.userId()
-        val oldAvatar = users.currentAvatar(userId)
+        val oldAvatar = pointers.readForOwner(userId)
         try {
-            users.clearAvatar(userId, oldAvatar)
+            pointers.clearAvatar(userId, oldAvatar)
         } catch (failure: Exception) {
-            completeFailedDeletion(failure, oldAvatar) { users.currentAvatar(userId) }
+            val current =
+                try {
+                    pointers.currentAvatar(userId)
+                } catch (ownershipFailure: Exception) {
+                    throw combineAvatarFailures(failure, ownershipFailure)
+                }
+            val cleanupFailure =
+                if (oldAvatar != null && current != oldAvatar) {
+                    runAvatarCleanup { media.delete(MediaUri(oldAvatar.uri)) }
+                } else {
+                    null
+                }
+            throw combineAvatarFailures(failure, cleanupFailure)
         }
-        completeCommittedDeletion(oldAvatar)
+        if (oldAvatar != null) media.delete(MediaUri(oldAvatar.uri))
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -45,116 +93,52 @@ class UserAvatars(
         userId: UserId,
     ) {
         val administratorId = actor.userId()
-        val oldAvatar = users.currentAvatarAsAdministrator(administratorId, userId)
+        val oldAvatar = pointers.currentAvatarAsAdministrator(administratorId, userId)
         try {
-            users.clearAvatarAsAdministrator(administratorId, userId, oldAvatar)
+            pointers.clearAvatarAsAdministrator(administratorId, userId, oldAvatar)
         } catch (failure: Exception) {
-            completeFailedDeletion(failure, oldAvatar) {
-                users.currentAvatarAsAdministrator(administratorId, userId)
-            }
+            val current =
+                try {
+                    // Internal compensation must still resolve ownership if the administrator was demoted.
+                    pointers.currentAvatar(userId)
+                } catch (ownershipFailure: Exception) {
+                    throw combineAvatarFailures(failure, ownershipFailure)
+                }
+            val cleanupFailure =
+                if (oldAvatar != null && current != oldAvatar) {
+                    runAvatarCleanup { media.delete(MediaUri(oldAvatar.uri)) }
+                } else {
+                    null
+                }
+            throw combineAvatarFailures(failure, cleanupFailure)
         }
-        completeCommittedDeletion(oldAvatar)
-    }
-
-    // Save failures are ambiguous: storage may have written operation-derived content before failing.
-    @Suppress("TooGenericExceptionCaught")
-    private fun saveAvatar(
-        operationId: UserAvatarOperationId,
-        upload: UserAvatarUpload,
-    ): StoredUserAvatar =
-        try {
-            StoredUserAvatar(
-                media.save(MediaObjectId(operationId.value), upload.bytes, upload.declaredContentType).value,
-            )
-        } catch (failure: Exception) {
-            completeAfterFailure(failure) { media.delete(MediaObjectId(operationId.value)) }
-        }
-
-    // Persistence failures can be ambiguous. Resolve the pointer before deleting operation-owned media.
-    @Suppress("TooGenericExceptionCaught")
-    private fun completeFailedReplacement(
-        failure: Throwable,
-        userId: UserId,
-        operationId: UserAvatarOperationId,
-        savedAvatar: StoredUserAvatar,
-    ): Nothing {
-        if (failure is UserNotFound) {
-            completeAfterFailure(failure) { media.delete(MediaObjectId(operationId.value)) }
-        }
-
-        val currentAvatar =
-            try {
-                users.currentAvatar(userId)
-            } catch (completionFailure: Exception) {
-                throw preferredFailure(failure, completionFailure)
-            }
-        if (currentAvatar != savedAvatar) {
-            try {
-                media.delete(MediaObjectId(operationId.value))
-            } catch (completionFailure: Exception) {
-                throw preferredFailure(failure, completionFailure)
-            }
-        }
-        throw failure
-    }
-
-    // UserNotFound, UserConflict, and AccessDenied are raised before a clear commits. Any
-    // other return failure is ambiguous, so resolve the pointer before deciding
-    // whether the captured immutable object is no longer referenced by this user.
-    @Suppress("TooGenericExceptionCaught")
-    private fun completeFailedDeletion(
-        failure: Throwable,
-        oldAvatar: StoredUserAvatar?,
-        resolveCurrentAvatar: () -> StoredUserAvatar?,
-    ): Nothing {
-        if (failure is UserNotFound || failure is UserConflict || failure is AccessDenied) {
-            throw failure
-        }
-
-        val currentAvatar =
-            try {
-                resolveCurrentAvatar()
-            } catch (completionFailure: Exception) {
-                throw preferredFailure(failure, completionFailure)
-            }
-        if (oldAvatar != null && currentAvatar != oldAvatar) {
-            try {
-                media.delete(MediaUri(oldAvatar.uri))
-            } catch (completionFailure: Exception) {
-                throw preferredFailure(failure, completionFailure)
-            }
-        }
-        throw failure
-    }
-
-    private fun completeCommittedDeletion(oldAvatar: StoredUserAvatar?) {
-        completeCommittedChange(oldAvatar)
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun completeAfterFailure(
-        failure: Throwable,
-        completion: () -> Unit,
-    ): Nothing {
-        try {
-            completion()
-        } catch (completionFailure: Exception) {
-            throw preferredFailure(failure, completionFailure)
-        }
-        throw failure
-    }
-
-    private fun completeCommittedChange(oldAvatar: StoredUserAvatar?) {
         if (oldAvatar != null) media.delete(MediaUri(oldAvatar.uri))
     }
 }
 
-private fun preferredFailure(
-    operationFailure: Throwable,
-    completionFailure: Throwable,
+// Shared only for failure precedence: an ordinary error must never conceal cancellation or interruption.
+@Suppress("TooGenericExceptionCaught")
+private fun runAvatarCleanup(cleanup: () -> Unit): Throwable? =
+    try {
+        cleanup()
+        null
+    } catch (failure: Exception) {
+        failure
+    }
+
+private fun combineAvatarFailures(
+    first: Throwable,
+    second: Throwable?,
 ): Throwable {
-    if (completionFailure !== operationFailure) operationFailure.addSuppressed(completionFailure)
-    return operationFailure
+    if (second == null || second === first) return first
+    if ((second is CancellationException || second is InterruptedException) &&
+        first !is CancellationException && first !is InterruptedException
+    ) {
+        second.addSuppressed(first)
+        return second
+    }
+    first.addSuppressed(second)
+    return first
 }
 
 private fun Actor.userId(): UserId {

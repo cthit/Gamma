@@ -1,6 +1,7 @@
 package it.chalmers.gamma
 
-import it.chalmers.gamma.apiaccess.ApiKeyStore
+import it.chalmers.gamma.apiaccess.ApiKeyQueries
+import it.chalmers.gamma.apiaccess.CreateApiKey
 import it.chalmers.gamma.platform.database.DatabaseFactory
 import it.chalmers.gamma.testing.PostgresTestEnvironment
 import it.chalmers.gamma.users.AdministratorBootstrapResult
@@ -8,7 +9,6 @@ import it.chalmers.gamma.users.BcryptPasswordHasher
 import it.chalmers.gamma.users.PasswordHash
 import it.chalmers.gamma.users.PlainTextPassword
 import it.chalmers.gamma.users.UserBootstrap
-import it.chalmers.gamma.users.UserStore
 import org.springframework.boot.DefaultApplicationArguments
 import tools.jackson.databind.ObjectMapper
 import kotlin.test.Test
@@ -21,7 +21,7 @@ class BootstrapTest : SpringApplicationTest() {
         PostgresTestEnvironment(loadRegressionFixture = false).use { environment ->
             val database = DatabaseFactory(environment.dataSource)
             val hasher = BcryptPasswordHasher(cost = 10)
-            val bootstrap = UserBootstrap(UserStore(database, hasher))
+            val bootstrap = UserBootstrap(database, hasher)
             val password = PlainTextPassword("administrator-test-password")
 
             assertEquals(AdministratorBootstrapResult.CREATED, bootstrap.ensureAdministrator(password))
@@ -49,18 +49,28 @@ class BootstrapTest : SpringApplicationTest() {
     fun `mock data is seeded only when mocking is enabled`() {
         PostgresTestEnvironment(loadRegressionFixture = false).use { environment ->
             val database = DatabaseFactory(environment.dataSource)
-            val apiAccess = ApiKeyStore(database, bcryptCost = 10)
+            val apiAccess = ApiKeyQueries(database)
             val bootstrap = MockDataBootstrap()
             val arguments = DefaultApplicationArguments()
 
             bootstrap
-                .mockDataBootstrapRunner(AppSettings(mocking = false), database, apiAccess, ObjectMapper())
-                .run(arguments)
+                .mockDataBootstrapRunner(
+                    AppSettings(mocking = false),
+                    database,
+                    apiAccess,
+                    CreateApiKey(database, bcryptCost = 10),
+                    ObjectMapper(),
+                ).run(arguments)
             assertEquals(0, database.tableRowCount("g_user"))
 
             bootstrap
-                .mockDataBootstrapRunner(AppSettings(mocking = true), database, apiAccess, ObjectMapper())
-                .run(arguments)
+                .mockDataBootstrapRunner(
+                    AppSettings(mocking = true),
+                    database,
+                    apiAccess,
+                    CreateApiKey(database, bcryptCost = 10),
+                    ObjectMapper(),
+                ).run(arguments)
             assertTrue(database.tableRowCount("g_user") > 0)
             assertEquals(3, database.tableRowCount("g_api_key"))
         }

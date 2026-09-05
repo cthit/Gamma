@@ -2,8 +2,6 @@ package it.chalmers.gamma.oauth.server
 
 import it.chalmers.gamma.oauth.ClientId
 import it.chalmers.gamma.oauth.ClientOwner
-import it.chalmers.gamma.oauth.OAuthProtocolClients
-import it.chalmers.gamma.users.UserStore
 import kotlinx.html.ButtonType
 import kotlinx.html.FormMethod
 import kotlinx.html.a
@@ -27,7 +25,6 @@ import kotlinx.html.stream.createHTML
 import kotlinx.html.title
 import kotlinx.html.ul
 import org.springframework.http.MediaType
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository
 import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -35,9 +32,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 internal class ConsentController(
-    private val clients: RegisteredClientRepository,
-    private val protocolClients: OAuthProtocolClients,
-    private val users: UserStore,
+    private val consentDetails: ReadOAuthConsent,
 ) {
     @GetMapping("/oauth2/consent", produces = [MediaType.TEXT_HTML_VALUE])
     fun consent(
@@ -55,27 +50,30 @@ internal class ConsentController(
         if (state == null) {
             return issuePage("Client state missing", "A state must be specified to authorize.")
         }
-        val client =
-            clients.findByClientId(clientId)
+        val parsedId = runCatching { ClientId(clientId) }.getOrNull()
+        val details =
+            parsedId?.let(consentDetails::read)
                 ?: return issuePage(
                     "Client not found",
                     "A client with the given client id was not found.",
                 )
+        val client = details.client
         val requestedScopes = scope.split(' ').sorted()
-        if (requestedScopes != client.scopes.sorted()) {
+        if (requestedScopes != client.scopes.map { it.wireValue }.sorted()) {
             return issuePage(
                 "Mismatch scopes for client",
                 "There is a mismatch between registered client scopes, and the scopes specified for this authorization.",
             )
         }
-        val currentDomainClient = protocolClients.serverClient(ClientId(clientId))
-        val unofficialOwner = currentDomainClient?.client?.owner as? ClientOwner.User
-        val unofficialOwnerProfile =
-            unofficialOwner?.let { owner -> users.findUser(owner.userId) }
-        val unofficialOwnerDescription = unofficialOwner?.let { describeUnofficialOwner(unofficialOwnerProfile) }
+        val unofficialOwnerDescription =
+            if (client.owner is ClientOwner.User) {
+                describeUnofficialOwner(details.owner)
+            } else {
+                null
+            }
         return createHTML().html {
             head {
-                title { +"Authorize ${client.clientName} - Gamma" }
+                title { +"Authorize ${client.name.value} - Gamma" }
                 meta(charset = "utf-8")
                 meta(name = "viewport", content = "width=device-width, initial-scale=1")
                 link(rel = "stylesheet", href = "/webjars/picocss__pico/2.0.6/css/pico.green.min.css")
@@ -84,7 +82,7 @@ internal class ConsentController(
             body(classes = "container") {
                 main {
                     article {
-                        header { +"Do you want to authorize ${client.clientName} to access:" }
+                        header { +"Do you want to authorize ${client.name.value} to access:" }
                         if (unofficialOwnerDescription != null) {
                             div(classes = "error") {
                                 attributes["role"] = "alert"
@@ -157,7 +155,7 @@ internal class ConsentController(
         }
 }
 
-private fun describeUnofficialOwner(profile: it.chalmers.gamma.users.UserProfile?): String =
+private fun describeUnofficialOwner(profile: it.chalmers.gamma.users.DirectoryUser?): String =
     if (profile == null) {
         "The owner's account is no longer available."
     } else {

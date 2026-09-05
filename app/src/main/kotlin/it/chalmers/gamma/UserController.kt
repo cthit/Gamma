@@ -4,48 +4,30 @@
 package it.chalmers.gamma
 
 import it.chalmers.gamma.platform.core.Actor
-import it.chalmers.gamma.users.AcceptanceYear
-import it.chalmers.gamma.users.ActivationCodeAdministration
 import it.chalmers.gamma.users.Cid
-import it.chalmers.gamma.users.Email
-import it.chalmers.gamma.users.FirstName
+import it.chalmers.gamma.users.CreateUser
 import it.chalmers.gamma.users.GammaPrincipal
 import it.chalmers.gamma.users.Language
-import it.chalmers.gamma.users.LastName
-import it.chalmers.gamma.users.MyAccount
-import it.chalmers.gamma.users.MyProfileUpdate
-import it.chalmers.gamma.users.Nick
-import it.chalmers.gamma.users.PasswordResetAdministration
-import it.chalmers.gamma.users.PasswordResetToken
 import it.chalmers.gamma.users.PlainTextPassword
-import it.chalmers.gamma.users.RegistrationToken
-import it.chalmers.gamma.users.UserAccessAdministration
+import it.chalmers.gamma.users.RequestActivation
+import it.chalmers.gamma.users.RequestPasswordReset
 import it.chalmers.gamma.users.UserAccessFlagKind
-import it.chalmers.gamma.users.UserAdministration
-import it.chalmers.gamma.users.UserAvatarUpload
-import it.chalmers.gamma.users.UserAvatars
-import it.chalmers.gamma.users.UserConflict
+import it.chalmers.gamma.users.UserAccessFlags
 import it.chalmers.gamma.users.UserDetails
 import it.chalmers.gamma.users.UserId
-import it.chalmers.gamma.users.UserLifecycle
 import it.chalmers.gamma.users.UserProfile
-import it.chalmers.gamma.users.UserStore
+import it.chalmers.gamma.users.UserQueries
 import it.chalmers.gamma.users.views.NewUserForm
 import it.chalmers.gamma.users.views.newUserFromForm
 import it.chalmers.gamma.users.views.renderAccessFlags
 import it.chalmers.gamma.users.views.renderActivateCid
-import it.chalmers.gamma.users.views.renderActivationCodes
-import it.chalmers.gamma.users.views.renderAllowList
-import it.chalmers.gamma.users.views.renderChangePassword
 import it.chalmers.gamma.users.views.renderCreateUser
 import it.chalmers.gamma.users.views.renderDeleteAccount
 import it.chalmers.gamma.users.views.renderEditMyAccount
 import it.chalmers.gamma.users.views.renderEditUser
 import it.chalmers.gamma.users.views.renderEmailSent
-import it.chalmers.gamma.users.views.renderFinalizePasswordReset
 import it.chalmers.gamma.users.views.renderForgotPassword
 import it.chalmers.gamma.users.views.renderMyAccount
-import it.chalmers.gamma.users.views.renderRegistration
 import it.chalmers.gamma.users.views.renderUserAgreement
 import it.chalmers.gamma.users.views.renderUserDetails
 import it.chalmers.gamma.users.views.renderUsers
@@ -62,26 +44,17 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.multipart.MultipartFile
 import java.net.URI
-import java.time.Year
 
 @RestController
 // Keeping the user route contract together makes its authorization and mutation surface auditable.
 @Suppress("TooManyFunctions")
 class UserController(
-    administration: UserAdministrationWeb,
-    account: MyAccountWeb,
-    private val access: UserAccessAdministration,
-    private val activationCodes: ActivationCodeAdministration,
-    private val settings: AppSettings,
+    private val userQueries: UserQueries,
+    private val access: UserAccessFlags,
+    private val userCreation: CreateUser,
+    private val deletion: UserDeletionCascade,
 ) {
-    private val userStore = administration.userStore
-    private val userAdministration = administration.userAdministration
-    private val passwordResets = administration.passwordResets
-    private val myAccount = account.myAccount
-    private val avatars = account.avatars
-
     @GetMapping("/users", produces = [MediaType.TEXT_HTML_VALUE])
     fun users(
         authentication: Authentication,
@@ -91,7 +64,7 @@ class UserController(
     ): String =
         renderUsers(
             pageContext(authentication, csrfToken, request),
-            userStore.administrativeUsers(authentication.userId()),
+            userQueries.administrativeUsers(authentication.userId()),
             query,
         )
 
@@ -108,7 +81,7 @@ class UserController(
         @ModelAttribute form: CreateUserForm,
     ): ResponseEntity<Void> {
         val id =
-            userAdministration.createUser(
+            userCreation.create(
                 authentication.actor(),
                 newUserFromForm(form.user),
             )
@@ -123,7 +96,8 @@ class UserController(
         @org.springframework.web.bind.annotation.PathVariable userId: String,
         @RequestParam(required = false) updated: String?,
     ): ResponseEntity<String> {
-        val user = userAdministration.user(authentication.actor(), UserId.parse(userId)) ?: return notFound()
+        val user =
+            userQueries.administrativeUser(authentication.userId(), UserId.parse(userId))?.profile ?: return notFound()
         return ResponseEntity
             .ok()
             .contentType(MediaType.TEXT_HTML)
@@ -145,30 +119,9 @@ class UserController(
         request: HttpServletRequest,
         @org.springframework.web.bind.annotation.PathVariable userId: String,
     ): ResponseEntity<String> {
-        val user = userAdministration.user(authentication.actor(), UserId.parse(userId)) ?: return notFound()
+        val user =
+            userQueries.administrativeUser(authentication.userId(), UserId.parse(userId))?.profile ?: return notFound()
         return ResponseEntity.ok(renderEditUser(pageContext(authentication, csrfToken, request), user))
-    }
-
-    @PutMapping("/users/{userId}")
-    fun updateUser(
-        authentication: Authentication,
-        @org.springframework.web.bind.annotation.PathVariable userId: String,
-        @ModelAttribute form: UpdateUserForm,
-    ): ResponseEntity<Void> {
-        val existing = checkNotNull(userAdministration.user(authentication.actor(), UserId.parse(userId)))
-        userAdministration.updateUser(
-            authentication.actor(),
-            existing.copy(
-                nick = Nick(form.nick),
-                firstName = FirstName(form.firstName),
-                lastName = LastName(form.lastName),
-                acceptanceYear = AcceptanceYear.of(form.acceptanceYear, Year.now().value),
-                language = form.language,
-                email = Email(form.email),
-                version = form.version,
-            ),
-        )
-        return redirect("/users/$userId?updated=true")
     }
 
     @DeleteMapping("/users/{userId}")
@@ -177,27 +130,8 @@ class UserController(
         @org.springframework.web.bind.annotation.PathVariable userId: String,
     ): ResponseEntity<Void> {
         val id = UserId.parse(userId)
-        userAdministration.deleteUser(authentication.actor(), id)
+        deletion.delete(AccountDeletion.Administrator(authentication.actor(), id))
         return redirect("/users")
-    }
-
-    @PostMapping("/users/{userId}/generate-password-link", produces = [MediaType.TEXT_HTML_VALUE])
-    fun generatePasswordLink(
-        authentication: Authentication,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-        @org.springframework.web.bind.annotation.PathVariable userId: String,
-    ): ResponseEntity<String> {
-        val id = UserId.parse(userId)
-        val token = passwordResets.create(authentication.actor(), id)
-        val user = userAdministration.user(authentication.actor(), id) ?: return notFound()
-        return ResponseEntity.ok(
-            renderUserDetails(
-                pageContext(authentication, csrfToken, request),
-                user.details(),
-                resetLink = "${settings.publicBaseUrl}/forgot-password/finalize?token=${token.value}",
-            ),
-        )
     }
 
     @GetMapping("/admins", produces = [MediaType.TEXT_HTML_VALUE])
@@ -240,55 +174,6 @@ class UserController(
         @RequestParam(required = false) userId: List<String>?,
     ): ResponseEntity<Void> = updateAccessFlags(authentication, UserAccessFlagKind.GDPR_TRAINED, userId, "/gdpr")
 
-    @GetMapping("/allow-list", produces = [MediaType.TEXT_HTML_VALUE])
-    fun allowList(
-        authentication: Authentication,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-    ): String =
-        renderAllowList(
-            pageContext(authentication, csrfToken, request),
-            activationCodes.allowedCids(authentication.actor()),
-        )
-
-    @PutMapping("/allow-list")
-    fun allowCid(
-        authentication: Authentication,
-        @RequestParam cid: String,
-    ): ResponseEntity<Void> {
-        activationCodes.allowCid(authentication.actor(), Cid(cid))
-        return redirect("/allow-list")
-    }
-
-    @DeleteMapping("/allow-list/{cid}")
-    fun retractCid(
-        authentication: Authentication,
-        @org.springframework.web.bind.annotation.PathVariable cid: String,
-    ): ResponseEntity<Void> {
-        activationCodes.retractCid(authentication.actor(), Cid(cid))
-        return redirect("/allow-list")
-    }
-
-    @GetMapping("/activation-codes", produces = [MediaType.TEXT_HTML_VALUE])
-    fun activationCodes(
-        authentication: Authentication,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-    ): String =
-        renderActivationCodes(
-            pageContext(authentication, csrfToken, request),
-            activationCodes.pendingActivations(authentication.actor()),
-        )
-
-    @DeleteMapping("/activation-codes/{cid}")
-    fun deleteActivation(
-        authentication: Authentication,
-        @org.springframework.web.bind.annotation.PathVariable cid: String,
-    ): ResponseEntity<Void> {
-        activationCodes.deleteActivation(authentication.actor(), Cid(cid))
-        return redirect("/activation-codes")
-    }
-
     @GetMapping("/", "/me", produces = [MediaType.TEXT_HTML_VALUE])
     fun me(
         authentication: Authentication,
@@ -305,7 +190,7 @@ class UserController(
             }
         return renderMyAccount(
             pageContext(authentication, csrfToken, request),
-            myAccount.profile(authentication.actor()),
+            userQueries.myProfile(authentication.actor()),
             message,
         )
     }
@@ -318,7 +203,7 @@ class UserController(
     ): String =
         renderEditMyAccount(
             pageContext(authentication, csrfToken, request),
-            myAccount.profile(authentication.actor()),
+            userQueries.myProfile(authentication.actor()),
         )
 
     @GetMapping("/me/cancel-edit", produces = [MediaType.TEXT_HTML_VALUE])
@@ -329,90 +214,8 @@ class UserController(
     ): String =
         renderMyAccount(
             pageContext(authentication, csrfToken, request),
-            myAccount.profile(authentication.actor()),
+            userQueries.myProfile(authentication.actor()),
         )
-
-    @PutMapping("/me")
-    fun updateMe(
-        authentication: Authentication,
-        @ModelAttribute form: UpdateMyProfileForm,
-    ): ResponseEntity<Void> {
-        val profile = myAccount.profile(authentication.actor())
-        myAccount.updateProfile(
-            authentication.actor(),
-            MyProfileUpdate(
-                Nick(form.nick),
-                FirstName(form.firstName),
-                LastName(form.lastName),
-                profile.acceptanceYear,
-                form.language,
-                Email(form.email),
-                form.version,
-            ),
-        )
-        return redirect("/?updated=true")
-    }
-
-    @PutMapping("/me/email")
-    fun updateMyEmail(
-        authentication: Authentication,
-        @RequestParam email: String,
-    ): ResponseEntity<Void> {
-        val profile = myAccount.profile(authentication.actor())
-        myAccount.updateProfile(
-            authentication.actor(),
-            MyProfileUpdate(
-                profile.nick,
-                profile.firstName,
-                profile.lastName,
-                profile.acceptanceYear,
-                profile.language,
-                Email(email),
-                profile.version,
-            ),
-        )
-        return redirect("/?updated=true")
-    }
-
-    @GetMapping("/me/edit-password", produces = [MediaType.TEXT_HTML_VALUE])
-    fun changePasswordPage(
-        authentication: Authentication,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-    ) = renderChangePassword(pageContext(authentication, csrfToken, request))
-
-    @PutMapping("/me/password", "/me/edit-password", produces = [MediaType.TEXT_HTML_VALUE])
-    fun changePassword(
-        authentication: Authentication,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-        @ModelAttribute form: ChangePasswordForm,
-    ): ResponseEntity<String> =
-        try {
-            myAccount.changePassword(
-                authentication.actor(),
-                PlainTextPassword(form.currentPassword),
-                PlainTextPassword(form.newPassword),
-                form.confirmNewPassword,
-            )
-            ResponseEntity.status(302).location(URI.create("/?passwordChanged=true")).build()
-        } catch (conflict: UserConflict) {
-            val body = renderChangePassword(pageContext(authentication, csrfToken, request), conflict.message)
-            ResponseEntity.status(409).body(body)
-        }
-
-    @PutMapping("/me/avatar")
-    fun uploadAvatar(
-        authentication: Authentication,
-        @RequestParam file: MultipartFile,
-    ): ResponseEntity<Void> {
-        require(!file.isEmpty) { "Choose an image to upload" }
-        avatars.replaceMyAvatar(
-            authentication.actor(),
-            UserAvatarUpload(file.bytes, file.contentType),
-        )
-        return ResponseEntity.noContent().build()
-    }
 
     @GetMapping("/delete-your-account", produces = [MediaType.TEXT_HTML_VALUE])
     fun deleteAccountPage(
@@ -429,7 +232,7 @@ class UserController(
         session: HttpSession,
         @RequestParam password: String,
     ): ResponseEntity<String> {
-        val deleted = myAccount.deleteMyAccount(authentication.actor(), PlainTextPassword(password))
+        val deleted = deletion.delete(AccountDeletion.Personal(authentication.actor(), PlainTextPassword(password)))
         if (!deleted) {
             val body = renderDeleteAccount(pageContext(authentication, csrfToken, request), "Incorrect password")
             return ResponseEntity.status(409).body(body)
@@ -463,7 +266,7 @@ class UserController(
             page,
             title,
             path,
-            access.accessFlags(authentication.actor(), kind),
+            access.list(authentication.actor(), kind),
         )
 
     private fun updateAccessFlags(
@@ -472,7 +275,7 @@ class UserController(
         userIds: List<String>?,
         path: String,
     ): ResponseEntity<Void> {
-        access.replaceAccessFlags(
+        access.replace(
             authentication.actor(),
             kind,
             userIds.orEmpty().map(UserId::parse).toSet(),
@@ -483,7 +286,8 @@ class UserController(
 
 @RestController
 class AccountActivationController(
-    private val lifecycle: UserLifecycle,
+    private val activationRequests: RequestActivation,
+    private val resetRequests: RequestPasswordReset,
 ) {
     @GetMapping("/activate-cid", produces = [MediaType.TEXT_HTML_VALUE])
     fun activateCidPage(
@@ -496,7 +300,7 @@ class AccountActivationController(
         @RequestParam cid: String,
         request: HttpServletRequest,
     ): ResponseEntity<Void> {
-        lifecycle.requestActivation(Actor.Anonymous, Cid(cid), request.remoteAddr)
+        activationRequests.request(Actor.Anonymous, Cid(cid), request.remoteAddr)
         return redirect("/email-sent")
     }
 
@@ -505,35 +309,6 @@ class AccountActivationController(
         csrfToken: CsrfToken,
         request: HttpServletRequest,
     ) = renderEmailSent(pageContext(null, csrfToken, request, false))
-
-    @GetMapping("/register", produces = [MediaType.TEXT_HTML_VALUE])
-    fun registration(
-        @RequestParam token: String,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-    ): ResponseEntity<String> {
-        val registrationToken = RegistrationToken(token)
-        val cid =
-            lifecycle.activationCid(Actor.Anonymous, registrationToken)
-                ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(renderRegistration(pageContext(null, csrfToken, request, false), token, cid.value))
-    }
-
-    @PostMapping("/register")
-    fun register(
-        @ModelAttribute form: RegistrationForm,
-    ): ResponseEntity<Void> {
-        val registrationToken = RegistrationToken(form.token)
-        val cid = checkNotNull(lifecycle.activationCid(Actor.Anonymous, registrationToken))
-        lifecycle.register(
-            Actor.Anonymous,
-            registrationToken,
-            newUserFromForm(form.user(cid)),
-            form.confirmPassword,
-            form.acceptUserAgreement,
-        )
-        return redirect("/login?account-created")
-    }
 
     @GetMapping("/forgot-password", produces = [MediaType.TEXT_HTML_VALUE])
     fun forgotPassword(
@@ -547,48 +322,10 @@ class AccountActivationController(
         csrfToken: CsrfToken,
         request: HttpServletRequest,
     ): String {
-        lifecycle.requestPasswordReset(Actor.Anonymous, cidOrEmail, request.remoteAddr)
+        resetRequests.request(Actor.Anonymous, cidOrEmail, request.remoteAddr)
         return renderForgotPassword(pageContext(null, csrfToken, request, false), true)
     }
-
-    @GetMapping("/forgot-password/finalize", produces = [MediaType.TEXT_HTML_VALUE])
-    fun finalizePasswordReset(
-        @RequestParam token: String,
-        csrfToken: CsrfToken,
-        request: HttpServletRequest,
-    ): ResponseEntity<String> {
-        val resetToken = PasswordResetToken(token)
-        lifecycle.passwordResetUser(Actor.Anonymous, resetToken)
-            ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(renderFinalizePasswordReset(pageContext(null, csrfToken, request, false), token))
-    }
-
-    @PostMapping("/forgot-password/finalize")
-    fun resetPassword(
-        @RequestParam token: String,
-        @RequestParam password: String,
-        @RequestParam confirmPassword: String,
-    ): ResponseEntity<Void> {
-        lifecycle.resetPassword(
-            Actor.Anonymous,
-            PasswordResetToken(token),
-            PlainTextPassword(password),
-            confirmPassword,
-        )
-        return redirect("/login?password-reset")
-    }
 }
-
-data class UserAdministrationWeb(
-    val userStore: UserStore,
-    val userAdministration: UserAdministration,
-    val passwordResets: PasswordResetAdministration,
-)
-
-data class MyAccountWeb(
-    val myAccount: MyAccount,
-    val avatars: UserAvatars,
-)
 
 data class CreateUserForm(
     val cid: String,
@@ -601,46 +338,6 @@ data class CreateUserForm(
     val password: String,
 ) {
     val user = NewUserForm(cid, nick, firstName, lastName, acceptanceYear, language, email, password)
-}
-
-data class UpdateUserForm(
-    val nick: String,
-    val firstName: String,
-    val lastName: String,
-    val acceptanceYear: Int,
-    val language: Language,
-    val email: String,
-    val version: Int,
-)
-
-data class UpdateMyProfileForm(
-    val nick: String,
-    val firstName: String,
-    val lastName: String,
-    val email: String,
-    val language: Language,
-    val version: Int,
-)
-
-data class ChangePasswordForm(
-    val currentPassword: String,
-    val newPassword: String,
-    val confirmNewPassword: String,
-)
-
-data class RegistrationForm(
-    val token: String,
-    val nick: String,
-    val firstName: String,
-    val lastName: String,
-    val acceptanceYear: Int,
-    val language: Language,
-    val email: String,
-    val password: String,
-    val confirmPassword: String,
-    val acceptUserAgreement: Boolean = false,
-) {
-    fun user(cid: Cid) = NewUserForm(cid.value, nick, firstName, lastName, acceptanceYear, language, email, password)
 }
 
 internal fun Authentication.userId() = UserId.parse((principal as GammaPrincipal).userId)

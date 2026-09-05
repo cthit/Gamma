@@ -22,6 +22,8 @@ complexity:
 naming:
   MatchingDeclarationName: { active: false }
 style:
+  # Kotlin requires lateinit properties to be var; Spring injects these fields after construction.
+  VarCouldBeVal: { ignoreLateinitVar: true }
   ForbiddenMethodCall:
     active: true
     excludes:

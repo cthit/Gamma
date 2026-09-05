@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     api(project(":contexts:oauth"))
+    implementation(project(":platform:database"))
     implementation(project(":contexts:users"))
     implementation(project(":contexts:organization"))
     api(project(":platform:redis"))

@@ -9,7 +9,6 @@ import it.chalmers.gamma.users.PlainTextPassword
 import it.chalmers.gamma.users.UserAuthentication
 import it.chalmers.gamma.users.UserId
 import it.chalmers.gamma.users.UserIdentifier
-import it.chalmers.gamma.users.UserStore
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -45,10 +44,7 @@ import java.time.Instant
 @EnableWebSecurity
 class ApplicationSecurityConfiguration {
     @Bean
-    fun userAuthenticationProvider(
-        authentication: UserAuthentication,
-        users: UserStore,
-    ): AuthenticationProvider =
+    fun userAuthenticationProvider(authentication: UserAuthentication): AuthenticationProvider =
         object : AuthenticationProvider {
             override fun authenticate(request: Authentication): Authentication {
                 val identifier =
@@ -61,7 +57,7 @@ class ApplicationSecurityConfiguration {
                 val user =
                     authentication.authenticate(identifier, password)
                         ?: throw BadCredentialsException("Invalid credentials")
-                val administrator = users.isAdministrator(user.id)
+                val administrator = user.administrator
                 val authorities =
                     buildList {
                         add(
@@ -72,7 +68,7 @@ class ApplicationSecurityConfiguration {
                         )
                         if (administrator) add(SimpleGrantedAuthority("ROLE_ADMIN"))
                     }
-                val principal = GammaPrincipal(user.id.value.toString(), user.nick.value, administrator)
+                val principal = GammaPrincipal(user.userId.value.toString(), user.nick.value, administrator)
                 return UsernamePasswordAuthenticationToken(principal, null, authorities)
             }
 
@@ -114,13 +110,13 @@ class ApplicationSecurityConfiguration {
     fun applicationSecurityFilterChain(
         http: HttpSecurity,
         userAuthenticationProvider: AuthenticationProvider,
-        users: UserStore,
+        authentication: UserAuthentication,
         throttling: FixedWindowThrottling,
     ): SecurityFilterChain {
         val requestCache = HttpSessionRequestCache().apply { setMatchingRequestParameterName("") }
         http.authenticationProvider(userAuthenticationProvider)
         http.addFilterAfter(
-            SessionPrincipalRefreshFilter(users::sessionAccess),
+            SessionPrincipalRefreshFilter(authentication::sessionAccess),
             SecurityContextHolderFilter::class.java,
         )
         http.addFilterBefore(LoginThrottlingFilter(throttling), UsernamePasswordAuthenticationFilter::class.java)

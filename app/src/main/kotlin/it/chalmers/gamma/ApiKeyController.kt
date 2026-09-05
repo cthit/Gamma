@@ -3,11 +3,10 @@
 
 package it.chalmers.gamma
 
-import it.chalmers.gamma.apiaccess.ApiAccessAdministration
+import it.chalmers.gamma.apiaccess.ApiAccessNotFound
 import it.chalmers.gamma.apiaccess.ApiKeyId
 import it.chalmers.gamma.apiaccess.ApiKeyName
 import it.chalmers.gamma.apiaccess.ApiKeyType
-import it.chalmers.gamma.apiaccess.RawApiToken
 import it.chalmers.gamma.apiaccess.views.parseAccountScaffoldSettings
 import it.chalmers.gamma.apiaccess.views.parseInfoSettings
 import it.chalmers.gamma.apiaccess.views.renderApiKeyDetails
@@ -15,13 +14,14 @@ import it.chalmers.gamma.apiaccess.views.renderApiKeys
 import it.chalmers.gamma.apiaccess.views.renderCreateApiKey
 import it.chalmers.gamma.apiaccess.views.renderSuperGroupTypeOptions
 import it.chalmers.gamma.organization.LocalizedText
-import it.chalmers.gamma.organization.OrganizationStore
+import it.chalmers.gamma.organization.OrganizationQueries
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.csrf.CsrfToken
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,9 +32,16 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class ApiKeyController(
-    private val apiKeys: ApiAccessAdministration,
-    private val organizations: OrganizationStore,
+    private val apiKeys: ReadAdministrativeApiKeys,
+    private val settingsUpdates: UpdateApiKeySettings,
+    private val creation: CreateAdministrativeApiKey,
+    private val rotation: RotateAdministrativeApiKey,
+    private val deletion: DeleteAdministrativeApiKey,
+    private val organizations: OrganizationQueries,
 ) {
+    @ExceptionHandler(ApiAccessNotFound::class)
+    fun missingKey(): ResponseEntity<Void> = ResponseEntity.notFound().build()
+
     @GetMapping("/api-keys", produces = [MediaType.TEXT_HTML_VALUE])
     fun apiKeys(
         authentication: Authentication,
@@ -57,7 +64,7 @@ class ApiKeyController(
         @ModelAttribute form: ApiKeyForm,
     ): ResponseEntity<String> {
         val created =
-            apiKeys.createApiKey(
+            creation.create(
                 authentication.actor(),
                 ApiKeyName(form.prettyName),
                 LocalizedText.of(form.svDescription, form.enDescription),
@@ -88,9 +95,10 @@ class ApiKeyController(
         @PathVariable apiKeyId: String,
     ): ResponseEntity<String> {
         val id = ApiKeyId.parse(apiKeyId)
-        val token = apiKeys.resetToken(authentication.actor(), id)
-        val key = apiKeys.findApiKey(authentication.actor(), id) ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok(renderApiKeyDetails(pageContext(authentication, csrfToken, request), key, token))
+        val result = rotation.rotate(authentication.actor(), id)
+        return ResponseEntity.ok(
+            renderApiKeyDetails(pageContext(authentication, csrfToken, request), result.apiKey, result.token),
+        )
     }
 
     @DeleteMapping("/api-keys/{apiKeyId}")
@@ -98,7 +106,7 @@ class ApiKeyController(
         authentication: Authentication,
         @PathVariable apiKeyId: String,
     ): ResponseEntity<Void> {
-        apiKeys.deleteApiKey(authentication.actor(), ApiKeyId.parse(apiKeyId))
+        deletion.delete(authentication.actor(), ApiKeyId.parse(apiKeyId))
         return redirect("/api-keys")
     }
 
@@ -117,7 +125,7 @@ class ApiKeyController(
         request: HttpServletRequest,
     ): ResponseEntity<Void> {
         val parameters = request.parameterMap.mapValues { it.value.toList() }
-        apiKeys.updateInfoSettings(
+        settingsUpdates.update(
             authentication.actor(),
             ApiKeyId.parse(apiKeyId),
             parseInfoSettings(parameters),
@@ -132,7 +140,7 @@ class ApiKeyController(
         request: HttpServletRequest,
     ): ResponseEntity<Void> {
         val parameters = request.parameterMap.mapValues { it.value.toList() }
-        apiKeys.updateAccountScaffoldSettings(
+        settingsUpdates.update(
             authentication.actor(),
             ApiKeyId.parse(apiKeyId),
             parseAccountScaffoldSettings(parameters),

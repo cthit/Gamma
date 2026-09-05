@@ -3,11 +3,7 @@ package it.chalmers.gamma.oauth.server
 
 import it.chalmers.gamma.oauth.ClientUid
 import it.chalmers.gamma.oauth.OAuthClaimDecisions
-import it.chalmers.gamma.oauth.OAuthProtocolClients
-import it.chalmers.gamma.organization.OrganizationStore
-import it.chalmers.gamma.organization.SuperGroupId
 import it.chalmers.gamma.platform.core.UserId
-import it.chalmers.gamma.users.UserStore
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -41,9 +37,7 @@ import java.util.function.Consumer
 
 @Configuration(proxyBeanMethods = false)
 internal class AuthorizationServerHttpSecurityConfiguration(
-    private val clients: OAuthProtocolClients,
-    private val users: UserStore,
-    private val memberships: OrganizationStore,
+    private val clientAccess: OAuthClientAccess,
     private val claimDecisions: OAuthClaimDecisions,
     private val issuer: OAuthIssuer,
 ) {
@@ -72,11 +66,7 @@ internal class AuthorizationServerHttpSecurityConfiguration(
                         provider.setAuthenticationValidator(
                             OAuth2AuthorizationCodeRequestAuthenticationValidator()
                                 .andThen(
-                                    restrictedClientValidator(
-                                        clients,
-                                        users,
-                                        memberships,
-                                    ),
+                                    restrictedClientValidator(clientAccess),
                                 ),
                         )
                         provider.setAuthorizationConsentRequired { context ->
@@ -221,9 +211,7 @@ private class OidcAuthorizationRequestInteractionFilter(
 }
 
 private fun restrictedClientValidator(
-    clients: OAuthProtocolClients,
-    users: UserStore,
-    memberships: OrganizationStore,
+    clientAccess: OAuthClientAccess,
 ): Consumer<OAuth2AuthorizationCodeRequestAuthenticationContext> =
     Consumer { context ->
         @Suppress("CastNullableToNonNullableType")
@@ -234,18 +222,7 @@ private fun restrictedClientValidator(
         if (userAuthentication?.isAuthenticated != true) return@Consumer
         val userId = runCatching { UserId.parse(userAuthentication.name) }.getOrNull() ?: return@Consumer
         val clientUid = ClientUid.parse(context.registeredClient.id)
-        val user = users.findUser(userId)
-        val restrictedSuperGroups = clients.restrictedSuperGroupIds(clientUid)
-        val allowed =
-            user != null &&
-                !user.locked &&
-                (
-                    restrictedSuperGroups.isEmpty() ||
-                        memberships.isMemberOfAnySuperGroup(
-                            userId,
-                            restrictedSuperGroups.mapTo(mutableSetOf(), ::SuperGroupId),
-                        )
-                )
+        val allowed = clientAccess.allowed(userId, clientUid)
         if (!allowed) {
             throw OAuth2AuthorizationCodeRequestAuthenticationException(
                 OAuth2Error(

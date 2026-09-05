@@ -2,7 +2,7 @@ package it.chalmers.gamma.oauth
 
 import it.chalmers.gamma.platform.core.UserId
 import it.chalmers.gamma.users.Language
-import it.chalmers.gamma.users.UserStore
+import it.chalmers.gamma.users.UserQueries
 
 data class OAuthProfileClaims(
     val cid: String,
@@ -21,7 +21,7 @@ data class AuthorizedOAuthClaims(
 )
 
 class OAuthClaimDecisions(
-    private val users: UserStore,
+    private val users: UserQueries,
 ) {
     fun claims(
         userId: UserId,
