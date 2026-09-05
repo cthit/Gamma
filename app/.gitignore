@@ -7,7 +7,6 @@
 
 generated
 
-### STS ###
 .apt_generated
 .classpath
 .factorypath
@@ -16,7 +15,6 @@ generated
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
@@ -24,7 +22,6 @@ generated
 /out/
 .idea/
 
-### NetBeans ###
 /nbproject/private/
 /build/
 /nbbuild/

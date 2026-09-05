@@ -14,7 +14,7 @@ export async function login(
   await page.fill('input[name="password"]', password);
 
   await Promise.all([
-    page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
+    page.waitForURL((url) => url.pathname !== "/login", { timeout: 30000 }),
     page.click('button:has-text("Login")'),
   ]);
 

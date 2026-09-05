@@ -1,6 +1,8 @@
 import { expect, test as base } from "@playwright/test";
 import { startDefaultGamma, startMockGamma } from "./gamma";
 import {
+  createIsolatedEnvironment,
+  removeIsolatedEnvironment,
   startDependencies,
   stopDependencies,
   stopGammaInstance,
@@ -8,27 +10,49 @@ import {
   type GammaInstance,
 } from "../gamma-setup";
 
-type GammaFixture = {
+type EnvironmentFixture = {
   env: GammaEnvironment;
+};
+
+type GammaFixture = {
   gamma: GammaInstance;
 };
 
-async function withEnvironment(
+type WorkerFixture = {
+  sharedEnv: GammaEnvironment;
+};
+
+async function withIsolatedEnvironment(
+  sharedEnv: GammaEnvironment,
   use: (env: GammaEnvironment) => Promise<void>,
 ): Promise<void> {
-  const env = await startDependencies();
+  const env = await createIsolatedEnvironment(sharedEnv);
   try {
     await use(env);
   } finally {
-    await stopDependencies(env);
+    await removeIsolatedEnvironment(env);
   }
 }
 
-export const testWithDefaultGamma = base.extend<GammaFixture>({
-  env: async ({ browserName }, use) => {
-    void browserName;
-    await withEnvironment(use);
+const testWithEnvironment = base.extend<EnvironmentFixture, WorkerFixture>({
+  sharedEnv: [
+    async ({ browserName }, use) => {
+      void browserName;
+      const env = await startDependencies();
+      try {
+        await use(env);
+      } finally {
+        await stopDependencies(env);
+      }
+    },
+    { scope: "worker", timeout: 600_000 },
+  ],
+  env: async ({ sharedEnv }, use) => {
+    await withIsolatedEnvironment(sharedEnv, use);
   },
+});
+
+export const testWithDefaultGamma = testWithEnvironment.extend<GammaFixture>({
   gamma: async ({ env }, use) => {
     const gamma = await startDefaultGamma(env);
     try {
@@ -39,11 +63,7 @@ export const testWithDefaultGamma = base.extend<GammaFixture>({
   },
 });
 
-export const testWithMockGamma = base.extend<GammaFixture>({
-  env: async ({ browserName }, use) => {
-    void browserName;
-    await withEnvironment(use);
-  },
+export const testWithMockGamma = testWithEnvironment.extend<GammaFixture>({
   gamma: async ({ env }, use) => {
     const gamma = await startMockGamma(env);
     try {

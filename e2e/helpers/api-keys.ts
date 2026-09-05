@@ -55,11 +55,13 @@ export async function readApiKeyCredentials(
       .innerText()
   ).trim();
 
+  const resetForm = page
+    .locator('form[action$="/reset"], form[data-hx-post$="/reset"]')
+    .first();
   const resetPath =
-    (await page
-      .locator('form[data-hx-post$="/reset"]')
-      .first()
-      .getAttribute("data-hx-post")) ?? "";
+    (await resetForm.getAttribute("action")) ??
+    (await resetForm.getAttribute("data-hx-post")) ??
+    "";
 
   const apiKeyIdMatch = /\/api-keys\/([0-9a-fA-F-]+)\/reset/.exec(resetPath);
   if (!apiKeyIdMatch) {

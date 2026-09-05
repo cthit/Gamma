@@ -326,6 +326,12 @@ test.describe.serial("api snapshots", () => {
         body: { cids: ["snapcid", "snapcid"] },
         expected: jsonSnapshot(206, ["snapcid"]),
       },
+      {
+        method: "GET",
+        path: "/api/allow-list/v1",
+        headers: { Authorization: allowListAuthHeader },
+        expected: jsonSnapshot(200, ["snapcid"]),
+      },
     ];
 
     for (const testCase of testCases) {

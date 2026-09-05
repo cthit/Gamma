@@ -1,0 +1,5 @@
+{
+  "added": {"code": 200, "name": "ALLOW_LIST_ADDED_RESPONSE"},
+  "forbidden": {"error": "Forbidden", "message": "FORBIDDEN", "status": 403},
+  "partialFailures": ["duplicate-cid"]
+}

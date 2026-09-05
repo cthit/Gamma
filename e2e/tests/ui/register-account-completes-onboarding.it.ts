@@ -2,6 +2,7 @@ import {
   expect,
   testWithDefaultGamma as test,
 } from "../../helpers/test-fixtures";
+import { createHash } from "node:crypto";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid, uniqueEmail } from "../../helpers/strings";
 
@@ -24,9 +25,16 @@ test("given an allowed cid when completing registration then the new user can si
   await page.fill('input[name="cid"]', cid);
 
   await Promise.all([
-    page.waitForURL("**/allow-list", { timeout: 15000 }),
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        response.url().endsWith("/allow-list") &&
+        response.status() >= 200 &&
+        response.status() < 400,
+    ),
     page.locator('button[form="allow-cid-form"]').click(),
   ]);
+  await expect(page.getByText(cid)).toBeVisible({ timeout: 10000 });
 
   await logout(page);
 
@@ -49,7 +57,7 @@ test("given an allowed cid when completing registration then the new user can si
     timeout: 10000,
   });
 
-  const password = `${uniqueCid("register")}pw`;
+  const password = "E2e-Cobalt-Quartz-47";
   const nick = uniqueCid("nick");
 
   await page.fill('input[name="email"]', uniqueEmail("newuser"));
@@ -76,6 +84,7 @@ test("given an allowed cid when completing registration then the new user can si
 
 async function waitForActivationToken(
   env: {
+    databaseName: string;
     postgres: {
       exec: (
         command: string | string[],
@@ -84,17 +93,21 @@ async function waitForActivationToken(
   },
   cid: string,
 ): Promise<string> {
+  const token = `e2e-activation-${createHash("sha256")
+    .update(`${cid}-${Date.now()}`)
+    .digest("hex")}`;
+
   for (let attempt = 0; attempt < 30; attempt++) {
     const queryResult = await env.postgres.exec([
       "psql",
       "-U",
       "postgres",
       "-d",
-      "postgres",
+      env.databaseName,
       "-t",
       "-A",
       "-c",
-      `SELECT token FROM g_user_activation WHERE cid = '${cid}' LIMIT 1;`,
+      `UPDATE g_user_activation SET token = '${token}' WHERE cid = '${cid}' RETURNING cid;`,
     ]);
 
     if (queryResult.exitCode !== 0) {
@@ -103,8 +116,7 @@ async function waitForActivationToken(
       );
     }
 
-    const token = queryResult.output.trim();
-    if (token.length > 0) {
+    if (queryResult.output.includes(cid)) {
       return token;
     }
 

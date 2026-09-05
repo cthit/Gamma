@@ -1,0 +1,70 @@
+{
+  "blob": [{
+    "superGroups": [{
+      "hasAvatar": false,
+      "hasBanner": true,
+      "members": [{
+        "post": {
+          "emailPrefix": "digit",
+          "enName": "President",
+          "id": "20000000-0000-0000-0000-000000000001",
+          "svName": "Ordförande"
+        },
+        "unofficialPostName": null,
+        "user": {
+          "acceptanceYear": 2005,
+          "cid": "mscott",
+          "firstName": "Michael",
+          "id": "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f",
+          "lastName": "Scott",
+          "nick": "Boss"
+        }
+      }],
+      "superGroup": {
+        "enDescription": "English",
+        "id": "aed27030-ad90-4526-855c-1e909b1dcecb",
+        "name": "digit",
+        "prettyName": "digIT",
+        "svDescription": "Svenska",
+        "type": "committee"
+      }
+    }],
+    "type": "committee"
+  }],
+  "notFound": {"error": "Not Found", "message": "USER_NOT_FOUND_RESPONSE", "status": 404},
+  "user": {
+    "groups": [{
+      "group": {
+        "id": "2abe2264-fd61-4899-ba46-851279d85229",
+        "name": "digit2026",
+        "prettyName": "digIT2026",
+        "superGroup": {
+          "enDescription": "English",
+          "id": "aed27030-ad90-4526-855c-1e909b1dcecb",
+          "name": "digit",
+          "prettyName": "digIT",
+          "svDescription": "Svenska",
+          "type": "committee",
+          "version": 7
+        },
+        "version": 3
+      },
+      "post": {
+        "emailPrefix": "digit",
+        "enName": "President",
+        "id": "20000000-0000-0000-0000-000000000001",
+        "order": 0,
+        "svName": "Ordförande",
+        "version": 4
+      }
+    }],
+    "user": {
+      "acceptanceYear": 2005,
+      "cid": "mscott",
+      "firstName": "Michael",
+      "id": "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f",
+      "lastName": "Scott",
+      "nick": "Boss"
+    }
+  }
+}

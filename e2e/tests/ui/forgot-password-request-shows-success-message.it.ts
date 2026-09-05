@@ -11,6 +11,7 @@ test("given a cid when requesting forgot password then reset instructions are sh
 
   await page.fill('input[name="cidOrEmail"]', "jhalpert");
 
+  const requestStartedAt = Date.now();
   await Promise.all([
     page.waitForResponse(
       (response) =>
@@ -18,9 +19,11 @@ test("given a cid when requesting forgot password then reset instructions are sh
         response.url().includes("/forgot-password") &&
         response.status() >= 200 &&
         response.status() < 400,
+      { timeout: 10000 },
     ),
     page.getByRole("button", { name: "Reset password" }).click(),
   ]);
+  expect(Date.now() - requestStartedAt).toBeGreaterThanOrEqual(3000);
 
   await expect(
     page.getByText(

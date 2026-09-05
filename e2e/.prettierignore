@@ -1,4 +1,5 @@
 node_modules
+.generated
 pnpm-lock.yaml
 playwright-report
 test-results

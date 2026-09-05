@@ -24,7 +24,12 @@ test("given a signed in user when creating a personal oauth client then client d
   await page.fill('input[name="redirectUrl"]', "https://example.org/callback");
 
   await Promise.all([
-    page.waitForURL("**/clients/*", { timeout: 15000 }),
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        response.url().endsWith("/my-clients") &&
+        response.status() === 200,
+    ),
     page.getByRole("button", { name: "Create" }).click(),
   ]);
 

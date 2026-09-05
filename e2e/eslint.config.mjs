@@ -9,6 +9,7 @@ export default tseslint.config(
   {
     ignores: [
       "node_modules/**",
+      ".generated/**",
       "playwright-report/**",
       "test-results/**",
       "fixtures/**",
@@ -16,7 +17,16 @@ export default tseslint.config(
     ],
   },
   js.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  ...tseslint.configs.recommendedTypeChecked.map((config) => ({
+    ...config,
+    files: ["**/*.ts"],
+  })),
+  {
+    files: ["**/*.mjs"],
+    languageOptions: {
+      globals: { process: "readonly" },
+    },
+  },
   {
     files: ["**/*.ts"],
     languageOptions: {

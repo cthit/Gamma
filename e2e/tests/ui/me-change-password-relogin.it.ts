@@ -1,12 +1,54 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
+import { getGammaE2ERuntime } from "../../gamma-setup";
+import { Buffer } from "node:buffer";
 
-test("given a signed in user when changing password then old password fails and new password works", async ({
+test("a user can edit their profile and rotate their password", async ({
   page,
   gamma,
 }) => {
   await login(page, gamma.url, "pbeesly", "password1337", "Pam-Pam");
+
+  if (getGammaE2ERuntime() === "kotlin") {
+    await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
+      "src",
+      /\?v=0$/,
+    );
+  }
+  await page.locator('form#update-me-avatar input[name="file"]').setInputFiles({
+    name: "avatar.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
+      "base64",
+    ),
+  });
+  await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.request().method() === "POST" &&
+        response.url().endsWith("/me/avatar"),
+    ),
+    page.getByRole("button", { name: "Upload avatar" }).click(),
+  ]);
+  if (getGammaE2ERuntime() === "kotlin") {
+    await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
+      "src",
+      /\?v=1$/,
+    );
+  }
+
+  const updatedNick = uniqueCid("nick");
+  await page.getByRole("button", { name: "Edit" }).click();
+  await page.fill('input[name="nick"]', updatedNick);
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(
+    page.getByText("You have successfully edited your information"),
+  ).toBeVisible({ timeout: 10000 });
+  await expect(
+    page.locator("article", { hasText: "Your information" }),
+  ).toContainText(updatedNick, { timeout: 10000 });
 
   const newPassword = `${uniqueCid("newpass")}value`;
 
@@ -50,5 +92,5 @@ test("given a signed in user when changing password then old password fails and 
     ),
   ).toBeVisible({ timeout: 10000 });
 
-  await login(page, gamma.url, "pbeesly", newPassword, "Pam-Pam");
+  await login(page, gamma.url, "pbeesly", newPassword, updatedNick);
 });

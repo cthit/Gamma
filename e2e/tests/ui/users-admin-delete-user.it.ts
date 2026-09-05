@@ -30,7 +30,9 @@ test("given a created user when admin deletes the user then it is removed from u
   await page.selectOption('select[name="language"]', "EN");
 
   await Promise.all([
-    page.waitForURL("**/users/*", { timeout: 15000 }),
+    page.waitForURL((url) => /^\/users\/[0-9a-f-]+$/.test(url.pathname), {
+      timeout: 15000,
+    }),
     page.getByRole("button", { name: "Create user" }).click(),
   ]);
 
