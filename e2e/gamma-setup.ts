@@ -13,6 +13,7 @@ import {
   StartedPostgreSqlContainer,
 } from "@testcontainers/postgresql";
 import { RedisContainer, StartedRedisContainer } from "@testcontainers/redis";
+import { waitForLoginReady } from "./helpers/readiness";
 
 export interface GammaInstance {
   container: StartedTestContainer;
@@ -99,13 +100,16 @@ export async function startDependencies(): Promise<GammaEnvironment> {
       "GOTIFY_PRE-SHARED-KEY": "123abc",
       "GOTIFY_MOCK-MODE": "true",
       "GOTIFY_DEBUG-MODE": "true",
+      // Gamma calls http://gotify:80; Gotify otherwise defaults to port 8080.
+      GOTIFY_PORT: "80",
+      "GOTIFY_MAX-MAIL-SIZE": "20000000",
     })
     .withExposedPorts(80)
     .withLogConsumer((stream) => {
       stream.on("data", (line) => console.log(`[GOTIFY] ${line}`));
       stream.on("err", (line) => console.error(`[GOTIFY] ${line}`));
     })
-    .withWaitStrategy(Wait.forLogMessage("Serving application on port 8080"))
+    .withWaitStrategy(Wait.forLogMessage("Serving application on port 80"))
     .start();
 
   console.log("Dependencies started successfully!");
@@ -176,7 +180,9 @@ export async function startGammaInstance(
 
   const filesToCopy = [...tlsFiles, ...(options.filesToCopy ?? [])];
 
-  let gammaContainerBuilder = new GenericContainer("gamma-app:test")
+  let gammaContainerBuilder = new GenericContainer(
+    process.env.GAMMA_TEST_IMAGE ?? "gamma-app:test",
+  )
     .withNetwork(env.network)
     .withNetworkAliases(`gamma-${instanceId}`)
     .withEnvironment({
@@ -240,10 +246,10 @@ export async function startGammaInstance(
       );
     })
     .withWaitStrategy(
-      Wait.forHttp("/", 8080)
+      Wait.forHttp("/login", 8080)
         .usingTls()
         .allowInsecure()
-        .forStatusCodeMatching((status) => status >= 200 && status < 500),
+        .forStatusCode(200),
     )
     .start();
 
@@ -286,6 +292,13 @@ export async function startGammaInstance(
         `[GAMMA-${instanceId}] Bootstrap api key credentials not found in logs after ${maxWaitTime}ms`,
       );
     }
+  }
+
+  try {
+    await waitForLoginReady(url);
+  } catch (error) {
+    await gammaContainer.stop();
+    throw error;
   }
 
   return {
