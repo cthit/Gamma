@@ -19,7 +19,7 @@
       overlays.default =
         final: prev: rec {
           temurin-bin = prev."temurin-bin-${toString javaVersion}";
-          gradle = prev.gradle.override { java = temurin-bin; };
+          gradle = prev.gradle_9.override { java = temurin-bin; };
           nodejs = prev."nodejs_${toString nodeVersion}";
           pnpm = prev."pnpm_${toString pnpmVersion}";
         };

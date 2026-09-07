@@ -56,16 +56,24 @@ make build-image      # tags as gamma-app:test
 
 ### Run E2E tests
 
+Install the test dependencies and Chromium before the first run (and reinstall Chromium after updating Playwright):
+
+```bash
+(cd e2e && pnpm install && pnpm exec playwright install --with-deps chromium)
+```
+
+Then, from the repository root:
+
 ```bash
 make e2e              # builds image then runs tests
 # or with a specific version from GHCR
-make test-e2e GAMMA_VERSION=v1.2.3
+make test-e2e GAMMA_VERSION=1.2.3
 ```
 
-For development of E2E tests:
+When developing E2E tests, after the setup above and with `gamma-app:test` already built or pulled:
 
 ```bash
-cd e2e && pnpm install && pnpm test
+cd e2e && pnpm test
 ```
 
 
@@ -109,11 +117,11 @@ Gamma issues scoped API keys for service-to-service access. On first startup wit
 | `ALLOW_LIST` | Registration allow-list management (`/api/allow-list/v1`) |
 | `CLIENT` | OAuth2 client-level API access |
 
-When developing a service that consumes Gamma APIs, obtain the appropriate key type and pass it via the `X-API-Key` header:
+When developing a service that consumes Gamma APIs, obtain the appropriate key type and pass its ID and token via the `Authorization` header using the `pre-shared` scheme:
 
 ```http
 GET /api/info/v1/groups
-X-API-Key: <your_info_key>
+Authorization: pre-shared <api_key_id>:<api_key_token>
 ```
 
 
@@ -135,7 +143,14 @@ Flyway migrations live in `app/src/main/resources/db/migration/`. Migration file
 
 - Domain records are immutable Java records with `@RecordBuilder` for builders.
 - JPA entities live in `adapter/secondary/jpa/` and are mapped to/from domain records via entity converters.
-- Run `./gradlew build` to verify DDL validation against Flyway migrations (`ddl-auto: validate`).
+
+To validate entity mappings against the Flyway migrations, start the application with development services:
+
+```bash
+DEV_SERVICES_ENABLED=true PRODUCTION=false ./gradlew bootRun
+```
+
+Wait for successful application startup. Flyway applies the migrations to the development database, then Hibernate validates the entity mappings (`ddl-auto: validate`). `./gradlew build` compiles and checks the project but does not start the application or validate the database schema.
 
 ### Adding a new REST endpoint
 
@@ -210,6 +225,8 @@ There are currently no Java unit/integration tests. Spotless formatting checks r
 ### E2E tests (Playwright + TypeScript)
 
 The E2E suite lives in `e2e/` and uses Playwright with Testcontainers to orchestrate PostgreSQL, Redis, Gotify, and Gamma Docker containers.
+
+Complete the [E2E setup](#run-e2e-tests), including installing Chromium and building or pulling `gamma-app:test`, before running these commands from the repository root.
 
 ```bash
 # Run all E2E tests
