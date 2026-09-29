@@ -23,7 +23,10 @@ test("given an activation code when admin deletes it then it is removed from act
   await page.fill('input[name="cid"]', cid);
 
   await Promise.all([
-    page.waitForURL("**/allow-list", { timeout: 15000 }),
+    // The form updates this same URL; wait for persistence before logging out.
+    expect(page.locator("tr", { hasText: cid })).toBeVisible({
+      timeout: 15000,
+    }),
     page.locator('button[form="allow-cid-form"]').click(),
   ]);
 

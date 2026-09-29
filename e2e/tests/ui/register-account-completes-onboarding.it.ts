@@ -2,6 +2,7 @@ import {
   expect,
   testWithDefaultGamma as test,
 } from "../../helpers/test-fixtures";
+import { waitForMailLink } from "../../helpers/mail";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid, uniqueEmail } from "../../helpers/strings";
 
@@ -24,7 +25,10 @@ test("given an allowed cid when completing registration then the new user can si
   await page.fill('input[name="cid"]', cid);
 
   await Promise.all([
-    page.waitForURL("**/allow-list", { timeout: 15000 }),
+    // The form updates this same URL; wait for persistence before logging out.
+    expect(page.locator("tr", { hasText: cid })).toBeVisible({
+      timeout: 15000,
+    }),
     page.locator('button[form="allow-cid-form"]').click(),
   ]);
 
@@ -42,9 +46,14 @@ test("given an allowed cid when completing registration then the new user can si
     page.getByText("An email should be sent to your student email"),
   ).toBeVisible({ timeout: 10000 });
 
-  const token = await waitForActivationToken(env, cid);
+  const link = await waitForMailLink(
+    env.gotify,
+    gamma.url,
+    `${cid}@chalmers.se`,
+    "/register",
+  );
 
-  await page.goto(`${gamma.url}/register?token=${token}`, { timeout: 30000 });
+  await page.goto(link, { timeout: 30000 });
   await expect(page.getByText("Finish setting up your account")).toBeVisible({
     timeout: 10000,
   });
@@ -73,43 +82,3 @@ test("given an allowed cid when completing registration then the new user can si
 
   await login(page, gamma.url, cid, password, nick);
 });
-
-async function waitForActivationToken(
-  env: {
-    postgres: {
-      exec: (
-        command: string | string[],
-      ) => Promise<{ exitCode: number; output: string }>;
-    };
-  },
-  cid: string,
-): Promise<string> {
-  for (let attempt = 0; attempt < 30; attempt++) {
-    const queryResult = await env.postgres.exec([
-      "psql",
-      "-U",
-      "postgres",
-      "-d",
-      "postgres",
-      "-t",
-      "-A",
-      "-c",
-      `SELECT token FROM g_user_activation WHERE cid = '${cid}' LIMIT 1;`,
-    ]);
-
-    if (queryResult.exitCode !== 0) {
-      throw new Error(
-        `Failed to query activation token. Exit code ${queryResult.exitCode}: ${queryResult.output}`,
-      );
-    }
-
-    const token = queryResult.output.trim();
-    if (token.length > 0) {
-      return token;
-    }
-
-    await new Promise((resolve) => setTimeout(resolve, 250));
-  }
-
-  throw new Error(`Activation token was not created for cid ${cid}`);
-}
