@@ -39,12 +39,14 @@
             <fieldset id="scope-checkboxes">
                 <div th:each="scopeInfo : ${allScopes}">
                     <label>
-                        <input type="checkbox" th:name="${'scopes'}" th:value="${scopeInfo.name()}" />
-                        <span th:text="${scopeInfo.name()}"></span>
-                        <span th:if="${scopeInfo.sensitive()}" class="badge sensitive">(Sensitive)</span>
+                        <input type="checkbox" th:name="${'scopes'}" th:value="${scopeInfo.scope}"
+                               th:checked="${form.scopes != null and form.scopes.contains(scopeInfo.scope.name())}" />
+                        <span th:text="${scopeInfo.scope}"></span>
+                        <span th:if="${scopeInfo.sensitive}" class="badge sensitive">(Sensitive)</span>
                     </label>
                 </div>
             </fieldset>
+            <p th:if="${errorMessage != null}" class="error" th:text="${errorMessage}"></p>
         </form>
         <footer>
             <button form="create-api-key" data-loading-disable>Create api key</button>

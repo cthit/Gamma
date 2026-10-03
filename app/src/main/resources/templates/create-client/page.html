@@ -67,9 +67,10 @@
                 <fieldset id="scope-checkboxes">
                     <div th:each="scopeInfo : ${allApiKeyScopes}">
                         <label>
-                            <input type="checkbox" th:name="${'apiKeyScopes'}" th:value="${scopeInfo.name()}" />
-                            <span th:text="${scopeInfo.name()}"></span>
-                            <span th:if="${scopeInfo.sensitive()}" class="badge sensitive">(Sensitive)</span>
+                            <input type="checkbox" th:name="${'apiKeyScopes'}" th:value="${scopeInfo.scope}"
+                                   th:checked="${form.apiKeyScopes != null and form.apiKeyScopes.contains(scopeInfo.scope.name())}" />
+                            <span th:text="${scopeInfo.scope}"></span>
+                            <span th:if="${scopeInfo.sensitive}" class="badge sensitive">(Sensitive)</span>
                         </label>
                     </div>
                     <label>
@@ -78,6 +79,7 @@
                     </label>
                     <input type="hidden" name="_apiKeyScopes" value="on" />
                 </fieldset>
+                <p th:if="${errorMessage != null}" class="error" th:text="${errorMessage}"></p>
             </div>
         </article>
         <article>

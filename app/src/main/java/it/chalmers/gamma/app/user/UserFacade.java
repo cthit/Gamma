@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.user;
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.SuperGroupTypeRestrictions;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
@@ -12,13 +13,16 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -27,16 +31,19 @@ public class UserFacade extends Facade {
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
   private final ClientApprovalsRepository clientApprovalsRepository;
+  private final SuperGroupTypeRestrictions superGroupTypeRestrictions;
 
   public UserFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
       GroupRepository groupRepository,
-      ClientApprovalsRepository clientApprovalsRepository) {
+      ClientApprovalsRepository clientApprovalsRepository,
+      SuperGroupTypeRestrictions superGroupTypeRestrictions) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
     this.clientApprovalsRepository = clientApprovalsRepository;
+    this.superGroupTypeRestrictions = superGroupTypeRestrictions;
   }
 
   public Optional<UserDTO> get(UUID id) {
@@ -108,12 +115,31 @@ public class UserFacade extends Facade {
     return this.userRepository.get(new UserId(id)).map(UserDTO::new);
   }
 
-  /** For v2 — no access guard. */
+  /**
+   * For v2 — no access guard, super group type restrictions enforced on the returned group
+   * memberships.
+   */
   public Optional<UserWithGroupsDTO> fetchUserWithGroups(UUID id) {
     UserId userId = new UserId(id);
+    Optional<Set<String>> allowed =
+        this.superGroupTypeRestrictions
+            .allowedTypes()
+            .map(types -> types.stream().map(SuperGroupType::value).collect(Collectors.toSet()));
     return this.userRepository
         .get(userId)
-        .map(u -> new UserWithGroupsDTO(new UserDTO(u), getUserGroups(userId)));
+        .map(
+            u ->
+                new UserWithGroupsDTO(
+                    new UserDTO(u),
+                    getUserGroups(userId).stream()
+                        .filter(
+                            membership ->
+                                allowed
+                                    .map(
+                                        types ->
+                                            types.contains(membership.group().superGroup().type()))
+                                    .orElse(true))
+                        .toList()));
   }
 
   /** For v2 — no access guard. */

@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.group;
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.SuperGroupTypeRestrictions;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.group.domain.*;
@@ -12,6 +13,7 @@ import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
+import it.chalmers.gamma.app.supergroup.domain.SuperGroupType;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.Name;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -34,18 +36,21 @@ public class GroupFacade extends Facade {
   private final UserRepository userRepository;
   private final PostRepository postRepository;
   private final SuperGroupRepository superGroupRepository;
+  private final SuperGroupTypeRestrictions superGroupTypeRestrictions;
 
   public GroupFacade(
       AccessGuard accessGuard,
       GroupRepository groupRepository,
       UserRepository userRepository,
       PostRepository postRepository,
-      SuperGroupRepository superGroupRepository) {
+      SuperGroupRepository superGroupRepository,
+      SuperGroupTypeRestrictions superGroupTypeRestrictions) {
     super(accessGuard);
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
     this.postRepository = postRepository;
     this.superGroupRepository = superGroupRepository;
+    this.superGroupTypeRestrictions = superGroupTypeRestrictions;
   }
 
   public UUID create(NewGroup newGroup) {
@@ -193,26 +198,44 @@ public class GroupFacade extends Facade {
         .toList();
   }
 
-  /** For v2 — no access guard. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public List<GroupDTO> fetchAllGroups() {
-    return this.groupRepository.getAll().stream().map(GroupDTO::new).toList();
+    Optional<List<SuperGroupType>> allowed = this.superGroupTypeRestrictions.allowedTypes();
+    return this.groupRepository.getAll().stream()
+        .filter(group -> allowsType(allowed, group))
+        .map(GroupDTO::new)
+        .toList();
   }
 
-  /** For v2 — no access guard. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public Optional<GroupDTO> fetchGroup(UUID id) {
-    return this.groupRepository.get(new GroupId(id)).map(GroupDTO::new);
+    Optional<List<SuperGroupType>> allowed = this.superGroupTypeRestrictions.allowedTypes();
+    return this.groupRepository
+        .get(new GroupId(id))
+        .filter(group -> allowsType(allowed, group))
+        .map(GroupDTO::new);
   }
 
-  /** For v2 — no access guard. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public Optional<GroupWithMembersDTO> fetchGroupWithMembers(UUID id) {
-    return this.groupRepository.get(new GroupId(id)).map(GroupWithMembersDTO::new);
+    Optional<List<SuperGroupType>> allowed = this.superGroupTypeRestrictions.allowedTypes();
+    return this.groupRepository
+        .get(new GroupId(id))
+        .filter(group -> allowsType(allowed, group))
+        .map(GroupWithMembersDTO::new);
   }
 
-  /** For v2 — no access guard. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public List<GroupWithMembersDTO> fetchGroupsBySuperGroup(UUID superGroupId) {
+    Optional<List<SuperGroupType>> allowed = this.superGroupTypeRestrictions.allowedTypes();
     return this.groupRepository.getAllBySuperGroup(new SuperGroupId(superGroupId)).stream()
+        .filter(group -> allowsType(allowed, group))
         .map(GroupWithMembersDTO::new)
         .toList();
+  }
+
+  private static boolean allowsType(Optional<List<SuperGroupType>> allowed, Group group) {
+    return allowed.map(types -> types.contains(group.superGroup().type())).orElse(true);
   }
 
   public record NewGroup(String name, String prettyName, UUID superGroup) {}

@@ -28,6 +28,7 @@ public class GammaErrorController implements ErrorController {
       HttpServletResponse response,
       HttpServletRequest request) {
     Object statusCodeString = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+
     int statusCode = statusCodeString == null ? 500 : Integer.parseInt(statusCodeString.toString());
 
     Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
@@ -47,6 +48,7 @@ public class GammaErrorController implements ErrorController {
     if (htmxRequest) {
       response.addHeader("HX-Retarget", "body");
       response.addHeader("HX-Reswap", "innerHTML");
+
       mv.setViewName(page);
     } else {
       mv.setViewName("index");

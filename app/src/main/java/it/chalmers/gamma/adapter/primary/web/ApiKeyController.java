@@ -5,14 +5,18 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.ApiKeySettingsFacade;
+import it.chalmers.gamma.app.apikey.SuperGroupTypeRestrictions;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -74,25 +78,16 @@ public class ApiKeyController {
 
     mv.addObject("apiKey", apiKey);
     mv.addObject("apiKeyId", apiKey.id());
-    mv.addObject("allScopes", this.apiKeyFacade.getAllScopes());
     mv.addObject(
         "sensitiveScopes",
         this.apiKeyFacade.getAllScopes().stream()
-            .filter(s -> s.sensitive())
-            .map(s -> s.name())
+            .filter(ApiKeyFacade.ScopeInfo::sensitive)
+            .map(ApiKeyFacade.ScopeInfo::scope)
             .toList());
 
-    boolean hasSuperGroupsRead = apiKey.scopes().contains("SUPER_GROUPS_READ");
-    boolean hasAccountsProvision = apiKey.scopes().contains("ACCOUNTS_PROVISION");
-
-    if (hasAccountsProvision || hasSuperGroupsRead) {
+    boolean hasAccountsProvision = apiKey.scopes().contains(Scope.ACCOUNTS_PROVISION);
+    if (apiKey.scopes().stream().anyMatch(SuperGroupTypeRestrictions.RESTRICTED_SCOPES::contains)) {
       loadApiKeyScopeSettings(mv, apiKey.id(), hasAccountsProvision);
-    }
-
-    if (apiKey.keyType().equals("ACCOUNT_SCAFFOLD")) {
-      loadApiKeySettingsAccountScaffold(mv, apiKey.id());
-    } else if (apiKey.keyType().equals("INFO")) {
-      loadApiKeySettingsInfo(mv, apiKey.id());
     }
 
     if (token != null) {
@@ -114,35 +109,6 @@ public class ApiKeyController {
         this.superGroupFacade.getAllTypes().stream()
             .sorted(Comparator.comparing(String::toLowerCase))
             .toList());
-  }
-
-  private void loadApiKeySettingsInfo(ModelAndView mv, UUID apiKeyId) {
-    var settings = this.apiKeySettingsFacade.getInfoSettings(apiKeyId);
-
-    mv.addObject("settings_title", "Info settings");
-    mv.addObject(
-        "settings_description",
-        "Set the super group types from which the information will be query from");
-    mv.addObject(
-        "settings_form", new InfoApiKeySettings(settings.version(), settings.superGroupTypes()));
-  }
-
-  private void loadApiKeySettingsAccountScaffold(ModelAndView mv, UUID apiKeyId) {
-    var settings = this.apiKeySettingsFacade.getAccountScaffoldSettings(apiKeyId);
-
-    mv.addObject("settings_title", "Account scaffold settings");
-    mv.addObject(
-        "settings_description",
-        "Set the super group types from which the information will query from");
-    mv.addObject(
-        "settings_form",
-        new AccountScaffoldApiKeySettings(
-            settings.version(),
-            settings.superGroupTypes().stream()
-                .map(
-                    type ->
-                        new AccountScaffoldType(type.type(), type.requiresManaged() ? "on" : "off"))
-                .toList()));
   }
 
   private ModelAndView createApiKeyNotFound(String apiKeyId, boolean htmxRequest) {
@@ -173,7 +139,7 @@ public class ApiKeyController {
       String keyType,
       List<String> scopes) {
     public CreateApiKey() {
-      this("", "", "", "DIRECTORY_INTEGRATION", List.of());
+      this("", "", "", "INFO", List.of());
     }
   }
 
@@ -230,14 +196,21 @@ public class ApiKeyController {
       return createGetCreateApiKey(htmxRequest, form, bindingResult);
     }
 
-    ApiKeyFacade.CreatedApiKey createdApiKey =
-        this.apiKeyFacade.create(
-            new ApiKeyFacade.NewApiKey(
-                form.prettyName,
-                form.svDescription,
-                form.enDescription,
-                form.keyType,
-                form.scopes != null ? form.scopes : List.of()));
+    ApiKeyFacade.CreatedApiKey createdApiKey;
+    try {
+      createdApiKey =
+          this.apiKeyFacade.create(
+              new ApiKeyFacade.NewApiKey(
+                  form.prettyName,
+                  form.svDescription,
+                  form.enDescription,
+                  form.keyType,
+                  form.scopes != null ? form.scopes : List.of()));
+    } catch (IllegalArgumentException e) {
+      ModelAndView errorView = createGetCreateApiKey(htmxRequest, form, null);
+      errorView.addObject("errorMessage", e.getMessage());
+      return errorView;
+    }
 
     String apiKeyId = createdApiKey.apiKey().id().toString();
 
@@ -260,90 +233,6 @@ public class ApiKeyController {
     response.addHeader("HX-Redirect", "/api-keys");
 
     return new ModelAndView("common/empty");
-  }
-
-  public static class AccountScaffoldType {
-    public String type;
-    public String requiresManaged;
-
-    public AccountScaffoldType() {}
-
-    public AccountScaffoldType(String type, String requiresManaged) {
-      this.type = type;
-      this.requiresManaged = requiresManaged;
-    }
-
-    public String getRequiresManaged() {
-      return requiresManaged;
-    }
-
-    public void setRequiresManaged(String requiresManaged) {
-      this.requiresManaged = requiresManaged;
-    }
-
-    public String getType() {
-      return type;
-    }
-
-    public void setType(String type) {
-      this.type = type;
-    }
-  }
-
-  public static final class AccountScaffoldApiKeySettings {
-    public List<AccountScaffoldType> superGroupTypes = new ArrayList<>();
-    public int version;
-
-    public AccountScaffoldApiKeySettings() {}
-
-    public AccountScaffoldApiKeySettings(int version, List<AccountScaffoldType> types) {
-      this.version = version;
-      this.superGroupTypes = types;
-    }
-
-    public List<AccountScaffoldType> getSuperGroupTypes() {
-      return superGroupTypes;
-    }
-
-    public void setSuperGroupTypes(List<AccountScaffoldType> superGroupTypes) {
-      this.superGroupTypes = superGroupTypes;
-    }
-
-    public int getVersion() {
-      return version;
-    }
-
-    public void setVersion(int version) {
-      this.version = version;
-    }
-  }
-
-  public static final class InfoApiKeySettings {
-    public List<String> superGroupTypes = new ArrayList<>();
-    public int version;
-
-    public InfoApiKeySettings() {}
-
-    public InfoApiKeySettings(int version, List<String> types) {
-      this.version = version;
-      this.superGroupTypes = types;
-    }
-
-    public List<String> getSuperGroupTypes() {
-      return superGroupTypes;
-    }
-
-    public void setSuperGroupTypes(List<String> superGroupTypes) {
-      this.superGroupTypes = superGroupTypes;
-    }
-
-    public int getVersion() {
-      return version;
-    }
-
-    public void setVersion(int version) {
-      this.version = version;
-    }
   }
 
   public static final class UnifiedTypeConfig {
@@ -398,13 +287,24 @@ public class ApiKeyController {
       @PathVariable("apiKeyId") UUID apiKeyId,
       UnifiedSettingsForm form) {
 
-    Optional<ApiKeyFacade.ApiKeyDTO> apiKeyMaybe = this.apiKeyFacade.getById(apiKeyId);
+    ApiKeyFacade.ApiKeyDTO apiKey =
+        this.apiKeyFacade
+            .getById(apiKeyId)
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Api key not found"));
 
-    if (apiKeyMaybe.isEmpty()) {
-      throw new RuntimeException();
+    Set<String> validTypes = new HashSet<>(this.superGroupFacade.getAllTypes());
+    Set<String> seenTypes = new HashSet<>();
+    for (UnifiedTypeConfig typeConfig : form.superGroupTypes) {
+      if (!validTypes.contains(typeConfig.type)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Unknown super group type: " + typeConfig.type);
+      }
+      if (!seenTypes.add(typeConfig.type)) {
+        throw new ResponseStatusException(
+            HttpStatus.BAD_REQUEST, "Duplicate super group type: " + typeConfig.type);
+      }
     }
-
-    ApiKeyFacade.ApiKeyDTO apiKey = apiKeyMaybe.get();
 
     this.apiKeySettingsFacade.setUnifiedSettings(
         apiKeyId,
@@ -415,7 +315,7 @@ public class ApiKeyController {
     ModelAndView mv = new ModelAndView("api-key-details/unified-settings");
 
     mv.addObject("apiKeyId", apiKeyId);
-    boolean hasAccountsProvision = apiKey.scopes().contains("ACCOUNTS_PROVISION");
+    boolean hasAccountsProvision = apiKey.scopes().contains(Scope.ACCOUNTS_PROVISION);
     mv.addObject("showGdprFilter", hasAccountsProvision);
     mv.addObject("form", form);
 
@@ -429,105 +329,17 @@ public class ApiKeyController {
     ModelAndView mv = new ModelAndView();
 
     mv.setViewName("api-key-details/new-type-to-unified-settings");
-    var apiKey = this.apiKeyFacade.getById(apiKeyId).orElseThrow();
-    mv.addObject("showGdprFilter", apiKey.scopes().contains("ACCOUNTS_PROVISION"));
+    var apiKey =
+        this.apiKeyFacade
+            .getById(apiKeyId)
+            .orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Api key not found"));
+    mv.addObject("showGdprFilter", apiKey.scopes().contains(Scope.ACCOUNTS_PROVISION));
     mv.addObject(
         "superGroupTypes",
         this.superGroupFacade.getAllTypes().stream()
             .sorted(Comparator.comparing(String::toLowerCase))
             .toList());
-
-    return mv;
-  }
-
-  @GetMapping("/api-keys/new-super-group-type/info")
-  public ModelAndView getNewSuperGroupTypeInfo(
-      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
-    ModelAndView mv = new ModelAndView();
-
-    mv.setViewName("api-key-details/new-type-to-info-settings");
-    mv.addObject(
-        "superGroupTypes",
-        this.superGroupFacade.getAllTypes().stream()
-            .sorted(Comparator.comparing(String::toLowerCase))
-            .toList());
-
-    return mv;
-  }
-
-  @GetMapping("/api-keys/new-super-group-type/account-scaffold")
-  public ModelAndView getNewSuperGroupTypeAccountScaffold(
-      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
-    ModelAndView mv = new ModelAndView();
-
-    mv.setViewName("api-key-details/new-type-to-account-scaffold-settings");
-    mv.addObject(
-        "superGroupTypes",
-        this.superGroupFacade.getAllTypes().stream()
-            .sorted(Comparator.comparing(String::toLowerCase))
-            .toList());
-
-    return mv;
-  }
-
-  @PutMapping("/api-keys/{apiKeyId}/account-scaffold-settings")
-  public ModelAndView updateAccountScaffoldSettings(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("apiKeyId") UUID apiKeyId,
-      AccountScaffoldApiKeySettings form) {
-
-    Optional<ApiKeyFacade.ApiKeyDTO> apiKeyMaybe = this.apiKeyFacade.getById(apiKeyId);
-
-    if (apiKeyMaybe.isEmpty()) {
-      throw new RuntimeException();
-    }
-
-    ApiKeyFacade.ApiKeyDTO apiKey = apiKeyMaybe.get();
-
-    ModelAndView mv = new ModelAndView("api-key-details/account-scaffold-settings");
-
-    this.apiKeySettingsFacade.setAccountScaffoldSettings(
-        apiKeyId,
-        new ApiKeySettingsFacade.ApiKeySettingsAccountScaffoldDTO(
-            form.version,
-            form.superGroupTypes.stream()
-                .map(
-                    accountScaffoldType ->
-                        new ApiKeySettingsFacade.AccountScaffoldTypeDTO(
-                            accountScaffoldType.type,
-                            "on".equals(accountScaffoldType.requiresManaged)))
-                .toList()));
-
-    loadApiKeySettingsAccountScaffold(mv, apiKey.id());
-
-    mv.addObject("apiKeyId", apiKeyId);
-
-    return mv;
-  }
-
-  @PutMapping("/api-keys/{apiKeyId}/info-settings")
-  public ModelAndView updateInfoSettings(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @PathVariable("apiKeyId") UUID apiKeyId,
-      InfoApiKeySettings form) {
-
-    Optional<ApiKeyFacade.ApiKeyDTO> apiKeyMaybe = this.apiKeyFacade.getById(apiKeyId);
-
-    if (apiKeyMaybe.isEmpty()) {
-      throw new RuntimeException();
-    }
-
-    ApiKeyFacade.ApiKeyDTO apiKey = apiKeyMaybe.get();
-
-    ModelAndView mv = new ModelAndView("api-key-details/info-settings");
-
-    this.apiKeySettingsFacade.setInfoSettings(
-        apiKeyId,
-        new ApiKeySettingsFacade.ApiKeySettingsInfoDTO(form.version, form.superGroupTypes));
-
-    loadApiKeySettingsInfo(mv, apiKey.id());
-
-    mv.addObject("apiKeyId", apiKeyId);
 
     return mv;
   }

@@ -3,8 +3,8 @@ package it.chalmers.gamma.app.supergroup;
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.apikey.SuperGroupTypeRestrictions;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
-import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -13,8 +13,6 @@ import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.supergroup.domain.*;
 import it.chalmers.gamma.app.user.domain.Name;
-import it.chalmers.gamma.security.authentication.ApiAuthentication;
-import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import java.util.*;
 import org.springframework.stereotype.Service;
 
@@ -24,19 +22,19 @@ public class SuperGroupFacade extends Facade {
   private final SuperGroupRepository superGroupRepository;
   private final SuperGroupTypeRepository superGroupTypeRepository;
   private final GroupRepository groupRepository;
-  private final ApiKeySettingsRepository apiKeySettingsRepository;
+  private final SuperGroupTypeRestrictions superGroupTypeRestrictions;
 
   public SuperGroupFacade(
       AccessGuard accessGuard,
       SuperGroupRepository superGroupRepository,
       SuperGroupTypeRepository superGroupTypeRepository,
       GroupRepository groupRepository,
-      ApiKeySettingsRepository apiKeySettingsRepository) {
+      SuperGroupTypeRestrictions superGroupTypeRestrictions) {
     super(accessGuard);
     this.superGroupRepository = superGroupRepository;
     this.superGroupTypeRepository = superGroupTypeRepository;
     this.groupRepository = groupRepository;
-    this.apiKeySettingsRepository = apiKeySettingsRepository;
+    this.superGroupTypeRestrictions = superGroupTypeRestrictions;
   }
 
   public void addType(String type)
@@ -63,18 +61,15 @@ public class SuperGroupFacade extends Facade {
   public List<SuperGroupTypeDTO> getAllTypesWithSuperGroups() {
     accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.INFO));
 
-    List<SuperGroupType> superGroupTypes;
+    List<SuperGroupType> superGroupTypes =
+        this.superGroupTypeRestrictions
+            .configuredTypes()
+            .orElseGet(() -> this.superGroupTypeRepository.getAll());
 
-    if (AuthenticationExtractor.getAuthentication()
-        instanceof ApiAuthentication apiAuthentication) {
-      superGroupTypes =
-          this.apiKeySettingsRepository
-              .getInfoSettings(apiAuthentication.get().id())
-              .superGroupTypes();
-    } else {
-      superGroupTypes = this.superGroupTypeRepository.getAll();
-    }
+    return buildSuperGroupTree(superGroupTypes);
+  }
 
+  private List<SuperGroupTypeDTO> buildSuperGroupTree(List<SuperGroupType> superGroupTypes) {
     List<SuperGroupTypeDTO> output = new ArrayList<>();
 
     for (SuperGroupType type : superGroupTypes) {
@@ -186,48 +181,34 @@ public class SuperGroupFacade extends Facade {
     return this.superGroupRepository.get(new SuperGroupId(superGroupId)).map(SuperGroupDTO::new);
   }
 
-  /** For v2 — no access guard. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public List<SuperGroupDTO> fetchAllSuperGroups() {
-    return this.superGroupRepository.getAll().stream().map(SuperGroupDTO::new).toList();
+    Optional<List<SuperGroupType>> allowed = this.superGroupTypeRestrictions.allowedTypes();
+    return this.superGroupRepository.getAll().stream()
+        .filter(superGroup -> allowsType(allowed, superGroup.type()))
+        .map(SuperGroupDTO::new)
+        .toList();
   }
 
-  /** For v2 — no access guard. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public Optional<SuperGroupDTO> fetchSuperGroup(UUID id) {
-    return this.superGroupRepository.get(new SuperGroupId(id)).map(SuperGroupDTO::new);
+    Optional<List<SuperGroupType>> allowed = this.superGroupTypeRestrictions.allowedTypes();
+    return this.superGroupRepository
+        .get(new SuperGroupId(id))
+        .filter(superGroup -> allowsType(allowed, superGroup.type()))
+        .map(SuperGroupDTO::new);
   }
 
-  /** For v2 — no access guard. Returns full super group tree grouped by type. */
+  /** For v2 — no access guard, super group type restrictions enforced. */
   public List<SuperGroupTypeDTO> fetchSuperGroupTree() {
-    List<SuperGroupType> superGroupTypes = this.superGroupTypeRepository.getAll();
+    return buildSuperGroupTree(
+        this.superGroupTypeRestrictions
+            .allowedTypes()
+            .orElseGet(() -> this.superGroupTypeRepository.getAll()));
+  }
 
-    List<SuperGroupTypeDTO> output = new ArrayList<>();
-    for (SuperGroupType type : superGroupTypes) {
-      List<SuperGroupWithMembersDTO> superGroupsOutput = new ArrayList<>();
-      for (SuperGroup superGroup : this.superGroupRepository.getAllByType(type)) {
-        List<Group> groups = this.groupRepository.getAllBySuperGroup(superGroup.id());
-        boolean hasAvatar =
-            groups.stream()
-                .map(Group::avatarUri)
-                .map(Optional::isPresent)
-                .reduce(false, (a, b) -> a || b);
-        boolean hasBanner =
-            groups.stream()
-                .map(Group::bannerUri)
-                .map(Optional::isPresent)
-                .reduce(false, (a, b) -> a || b);
-        List<GroupFacade.GroupMemberDTO> members =
-            groups.stream()
-                .flatMap(group -> group.groupMembers().stream())
-                .map(GroupFacade.GroupMemberDTO::new)
-                .sorted(Comparator.comparingInt(m -> m.post().order()))
-                .toList();
-        superGroupsOutput.add(
-            new SuperGroupWithMembersDTO(
-                new SuperGroupDTO(superGroup), hasBanner, hasAvatar, members));
-      }
-      output.add(new SuperGroupTypeDTO(type.value(), superGroupsOutput));
-    }
-    return output;
+  private static boolean allowsType(Optional<List<SuperGroupType>> allowed, SuperGroupType type) {
+    return allowed.map(types -> types.contains(type)).orElse(true);
   }
 
   public record NewSuperGroup(

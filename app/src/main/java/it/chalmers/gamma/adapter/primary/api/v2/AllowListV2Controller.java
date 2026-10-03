@@ -33,7 +33,7 @@ public class AllowListV2Controller {
         this.allowListFacade.allowV2(cid);
         LOGGER.info("Added user " + cid + " to allow list");
       } catch (Exception e) {
-        LOGGER.info("Failed to add " + cid + " to allow list");
+        LOGGER.info("Failed to add " + cid + " to allow list", e);
         failedToAdd.add(cid);
       }
     }

@@ -61,15 +61,4 @@
     <th:block th:if="${form != null}">
         <div th:replace="~{api-key-details/unified-settings}"></div>
     </th:block>
-
-    <th:block th:if="${settings_form != null and (apiKey.keyType().equals('INFO') or apiKey.keyType().equals('ACCOUNT_SCAFFOLD'))}">
-        <article>
-            <header>Super group type restrictions (legacy)</header>
-            <ul>
-                <li th:each="type : ${settings_form.superGroupTypes}">
-                    <span th:text="${type}"></span>
-                </li>
-            </ul>
-        </article>
-    </th:block>
 </main>

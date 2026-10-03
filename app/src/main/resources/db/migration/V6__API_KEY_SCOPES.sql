@@ -17,7 +17,7 @@ CREATE TABLE g_api_key_super_group_type (
 INSERT INTO g_api_key_scope (api_key_id, scope)
 SELECT ak.api_key_id, s.scope
 FROM g_api_key ak
-CROSS JOIN (VALUES ('profiles:read'), ('directory:read'), ('super-groups:read'), ('groups:read'), ('memberships:read')) AS s(scope)
+CROSS JOIN (VALUES ('PROFILES_READ'), ('DIRECTORY_READ'), ('SUPER_GROUPS_READ'), ('GROUPS_READ'), ('MEMBERSHIPS_READ')) AS s(scope)
 WHERE ak.key_type = 'INFO';
 
 -- Migrate existing INFO settings
@@ -29,19 +29,19 @@ WHERE s.api_key_id IN (SELECT api_key_id FROM g_api_key WHERE key_type = 'INFO')
 
 -- Migrate existing CLIENT keys
 INSERT INTO g_api_key_scope (api_key_id, scope)
-SELECT api_key_id, 'clients:self'
+SELECT api_key_id, 'CLIENTS_SELF'
 FROM g_api_key
 WHERE key_type = 'CLIENT';
 
 -- Migrate existing ALLOW_LIST keys
 INSERT INTO g_api_key_scope (api_key_id, scope)
-SELECT api_key_id, 'allowlist:write'
+SELECT api_key_id, 'ALLOWLIST_WRITE'
 FROM g_api_key
 WHERE key_type = 'ALLOW_LIST';
 
 -- Migrate existing ACCOUNT_SCAFFOLD keys
 INSERT INTO g_api_key_scope (api_key_id, scope)
-SELECT api_key_id, 'accounts:provision'
+SELECT api_key_id, 'ACCOUNTS_PROVISION'
 FROM g_api_key
 WHERE key_type = 'ACCOUNT_SCAFFOLD';
 
@@ -54,3 +54,8 @@ JOIN g_api_key_to_super_group_type jt ON s.settings_id = jt.settings_id
 LEFT JOIN g_api_key_account_scaffold_requires_managed rm
     ON rm.settings_id = s.settings_id AND rm.super_group_type_name = jt.super_group_type_name
 WHERE s.api_key_id IN (SELECT api_key_id FROM g_api_key WHERE key_type = 'ACCOUNT_SCAFFOLD');
+
+-- Legacy settings tables, superseded by g_api_key_super_group_type
+DROP TABLE g_api_key_account_scaffold_requires_managed;
+DROP TABLE g_api_key_to_super_group_type;
+DROP TABLE g_api_key_settings;

@@ -7,7 +7,6 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.TrustedUserDetailsRepository
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
-import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
@@ -16,7 +15,6 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import it.chalmers.gamma.security.api.ScopeAuthorizationFilter;
-import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -115,49 +113,7 @@ public class SecurityFiltersConfig {
         new ApiAuthenticationProvider(apiKeyRepository, clientRepository, passwordEncoder);
 
     ScopeAuthorizationFilter scopeFilter =
-        new ScopeAuthorizationFilter(
-            List.of(
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/users", Scope.DIRECTORY_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/users/{id}", Scope.PROFILES_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/users/{id}/groups", Scope.MEMBERSHIPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/super-groups", Scope.SUPER_GROUPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/super-groups/{id}", Scope.SUPER_GROUPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/super-groups/{id}/groups", Scope.SUPER_GROUPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/super-groups/{id}/members", Scope.MEMBERSHIPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET",
-                    "/api/v2/super-groups/tree",
-                    Scope.SUPER_GROUPS_READ,
-                    Scope.MEMBERSHIPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/groups", Scope.GROUPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/groups/{id}", Scope.GROUPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/groups/{id}/members", Scope.MEMBERSHIPS_READ),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "POST", "/api/v2/allowlist", Scope.ALLOWLIST_WRITE),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/provision/users", Scope.ACCOUNTS_PROVISION),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/provision/super-groups", Scope.ACCOUNTS_PROVISION),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/clients/self/users", Scope.CLIENTS_SELF),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/clients/self/users/{id}", Scope.CLIENTS_SELF),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/clients/self/users/{id}/groups", Scope.CLIENTS_SELF),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/clients/self/authorities", Scope.CLIENTS_SELF),
-                ScopeAuthorizationFilter.PathScopeRule.of(
-                    "GET", "/api/v2/clients/self/authorities/for/{id}", Scope.CLIENTS_SELF)));
+        new ScopeAuthorizationFilter(ScopeAuthorizationFilter.defaultV2Rules());
 
     http.securityMatcher(new RegexRequestMatcher("\\/api/v2/.*", null))
         .addFilterBefore(

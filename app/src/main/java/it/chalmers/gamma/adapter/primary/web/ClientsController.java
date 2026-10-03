@@ -121,12 +121,6 @@ public class ClientsController {
 
     mv.addObject("clientSecret", clientSecret);
     mv.addObject("apiKeyToken", apiKeyToken);
-    mv.addObject(
-        "sensitiveScopes",
-        this.apiKeyFacade.getAllScopes().stream()
-            .filter(s -> s.sensitive())
-            .map(s -> s.name())
-            .toList());
 
     return mv;
   }
@@ -357,33 +351,44 @@ public class ClientsController {
     ModelAndView mv = new ModelAndView();
 
     List<String> resolvedScopes = new ArrayList<>();
-    if (form.generateApiKey && form.keyType != null) {
+    if (form.generateApiKey) {
       resolvedScopes.add("CLIENTS_SELF");
-      if (form.keyType.equals("CUSTOM")) {
+      if ("CUSTOM".equals(form.keyType)) {
         if (form.apiKeyScopes != null) {
           resolvedScopes.addAll(form.apiKeyScopes);
         }
-      } else if (!form.keyType.equals("CLIENT")) {
-        for (var bundle : this.apiKeyFacade.getScopeBundles()) {
-          if (bundle.name().equals(form.keyType)) {
-            resolvedScopes.addAll(bundle.scopes());
-            break;
-          }
+      } else if (form.keyType != null && !"CLIENT".equals(form.keyType)) {
+        Optional<ApiKeyFacade.ScopeBundle> bundle =
+            this.apiKeyFacade.getScopeBundles().stream()
+                .filter(b -> b.name().equals(form.keyType))
+                .findFirst();
+        if (bundle.isEmpty()) {
+          var errorView = createGetCreateClient(htmxRequest, form, bindingResult);
+          errorView.addObject("errorMessage", "Unknown key type: " + form.keyType);
+          return errorView;
         }
+        resolvedScopes.addAll(bundle.get().scopes());
       }
     }
 
-    ClientFacade.CreatedClientDTO result =
-        this.clientFacade.createOfficialClient(
-            new ClientFacade.NewClient(
-                form.redirectUrl,
-                form.prettyName,
-                form.svDescription,
-                form.enDescription,
-                form.generateApiKey,
-                form.emailScope,
-                new ClientFacade.NewClientRestrictions(form.restrictions),
-                resolvedScopes));
+    ClientFacade.CreatedClientDTO result;
+    try {
+      result =
+          this.clientFacade.createOfficialClient(
+              new ClientFacade.NewClient(
+                  form.redirectUrl,
+                  form.prettyName,
+                  form.svDescription,
+                  form.enDescription,
+                  form.generateApiKey,
+                  form.emailScope,
+                  new ClientFacade.NewClientRestrictions(form.restrictions),
+                  resolvedScopes));
+    } catch (IllegalArgumentException e) {
+      var errorView = createGetCreateClient(htmxRequest, form, bindingResult);
+      errorView.addObject("errorMessage", e.getMessage());
+      return errorView;
+    }
 
     mv.setViewName("client-details/page");
 
