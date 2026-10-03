@@ -57,7 +57,9 @@ public class UserFacade extends Facade {
   public Optional<UserWithGroupsDTO> getWithGroups(UUID id) {
     UserId userId = new UserId(id);
     accessGuard.requireEither(
-        isSignedIn(), userHasAcceptedClient(userId), isApiWithScope(Scope.PROFILES_READ));
+        isSignedIn(),
+        userHasAcceptedClient(userId),
+        isApiWithAllScopes(Scope.PROFILES_READ, Scope.MEMBERSHIPS_READ));
 
     Optional<UserDTO> maybeUser = this.userRepository.get(userId).map(UserDTO::new);
     return maybeUser.map(userDTO -> new UserWithGroupsDTO(userDTO, getUserGroups(userId)));

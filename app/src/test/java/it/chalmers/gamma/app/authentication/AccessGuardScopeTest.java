@@ -75,6 +75,21 @@ class AccessGuardScopeTest {
   }
 
   @Test
+  void isApiWithAllScopesRequiresEveryScope() {
+    authenticateWithScopes(Set.of(Scope.PROFILES_READ, Scope.MEMBERSHIPS_READ));
+
+    assertThat(
+            AccessGuard.isApiWithAllScopes(Scope.PROFILES_READ, Scope.MEMBERSHIPS_READ)
+                .validate(null, null))
+        .isTrue();
+    assertThat(
+            AccessGuard.isApiWithAllScopes(Scope.PROFILES_READ, Scope.GROUPS_READ)
+                .validate(null, null))
+        .isFalse();
+    assertThat(AccessGuard.isApiWithAllScopes(Scope.DIRECTORY_READ).validate(null, null)).isFalse();
+  }
+
+  @Test
   void isClientApiIsTrueOnlyForClientsSelfKeys() {
     authenticateWithScopes(Set.of(Scope.CLIENTS_SELF));
     assertThat(AccessGuard.isClientApi().validate(null, null)).isTrue();

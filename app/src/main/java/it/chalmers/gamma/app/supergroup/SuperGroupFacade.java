@@ -59,7 +59,8 @@ public class SuperGroupFacade extends Facade {
   }
 
   public List<SuperGroupTypeDTO> getAllTypesWithSuperGroups() {
-    accessGuard.requireEither(isAdmin(), isApiWithScope(Scope.SUPER_GROUPS_READ));
+    accessGuard.requireEither(
+        isAdmin(), isApiWithAllScopes(Scope.SUPER_GROUPS_READ, Scope.MEMBERSHIPS_READ));
 
     List<SuperGroupType> superGroupTypes =
         this.superGroupTypeRestrictions

@@ -13,6 +13,7 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.LocalRunnerAuthentication;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -69,6 +70,18 @@ public class AccessGuard {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
         return apiPrincipal.get().scopes().contains(scope);
+      }
+
+      return false;
+    };
+  }
+
+  /** True for an api key holding every one of the given scopes. */
+  public static AccessChecker isApiWithAllScopes(Scope... scopes) {
+    Set<Scope> required = Set.of(scopes);
+    return (clientRepository, userRepository) -> {
+      if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
+        return apiPrincipal.get().scopes().containsAll(required);
       }
 
       return false;
