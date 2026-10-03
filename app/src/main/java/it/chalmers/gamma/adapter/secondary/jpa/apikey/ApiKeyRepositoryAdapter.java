@@ -63,6 +63,7 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
     }
   }
 
+  @Transactional
   @Override
   public List<ApiKey> getAll() {
     return this.repository.findAll().stream()
@@ -70,6 +71,7 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
         .collect(Collectors.toList());
   }
 
+  @Transactional
   @Override
   public Optional<ApiKey> getById(ApiKeyId apiKeyId) {
     return this.repository.findById(apiKeyId.value()).map(this.apiKeyEntityConverter::toDomain);
@@ -90,8 +92,8 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
     apiKeyEntity.id = apiKey.id().value();
     apiKeyEntity.token = apiKey.apiKeyToken().value();
     apiKeyEntity.prettyName = apiKey.prettyName().value();
-    apiKeyEntity.keyType = apiKey.keyType();
     apiKeyEntity.description.apply(apiKey.description());
+    apiKeyEntity.scopes = apiKey.scopes();
 
     return apiKeyEntity;
   }

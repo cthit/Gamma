@@ -14,6 +14,7 @@ import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import it.chalmers.gamma.security.api.ScopeAuthorizationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -101,7 +102,7 @@ public class SecurityFiltersConfig {
 
   @Order(2)
   @Bean
-  SecurityFilterChain externalSecurityFilterChain(
+  SecurityFilterChain v2ApiSecurityFilterChain(
       HttpSecurity http,
       ApiKeyRepository apiKeyRepository,
       ClientRepository clientRepository,
@@ -111,16 +112,16 @@ public class SecurityFiltersConfig {
     ApiAuthenticationProvider apiAuthenticationProvider =
         new ApiAuthenticationProvider(apiKeyRepository, clientRepository, passwordEncoder);
 
-    RegexRequestMatcher regexRequestMatcher = new RegexRequestMatcher("\\/api/.+", null);
-    http.securityMatcher(regexRequestMatcher)
+    ScopeAuthorizationFilter scopeFilter =
+        new ScopeAuthorizationFilter(ScopeAuthorizationFilter.defaultV2Rules());
+
+    http.securityMatcher(new RegexRequestMatcher("\\/api/v2/.*", null))
         .addFilterBefore(
             new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
             BasicAuthenticationFilter.class)
+        .addFilterAfter(scopeFilter, ApiAuthenticationFilter.class)
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // Since only backends will call this
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf -> csrf.disable())
         .exceptionHandling(
             config ->
@@ -129,6 +130,31 @@ public class SecurityFiltersConfig {
   }
 
   @Order(3)
+  @Bean
+  SecurityFilterChain v1ApiSecurityFilterChain(
+      HttpSecurity http,
+      ApiKeyRepository apiKeyRepository,
+      ClientRepository clientRepository,
+      PasswordEncoder passwordEncoder)
+      throws Exception {
+
+    ApiAuthenticationProvider apiAuthenticationProvider =
+        new ApiAuthenticationProvider(apiKeyRepository, clientRepository, passwordEncoder);
+
+    http.securityMatcher(new RegexRequestMatcher("\\/api/.+", null))
+        .addFilterBefore(
+            new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
+            BasicAuthenticationFilter.class)
+        .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf -> csrf.disable())
+        .exceptionHandling(
+            config ->
+                config.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+    return http.build();
+  }
+
+  @Order(4)
   @Bean
   SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(new RegexRequestMatcher("\\/images.+", null))
@@ -141,7 +167,7 @@ public class SecurityFiltersConfig {
   }
 
   /** Sets up the security for web interface */
-  @Order(4)
+  @Order(5)
   @Bean
   SecurityFilterChain webSecurityFilterChain(
       HttpSecurity http,

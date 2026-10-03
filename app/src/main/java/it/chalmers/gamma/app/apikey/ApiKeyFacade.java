@@ -4,14 +4,15 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.*;
-import it.chalmers.gamma.app.apikey.domain.settings.ApiKeySettingsRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import jakarta.transaction.Transactional;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -20,31 +21,62 @@ import org.springframework.stereotype.Component;
 public class ApiKeyFacade extends Facade {
 
   private final ApiKeyRepository apiKeyRepository;
-  private final ApiKeySettingsRepository apiKeySettingsRepository;
   private final PasswordEncoder passwordEncoder;
 
   public ApiKeyFacade(
-      AccessGuard accessGuard,
-      ApiKeyRepository apiKeyRepository,
-      ApiKeySettingsRepository apiKeySettingsRepository,
-      PasswordEncoder passwordEncoder) {
+      AccessGuard accessGuard, ApiKeyRepository apiKeyRepository, PasswordEncoder passwordEncoder) {
     super(accessGuard);
     this.apiKeyRepository = apiKeyRepository;
-    this.apiKeySettingsRepository = apiKeySettingsRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
-  public String[] getApiKeyTypes() {
-    List<ApiKeyType> types =
-        Arrays.stream(ApiKeyType.values())
-            .filter(apiKeyType -> apiKeyType != ApiKeyType.CLIENT)
-            .toList();
-    String[] s = new String[types.size()];
-    for (int i = 0; i < s.length; i++) {
-      s[i] = types.get(i).name();
-    }
-    return s;
+  public record ScopeBundle(String name, List<String> scopes, String description) {}
+
+  /**
+   * Named scope bundles offered as presets when creating an api key. A bundle only decides which
+   * scopes end up in the form selection — the stored key has scopes, not a type.
+   */
+  private static final List<ScopeBundle> SCOPE_BUNDLES =
+      List.of(
+          new ScopeBundle(
+              "INFO",
+              List.of(
+                  "PROFILES_READ",
+                  "DIRECTORY_READ",
+                  "SUPER_GROUPS_READ",
+                  "GROUPS_READ",
+                  "MEMBERSHIPS_READ"),
+              "Read user profiles, directory, groups, and organization structure."),
+          new ScopeBundle(
+              "ALLOW_LIST",
+              List.of("ALLOWLIST_WRITE"),
+              "Add entries to the registration allow list."),
+          new ScopeBundle(
+              "ACCOUNT_SCAFFOLD",
+              List.of("ACCOUNTS_PROVISION"),
+              "Provision accounts with GDPR-filtered data."),
+          new ScopeBundle("CUSTOM", List.of(), "Manually select individual scopes."));
+
+  public List<ScopeBundle> getScopeBundles() {
+    return SCOPE_BUNDLES;
   }
+
+  public List<ScopeInfo> getAllScopes() {
+    return Arrays.stream(Scope.values()).map(s -> new ScopeInfo(s, isSensitiveScope(s))).toList();
+  }
+
+  public List<ScopeInfo> getDataScopes() {
+    return getAllScopes().stream().filter(s -> s.scope() != Scope.CLIENTS_SELF).toList();
+  }
+
+  private static boolean isSensitiveScope(Scope scope) {
+    return switch (scope) {
+      case ALLOWLIST_WRITE, ACCOUNTS_PROVISION -> true;
+      default -> false;
+    };
+  }
+
+  public record ScopeInfo(Scope scope, boolean sensitive) {}
 
   public record CreatedApiKey(ApiKeyDTO apiKey, String token) {}
 
@@ -52,11 +84,9 @@ public class ApiKeyFacade extends Facade {
   public CreatedApiKey create(NewApiKey newApiKey) {
     this.accessGuard.requireEither(isAdmin(), isLocalRunner());
 
-    ApiKeyType type = ApiKeyType.valueOf(newApiKey.keyType);
-
-    if (type == ApiKeyType.CLIENT) {
-      throw new IllegalArgumentException(
-          "Cannot create api key with type client without creating a client at the same time");
+    Set<Scope> scopes = parseScopes(newApiKey.scopes);
+    if (scopes.isEmpty()) {
+      throw new IllegalArgumentException("An api key requires at least one scope");
     }
 
     ApiKeyId apiKeyId = ApiKeyId.generate();
@@ -66,18 +96,52 @@ public class ApiKeyFacade extends Facade {
             apiKeyId,
             new PrettyName(newApiKey.prettyName),
             new Text(newApiKey.svDescription, newApiKey.enDescription),
-            type,
-            generated.apiKeyToken());
+            generated.apiKeyToken(),
+            scopes);
 
     apiKeyRepository.create(apiKey);
 
-    if (type == ApiKeyType.INFO) {
-      this.apiKeySettingsRepository.createEmptyInfoSettings(apiKeyId);
-    } else if (type == ApiKeyType.ACCOUNT_SCAFFOLD) {
-      this.apiKeySettingsRepository.createEmptyAccountScaffoldSettings(apiKeyId);
+    return new CreatedApiKey(new ApiKeyDTO(apiKey), generated.rawToken());
+  }
+
+  /**
+   * Resolves the scopes for a new api key from the selected scope bundle. A named bundle (e.g.
+   * INFO) determines its scopes itself; the CUSTOM bundle takes the submitted selection. The CLIENT
+   * bundle is only used when creating a client alongside the key.
+   *
+   * @throws IllegalArgumentException on any invalid input
+   */
+  public static Set<Scope> resolveScopes(String bundle, List<String> scopeNames) {
+    if (bundle == null || bundle.isBlank()) {
+      throw new IllegalArgumentException("Scope bundle is required");
+    }
+    if (bundle.equals("CLIENT")) {
+      return Set.of(Scope.CLIENTS_SELF);
+    }
+    if (bundle.equals("CUSTOM")) {
+      return parseScopes(scopeNames);
     }
 
-    return new CreatedApiKey(new ApiKeyDTO(apiKey), generated.rawToken());
+    return SCOPE_BUNDLES.stream()
+        .filter(b -> b.name().equals(bundle))
+        .findFirst()
+        .map(b -> parseScopes(b.scopes()))
+        .orElseThrow(() -> new IllegalArgumentException("Unknown scope bundle: " + bundle));
+  }
+
+  static Set<Scope> parseScopes(List<String> scopeNames) {
+    if (scopeNames == null) {
+      return new HashSet<>();
+    }
+    Set<Scope> scopes = new HashSet<>();
+    for (String scopeName : scopeNames) {
+      try {
+        scopes.add(Scope.valueOf(scopeName));
+      } catch (IllegalArgumentException e) {
+        throw new IllegalArgumentException("Unknown scope: " + scopeName);
+      }
+    }
+    return scopes;
   }
 
   public void delete(UUID apiKeyId) throws ApiKeyNotFoundException {
@@ -115,17 +179,23 @@ public class ApiKeyFacade extends Facade {
   }
 
   public record NewApiKey(
-      String prettyName, String svDescription, String enDescription, String keyType) {}
+      String prettyName, String svDescription, String enDescription, List<String> scopes) {
+    public NewApiKey {
+      if (scopes == null) {
+        scopes = List.of();
+      }
+    }
+  }
 
   public record ApiKeyDTO(
-      UUID id, String prettyName, String svDescription, String enDescription, String keyType) {
+      UUID id, String prettyName, String svDescription, String enDescription, Set<Scope> scopes) {
     public ApiKeyDTO(ApiKey apiKey) {
       this(
           apiKey.id().value(),
           apiKey.prettyName().value(),
           apiKey.description().sv().value(),
           apiKey.description().en().value(),
-          apiKey.keyType().name());
+          Set.copyOf(apiKey.scopes()));
     }
   }
 

@@ -27,7 +27,7 @@ test("given an api key when resetting its token then old token is rejected and n
     prettyName,
     svDescription: "E2E svensk beskrivning",
     enDescription: "E2E english description",
-    keyType: "INFO",
+    bundle: "INFO",
   });
 
   const initialResponse = await request.get(`${gamma.url}/api/info/v1/blob`, {
