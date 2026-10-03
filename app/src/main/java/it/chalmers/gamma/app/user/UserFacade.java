@@ -4,7 +4,7 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.SuperGroupTypeRestrictions;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientUid;
@@ -48,14 +48,16 @@ public class UserFacade extends Facade {
 
   public Optional<UserDTO> get(UUID id) {
     UserId userId = new UserId(id);
-    accessGuard.requireEither(isSignedIn(), userHasAcceptedClient(userId), isApi(ApiKeyType.INFO));
+    accessGuard.requireEither(
+        isSignedIn(), userHasAcceptedClient(userId), isApiWithScope(Scope.PROFILES_READ));
 
     return this.userRepository.get(userId).map(UserDTO::new);
   }
 
   public Optional<UserWithGroupsDTO> getWithGroups(UUID id) {
     UserId userId = new UserId(id);
-    accessGuard.requireEither(isSignedIn(), userHasAcceptedClient(userId), isApi(ApiKeyType.INFO));
+    accessGuard.requireEither(
+        isSignedIn(), userHasAcceptedClient(userId), isApiWithScope(Scope.PROFILES_READ));
 
     Optional<UserDTO> maybeUser = this.userRepository.get(userId).map(UserDTO::new);
     return maybeUser.map(userDTO -> new UserWithGroupsDTO(userDTO, getUserGroups(userId)));

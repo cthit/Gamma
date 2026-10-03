@@ -11,7 +11,6 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings.SuperGroupTypeConfig;
 import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.common.PrettyName;
@@ -54,7 +53,6 @@ class SuperGroupTypeRestrictionsTest {
             new ApiKeyId(keyId),
             new PrettyName("test-key"),
             new Text("test", "test"),
-            ApiKeyType.INFO,
             new ApiKeyToken("{bcrypt}irrelevant"),
             Set.of(scopes));
     ApiAuthentication apiAuthentication =

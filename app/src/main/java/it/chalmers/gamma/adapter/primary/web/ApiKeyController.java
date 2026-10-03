@@ -136,7 +136,7 @@ public class ApiKeyController {
       @ValidatedWith(PrettyNameValidator.class) String prettyName,
       String svDescription,
       String enDescription,
-      String keyType,
+      String bundle,
       List<String> scopes) {
     public CreateApiKey() {
       this("", "", "", "INFO", List.of());
@@ -159,8 +159,6 @@ public class ApiKeyController {
     }
 
     mv.addObject("form", form);
-    mv.addObject("keyTypes", this.apiKeyFacade.getApiKeyTypes());
-    mv.addObject("scopeBundles", this.apiKeyFacade.getScopeBundles());
     mv.addObject("allScopes", this.apiKeyFacade.getDataScopes());
 
     var bundleScopeMap = new LinkedHashMap<String, String>();
@@ -198,14 +196,14 @@ public class ApiKeyController {
 
     ApiKeyFacade.CreatedApiKey createdApiKey;
     try {
+      Set<Scope> scopes = ApiKeyFacade.resolveScopes(form.bundle, form.scopes);
       createdApiKey =
           this.apiKeyFacade.create(
               new ApiKeyFacade.NewApiKey(
                   form.prettyName,
                   form.svDescription,
                   form.enDescription,
-                  form.keyType,
-                  form.scopes != null ? form.scopes : List.of()));
+                  scopes.stream().map(Scope::name).toList()));
     } catch (IllegalArgumentException e) {
       ModelAndView errorView = createGetCreateApiKey(htmxRequest, form, null);
       errorView.addObject("errorMessage", e.getMessage());

@@ -7,7 +7,6 @@ import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
@@ -98,7 +97,6 @@ public class ClientFacade extends Facade {
               new Text(
                   "Api nyckel för klienten: " + newClient.prettyName,
                   "Api key for client: " + newClient.prettyName),
-              ApiKeyType.CLIENT,
               generatedApiKeyToken.apiKeyToken(),
               Set.copyOf(keyScopes));
     }

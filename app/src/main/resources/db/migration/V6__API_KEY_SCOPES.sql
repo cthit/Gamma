@@ -59,3 +59,6 @@ WHERE s.api_key_id IN (SELECT api_key_id FROM g_api_key WHERE key_type = 'ACCOUN
 DROP TABLE g_api_key_account_scaffold_requires_managed;
 DROP TABLE g_api_key_to_super_group_type;
 DROP TABLE g_api_key_settings;
+
+-- The api key type is superseded by scopes
+ALTER TABLE g_api_key DROP COLUMN key_type;

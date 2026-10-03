@@ -121,7 +121,6 @@ public class ClientEntityConverter {
                       apiKey.id().value(),
                       apiKey.apiKeyToken().value(),
                       apiKey.prettyName().value(),
-                      apiKey.keyType(),
                       new TextEntity(apiKey.description()));
               apiKeyEntity.setScopes(apiKey.scopes());
 

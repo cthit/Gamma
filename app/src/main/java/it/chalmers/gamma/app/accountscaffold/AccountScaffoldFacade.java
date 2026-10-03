@@ -1,12 +1,12 @@
 package it.chalmers.gamma.app.accountscaffold;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isApi;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isApiWithScope;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyScopeSettings.SuperGroupTypeConfig;
 import it.chalmers.gamma.app.apikey.domain.ApiKeySuperGroupTypeRepository;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.group.domain.GroupMember;
@@ -46,7 +46,7 @@ public class AccountScaffoldFacade extends Facade {
    * included. Uses the unified super group type restrictions.
    */
   public List<AccountScaffoldSuperGroupDTO> getActiveSuperGroups() {
-    this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
+    this.accessGuard.require(isApiWithScope(Scope.ACCOUNTS_PROVISION));
     return fetchActiveSuperGroups();
   }
 
@@ -55,7 +55,7 @@ public class AccountScaffoldFacade extends Facade {
    * restrictions. User must have participated in gdpr training.
    */
   public List<AccountScaffoldUserDTO> getActiveUsers() {
-    this.accessGuard.require(isApi(ApiKeyType.ACCOUNT_SCAFFOLD));
+    this.accessGuard.require(isApiWithScope(Scope.ACCOUNTS_PROVISION));
     return fetchActiveUsers();
   }
 

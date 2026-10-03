@@ -38,7 +38,7 @@
             <div id="api-key-section" style="display:none" _="on load hide me">
                 <label>
                     Key preset
-                    <select th:field="*{keyType}" id="bundle-select"
+                    <select th:field="*{bundle}" id="bundle-select"
                             _="on load
                                  if my.value is not 'CUSTOM'
                                    hide #scope-checkboxes
@@ -54,10 +54,10 @@
                                    show #bundle-scope-info
                                    set #bundle-scope-list.innerText to my.options[my.selectedIndex].getAttribute('data-scopes')
                                  end">
-                        <option th:each="type : ${keyTypes}"
-                                th:value="${type}"
-                                th:text="${type}"
-                                th:attr="data-scopes=${bundleScopeMap.get(type)}"></option>
+                        <option th:each="bundleOption : ${bundleScopeMap.keySet()}"
+                                th:value="${bundleOption}"
+                                th:text="${bundleOption}"
+                                th:attr="data-scopes=${bundleScopeMap.get(bundleOption)}"></option>
                     </select>
                 </label>
                 <div id="bundle-scope-info" style="display:none" class="note">

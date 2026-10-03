@@ -14,10 +14,6 @@
                 <span th:text="${apiKey.prettyName()}"></span>
             </li>
             <li>
-                <b>Type</b>
-                <span th:text="${apiKey.keyType()}"></span>
-            </li>
-            <li>
                 <b>Scopes</b>
                 <ul>
                     <li th:each="scopeName : ${apiKey.scopes()}">

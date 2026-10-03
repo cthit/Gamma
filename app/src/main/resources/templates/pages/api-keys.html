@@ -5,14 +5,14 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Type</th>
+            <th>Scopes</th>
             <th>Details</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="apiKey : ${apiKeys}">
             <td th:text="${apiKey.prettyName()}"></td>
-            <td th:text="${apiKey.keyType()}"></td>
+            <td th:text="${apiKey.scopes().size()}"></td>
             <td>
                 <a th:href="${'/api-keys/' + apiKey.id()}">Details</a>
             </td>

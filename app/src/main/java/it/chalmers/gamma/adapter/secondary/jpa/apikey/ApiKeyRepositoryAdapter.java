@@ -92,7 +92,6 @@ public class ApiKeyRepositoryAdapter implements ApiKeyRepository {
     apiKeyEntity.id = apiKey.id().value();
     apiKeyEntity.token = apiKey.apiKeyToken().value();
     apiKeyEntity.prettyName = apiKey.prettyName().value();
-    apiKeyEntity.keyType = apiKey.keyType();
     apiKeyEntity.description.apply(apiKey.description());
     apiKeyEntity.scopes = apiKey.scopes();
 

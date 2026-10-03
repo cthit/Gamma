@@ -11,7 +11,6 @@ public record ApiKey(
     ApiKeyId id,
     PrettyName prettyName,
     Text description,
-    ApiKeyType keyType,
     ApiKeyToken apiKeyToken,
     Set<Scope> scopes)
     implements ApiKeyBuilder.With {
@@ -19,7 +18,6 @@ public record ApiKey(
     Objects.requireNonNull(id);
     Objects.requireNonNull(prettyName);
     Objects.requireNonNull(description);
-    Objects.requireNonNull(keyType);
     Objects.requireNonNull(apiKeyToken);
     Objects.requireNonNull(scopes);
   }

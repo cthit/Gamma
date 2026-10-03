@@ -4,7 +4,7 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.apikey.SuperGroupTypeRestrictions;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -59,7 +59,7 @@ public class SuperGroupFacade extends Facade {
   }
 
   public List<SuperGroupTypeDTO> getAllTypesWithSuperGroups() {
-    accessGuard.requireEither(isAdmin(), isApi(ApiKeyType.INFO));
+    accessGuard.requireEither(isAdmin(), isApiWithScope(Scope.SUPER_GROUPS_READ));
 
     List<SuperGroupType> superGroupTypes =
         this.superGroupTypeRestrictions

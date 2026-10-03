@@ -30,32 +30,35 @@ public class ApiKeyFacade extends Facade {
     this.passwordEncoder = passwordEncoder;
   }
 
-  public String[] getApiKeyTypes() {
-    return new String[] {"INFO", "ALLOW_LIST", "ACCOUNT_SCAFFOLD", "CUSTOM"};
-  }
-
   public record ScopeBundle(String name, List<String> scopes, String description) {}
 
+  /**
+   * Named scope bundles offered as presets when creating an api key. A bundle only decides which
+   * scopes end up in the form selection — the stored key has scopes, not a type.
+   */
+  private static final List<ScopeBundle> SCOPE_BUNDLES =
+      List.of(
+          new ScopeBundle(
+              "INFO",
+              List.of(
+                  "PROFILES_READ",
+                  "DIRECTORY_READ",
+                  "SUPER_GROUPS_READ",
+                  "GROUPS_READ",
+                  "MEMBERSHIPS_READ"),
+              "Read user profiles, directory, groups, and organization structure."),
+          new ScopeBundle(
+              "ALLOW_LIST",
+              List.of("ALLOWLIST_WRITE"),
+              "Add entries to the registration allow list."),
+          new ScopeBundle(
+              "ACCOUNT_SCAFFOLD",
+              List.of("ACCOUNTS_PROVISION"),
+              "Provision accounts with GDPR-filtered data."),
+          new ScopeBundle("CUSTOM", List.of(), "Manually select individual scopes."));
+
   public List<ScopeBundle> getScopeBundles() {
-    return List.of(
-        new ScopeBundle(
-            "INFO",
-            List.of(
-                "PROFILES_READ",
-                "DIRECTORY_READ",
-                "SUPER_GROUPS_READ",
-                "GROUPS_READ",
-                "MEMBERSHIPS_READ"),
-            "Read user profiles, directory, groups, and organization structure."),
-        new ScopeBundle(
-            "ALLOW_LIST",
-            List.of("ALLOWLIST_WRITE"),
-            "Add entries to the registration allow list."),
-        new ScopeBundle(
-            "ACCOUNT_SCAFFOLD",
-            List.of("ACCOUNTS_PROVISION"),
-            "Provision accounts with GDPR-filtered data."),
-        new ScopeBundle("CUSTOM", List.of(), "Manually select individual scopes."));
+    return SCOPE_BUNDLES;
   }
 
   public List<ScopeInfo> getAllScopes() {
@@ -81,9 +84,10 @@ public class ApiKeyFacade extends Facade {
   public CreatedApiKey create(NewApiKey newApiKey) {
     this.accessGuard.requireEither(isAdmin(), isLocalRunner());
 
-    ResolvedKey resolved = resolveKey(newApiKey.keyType, newApiKey.scopes);
-    ApiKeyType type = resolved.type();
-    Set<Scope> scopes = resolved.scopes();
+    Set<Scope> scopes = parseScopes(newApiKey.scopes);
+    if (scopes.isEmpty()) {
+      throw new IllegalArgumentException("An api key requires at least one scope");
+    }
 
     ApiKeyId apiKeyId = ApiKeyId.generate();
     ApiKeyToken.GeneratedApiKeyToken generated = ApiKeyToken.generate(passwordEncoder);
@@ -92,7 +96,6 @@ public class ApiKeyFacade extends Facade {
             apiKeyId,
             new PrettyName(newApiKey.prettyName),
             new Text(newApiKey.svDescription, newApiKey.enDescription),
-            type,
             generated.apiKeyToken(),
             scopes);
 
@@ -101,40 +104,35 @@ public class ApiKeyFacade extends Facade {
     return new CreatedApiKey(new ApiKeyDTO(apiKey), generated.rawToken());
   }
 
-  record ResolvedKey(ApiKeyType type, Set<Scope> scopes) {}
-
   /**
-   * Resolves the key type and scopes for a new api key. A bundle key type determines its scopes
-   * itself; only CUSTOM keys take their scopes from the submitted selection.
+   * Resolves the scopes for a new api key from the selected scope bundle. A named bundle (e.g.
+   * INFO) determines its scopes itself; the CUSTOM bundle takes the submitted selection. The CLIENT
+   * bundle is only used when creating a client alongside the key.
    *
    * @throws IllegalArgumentException on any invalid input
    */
-  static ResolvedKey resolveKey(String keyType, List<String> scopeNames) {
-    if (keyType == null || keyType.isBlank()) {
-      throw new IllegalArgumentException("Key type is required");
+  public static Set<Scope> resolveScopes(String bundle, List<String> scopeNames) {
+    if (bundle == null || bundle.isBlank()) {
+      throw new IllegalArgumentException("Scope bundle is required");
     }
-    if (keyType.equals("CLIENT")) {
-      throw new IllegalArgumentException(
-          "Cannot create api key with type client without creating a client at the same time");
+    if (bundle.equals("CLIENT")) {
+      return Set.of(Scope.CLIENTS_SELF);
     }
-    if (keyType.equals("CUSTOM")) {
-      Set<Scope> scopes = parseScopes(scopeNames);
-      if (scopes.isEmpty()) {
-        throw new IllegalArgumentException("Custom api keys require at least one scope");
-      }
-      return new ResolvedKey(ApiKeyType.INFO, scopes);
+    if (bundle.equals("CUSTOM")) {
+      return parseScopes(scopeNames);
     }
 
-    ApiKeyType type;
-    try {
-      type = ApiKeyType.valueOf(keyType);
-    } catch (IllegalArgumentException e) {
-      throw new IllegalArgumentException("Unknown key type: " + keyType);
-    }
-    return new ResolvedKey(type, scopesForKeyType(type));
+    return SCOPE_BUNDLES.stream()
+        .filter(b -> b.name().equals(bundle))
+        .findFirst()
+        .map(b -> parseScopes(b.scopes()))
+        .orElseThrow(() -> new IllegalArgumentException("Unknown scope bundle: " + bundle));
   }
 
   static Set<Scope> parseScopes(List<String> scopeNames) {
+    if (scopeNames == null) {
+      return new HashSet<>();
+    }
     Set<Scope> scopes = new HashSet<>();
     for (String scopeName : scopeNames) {
       try {
@@ -180,53 +178,23 @@ public class ApiKeyFacade extends Facade {
     return generated.rawToken();
   }
 
-  private static Set<Scope> scopesForKeyType(ApiKeyType type) {
-    return switch (type) {
-      case INFO ->
-          Set.of(
-              Scope.PROFILES_READ,
-              Scope.DIRECTORY_READ,
-              Scope.SUPER_GROUPS_READ,
-              Scope.GROUPS_READ,
-              Scope.MEMBERSHIPS_READ);
-      case CLIENT -> Set.of(Scope.CLIENTS_SELF);
-      case ALLOW_LIST -> Set.of(Scope.ALLOWLIST_WRITE);
-      case ACCOUNT_SCAFFOLD -> Set.of(Scope.ACCOUNTS_PROVISION);
-    };
-  }
-
   public record NewApiKey(
-      String prettyName,
-      String svDescription,
-      String enDescription,
-      String keyType,
-      List<String> scopes) {
+      String prettyName, String svDescription, String enDescription, List<String> scopes) {
     public NewApiKey {
       if (scopes == null) {
         scopes = List.of();
       }
     }
-
-    public NewApiKey(
-        String prettyName, String svDescription, String enDescription, String keyType) {
-      this(prettyName, svDescription, enDescription, keyType, List.of());
-    }
   }
 
   public record ApiKeyDTO(
-      UUID id,
-      String prettyName,
-      String svDescription,
-      String enDescription,
-      String keyType,
-      Set<Scope> scopes) {
+      UUID id, String prettyName, String svDescription, String enDescription, Set<Scope> scopes) {
     public ApiKeyDTO(ApiKey apiKey) {
       this(
           apiKey.id().value(),
           apiKey.prettyName().value(),
           apiKey.description().sv().value(),
           apiKey.description().en().value(),
-          apiKey.keyType().name(),
           Set.copyOf(apiKey.scopes()));
     }
   }

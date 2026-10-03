@@ -2,7 +2,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.apikey;
 
 import it.chalmers.gamma.adapter.secondary.jpa.text.TextEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.util.MutableEntity;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.apikey.domain.Scope;
 import jakarta.persistence.*;
 import java.util.HashSet;
@@ -23,10 +22,6 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
   @Column(name = "pretty_name")
   protected String prettyName;
 
-  @Enumerated(EnumType.STRING)
-  @Column(name = "key_type")
-  protected ApiKeyType keyType;
-
   @JoinColumn(name = "description")
   @OneToOne(cascade = CascadeType.ALL)
   protected TextEntity description;
@@ -41,12 +36,10 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
     description = new TextEntity();
   }
 
-  public ApiKeyEntity(
-      UUID id, String token, String prettyName, ApiKeyType keyType, TextEntity description) {
+  public ApiKeyEntity(UUID id, String token, String prettyName, TextEntity description) {
     this.id = id;
     this.token = token;
     this.prettyName = prettyName;
-    this.keyType = keyType;
     this.description = description;
   }
 
@@ -69,10 +62,6 @@ public class ApiKeyEntity extends MutableEntity<UUID> {
 
   public void setScopes(Set<Scope> scopes) {
     this.scopes = scopes;
-  }
-
-  public ApiKeyType getKeyType() {
-    return keyType;
   }
 
   public TextEntity getDescription() {

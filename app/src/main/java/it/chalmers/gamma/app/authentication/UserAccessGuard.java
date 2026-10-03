@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.authentication;
 
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -119,11 +119,10 @@ public class UserAccessGuard {
   private boolean haveAcceptedClient(UserId userId) {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthenticationPrincipal) {
-      ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
-      if (apiKeyType.equals(ApiKeyType.CLIENT)) {
+      if (apiAuthenticationPrincipal.get().scopes().contains(Scope.CLIENTS_SELF)) {
         if (apiAuthenticationPrincipal.getClient().isEmpty()) {
           throw new IllegalStateException(
-              "An api key that is of type CLIENT must have a client connected to them; "
+              "An api key with the CLIENTS_SELF scope must have a client connected to them; "
                   + apiAuthenticationPrincipal.get());
         }
 
@@ -148,12 +147,14 @@ public class UserAccessGuard {
     return false;
   }
 
-  /** Api Key with type INFO or ACCOUNT_SCAFFOLD have access to user information. */
+  /** Api keys with a user-data scope have access to user information. */
   private boolean isApiKeyWithAccess() {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthenticationPrincipal) {
-      ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
-      return apiKeyType.equals(ApiKeyType.INFO) || apiKeyType.equals(ApiKeyType.ACCOUNT_SCAFFOLD);
+      var scopes = apiAuthenticationPrincipal.get().scopes();
+      return scopes.contains(Scope.PROFILES_READ)
+          || scopes.contains(Scope.DIRECTORY_READ)
+          || scopes.contains(Scope.ACCOUNTS_PROVISION);
     }
 
     return false;
@@ -162,8 +163,7 @@ public class UserAccessGuard {
   private boolean isApiKeyWithExtendedAccess() {
     if (AuthenticationExtractor.getAuthentication()
         instanceof ApiAuthentication apiAuthenticationPrincipal) {
-      ApiKeyType apiKeyType = apiAuthenticationPrincipal.get().keyType();
-      return apiKeyType.equals(ApiKeyType.ACCOUNT_SCAFFOLD);
+      return apiAuthenticationPrincipal.get().scopes().contains(Scope.ACCOUNTS_PROVISION);
     }
 
     return false;

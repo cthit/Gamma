@@ -4,6 +4,7 @@ import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validate
 import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.apikey.ApiKeyFacade;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
@@ -162,7 +163,7 @@ public class ClientsController {
 
     private boolean generateApiKey;
     private boolean emailScope;
-    private String keyType;
+    private String bundle;
     private List<String> apiKeyScopes;
 
     private List<UUID> restrictions;
@@ -178,7 +179,7 @@ public class ClientsController {
         String enDescription,
         boolean generateApiKey,
         boolean emailScope,
-        String keyType,
+        String bundle,
         List<UUID> restrictions,
         List<String> apiKeyScopes) {
       this.redirectUrl = redirectUrl;
@@ -187,7 +188,7 @@ public class ClientsController {
       this.enDescription = enDescription;
       this.generateApiKey = generateApiKey;
       this.emailScope = emailScope;
-      this.keyType = keyType;
+      this.bundle = bundle;
       this.restrictions = restrictions;
       this.apiKeyScopes = apiKeyScopes;
     }
@@ -240,12 +241,12 @@ public class ClientsController {
       this.emailScope = emailScope;
     }
 
-    public String getKeyType() {
-      return keyType;
+    public String getBundle() {
+      return bundle;
     }
 
-    public void setKeyType(String keyType) {
-      this.keyType = keyType;
+    public void setBundle(String bundle) {
+      this.bundle = bundle;
     }
 
     public List<String> getApiKeyScopes() {
@@ -282,11 +283,6 @@ public class ClientsController {
 
     mv.addObject("form", form);
 
-    List<String> keyTypes = new ArrayList<>();
-    keyTypes.add("CLIENT");
-    keyTypes.addAll(List.of(this.apiKeyFacade.getApiKeyTypes()));
-    mv.addObject("keyTypes", keyTypes);
-    mv.addObject("scopeBundles", this.apiKeyFacade.getScopeBundles());
     mv.addObject("allApiKeyScopes", this.apiKeyFacade.getDataScopes());
 
     var bundleScopeMap = new LinkedHashMap<String, String>();
@@ -352,22 +348,16 @@ public class ClientsController {
 
     List<String> resolvedScopes = new ArrayList<>();
     if (form.generateApiKey) {
-      resolvedScopes.add("CLIENTS_SELF");
-      if ("CUSTOM".equals(form.keyType)) {
-        if (form.apiKeyScopes != null) {
-          resolvedScopes.addAll(form.apiKeyScopes);
-        }
-      } else if (form.keyType != null && !"CLIENT".equals(form.keyType)) {
-        Optional<ApiKeyFacade.ScopeBundle> bundle =
-            this.apiKeyFacade.getScopeBundles().stream()
-                .filter(b -> b.name().equals(form.keyType))
-                .findFirst();
-        if (bundle.isEmpty()) {
-          var errorView = createGetCreateClient(htmxRequest, form, bindingResult);
-          errorView.addObject("errorMessage", "Unknown key type: " + form.keyType);
-          return errorView;
-        }
-        resolvedScopes.addAll(bundle.get().scopes());
+      try {
+        resolvedScopes.add("CLIENTS_SELF");
+        resolvedScopes.addAll(
+            ApiKeyFacade.resolveScopes(form.bundle, form.apiKeyScopes).stream()
+                .map(Scope::name)
+                .toList());
+      } catch (IllegalArgumentException e) {
+        var errorView = createGetCreateClient(htmxRequest, form, bindingResult);
+        errorView.addObject("errorMessage", e.getMessage());
+        return errorView;
       }
     }
 

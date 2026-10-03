@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.user.domain.GammaUser;
@@ -64,20 +64,22 @@ public class AccessGuard {
     };
   }
 
-  public static AccessChecker isApi(ApiKeyType apiKeyType) {
+  /** True for an api key holding the given scope. */
+  public static AccessChecker isApiWithScope(Scope scope) {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
-        return apiPrincipal.get().keyType() == apiKeyType;
+        return apiPrincipal.get().scopes().contains(scope);
       }
 
       return false;
     };
   }
 
+  /** True for an api key with the CLIENTS_SELF scope, i.e. a client's own api key. */
   public static AccessChecker isClientApi() {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
-        return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
+        return apiPrincipal.get().scopes().contains(Scope.CLIENTS_SELF);
       }
 
       return false;
