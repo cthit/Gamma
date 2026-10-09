@@ -23,7 +23,7 @@ test("given an admin user when creating an info api key then credentials are sho
     prettyName,
     svDescription: "E2E svensk beskrivning",
     enDescription: "E2E english description",
-    keyType: "INFO",
+    bundle: "INFO",
   });
 
   expect(credentials.apiKeyId).toBeTruthy();

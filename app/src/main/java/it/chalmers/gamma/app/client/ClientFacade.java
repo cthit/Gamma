@@ -7,7 +7,6 @@ import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
@@ -26,6 +25,7 @@ import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -83,6 +83,13 @@ public class ClientFacade extends Facade {
     if (newClient.generateApiKey) {
       generatedApiKeyToken = ApiKeyToken.generate(passwordEncoder);
 
+      Set<it.chalmers.gamma.app.apikey.domain.Scope> keyScopes = new java.util.HashSet<>();
+      if (newClient.apiKeyScopes != null) {
+        newClient.apiKeyScopes.stream()
+            .map(it.chalmers.gamma.app.apikey.domain.Scope::valueOf)
+            .forEach(keyScopes::add);
+      }
+
       apiKey =
           new ApiKey(
               ApiKeyId.generate(),
@@ -90,8 +97,8 @@ public class ClientFacade extends Facade {
               new Text(
                   "Api nyckel för klienten: " + newClient.prettyName,
                   "Api key for client: " + newClient.prettyName),
-              ApiKeyType.CLIENT,
-              generatedApiKeyToken.apiKeyToken());
+              generatedApiKeyToken.apiKeyToken(),
+              Set.copyOf(keyScopes));
     }
 
     List<Scope> scopes = new ArrayList<>();
@@ -213,7 +220,33 @@ public class ClientFacade extends Facade {
       String enDescription,
       boolean generateApiKey,
       boolean emailScope,
-      NewClientRestrictions restrictions) {}
+      NewClientRestrictions restrictions,
+      List<String> apiKeyScopes) {
+    public NewClient {
+      if (apiKeyScopes == null) {
+        apiKeyScopes = List.of();
+      }
+    }
+
+    public NewClient(
+        String redirectUrl,
+        String prettyName,
+        String svDescription,
+        String enDescription,
+        boolean generateApiKey,
+        boolean emailScope,
+        NewClientRestrictions restrictions) {
+      this(
+          redirectUrl,
+          prettyName,
+          svDescription,
+          enDescription,
+          generateApiKey,
+          emailScope,
+          restrictions,
+          generateApiKey ? List.of("CLIENTS_SELF") : List.of());
+    }
+  }
 
   public record CreatedClientDTO(ClientDTO client, String clientSecret, String apiKeyToken) {}
 

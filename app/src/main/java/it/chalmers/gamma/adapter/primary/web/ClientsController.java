@@ -3,6 +3,8 @@ package it.chalmers.gamma.adapter.primary.web;
 import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
 import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.ClientApprovalFacade;
 import it.chalmers.gamma.app.client.ClientAuthorityFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
@@ -32,18 +34,21 @@ public class ClientsController {
   private final ClientApprovalFacade clientApprovalFacade;
   private final SuperGroupFacade superGroupFacade;
   private final UserFacade userFacade;
+  private final ApiKeyFacade apiKeyFacade;
 
   public ClientsController(
       ClientFacade clientFacade,
       ClientAuthorityFacade clientAuthorityFacade,
       ClientApprovalFacade clientApprovalFacade,
       SuperGroupFacade superGroupFacade,
-      UserFacade userFacade) {
+      UserFacade userFacade,
+      ApiKeyFacade apiKeyFacade) {
     this.clientFacade = clientFacade;
     this.clientAuthorityFacade = clientAuthorityFacade;
     this.clientApprovalFacade = clientApprovalFacade;
     this.superGroupFacade = superGroupFacade;
     this.userFacade = userFacade;
+    this.apiKeyFacade = apiKeyFacade;
   }
 
   @GetMapping("/clients")
@@ -158,11 +163,13 @@ public class ClientsController {
 
     private boolean generateApiKey;
     private boolean emailScope;
+    private String bundle;
+    private List<String> apiKeyScopes;
 
     private List<UUID> restrictions;
 
     public CreateClient() {
-      this("", "", "", "", false, false, new ArrayList<>());
+      this("", "", "", "", false, false, "CLIENT", new ArrayList<>(), List.of());
     }
 
     public CreateClient(
@@ -172,14 +179,18 @@ public class ClientsController {
         String enDescription,
         boolean generateApiKey,
         boolean emailScope,
-        List<UUID> restrictions) {
+        String bundle,
+        List<UUID> restrictions,
+        List<String> apiKeyScopes) {
       this.redirectUrl = redirectUrl;
       this.prettyName = prettyName;
       this.svDescription = svDescription;
       this.enDescription = enDescription;
       this.generateApiKey = generateApiKey;
       this.emailScope = emailScope;
+      this.bundle = bundle;
       this.restrictions = restrictions;
+      this.apiKeyScopes = apiKeyScopes;
     }
 
     public String getRedirectUrl() {
@@ -230,6 +241,22 @@ public class ClientsController {
       this.emailScope = emailScope;
     }
 
+    public String getBundle() {
+      return bundle;
+    }
+
+    public void setBundle(String bundle) {
+      this.bundle = bundle;
+    }
+
+    public List<String> getApiKeyScopes() {
+      return apiKeyScopes;
+    }
+
+    public void setApiKeyScopes(List<String> apiKeyScopes) {
+      this.apiKeyScopes = apiKeyScopes;
+    }
+
     public List<UUID> getRestrictions() {
       return restrictions;
     }
@@ -255,6 +282,17 @@ public class ClientsController {
     }
 
     mv.addObject("form", form);
+
+    mv.addObject("allApiKeyScopes", this.apiKeyFacade.getDataScopes());
+
+    var bundleScopeMap = new LinkedHashMap<String, String>();
+    bundleScopeMap.put("CLIENT", "CLIENTS_SELF");
+    for (var bundle : this.apiKeyFacade.getScopeBundles()) {
+      List<String> scopes = new ArrayList<>(bundle.scopes());
+      scopes.add("CLIENTS_SELF");
+      bundleScopeMap.put(bundle.name(), String.join("\n", scopes));
+    }
+    mv.addObject("bundleScopeMap", bundleScopeMap);
 
     if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -308,16 +346,39 @@ public class ClientsController {
 
     ModelAndView mv = new ModelAndView();
 
-    ClientFacade.CreatedClientDTO result =
-        this.clientFacade.createOfficialClient(
-            new ClientFacade.NewClient(
-                form.redirectUrl,
-                form.prettyName,
-                form.svDescription,
-                form.enDescription,
-                form.generateApiKey,
-                form.emailScope,
-                new ClientFacade.NewClientRestrictions(form.restrictions)));
+    List<String> resolvedScopes = new ArrayList<>();
+    if (form.generateApiKey) {
+      try {
+        resolvedScopes.add("CLIENTS_SELF");
+        resolvedScopes.addAll(
+            ApiKeyFacade.resolveScopes(form.bundle, form.apiKeyScopes).stream()
+                .map(Scope::name)
+                .toList());
+      } catch (IllegalArgumentException e) {
+        var errorView = createGetCreateClient(htmxRequest, form, bindingResult);
+        errorView.addObject("errorMessage", e.getMessage());
+        return errorView;
+      }
+    }
+
+    ClientFacade.CreatedClientDTO result;
+    try {
+      result =
+          this.clientFacade.createOfficialClient(
+              new ClientFacade.NewClient(
+                  form.redirectUrl,
+                  form.prettyName,
+                  form.svDescription,
+                  form.enDescription,
+                  form.generateApiKey,
+                  form.emailScope,
+                  new ClientFacade.NewClientRestrictions(form.restrictions),
+                  resolvedScopes));
+    } catch (IllegalArgumentException e) {
+      var errorView = createGetCreateClient(htmxRequest, form, bindingResult);
+      errorView.addObject("errorMessage", e.getMessage());
+      return errorView;
+    }
 
     mv.setViewName("client-details/page");
 

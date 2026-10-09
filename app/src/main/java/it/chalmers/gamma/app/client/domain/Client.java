@@ -1,7 +1,6 @@
 package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
@@ -39,9 +38,12 @@ public final class Client {
     Objects.requireNonNull(scopes);
     Objects.requireNonNull(owner);
 
-    if (clientApiKey != null && clientApiKey.keyType() != ApiKeyType.CLIENT) {
+    if (clientApiKey != null
+        && !clientApiKey
+            .scopes()
+            .contains(it.chalmers.gamma.app.apikey.domain.Scope.CLIENTS_SELF)) {
       throw new IllegalArgumentException(
-          "If a client has a ApiKey, then the type must be ApiKeyType.CLIENT");
+          "If a client has an ApiKey, then it must have the CLIENTS_SELF scope");
     }
 
     this.clientUid = clientUid;
