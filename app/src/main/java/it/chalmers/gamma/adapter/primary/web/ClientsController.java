@@ -103,6 +103,7 @@ public class ClientsController {
     mv.addObject("clientUid", client.get().clientUid());
     mv.addObject("client", client.get());
     mv.addObject("clientAuthorities", clientAuthorities);
+    mv.addObject("sensitiveScopes", this.apiKeyFacade.getSensitiveScopes());
     mv.addObject(
         "userApprovals",
         userApprovals.stream()

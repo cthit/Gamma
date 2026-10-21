@@ -78,12 +78,7 @@ public class ApiKeyController {
 
     mv.addObject("apiKey", apiKey);
     mv.addObject("apiKeyId", apiKey.id());
-    mv.addObject(
-        "sensitiveScopes",
-        this.apiKeyFacade.getAllScopes().stream()
-            .filter(ApiKeyFacade.ScopeInfo::sensitive)
-            .map(ApiKeyFacade.ScopeInfo::scope)
-            .toList());
+    mv.addObject("sensitiveScopes", this.apiKeyFacade.getSensitiveScopes());
 
     boolean hasAccountsProvision = apiKey.scopes().contains(Scope.ACCOUNTS_PROVISION);
     if (apiKey.scopes().stream().anyMatch(SuperGroupTypeRestrictions.RESTRICTED_SCOPES::contains)) {

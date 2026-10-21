@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.apikey.ApiKeyFacade;
 import it.chalmers.gamma.app.client.ClientFacade;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -14,9 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class MyClientsController {
 
   private final ClientFacade clientFacade;
+  private final ApiKeyFacade apiKeyFacade;
 
-  public MyClientsController(ClientFacade clientFacade) {
+  public MyClientsController(ClientFacade clientFacade, ApiKeyFacade apiKeyFacade) {
     this.clientFacade = clientFacade;
+    this.apiKeyFacade = apiKeyFacade;
   }
 
   @GetMapping("/my-clients")
@@ -156,6 +159,7 @@ public class MyClientsController {
     mv.addObject("userApprovals", new ArrayList<>());
     mv.addObject("clientSecret", result.clientSecret());
     mv.addObject("apiKeyToken", result.apiKeyToken());
+    mv.addObject("sensitiveScopes", this.apiKeyFacade.getSensitiveScopes());
     mv.addObject("amIOwner", true);
 
     response.addHeader("HX-Push-Url", "/clients/" + result.client().clientUid().toString());

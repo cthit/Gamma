@@ -69,6 +69,10 @@ public class ApiKeyFacade extends Facade {
     return getAllScopes().stream().filter(s -> s.scope() != Scope.CLIENTS_SELF).toList();
   }
 
+  public List<Scope> getSensitiveScopes() {
+    return getAllScopes().stream().filter(ScopeInfo::sensitive).map(ScopeInfo::scope).toList();
+  }
+
   private static boolean isSensitiveScope(Scope scope) {
     return switch (scope) {
       case ALLOWLIST_WRITE, ACCOUNTS_PROVISION -> true;
