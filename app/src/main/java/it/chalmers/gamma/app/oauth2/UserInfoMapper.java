@@ -24,8 +24,8 @@ public class UserInfoMapper implements Function<OidcUserInfoAuthenticationContex
     OidcUserInfoAuthenticationToken authentication = context.getAuthentication();
     JwtAuthenticationToken principal = (JwtAuthenticationToken) authentication.getPrincipal();
 
-    Map<String, Object> claims = new HashMap<>(principal.getToken().getClaims());
-
+    Map<String, Object> claims = new HashMap<>();
+    claims.put("sub", principal.getToken().getSubject());
     claims.putAll(
         this.claimsMapper.generateClaims(
             principal.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList(),
