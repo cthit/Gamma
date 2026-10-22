@@ -94,6 +94,16 @@ public class ClientApiV1Controller {
     }
   }
 
+  record ClientV1Authority(
+      String name, List<ClientV1SuperGroup> superGroups, List<ClientV1User> users) {
+    ClientV1Authority(ClientAuthorityFacade.ClientAuthorityDTO authority) {
+      this(
+          authority.authorityName(),
+          authority.superGroups().stream().map(ClientV1SuperGroup::new).toList(),
+          authority.users().stream().map(ClientV1User::new).toList());
+    }
+  }
+
   @GetMapping("/groups")
   List<ClientV1Group> getGroups() {
     return this.groupFacade.getAll().stream().map(ClientV1Group::new).toList();
@@ -148,6 +158,15 @@ public class ClientApiV1Controller {
   @GetMapping("/authorities")
   public List<String> getClientAuthorities() {
     return this.clientAuthorityFacade.getClientAuthorities();
+  }
+
+  @GetMapping("/authorities/{name}")
+  public ClientV1Authority getClientAuthority(@PathVariable("name") String name) {
+    return this.clientAuthorityFacade
+        .getClientAuthority(name)
+        .map(ClientV1Authority::new)
+        .orElseThrow(
+            () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Authority Not Found"));
   }
 
   @GetMapping("/authorities/for/{id}")
