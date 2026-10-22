@@ -53,8 +53,8 @@
             </li>
         </ul>
         <footer>
-            <button class="outline contrast" th:data-hx-get="@{/me/edit}" data-hx-target="closest <article/>" data-hx-swap="outerHTML" data-loading-disable>Edit</button>
-            <button class="outline contrast" th:data-hx-get="@{/me/edit-password}" data-hx-target="closest <article/>" data-hx-swap="outerHTML" data-loading-disable>Change password</button>
+            <button class="outline contrast" th:data-hx-get="@{/me/edit}" data-hx-target="closest article" data-hx-swap="outerHTML" data-loading-disable>Edit</button>
+            <button class="outline contrast" th:data-hx-get="@{/me/edit-password}" data-hx-target="closest article" data-hx-swap="outerHTML" data-loading-disable>Change password</button>
         </footer>
     </article>
     <article>
@@ -77,7 +77,7 @@
         <div class="image-input-container" th:fragment="me-avatar">
             <img th:src="@{|/images/user/avatar/${meId}?r=${random}|}" alt="Me avatar" />
             <form id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
-                  _="on htmx:beforeRequest add @disabled to the next <button/> "
+                  _="on htmx:before:request add @disabled to the next <button/> "
                   enctype="multipart/form-data"
                   data-hx-target="closest div"
                   data-hx-swap="outerHTML">

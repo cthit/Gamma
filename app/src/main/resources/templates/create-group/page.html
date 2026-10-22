@@ -3,7 +3,7 @@
     <form th:object="${form}"
           th:action="@{/groups/create}"
           th:method="post"
-          _="on htmx:afterSwap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
+          _="on htmx:after:swap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
         <article>
             <header>
                Create group

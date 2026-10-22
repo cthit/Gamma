@@ -48,14 +48,14 @@ dependencies {
 
     compileOnly(
             // Testcontainers for local dev service startup
-            "org.testcontainers:testcontainers:1.21.4",
-            "org.testcontainers:postgresql:1.21.4",
+            "org.testcontainers:testcontainers:2.0.5",
+            "org.testcontainers:testcontainers-postgresql:2.0.5",
     )
 
     developmentOnly(
             // Testcontainers for local dev service startup
-            "org.testcontainers:testcontainers:1.21.4",
-            "org.testcontainers:postgresql:1.21.4",
+            "org.testcontainers:testcontainers:2.0.5",
+            "org.testcontainers:testcontainers-postgresql:2.0.5",
     )
 
    runtimeOnly(
@@ -71,8 +71,8 @@ dependencies {
             "org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.5.RELEASE",
 
             // web dependencies
-            "org.webjars.npm:htmx.org:1.9.12",
-            "org.webjars.npm:hyperscript.org:0.9.14",
+            "org.webjars.npm:htmx.org:4.0.0",
+            "org.webjars.npm:hyperscript.org:0.9.93",
             "org.webjars.npm:picocss__pico:2.1.1",
             "org.webjars.npm:sortablejs:1.15.7"
     )

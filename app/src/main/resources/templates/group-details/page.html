@@ -74,7 +74,7 @@
             <div class="image-input-container" th:if="${isAdmin || canEditImages}">
                 <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
                 <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
-                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      _="on htmx:before:request add @disabled to the next <button/> "
                       enctype="multipart/form-data"
                       data-hx-target="closest article"
                       data-hx-swap="outerHTML"
@@ -97,7 +97,7 @@
             <div class="image-input-container" th:if="${isAdmin || canEditImages}">
                 <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
                 <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
-                      _="on htmx:beforeRequest add @disabled to the next <button/> "
+                      _="on htmx:before:request add @disabled to the next <button/> "
                       enctype="multipart/form-data"
                       data-hx-target="closest article"
                       data-hx-swap="outerHTML"

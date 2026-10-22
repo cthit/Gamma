@@ -168,7 +168,7 @@ public class PostsController {
 
     if (bindingResult.hasErrors()) {
       response.addHeader("HX-Reswap", "outerHTML");
-      response.addHeader("HX-Retarget", "closest <article/>");
+      response.addHeader("HX-Retarget", "closest article");
       return createGetEditPost(htmxRequest, postId, form, bindingResult);
     }
 

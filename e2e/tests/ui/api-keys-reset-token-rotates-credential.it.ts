@@ -51,6 +51,10 @@ test("given an api key when resetting its token then old token is rejected and n
     page.getByRole("button", { name: "Reset token" }).click(),
   ]);
 
+  await expect(
+    page.locator('article:has-text("Credentials") code').first(),
+  ).not.toHaveText(originalCredentials.apiKeyToken);
+
   const resetCredentials = await readApiKeyCredentials(page);
 
   expect(resetCredentials.apiKeyToken).not.toEqual(

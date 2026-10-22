@@ -422,7 +422,7 @@ public class GroupsController {
 
     if (bindingResult.hasErrors()) {
       response.addHeader("HX-Reswap", "outerHTML");
-      response.addHeader("HX-Retarget", "closest <article/>");
+      response.addHeader("HX-Retarget", "closest article");
       return createGetGroupEdit(id, form, bindingResult);
     } else {
       this.groupFacade.update(

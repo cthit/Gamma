@@ -5,9 +5,9 @@
              class="success"
              th:text="${text}"
              _="on load
-                transition opacity to 1
+                transition *opacity to 1
                 then wait 7s
-                then transition opacity to 0 then remove me">
+                then transition *opacity to 0 then remove me">
         </div>
     </div>
 </th:block>
@@ -19,9 +19,9 @@
              class="error"
              th:text="${text}"
              _="on load
-                transition opacity to 1
+                transition *opacity to 1
                 then wait 7s
-                then transition opacity to 0 then remove me">
+                then transition *opacity to 0 then remove me">
         </div>
     </div>
 </th:block>
