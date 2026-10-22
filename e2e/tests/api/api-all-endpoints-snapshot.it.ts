@@ -398,6 +398,16 @@ test.describe.serial("api snapshots", () => {
       },
       {
         method: "GET",
+        path: "/api/client/v1/authorities/booking",
+        headers: { Authorization: clientAuthHeader },
+        expected: jsonSnapshot(404, {
+          error: "Not Found",
+          message: "Authority Not Found",
+          status: 404,
+        }),
+      },
+      {
+        method: "GET",
         path: `/api/client/v1/authorities/for/${MSCOTT_ID}`,
         headers: { Authorization: clientAuthHeader },
         expected: jsonSnapshot(200, []),

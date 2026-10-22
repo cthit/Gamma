@@ -211,6 +211,29 @@ public class ClientAuthorityFacade extends Facade {
     throw new RuntimeException();
   }
 
+  public Optional<ClientAuthorityDTO> getClientAuthority(String name) {
+    this.accessGuard.require(isClientApi());
+
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof ApiAuthentication apiAuthentication) {
+      Client client = apiAuthentication.getClient().orElseThrow();
+      AuthorityName authorityName;
+
+      try {
+        authorityName = new AuthorityName(name);
+      } catch (IllegalArgumentException e) {
+        // A name that fails validation can never have been created.
+        return Optional.empty();
+      }
+
+      return this.clientAuthorityRepository
+          .get(client.clientUid(), authorityName)
+          .map(ClientAuthorityDTO::new);
+    }
+
+    throw new RuntimeException();
+  }
+
   public record ClientAuthorityDTO(
       UUID clientUid,
       String authorityName,
