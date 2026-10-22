@@ -49,9 +49,7 @@ export interface GammaApiKeyCredentials {
 }
 
 export type GammaBootstrapApiKeyType =
-  | "INFO"
-  | "ACCOUNT_SCAFFOLD"
-  | "ALLOW_LIST";
+  "INFO" | "ACCOUNT_SCAFFOLD" | "ALLOW_LIST";
 
 let instanceCounter = 0;
 const generatedTlsDir = path.resolve(__dirname, ".generated", "tls");
