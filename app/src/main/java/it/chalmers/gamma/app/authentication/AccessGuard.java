@@ -1,7 +1,7 @@
 package it.chalmers.gamma.app.authentication;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
-import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.group.domain.Group;
 import it.chalmers.gamma.app.user.domain.GammaUser;
@@ -13,6 +13,7 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.LocalRunnerAuthentication;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.util.Optional;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -64,20 +65,34 @@ public class AccessGuard {
     };
   }
 
-  public static AccessChecker isApi(ApiKeyType apiKeyType) {
+  /** True for an api key holding the given scope. */
+  public static AccessChecker isApiWithScope(Scope scope) {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
-        return apiPrincipal.get().keyType() == apiKeyType;
+        return apiPrincipal.get().scopes().contains(scope);
       }
 
       return false;
     };
   }
 
+  /** True for an api key holding every one of the given scopes. */
+  public static AccessChecker isApiWithAllScopes(Scope... scopes) {
+    Set<Scope> required = Set.of(scopes);
+    return (clientRepository, userRepository) -> {
+      if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
+        return apiPrincipal.get().scopes().containsAll(required);
+      }
+
+      return false;
+    };
+  }
+
+  /** True for an api key with the CLIENTS_SELF scope, i.e. a client's own api key. */
   public static AccessChecker isClientApi() {
     return (clientRepository, userRepository) -> {
       if (AuthenticationExtractor.getAuthentication() instanceof ApiAuthentication apiPrincipal) {
-        return apiPrincipal.get().keyType() == ApiKeyType.CLIENT;
+        return apiPrincipal.get().scopes().contains(Scope.CLIENTS_SELF);
       }
 
       return false;

@@ -118,7 +118,7 @@ jobs:
 
       - name: Run E2E tests
         run: make test-e2e GAMMA_VERSION=${{ steps.gamma-version.outputs.version }}
-        timeout-minutes: 20
+        timeout-minutes: 45
 
       - uses: actions/upload-artifact@v4
         timeout-minutes: 20

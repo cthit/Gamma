@@ -4,7 +4,7 @@ export interface ApiKeyInput {
   prettyName: string;
   svDescription: string;
   enDescription: string;
-  keyType: "INFO" | "ACCOUNT_SCAFFOLD" | "ALLOW_LIST";
+  bundle: "INFO" | "ACCOUNT_SCAFFOLD" | "ALLOW_LIST";
 }
 
 export interface ApiKeyCredentials {
@@ -25,7 +25,7 @@ export async function createApiKeyViaUi(
   await page.fill('input[name="prettyName"]', input.prettyName);
   await page.fill('input[name="svDescription"]', input.svDescription);
   await page.fill('input[name="enDescription"]', input.enDescription);
-  await page.selectOption('select[name="keyType"]', input.keyType);
+  await page.selectOption('select[name="bundle"]', input.bundle);
 
   await Promise.all([
     page.waitForResponse(

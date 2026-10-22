@@ -3,10 +3,12 @@ package it.chalmers.gamma.security.api;
 import it.chalmers.gamma.app.apikey.domain.ApiKey;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
+import it.chalmers.gamma.app.apikey.domain.Scope;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -42,6 +44,8 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
 
     final Optional<Client> maybeClient = this.clientRepository.getByApiKey(apiKey.apiKeyToken());
 
+    Set<Scope> scopes = apiKey.scopes();
+
     return ApiAuthenticationToken.fromAuthenticatedApiKey(
         new ApiAuthentication() {
           @Override
@@ -52,6 +56,11 @@ public class ApiAuthenticationProvider implements AuthenticationProvider {
           @Override
           public Optional<Client> getClient() {
             return maybeClient;
+          }
+
+          @Override
+          public Set<Scope> getScopes() {
+            return scopes;
           }
         });
   }

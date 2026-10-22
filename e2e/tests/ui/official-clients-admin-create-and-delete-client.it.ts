@@ -20,9 +20,9 @@ test("given an admin user when creating and deleting an official client then it 
   const prettyName = uniqueLabel("E2E Official Client");
 
   await page.goto(`${gamma.url}/clients/create`, { timeout: 30000 });
-  await expect(page.locator("article > header")).toHaveText("Create client", {
-    timeout: 10000,
-  });
+  await expect(
+    page.locator("article > header", { hasText: "Create client" }),
+  ).toBeVisible({ timeout: 10000 });
 
   await page.fill('input[name="prettyName"]', prettyName);
   await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");

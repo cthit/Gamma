@@ -216,7 +216,7 @@ export async function startGammaInstance(
         }
 
         const apiKeyMatch = logLine.match(
-          /Api key of type ([A-Z_]+) has been generated with id: ([0-9a-fA-F-]+) and code: (\S+)/,
+          /Api key \(([A-Z_]+)\) has been generated with id: ([0-9a-fA-F-]+) and code: (\S+)/,
         );
         if (apiKeyMatch) {
           const keyType = apiKeyMatch[1];

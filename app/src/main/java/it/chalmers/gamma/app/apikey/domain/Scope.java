@@ -1,0 +1,12 @@
+package it.chalmers.gamma.app.apikey.domain;
+
+public enum Scope {
+  PROFILES_READ,
+  DIRECTORY_READ,
+  SUPER_GROUPS_READ,
+  GROUPS_READ,
+  MEMBERSHIPS_READ,
+  ALLOWLIST_WRITE,
+  ACCOUNTS_PROVISION,
+  CLIENTS_SELF
+}

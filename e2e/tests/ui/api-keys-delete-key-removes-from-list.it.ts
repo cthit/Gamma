@@ -23,7 +23,7 @@ test("given an existing api key when deleting it then it is removed from the api
     prettyName,
     svDescription: "E2E svensk beskrivning",
     enDescription: "E2E english description",
-    keyType: "INFO",
+    bundle: "INFO",
   });
 
   page.once("dialog", async (dialog) => dialog.accept());

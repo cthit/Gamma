@@ -14,12 +14,12 @@
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
             <label>
-                Generate api key
-                <input type="checkbox" th:field="*{generateApiKey}"/>
+                Allow email scope
+                <input type="checkbox" th:field="*{emailScope}"/>
             </label>
             <label>
-                Include email scope
-                <input type="checkbox" th:field="*{emailScope}"/>
+                Generate API key
+                <input type="checkbox" th:field="*{generateApiKey}"/>
             </label>
         </form>
         <footer>
