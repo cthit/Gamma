@@ -52,6 +52,7 @@ public class LoginController {
     mv.addObject("passwordReset", isPasswordReset);
 
     response.addHeader("HX-Retarget", "body");
+    response.addHeader("HX-Reswap", "innerHTML");
 
     return mv;
   }
