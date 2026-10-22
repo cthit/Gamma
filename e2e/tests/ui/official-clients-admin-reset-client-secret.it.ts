@@ -59,6 +59,9 @@ test("given an official client when an admin resets its secret then a new secret
     .filter({ hasText: "Credentials" })
     .first();
   await expect(newCredentialsArticle).toBeVisible({ timeout: 10000 });
+  await expect(newCredentialsArticle.locator("code").first()).not.toHaveText(
+    oldSecret,
+  );
 
   const newSecret = (
     await newCredentialsArticle.locator("code").first().innerText()

@@ -6,7 +6,7 @@
           th:data-hx-post="@{/clients/{id}/authority(id=${clientUid})}"
           data-hx-target="closest article"
           data-hx-swap="outerHTML"
-          _="on htmx:afterSwap call updateNames('users', '.authority-user-row') then call updateNames('superGroups', '.authority-super-group-row')">
+          _="on htmx:after:swap call updateNames('users', '.authority-user-row') then call updateNames('superGroups', '.authority-super-group-row')">
         <div th:replace="~{common/form-csrf}"></div>
         <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${null}, errorMessage=${null})}"></div>
         <p>Super groups:</p>

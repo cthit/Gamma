@@ -1,5 +1,5 @@
 <header th:replace="~{common/header}"></header>
-<main th:data-hx-headers="${amIOwner} ? '{&quot;owner&quot;: &quot;true&quot;}' : null">
+<main th:data-hx-headers:inherited="${amIOwner} ? '{&quot;owner&quot;: &quot;true&quot;}' : null">
     <th:block th:if="${clientSecret != null}">
         <article th:replace="~{client-details/client-credentials}"></article>
     </th:block>

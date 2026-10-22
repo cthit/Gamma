@@ -1,6 +1,6 @@
 package it.chalmers.gamma.app.throttling;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class ThrottlingService {
     }
 
     if (counter == 1) {
-      redisTemplate.expire(redisKey, 24, TimeUnit.HOURS);
+      redisTemplate.expire(redisKey, Duration.ofHours(24));
     }
 
     return counter <= maxPerDay;

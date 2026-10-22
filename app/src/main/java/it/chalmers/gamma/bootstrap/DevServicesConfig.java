@@ -9,13 +9,13 @@ import org.springframework.boot.jdbc.autoconfigure.JdbcConnectionDetails;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(
     name = {
-      "org.testcontainers.containers.PostgreSQLContainer",
+      "org.testcontainers.postgresql.PostgreSQLContainer",
       "org.testcontainers.containers.GenericContainer"
     })
 @ConditionalOnProperty(
@@ -34,8 +34,8 @@ public class DevServicesConfig {
   private static final int REDIS_PORT = 6379;
 
   @Bean(initMethod = "start", destroyMethod = "stop")
-  public PostgreSQLContainer<?> postgresContainer() {
-    return new PostgreSQLContainer<>(POSTGRES_IMAGE)
+  public PostgreSQLContainer postgresContainer() {
+    return new PostgreSQLContainer(POSTGRES_IMAGE)
         .withDatabaseName("postgres")
         .withUsername("postgres")
         .withPassword("postgres");
@@ -47,7 +47,7 @@ public class DevServicesConfig {
   }
 
   @Bean
-  public JdbcConnectionDetails jdbcConnectionDetails(PostgreSQLContainer<?> postgresContainer) {
+  public JdbcConnectionDetails jdbcConnectionDetails(PostgreSQLContainer postgresContainer) {
     LOGGER.info("Development PostgreSQL container started at {}", postgresContainer.getJdbcUrl());
     return new JdbcConnectionDetails() {
       @Override

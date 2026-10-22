@@ -2,7 +2,7 @@
       method="post"
       data-hx-target="this"
       th:data-hx-post="|/api-keys/${apiKeyId}/info-settings|"
-      _="on htmx:afterSwap call updateNames('superGroupTypes', 'select')">
+      _="on htmx:after:swap call updateNames('superGroupTypes', 'select')">
     <input type="hidden" name="_method" value="put" />
     <input type="hidden" name="version" th:value="${settings_form.version}" />
     <div th:replace="~{common/form-csrf}"></div>

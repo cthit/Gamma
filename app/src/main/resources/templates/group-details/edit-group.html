@@ -6,7 +6,7 @@
           th:object="${form}"
           th:action="@{/groups/{groupId}(groupId=${groupId})}"
           th:method="put"
-          _="on htmx:afterSwap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
+          _="on htmx:after:swap call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
         <input type="hidden" name="version" th:value="${form.version}"/>
         <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
         <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
