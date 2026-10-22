@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -435,6 +436,43 @@ public class ClientsController {
     }
   }
 
+  private ModelAndView createAuthorityForm(
+      UUID clientUid, CreateAuthority form, String errorMessage) {
+    ModelAndView mv = new ModelAndView("client-details/add-authority-to-client");
+
+    List<UUID> selectedSuperGroups =
+        form.superGroups == null
+            ? List.of()
+            : form.superGroups.stream().filter(Objects::nonNull).toList();
+    List<UUID> selectedUsers =
+        form.users == null ? List.of() : form.users.stream().filter(Objects::nonNull).toList();
+
+    mv.addObject("clientUid", clientUid);
+    mv.addObject("authorityValue", form.authority);
+    mv.addObject("authorityErrorMessage", errorMessage);
+    mv.addObject("selectedSuperGroups", selectedSuperGroups);
+    mv.addObject("selectedUsers", selectedUsers);
+
+    if (!selectedSuperGroups.isEmpty()) {
+      mv.addObject(
+          "superGroups",
+          this.superGroupFacade.getAll().stream()
+              .collect(
+                  Collectors.toMap(
+                      SuperGroupFacade.SuperGroupDTO::id,
+                      SuperGroupFacade.SuperGroupDTO::prettyName)));
+    }
+
+    if (!selectedUsers.isEmpty()) {
+      mv.addObject(
+          "users",
+          this.userFacade.getAll().stream()
+              .collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
+    }
+
+    return mv;
+  }
+
   @PostMapping("/clients/{id}/authority")
   public ModelAndView createAuthority(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
@@ -444,12 +482,21 @@ public class ClientsController {
 
     validateObject(form, bindingResult);
 
-    if (bindingResult.hasErrors()) {}
+    if (bindingResult.hasErrors()) {
+      FieldError authorityError = bindingResult.getFieldError("authority");
+      return createAuthorityForm(
+          clientUid,
+          form,
+          authorityError != null ? authorityError.getDefaultMessage() : "Invalid input");
+    }
 
     try {
       this.clientAuthorityFacade.create(clientUid, form.authority);
     } catch (ClientAuthorityRepository.ClientAuthorityAlreadyExistsException e) {
-      throw new RuntimeException(e);
+      return createAuthorityForm(
+          clientUid,
+          form,
+          "An authority with the name '" + form.authority + "' already exists for this client");
     }
 
     List<SuperGroupFacade.SuperGroupDTO> superGroups = new ArrayList<>();
