@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.common.StaleDomainObjectException;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
@@ -62,6 +63,26 @@ public class ThymeleafAdvice {
     response.addHeader("HX-Reswap", "afterbegin");
 
     return new ModelAndView("common/content-too-large");
+  }
+
+  @ExceptionHandler(StaleDomainObjectException.class)
+  public ModelAndView handleStaleDomainObjectException(
+      HttpServletRequest request, HttpServletResponse response) {
+    boolean htmxRequest = "true".equals(request.getHeader("HX-Request"));
+
+    ModelAndView mv = new ModelAndView();
+    mv.setStatus(HttpStatus.CONFLICT);
+    if (htmxRequest) {
+      response.addHeader("HX-Retarget", "#alerts");
+      response.addHeader("HX-Reswap", "afterbegin");
+
+      mv.setViewName("common/stale-object");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/stale-object");
+    }
+
+    return mv;
   }
 
   @ResponseStatus(HttpStatus.FORBIDDEN)

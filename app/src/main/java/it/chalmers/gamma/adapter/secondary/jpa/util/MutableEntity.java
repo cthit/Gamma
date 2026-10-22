@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.util;
 
+import it.chalmers.gamma.app.common.StaleDomainObjectException;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import java.time.Instant;
@@ -55,6 +56,4 @@ public abstract class MutableEntity<ID> extends AbstractEntity<ID> {
   }
 
   public static class IllegalEntityStateException extends RuntimeException {}
-
-  public static class StaleDomainObjectException extends RuntimeException {}
 }

@@ -84,12 +84,14 @@
     </div>
     <div>
         <th:block sec:authorize="isAuthenticated()">
-            <div th:text="|Hey, ${#authentication.getDetails().gammaUser().nick().value()}!|"></div>
-            <form th:action="@{/logout}" th:method="post" >
-                <button class="outline contrast" data-loading-disable>
-                    Logout
-                </button>
-            </form>
+            <th:block th:if="${#authentication.details instanceof T(it.chalmers.gamma.security.authentication.UserAuthentication)}">
+                <div th:text="|Hey, ${#authentication.details.gammaUser().nick().value()}!|"></div>
+                <form th:action="@{/logout}" th:method="post" >
+                    <button class="outline contrast" data-loading-disable>
+                        Logout
+                    </button>
+                </form>
+            </th:block>
         </th:block>
     </div>
 </header>

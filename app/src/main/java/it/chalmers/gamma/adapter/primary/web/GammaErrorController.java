@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.adapter.primary.api.ApiExceptionAdvice;
 import it.chalmers.gamma.app.oauth2.GammaAuthorizationService;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
@@ -12,39 +13,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.webmvc.error.ErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Renders errors for all request methods. Like Spring Boot's BasicErrorController, clients that
+ * accept HTML get an error page while other clients (e.g. API clients) get a JSON body.
+ */
 @Controller
+@RequestMapping("/error")
 public class GammaErrorController implements ErrorController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GammaErrorController.class);
 
-  @GetMapping("/error")
-  public ModelAndView handleRuntimeException(
+  @RequestMapping(produces = MediaType.TEXT_HTML_VALUE)
+  public ModelAndView handleErrorHtml(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       HttpServletResponse response,
       HttpServletRequest request) {
-    Object statusCodeString = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-
-    int statusCode = statusCodeString == null ? 500 : Integer.parseInt(statusCodeString.toString());
-
-    Exception exception = (Exception) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+    HttpStatusCode status = getStatus(request);
+    Exception exception = getException(request);
     if (exception != null) {
       LOGGER.error("Caught error, rendering error page...", exception);
     }
 
     String page = "pages/error";
 
-    if (HttpStatus.valueOf(statusCode) == HttpStatus.NOT_FOUND) {
+    if (status.value() == HttpStatus.NOT_FOUND.value()) {
       page = "pages/404";
     } else if (exception instanceof GammaAuthorizationService.UserNotAllowedRuntimeException) {
       page = "pages/no-access-to-client";
     }
 
     ModelAndView mv = new ModelAndView();
+    mv.setStatus(status);
     if (htmxRequest) {
       response.addHeader("HX-Retarget", "body");
       response.addHeader("HX-Reswap", "innerHTML");
@@ -55,8 +62,10 @@ public class GammaErrorController implements ErrorController {
       mv.addObject("page", page);
     }
 
-    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuth
-        && userAuth.isAdmin()) {
+    mv.addObject("statusCode", status.value());
+    mv.addObject("statusReason", getReasonPhrase(status));
+
+    if (isAdmin()) {
       if (exception != null) {
         mv.addObject("exceptionMessage", exception.getMessage());
 
@@ -65,13 +74,69 @@ public class GammaErrorController implements ErrorController {
         exception.printStackTrace(pw);
         mv.addObject("exceptionStackTrace", sw.toString());
       } else {
-        Object errorMessage = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+        String errorMessage = getErrorMessage(request);
         if (errorMessage != null) {
-          mv.addObject("exceptionMessage", errorMessage.toString());
+          mv.addObject("exceptionMessage", errorMessage);
         }
       }
     }
 
     return mv;
+  }
+
+  @RequestMapping
+  public ResponseEntity<ApiExceptionAdvice.ApiErrorBody> handleError(HttpServletRequest request) {
+    HttpStatusCode status = getStatus(request);
+    Exception exception = getException(request);
+    if (exception != null) {
+      LOGGER.error("Caught error, returning error response...", exception);
+    }
+
+    String reason = getReasonPhrase(status);
+    String message = null;
+    if (isAdmin()) {
+      message = exception != null ? exception.getMessage() : getErrorMessage(request);
+    }
+    if (message == null || message.isBlank()) {
+      message = reason;
+    }
+
+    return ResponseEntity.status(status)
+        .contentType(MediaType.APPLICATION_JSON)
+        .body(new ApiExceptionAdvice.ApiErrorBody(status.value(), reason, message));
+  }
+
+  private static HttpStatusCode getStatus(HttpServletRequest request) {
+    Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+    if (statusCode == null) {
+      return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    try {
+      return HttpStatusCode.valueOf(Integer.parseInt(statusCode.toString()));
+    } catch (IllegalArgumentException e) {
+      return HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+  }
+
+  private static String getReasonPhrase(HttpStatusCode status) {
+    HttpStatus resolved = HttpStatus.resolve(status.value());
+    return resolved != null ? resolved.getReasonPhrase() : "Error";
+  }
+
+  private static Exception getException(HttpServletRequest request) {
+    return request.getAttribute(RequestDispatcher.ERROR_EXCEPTION) instanceof Exception exception
+        ? exception
+        : null;
+  }
+
+  private static String getErrorMessage(HttpServletRequest request) {
+    Object errorMessage = request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
+    return errorMessage != null ? errorMessage.toString() : null;
+  }
+
+  private static boolean isAdmin() {
+    return AuthenticationExtractor.getAuthentication() instanceof UserAuthentication userAuth
+        && userAuth.isAdmin();
   }
 }
