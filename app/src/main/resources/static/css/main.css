@@ -296,3 +296,15 @@ span a {
 #digit18-smurf {
     width: 60%;
 }
+
+.client-id {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.client-id > button {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    margin-bottom: 0;
+}

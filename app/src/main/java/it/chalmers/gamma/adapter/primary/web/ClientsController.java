@@ -111,6 +111,13 @@ public class ClientsController {
 
         if (!isOwner) {
           mv.addObject("owner", userOwner.user());
+          String ownerEmail =
+              this.userFacade
+                  .getExtendedAsAdmin(userOwner.user().id())
+                  .map(UserFacade.UserExtendedDTO::email)
+                  .orElse(null);
+          mv.addObject("ownerEmail", ownerEmail);
+          mv.addObject("ownerMailto", ownerEmail == null ? null : MailtoLink.href(ownerEmail));
         }
       }
     }

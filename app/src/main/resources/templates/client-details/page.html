@@ -42,6 +42,10 @@
                 <a class="contrast" th:href="|/users/${owner.id()}|">
                     <span th:text="${owner.nick()}"></span>
                 </a>
+                <th:block th:if="${ownerEmail != null}">
+                    <span> - </span>
+                    <a th:href="${ownerMailto}" th:text="${ownerEmail}"></a>
+                </th:block>
             </li>
         </ul>
         <footer>

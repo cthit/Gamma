@@ -1,0 +1,7 @@
+<div class="client-id" th:fragment="clientId(clientId)">
+    <code th:text="${clientId}"></code>
+    <button type="button"
+            class="outline secondary"
+            th:data-client-id="${clientId}"
+            _="on click call navigator.clipboard.writeText(my @data-client-id) then put 'Copied' into me then wait 1.5s then put 'Copy' into me">Copy</button>
+</div>

@@ -93,13 +93,16 @@ public class UserFacade extends Facade {
   }
 
   public Optional<UserExtendedWithGroupsDTO> getAsAdmin(UUID id) {
+    return getExtendedAsAdmin(id)
+        .map(
+            userExtendedDTO ->
+                new UserExtendedWithGroupsDTO(userExtendedDTO, getUserGroups(new UserId(id))));
+  }
+
+  public Optional<UserExtendedDTO> getExtendedAsAdmin(UUID id) {
     accessGuard.require(isAdmin());
 
-    UserId userId = new UserId(id);
-
-    Optional<UserExtendedDTO> maybeUser = this.userRepository.get(userId).map(UserExtendedDTO::new);
-    return maybeUser.map(
-        userExtendedDTO -> new UserExtendedWithGroupsDTO(userExtendedDTO, getUserGroups(userId)));
+    return this.userRepository.get(new UserId(id)).map(UserExtendedDTO::new);
   }
 
   public void updateUser(UpdateUser updateUser) {
