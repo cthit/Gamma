@@ -12,14 +12,32 @@ import org.springframework.web.servlet.ModelAndView;
 public class UserClientsController {
 
   private final ClientFacade clientFacade;
+  private final UserFacade userFacade;
 
-  public UserClientsController(ClientFacade clientFacade) {
+  public UserClientsController(ClientFacade clientFacade, UserFacade userFacade) {
     this.clientFacade = clientFacade;
+    this.userFacade = userFacade;
   }
 
-  public record UserClient(String prettyName, String fullName, UUID userId, UUID clientUid) {
-    public UserClient(ClientFacade.ClientDTO client, UserFacade.UserDTO user) {
-      this(client.prettyName(), user.fullName(), user.id(), client.clientUid());
+  public record UserClient(
+      String prettyName,
+      String clientId,
+      String fullName,
+      String email,
+      UUID userId,
+      UUID clientUid) {
+    public UserClient(ClientFacade.ClientDTO client, UserFacade.UserDTO user, String email) {
+      this(
+          client.prettyName(),
+          client.clientId(),
+          user.fullName(),
+          email,
+          user.id(),
+          client.clientUid());
+    }
+
+    public String mailto() {
+      return email == null ? null : MailtoLink.href(email);
     }
   }
 
@@ -40,9 +58,16 @@ public class UserClientsController {
         this.clientFacade.getAll().stream()
             .filter(client -> client.owner() instanceof ClientFacade.ClientDTO.UserOwner)
             .map(
-                client ->
-                    new UserClient(
-                        client, ((ClientFacade.ClientDTO.UserOwner) client.owner()).user()))
+                client -> {
+                  UserFacade.UserDTO user =
+                      ((ClientFacade.ClientDTO.UserOwner) client.owner()).user();
+                  String email =
+                      this.userFacade
+                          .getExtendedAsAdmin(user.id())
+                          .map(UserFacade.UserExtendedDTO::email)
+                          .orElse(null);
+                  return new UserClient(client, user, email);
+                })
             .toList());
 
     return mv;

@@ -4,6 +4,7 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th>Client ID</th>
             <th>Created by</th>
             <th>Details</th>
         </tr>
@@ -12,7 +13,12 @@
         <tr th:each="client : ${clients}">
             <td th:text="${client.prettyName()}"></td>
             <td>
+                <div th:replace="~{common/client-id :: clientId(clientId=${client.clientId()})}"></div>
+            </td>
+            <td>
                 <a th:href="|/users/${client.userId()}|" th:text="${client.fullName()}"></a>
+                <br th:if="${client.email() != null}">
+                <a th:if="${client.email() != null}" th:href="${client.mailto()}" th:text="${client.email()}"></a>
             </td>
             <td>
                 <a th:href="${'/clients/' + client.clientUid()}">Details</a>
