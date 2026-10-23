@@ -130,9 +130,6 @@ jobs:
           path: e2e/playwright-report/
           retention-days: 30
 
-      # The HTML report is only written when the whole run finishes, so when the
-      # test step is killed by its timeout there is nothing to upload above.
-      # Per-test traces, videos and screenshots are written incrementally.
       - name: Upload raw Playwright test results
         uses: actions/upload-artifact@v7
         timeout-minutes: 20
