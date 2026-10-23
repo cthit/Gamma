@@ -8,12 +8,24 @@
           data-hx-swap="outerHTML"
           _="on htmx:after:swap call updateNames('users', '.authority-user-row') then call updateNames('superGroups', '.authority-super-group-row')">
         <div th:replace="~{common/form-csrf}"></div>
-        <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${null}, errorMessage=${null})}"></div>
+        <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${authorityValue}, errorMessage=${authorityErrorMessage})}"></div>
         <p>Super groups:</p>
+        <select th:each="selectedSuperGroup, stat : ${selectedSuperGroups}"
+                class="authority-super-group-row" required
+                th:name="|superGroups[${stat.index}]|" th:id="|superGroups${stat.index}|">
+            <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"
+                    th:selected="${superGroup.key == selectedSuperGroup}"></option>
+        </select>
         <button class="outline contrast" data-hx-get="/clients/authority/new-super-group"
                 data-hx-target="previous p" data-hx-swap="afterend" type="button">Add super group authority
         </button>
         <p>Users:</p>
+        <select th:each="selectedUser, stat : ${selectedUsers}"
+                class="authority-user-row" required
+                th:name="|users[${stat.index}]|" th:id="|users${stat.index}|">
+            <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"
+                    th:selected="${user.key == selectedUser}"></option>
+        </select>
         <button class="outline contrast" data-hx-get="/clients/authority/new-user" data-hx-target="previous p"
                 data-hx-swap="afterend" type="button">Add user authority
         </button>

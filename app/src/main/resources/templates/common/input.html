@@ -9,8 +9,11 @@
             th:id="${name}"
             th:name="${name}"
             th:value="${value}"
+            th:attr="aria-invalid=${errorMessage != null ? 'true' : null},
+                    aria-describedby=${errorMessage != null ? name + '-error' : null}"
     />
     <span th:if="${errorMessage}"
+          th:id="|${name}-error|"
           th:text="${errorMessage}">
     </span>
 </th:block>
