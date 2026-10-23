@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.primary.api;
 
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.common.StaleDomainObjectException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestControllerAdvice(basePackages = "it.chalmers.gamma.adapter.primary.api")
 public class ApiExceptionAdvice {
 
-  record ApiErrorBody(int status, String error, String message) {}
+  public record ApiErrorBody(int status, String error, String message) {}
 
   @ExceptionHandler(ResponseStatusException.class)
   public ResponseEntity<ApiErrorBody> handleResponseStatusException(ResponseStatusException ex) {
@@ -26,6 +27,12 @@ public class ApiExceptionAdvice {
   public ResponseEntity<ApiErrorBody> handleAccessDeniedException(
       AccessGuard.AccessDeniedException ex) {
     return createResponse(HttpStatus.FORBIDDEN, "FORBIDDEN");
+  }
+
+  @ExceptionHandler(StaleDomainObjectException.class)
+  public ResponseEntity<ApiErrorBody> handleStaleDomainObjectException(
+      StaleDomainObjectException ex) {
+    return createResponse(HttpStatus.CONFLICT, ex.getMessage());
   }
 
   private ResponseEntity<ApiErrorBody> createResponse(HttpStatusCode statusCode, String reason) {

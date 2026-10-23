@@ -1,7 +1,7 @@
 <header th:replace="~{common/header}"></header>
 <main>
     <article>
-        <header>
+        <header th:text="|${statusCode ?: 500} - ${statusReason ?: 'Internal Server Error'}|">
             500 - Internal Server Error
         </header>
         <p>Something went wrong...</p>

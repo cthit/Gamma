@@ -14,6 +14,7 @@ import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -201,6 +202,12 @@ public class SecurityFiltersConfig {
                     .requestMatchers(HttpMethod.POST, "/forgot-password/finalize")
                     .anonymous()
                     .requestMatchers(HttpMethod.GET, "/robots.txt")
+                    .permitAll()
+                    // The error page must be reachable without logging in, otherwise errors
+                    // are turned into redirects to the login page.
+                    .dispatcherTypeMatchers(DispatcherType.ERROR)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/error")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
