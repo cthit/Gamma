@@ -120,7 +120,7 @@ jobs:
         run: make test-e2e GAMMA_VERSION=${{ steps.gamma-version.outputs.version }}
         # Each test boots fresh Postgres, Redis and Gamma containers (~13-20 s per
         # test depending on the runner), so 60+ tests can exceed 20 minutes.
-        timeout-minutes: 30
+        timeout-minutes: 40
 
       - uses: actions/upload-artifact@v7
         timeout-minutes: 20
@@ -129,3 +129,16 @@ jobs:
           name: playwright-report
           path: e2e/playwright-report/
           retention-days: 30
+
+      # The HTML report is only written when the whole run finishes, so when the
+      # test step is killed by its timeout there is nothing to upload above.
+      # Per-test traces, videos and screenshots are written incrementally.
+      - name: Upload raw Playwright test results
+        uses: actions/upload-artifact@v7
+        timeout-minutes: 20
+        if: ${{ failure() }}
+        with:
+          name: playwright-test-results
+          path: e2e/test-results/
+          if-no-files-found: ignore
+          retention-days: 7

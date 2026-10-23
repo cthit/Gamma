@@ -7,8 +7,13 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : 4,
-  reporter: [["html", { open: "never" }]],
+  // Each test starts its own Docker network and containers on random host
+  // ports, so workers never share state. Two workers keeps the CI suite well
+  // inside its step timeout; the runner has 4 vCPUs and 16 GB of memory.
+  workers: process.env.CI ? 2 : 4,
+  // The list reporter prints every result as it completes, so the CI log still
+  // shows which tests ran if the step is killed before the HTML report exists.
+  reporter: [["list"], ["html", { open: "never" }]],
   use: {
     ignoreHTTPSErrors: true,
     screenshot: "on",
