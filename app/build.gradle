@@ -79,6 +79,7 @@ dependencies {
 }
 
 tasks.named("bootBuildImage") {
+    builder = "paketobuildpacks/builder-noble-java-tiny:0.0.200"
     environment = ["BP_JVM_VERSION": "25.*"]
 }
 
