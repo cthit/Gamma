@@ -33,7 +33,7 @@ public record AuthorityName(String value) implements Id<String> {
               MATCHES_REGEX.apply(
                   new RegexMatcher(
                       authorityNamePattern,
-                      "Authority name must have letter ranging a - z, and be between size 5 and 30 to be valid")))
+                      "Authority name must only contain lowercase letters a-z and digits 0-9, and be between 2 and 30 characters long")))
           .validate(value);
     }
   }
