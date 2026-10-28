@@ -122,9 +122,10 @@ jobs:
         # test depending on the runner), so 60+ tests can exceed 20 minutes.
         timeout-minutes: 40
 
-      - uses: actions/upload-artifact@v7
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v7
         timeout-minutes: 20
-        if: ${{ !cancelled() }}
+        if: ${{ failure() }}
         with:
           name: playwright-report
           path: e2e/playwright-report/
