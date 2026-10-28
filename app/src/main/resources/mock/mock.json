@@ -333,47 +333,5 @@
       "sv": "Vice Ordförande",
       "en": "Vice-chairman"
     }
-  } ],
-  "clients": [ {
-    "id": "8e54391c-ec36-4054-a1a9-0a6f5c2aa948",
-    "clientId": "MOCKOFFICIALCLIENT000000000001",
-    "clientSecret": "official-secret-1337",
-    "redirectUrl": "http://localhost:3000/api/auth/callback/gamma",
-    "prettyName": "Mock official client",
-    "description": {
-      "sv": "Officiell klient för lokal utveckling",
-      "en": "Official client for local development"
-    },
-    "emailScope": true,
-    "apiKey": {
-      "id": "ea917118-ce7c-47f2-b024-37e131c33e86",
-      "token": "official-api-key-1337"
-    },
-    "authorities": [ {
-      "name": "admin",
-      "superGroupIds": [ "aed27030-ad90-4526-855c-1e909b1dcecb", "2157ee72-04cd-4029-8d57-77142d3ef5fa" ],
-      "userIds": [ "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f" ]
-    }, {
-      "name": "member",
-      "superGroupIds": [ "aed27030-ad90-4526-855c-1e909b1dcecb", "2157ee72-04cd-4029-8d57-77142d3ef5fa", "b8dbca3a-52e7-4299-9499-e58ec93a0c2c", "b3bcbbcc-0b93-4c41-a3c7-1792448c6fc1" ],
-      "userIds": [ ]
-    } ]
-  }, {
-    "id": "1dc4c258-1dd1-4d73-a909-b5e9063f9773",
-    "clientId": "MOCKUSERCLIENT0000000000000001",
-    "clientSecret": "user-secret-1337",
-    "redirectUrl": "http://localhost:8080/login/oauth2/code/gamma",
-    "prettyName": "Mock user client",
-    "description": {
-      "sv": "Klient ägd av jhalpert för lokal utveckling",
-      "en": "Client owned by jhalpert for local development"
-    },
-    "emailScope": false,
-    "ownerId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
-    "authorities": [ {
-      "name": "tester",
-      "superGroupIds": [ ],
-      "userIds": [ "bc605869-9a4d-46ec-8a29-d00819d4c195", "ec8987d7-4087-461d-bed5-9365086b6e3b" ]
-    } ]
   } ]
 }
