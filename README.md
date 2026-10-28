@@ -36,6 +36,24 @@ $env:DEV_SERVICES_ENABLED="true"; $env:PRODUCTION="false"; ./gradlew bootRun
 
 The app starts on `http://localhost:8081`. On first run, an admin user is auto-created (credentials logged to stdout).
 
+### Mock data
+
+When `PRODUCTION=false` or `IS_MOCKING=true`, Gamma loads mock data from `MOCK_DATA_RESOURCE` (default [`mock.json`](app/src/main/resources/mock/mock.json)) on startup. Each kind of data is only created if none of it exists yet. All mock users sign in with the password `password1337`.
+
+The mock data includes two OAuth2 clients that a locally running application can use:
+
+| | Official client | User client |
+|---|---|---|
+| Client ID | `MOCKOFFICIALCLIENT000000000001` | `MOCKUSERCLIENT0000000000000001` |
+| Client secret | `official-secret-1337` | `user-secret-1337` |
+| Redirect URL | `http://localhost:3000/api/auth/callback/gamma` | `http://localhost:8080/login/oauth2/code/gamma` |
+| Scopes | `openid profile email` | `openid profile` |
+| Owner | Official | `jhalpert` |
+| Client API key | `pre-shared ea917118-ce7c-47f2-b024-37e131c33e86:official-api-key-1337` | None |
+| Authorities | `admin` (digIT, styrIT, `mscott`), `member` (digIT, styrIT, DrawIT, P.R.I.T.) | `tester` (`jhalpert`, `pbeesly`) |
+
+To change them, edit the `clients` section of `mock.json`. If the database already contains clients, remove them first.
+
 ### Run with custom services
 
 ```bash
