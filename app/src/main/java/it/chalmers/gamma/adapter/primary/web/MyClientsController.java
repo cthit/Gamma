@@ -1,6 +1,11 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validateObject;
+
 import it.chalmers.gamma.app.client.ClientFacade;
+import it.chalmers.gamma.app.client.domain.ClientRedirectUrl.ClientRedirectUrlValidator;
+import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
+import it.chalmers.gamma.app.common.TextValue;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import org.springframework.stereotype.Controller;
@@ -37,10 +42,18 @@ public class MyClientsController {
   }
 
   public static final class CreateUserClient {
+    @ValidatedWith(ClientRedirectUrlValidator.class)
     private String redirectUrl;
+
+    @ValidatedWith(PrettyNameValidator.class)
     private String prettyName;
+
+    @ValidatedWith(TextValue.TextValueValidator.class)
     private String svDescription;
+
+    @ValidatedWith(TextValue.TextValueValidator.class)
     private String enDescription;
+
     private boolean generateApiKey;
     private boolean emailScope;
 
@@ -112,10 +125,13 @@ public class MyClientsController {
     }
   }
 
-  @GetMapping("/my-clients/create")
-  public ModelAndView getCreateUserClient(
-      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+  private ModelAndView createGetCreateUserClient(
+      boolean htmxRequest, CreateUserClient form, BindingResult bindingResult) {
     ModelAndView mv = new ModelAndView();
+
+    if (form == null) {
+      form = new CreateUserClient();
+    }
 
     if (htmxRequest) {
       mv.setViewName("pages/create-user-client");
@@ -124,9 +140,19 @@ public class MyClientsController {
       mv.addObject("page", "pages/create-user-client");
     }
 
-    mv.addObject("form", new CreateUserClient());
+    mv.addObject("form", form);
+
+    if (bindingResult != null && bindingResult.hasErrors()) {
+      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    }
 
     return mv;
+  }
+
+  @GetMapping("/my-clients/create")
+  public ModelAndView getCreateUserClient(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
+    return createGetCreateUserClient(htmxRequest, null, null);
   }
 
   @PostMapping("/my-clients")
@@ -135,6 +161,14 @@ public class MyClientsController {
       CreateUserClient form,
       BindingResult bindingResult,
       HttpServletResponse response) {
+    validateObject(form, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      // A boosted form pushes its action url (/my-clients) by default; keep the current url.
+      response.addHeader("HX-Push-Url", "false");
+      return createGetCreateUserClient(htmxRequest, form, bindingResult);
+    }
+
     ModelAndView mv = new ModelAndView();
 
     ClientFacade.CreatedClientDTO result =
