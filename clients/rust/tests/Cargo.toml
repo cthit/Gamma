@@ -1,0 +1,17 @@
+[package]
+name = "gamma_rust_client_tests"
+version = "1.0.0"
+edition = "2021"
+license = "MIT or Apache-2.0"
+authors = ["Vidar Magnusson <dev@vidarmagnusson.com>"]
+description = "Rust bindings for the IT division auth service API"
+
+[dependencies]
+clap = { version = "4.5.7", features = ["env", "derive"] }
+dotenvy = { version = "0.15.7", features = ["clap"] }
+eyre = "0.6.12"
+tokio = { version = "1.38.0", features = ["full"] }
+
+[dependencies.gamma_rust_client]
+path = "../client"
+features = ["api"]
