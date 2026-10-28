@@ -11,9 +11,9 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
     ignoreHTTPSErrors: true,
-    screenshot: "on",
-    video: "on",
-    trace: "on",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
+    trace: "retain-on-failure",
   },
   projects: [
     {
