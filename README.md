@@ -36,6 +36,44 @@ $env:DEV_SERVICES_ENABLED="true"; $env:PRODUCTION="false"; ./gradlew bootRun
 
 The app starts on `http://localhost:8081`. On first run, an admin user is auto-created (credentials logged to stdout).
 
+### Mock data
+
+When `PRODUCTION=false` or `IS_MOCKING=true`, Gamma loads mock data from `MOCK_DATA_RESOURCE` (default [`mock.json`](app/src/main/resources/mock/mock.json)) on startup. Each kind of data is only created if none of it exists yet. All mock users sign in with the password `password1337`.
+
+The mock data can also specify OAuth2 clients and their authorities. The default `mock.json` has none, so add a `clients` section to your mock file to have your clients created on startup:
+
+```json
+"clients": [ {
+  "id": "8e54391c-ec36-4054-a1a9-0a6f5c2aa948",
+  "clientId": "MYAPPCLIENT0000000000000000001",
+  "clientSecret": "my-app-secret",
+  "redirectUrl": "http://localhost:3000/api/auth/callback/gamma",
+  "prettyName": "My app",
+  "description": { "sv": "Min app", "en": "My app" },
+  "emailScope": true,
+  "ownerId": "bc605869-9a4d-46ec-8a29-d00819d4c195",
+  "apiKey": { "id": "ea917118-ce7c-47f2-b024-37e131c33e86", "token": "my-app-api-key" },
+  "authorities": [ {
+    "name": "admin",
+    "superGroupIds": [ "aed27030-ad90-4526-855c-1e909b1dcecb" ],
+    "userIds": [ "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f" ]
+  } ]
+} ]
+```
+
+| Field | Description |
+|---|---|
+| `id` | Client UUID |
+| `clientId` | OAuth2 client ID, exactly 30 upper case letters and digits |
+| `clientSecret` | Raw client secret, encoded when the client is created |
+| `redirectUrl` | Redirect URL of your application |
+| `emailScope` | Whether the client gets the `email` scope in addition to `openid profile` |
+| `ownerId` | Id of the user that owns the client. Leave it out for an official client |
+| `apiKey` | Optional client API key. Use it with `Authorization: pre-shared <id>:<token>` |
+| `authorities` | Authority names (2-30 lower case letters and digits) with the ids of the super groups and users that have them |
+
+The client IDs, secrets and API keys are also logged on startup. Clients are only created if the database has no clients yet.
+
 ### Run with custom services
 
 ```bash
