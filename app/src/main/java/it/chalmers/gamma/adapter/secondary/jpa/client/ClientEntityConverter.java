@@ -116,6 +116,16 @@ public class ClientEntityConverter {
         .clientApiKey()
         .ifPresent(
             apiKey -> {
+              ClientApiKeyEntity existing = clientEntity.clientsApiKey;
+              if (existing != null
+                  && existing.getApiKeyEntity() != null
+                  && existing.getApiKeyEntity().getId().equals(apiKey.id().value())) {
+                // Update the loaded entity. Replacing it with a new instance would merge a row
+                // without created_at/updated_at over the existing api key.
+                existing.getApiKeyEntity().apply(apiKey);
+                return;
+              }
+
               ApiKeyEntity apiKeyEntity =
                   new ApiKeyEntity(
                       apiKey.id().value(),

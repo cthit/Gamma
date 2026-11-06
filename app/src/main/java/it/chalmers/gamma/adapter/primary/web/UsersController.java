@@ -4,6 +4,7 @@ import static it.chalmers.gamma.adapter.primary.web.WebValidationHelper.validate
 import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.common.Email.EmailValidator;
+import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
@@ -35,16 +36,19 @@ public class UsersController {
   private final UserCreationFacade userCreationFacade;
   private final UserResetPasswordFacade userResetPasswordFacade;
   private final UserGdprTrainingFacade userGdprTrainingFacade;
+  private final ImageFacade imageFacade;
 
   public UsersController(
       UserFacade userFacade,
       UserCreationFacade userCreationFacade,
       UserResetPasswordFacade userResetPasswordFacade,
-      UserGdprTrainingFacade userGdprTrainingFacade) {
+      UserGdprTrainingFacade userGdprTrainingFacade,
+      ImageFacade imageFacade) {
     this.userFacade = userFacade;
     this.userCreationFacade = userCreationFacade;
     this.userResetPasswordFacade = userResetPasswordFacade;
     this.userGdprTrainingFacade = userGdprTrainingFacade;
+    this.imageFacade = imageFacade;
   }
 
   @GetMapping("/users")
@@ -99,6 +103,7 @@ public class UsersController {
         String name = u.user().firstName() + " '" + u.user().nick() + "' " + u.user().lastName();
 
         mv.addObject("userId", u.user().id());
+        mv.addObject("avatarVersion", this.imageFacade.getAvatarVersion(u.user().id()));
         mv.addObject("name", name);
         mv.addObject("nick", u.user().nick());
         mv.addObject("cid", u.user().cid());
@@ -128,6 +133,7 @@ public class UsersController {
         String name = u.user().firstName() + " '" + u.user().nick() + "' " + u.user().lastName();
 
         mv.addObject("userId", u.user().id());
+        mv.addObject("avatarVersion", this.imageFacade.getAvatarVersion(u.user().id()));
         mv.addObject("name", name);
         mv.addObject("nick", u.user().nick());
         mv.addObject("cid", u.user().cid());
@@ -313,6 +319,7 @@ public class UsersController {
     mv.addObject("locked", user.get().user().locked());
     mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(user.get().user().id()));
     mv.addObject("userId", userId);
+    mv.addObject("avatarVersion", this.imageFacade.getAvatarVersion(userId));
 
     return mv;
   }

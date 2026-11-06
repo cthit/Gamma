@@ -2,7 +2,7 @@
 <main>
     <article th:fragment="userinfo">
         <header>User details</header>
-        <img class="m-auto" th:src="@{/images/user/avatar/{id}(id=${userId})}" alt="User avatar"/>
+        <img class="m-auto" th:src="@{/images/user/avatar/{id}(id=${userId},v=${avatarVersion})}" alt="User avatar"/>
         <div class="userinfo">
             <ul class="tuple">
                 <li>

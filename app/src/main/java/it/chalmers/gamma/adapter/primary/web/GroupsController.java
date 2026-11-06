@@ -6,6 +6,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.UnofficialPostName;
+import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
@@ -31,16 +32,19 @@ public class GroupsController {
   private final SuperGroupFacade superGroupFacade;
   private final UserFacade userFacade;
   private final PostFacade postFacade;
+  private final ImageFacade imageFacade;
 
   public GroupsController(
       GroupFacade groupFacade,
       SuperGroupFacade superGroupFacade,
       UserFacade userFacade,
-      PostFacade postFacade) {
+      PostFacade postFacade,
+      ImageFacade imageFacade) {
     this.groupFacade = groupFacade;
     this.superGroupFacade = superGroupFacade;
     this.userFacade = userFacade;
     this.postFacade = postFacade;
+    this.imageFacade = imageFacade;
   }
 
   @InitBinder
@@ -131,7 +135,9 @@ public class GroupsController {
                       groupMember.user().id());
                 })
             .toList());
-    mv.addObject("random", Math.random());
+    UUID id = group.get().id();
+    mv.addObject("groupAvatarVersion", this.imageFacade.getGroupAvatarVersion(id));
+    mv.addObject("groupBannerVersion", this.imageFacade.getGroupBannerVersion(id));
 
     boolean canEditImages = false;
     if (SecurityContextHolder.getContext().getAuthentication()

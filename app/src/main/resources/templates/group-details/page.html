@@ -74,9 +74,9 @@
             <header>
                 Group avatar
             </header>
-            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{/images/group/avatar/{id}(id=${groupId},v=${groupAvatarVersion})}" alt="Group avatar" />
             <div class="image-input-container" th:if="${isAdmin || canEditImages}">
-                <img th:src="@{|/images/group/avatar/${groupId}?r=${random}|}" alt="Group avatar" />
+                <img th:src="@{/images/group/avatar/{id}(id=${groupId},v=${groupAvatarVersion})}" alt="Group avatar" />
                 <form th:data-hx-post="@{/groups/avatar/{id}(id=${groupId})}"
                       _="on htmx:before:request add @disabled to the next <button/> "
                       enctype="multipart/form-data"
@@ -85,7 +85,10 @@
                       id="edit-group-avatar">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="put" />
-                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'
+                           accept="image/jpeg,image/png,image/gif"
+                           th:data-max-size="${imageUploadLimit.bytes()}"
+                           th:data-max-size-message="|The file is too large. It must be at most ${imageUploadLimit.text()}.|">
                 </form>
             </div>
             <footer th:if="${isAdmin || canEditImages}">
@@ -97,9 +100,9 @@
             <header>
                 Group banner
             </header>
-            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+            <img class="m-auto" th:if="${!isAdmin && !canEditImages}" th:src="@{/images/group/banner/{id}(id=${groupId},v=${groupBannerVersion})}" alt="Group banner" />
             <div class="image-input-container" th:if="${isAdmin || canEditImages}">
-                <img th:src="@{|/images/group/banner/${groupId}?r=${random}|}" alt="Group banner" />
+                <img th:src="@{/images/group/banner/{id}(id=${groupId},v=${groupBannerVersion})}" alt="Group banner" />
                 <form th:data-hx-post="@{/groups/banner/{id}(id=${groupId})}"
                       _="on htmx:before:request add @disabled to the next <button/> "
                       enctype="multipart/form-data"
@@ -108,7 +111,10 @@
                       id="edit-group-banner">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="put" />
-                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'>
+                    <input _='on change remove @disabled from the next <button/>' type='file' name='file'
+                           accept="image/jpeg,image/png,image/gif"
+                           th:data-max-size="${imageUploadLimit.bytes()}"
+                           th:data-max-size-message="|The file is too large. It must be at most ${imageUploadLimit.text()}.|">
                 </form>
             </div>
             <footer th:if="${isAdmin || canEditImages}">

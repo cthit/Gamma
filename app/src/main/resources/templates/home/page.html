@@ -75,7 +75,7 @@
             Your avatar
         </header>
         <div class="image-input-container" th:fragment="me-avatar">
-            <img th:src="@{|/images/user/avatar/${meId}?r=${random}|}" alt="Me avatar" />
+            <img th:src="@{/images/user/avatar/{id}(id=${meId},v=${meAvatarVersion})}" alt="Me avatar" />
             <form id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
                   _="on htmx:before:request add @disabled to the next <button/> "
                   enctype="multipart/form-data"
@@ -83,7 +83,10 @@
                   data-hx-swap="outerHTML">
                 <div th:replace="~{common/form-csrf}"></div>
                 <input type="hidden" name="_method" value="put" />
-                <input _='on change remove @disabled from the next <button/>'  type='file' name='file'>
+                <input _='on change remove @disabled from the next <button/>' type='file' name='file'
+                           accept="image/jpeg,image/png,image/gif"
+                           th:data-max-size="${imageUploadLimit.bytes()}"
+                           th:data-max-size-message="|The file is too large. It must be at most ${imageUploadLimit.text()}.|">
             </form>
         </div>
         <footer>

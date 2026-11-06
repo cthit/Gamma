@@ -9,8 +9,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +24,22 @@ import org.springframework.web.servlet.ModelAndView;
 public class ThymeleafAdvice {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ThymeleafAdvice.class);
+
+  private final ImageUploadLimit imageUploadLimit;
+
+  public ThymeleafAdvice(
+      @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize) {
+    this.imageUploadLimit = new ImageUploadLimit(maxImageSize);
+  }
+
+  /**
+   * The largest image that can be uploaded. Used by upload forms to check the size before
+   * uploading, and by error messages.
+   */
+  @ModelAttribute("imageUploadLimit")
+  public ImageUploadLimit imageUploadLimit() {
+    return this.imageUploadLimit;
+  }
 
   @ModelAttribute("isAdmin")
   public boolean isAdmin() {
@@ -62,7 +80,9 @@ public class ThymeleafAdvice {
     response.addHeader("HX-Retarget", "#alerts");
     response.addHeader("HX-Reswap", "afterbegin");
 
-    return new ModelAndView("common/content-too-large");
+    ModelAndView mv = new ModelAndView("common/content-too-large");
+    mv.setStatus(HttpStatus.CONTENT_TOO_LARGE);
+    return mv;
   }
 
   @ExceptionHandler(StaleDomainObjectException.class)
@@ -89,5 +109,11 @@ public class ThymeleafAdvice {
   @ExceptionHandler(AccessDeniedException.class)
   public void handleAccessDeniedException(HttpServletResponse response) throws IOException {
     response.sendRedirect("/");
+  }
+
+  public record ImageUploadLimit(long bytes, String text) {
+    public ImageUploadLimit(DataSize size) {
+      this(size.toBytes(), size.toMegabytes() + "MB");
+    }
   }
 }

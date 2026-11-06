@@ -38,6 +38,11 @@ public class GammaErrorController implements ErrorController {
       HttpServletRequest request) {
     HttpStatusCode status = getStatus(request);
     Exception exception = getException(request);
+
+    if (htmxRequest && status.value() == HttpStatus.CONTENT_TOO_LARGE.value()) {
+      return contentTooLargeAlert(response, exception);
+    }
+
     if (exception != null) {
       LOGGER.error("Caught error, rendering error page...", exception);
     }
@@ -81,6 +86,25 @@ public class GammaErrorController implements ErrorController {
       }
     }
 
+    return mv;
+  }
+
+  /**
+   * An upload larger than the multipart limits is rejected while the body is parsed. That already
+   * happens in the servlet filters (e.g. when the CSRF token is read), before any controller or
+   * {@code @ExceptionHandler} runs, so it ends up here. Show an alert like other failed htmx
+   * requests do instead of replacing the whole page with an error page.
+   */
+  private ModelAndView contentTooLargeAlert(HttpServletResponse response, Exception exception) {
+    LOGGER.info(
+        "Rejected a request that was too large: {}",
+        exception != null ? exception.getMessage() : "no exception");
+
+    response.addHeader("HX-Retarget", "#alerts");
+    response.addHeader("HX-Reswap", "afterbegin");
+
+    ModelAndView mv = new ModelAndView("common/content-too-large");
+    mv.setStatus(HttpStatus.CONTENT_TOO_LARGE);
     return mv;
   }
 
