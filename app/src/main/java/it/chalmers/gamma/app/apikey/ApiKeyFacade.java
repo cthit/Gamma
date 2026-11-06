@@ -105,9 +105,10 @@ public class ApiKeyFacade extends Facade {
   }
 
   public String resetApiKey(UUID apiKeyId) {
-    this.accessGuard.require(isAdmin());
-
     ApiKeyId id = new ApiKeyId(apiKeyId);
+
+    this.accessGuard.requireEither(isAdmin(), ownerOfClientApi(id));
+
     ApiKeyToken.GeneratedApiKeyToken generated = ApiKeyToken.generate(passwordEncoder);
     this.apiKeyRepository.setNewGeneratedToken(id, generated.apiKeyToken());
 

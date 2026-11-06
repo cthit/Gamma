@@ -1,7 +1,9 @@
 import { expect, type Page } from "@playwright/test";
 
 export interface ClientApiCredentials {
+  clientUid: string;
   clientId: string;
+  clientSecret: string;
   redirectUri: string;
   apiKeyId: string;
   apiKeyToken: string;
@@ -44,6 +46,14 @@ export async function createUserClientWithApiKeyViaUi(
   const clientId = (
     await page.locator('li:has-text("Client id:") span').first().innerText()
   ).trim();
+  const clientSecret = (
+    await page
+      .locator('article:has-text("Credentials") code')
+      .first()
+      .innerText()
+  ).trim();
+  await page.waitForURL(/\/clients\/[0-9a-f-]+$/);
+  const clientUid = new URL(page.url()).pathname.split("/").at(-1)!;
   const authorizationHeader = (
     await page
       .locator('article:has-text("Credentials") code')
@@ -67,7 +77,9 @@ export async function createUserClientWithApiKeyViaUi(
   }
 
   return {
+    clientUid,
     clientId,
+    clientSecret,
     redirectUri,
     apiKeyId,
     apiKeyToken,
