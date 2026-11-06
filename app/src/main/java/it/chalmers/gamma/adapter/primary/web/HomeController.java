@@ -6,6 +6,7 @@ import static it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
 import it.chalmers.gamma.app.common.Email.EmailValidator;
+import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
@@ -28,10 +29,13 @@ public class HomeController {
 
   private final MeFacade meFacade;
   private final UserGdprTrainingFacade userGdprTrainingFacade;
+  private final ImageFacade imageFacade;
 
-  public HomeController(MeFacade meFacade, UserGdprTrainingFacade userGdprTrainingFacade) {
+  public HomeController(
+      MeFacade meFacade, UserGdprTrainingFacade userGdprTrainingFacade, ImageFacade imageFacade) {
     this.meFacade = meFacade;
     this.userGdprTrainingFacade = userGdprTrainingFacade;
+    this.imageFacade = imageFacade;
   }
 
   @GetMapping("/")
@@ -49,7 +53,7 @@ public class HomeController {
     MeFacade.MeDTO me = this.meFacade.getMe();
 
     mv.addObject("me", me);
-    mv.addObject("random", Math.random());
+    mv.addObject("meAvatarVersion", this.imageFacade.getAvatarVersion(me.id()));
     mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
 
     return mv;
@@ -202,8 +206,8 @@ public class HomeController {
       MeFacade.MeDTO me = this.meFacade.getMe();
 
       mv.setViewName("home/edited-me-avatar");
-      mv.addObject("random", Math.random());
       mv.addObject("meId", me.id());
+      mv.addObject("meAvatarVersion", this.imageFacade.getAvatarVersion(me.id()));
     } catch (ImageService.ImageCouldNotBeSavedException e) {
       response.addHeader("HX-Retarget", "#alerts");
       response.addHeader("HX-Reswap", "afterbegin");

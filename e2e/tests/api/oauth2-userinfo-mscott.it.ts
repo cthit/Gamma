@@ -142,6 +142,8 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
   expect(userInfo.name).toEqual("Michael 'Boss' Scott");
   expect(userInfo.email).toEqual("mscott@example.org");
   expect(userInfo.locale).toEqual("en");
-  expect(String(userInfo.picture)).toContain("/images/user/avatar/");
+  expect(String(userInfo.picture)).toMatch(
+    /\/images\/user\/avatar\/[0-9a-f-]{36}\?v=[0-9a-f]{16}$/,
+  );
   expect(userInfo.sub).toBeTruthy();
 });

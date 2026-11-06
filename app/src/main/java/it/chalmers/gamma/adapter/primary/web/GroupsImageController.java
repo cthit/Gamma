@@ -49,29 +49,7 @@ public class GroupsImageController {
       this.imageFacade.setGroupAvatar(id, new ImageFile(file));
 
       mv.setViewName("group-details/page :: group-avatar");
-      mv.addObject("groupId", id);
-      mv.addObject("random", Math.random());
-
-      var group = this.groupFacade.getWithMembers(id);
-      if (group.isEmpty()) {
-        throw new RuntimeException();
-      }
-
-      boolean canEditImages = false;
-      if (SecurityContextHolder.getContext().getAuthentication()
-          instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-        canEditImages =
-            group.get().groupMembers().stream()
-                .anyMatch(
-                    groupMember ->
-                        groupMember
-                            .user()
-                            .id()
-                            .equals(
-                                UUID.fromString(usernamePasswordAuthenticationToken.getName())));
-      }
-
-      mv.addObject("canEditImages", canEditImages);
+      addImageFragmentObjects(mv, id);
     } catch (ImageService.ImageCouldNotBeSavedException e) {
       response.addHeader("HX-Reswap", "afterbegin");
       response.addHeader("HX-Retarget", "#alerts");
@@ -101,29 +79,7 @@ public class GroupsImageController {
       this.imageFacade.setGroupBanner(id, new ImageFile(file));
 
       mv.setViewName("group-details/page :: group-banner");
-      mv.addObject("groupId", id);
-      mv.addObject("random", Math.random());
-
-      var group = this.groupFacade.getWithMembers(id);
-      if (group.isEmpty()) {
-        throw new RuntimeException();
-      }
-
-      boolean canEditImages = false;
-      if (SecurityContextHolder.getContext().getAuthentication()
-          instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-        canEditImages =
-            group.get().groupMembers().stream()
-                .anyMatch(
-                    groupMember ->
-                        groupMember
-                            .user()
-                            .id()
-                            .equals(
-                                UUID.fromString(usernamePasswordAuthenticationToken.getName())));
-      }
-
-      mv.addObject("canEditImages", canEditImages);
+      addImageFragmentObjects(mv, id);
     } catch (ImageService.ImageCouldNotBeSavedException e) {
       response.addHeader("HX-Reswap", "afterbegin");
       response.addHeader("HX-Retarget", "#alerts");
@@ -141,8 +97,7 @@ public class GroupsImageController {
     ModelAndView mv = new ModelAndView();
 
     mv.setViewName("group-details/page :: group-avatar");
-    mv.addObject("groupId", id);
-    mv.addObject("random", Math.random());
+    addImageFragmentObjects(mv, id);
 
     return mv;
   }
@@ -153,9 +108,26 @@ public class GroupsImageController {
     ModelAndView mv = new ModelAndView();
 
     mv.setViewName("group-details/page :: group-banner");
-    mv.addObject("groupId", id);
-    mv.addObject("random", Math.random());
+    addImageFragmentObjects(mv, id);
 
     return mv;
+  }
+
+  private void addImageFragmentObjects(ModelAndView mv, UUID groupId) {
+    var group = this.groupFacade.getWithMembers(groupId).orElseThrow();
+
+    boolean canEditImages = false;
+    if (SecurityContextHolder.getContext().getAuthentication()
+        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
+      UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
+      canEditImages =
+          group.groupMembers().stream()
+              .anyMatch(groupMember -> groupMember.user().id().equals(myUserId));
+    }
+
+    mv.addObject("groupId", groupId);
+    mv.addObject("canEditImages", canEditImages);
+    mv.addObject("groupAvatarVersion", this.imageFacade.getGroupAvatarVersion(groupId));
+    mv.addObject("groupBannerVersion", this.imageFacade.getGroupBannerVersion(groupId));
   }
 }

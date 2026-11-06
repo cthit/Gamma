@@ -52,9 +52,16 @@ public class ImageFacade extends Facade {
   }
 
   public ImageDetails getGroupBanner(UUID groupId) {
+    return getImageDetails(groupBannerUri(groupId));
+  }
+
+  public String getGroupBannerVersion(UUID groupId) {
+    return groupBannerUri(groupId).version();
+  }
+
+  private ImageUri groupBannerUri(UUID groupId) {
     Group group = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
-    return new ImageDetails(
-        this.imageService.getImage(group.bannerUri().orElse(ImageUri.defaultGroupBanner())));
+    return group.bannerUri().orElse(ImageUri.defaultGroupBanner());
   }
 
   public void removeGroupBanner(UUID groupId) {
@@ -81,9 +88,16 @@ public class ImageFacade extends Facade {
   }
 
   public ImageDetails getGroupAvatar(UUID groupId) {
+    return getImageDetails(groupAvatarUri(groupId));
+  }
+
+  public String getGroupAvatarVersion(UUID groupId) {
+    return groupAvatarUri(groupId).version();
+  }
+
+  private ImageUri groupAvatarUri(UUID groupId) {
     Group group = this.groupRepository.get(new GroupId(groupId)).orElseThrow();
-    return new ImageDetails(
-        this.imageService.getImage(group.avatarUri().orElse(ImageUri.defaultGroupAvatar())));
+    return group.avatarUri().orElse(ImageUri.defaultGroupAvatar());
   }
 
   public void removeGroupAvatar(UUID groupId) {
@@ -101,11 +115,17 @@ public class ImageFacade extends Facade {
   }
 
   public ImageDetails getAvatar(UUID userId) {
-    ImageUri avatarUri =
-        this.userAvatarRepository
-            .getAvatarUri(new UserId(userId))
-            .orElse(ImageUri.defaultUserAvatar());
-    return new ImageDetails(this.imageService.getImage(avatarUri));
+    return getImageDetails(userAvatarUri(userId));
+  }
+
+  public String getAvatarVersion(UUID userId) {
+    return userAvatarUri(userId).version();
+  }
+
+  private ImageUri userAvatarUri(UUID userId) {
+    return this.userAvatarRepository
+        .getAvatarUri(new UserId(userId))
+        .orElse(ImageUri.defaultUserAvatar());
   }
 
   public void removeUserAvatar(UUID userId) {
@@ -136,7 +156,7 @@ public class ImageFacade extends Facade {
 
     ImageUri image = randomAvatar != null ? randomAvatar : ImageUri.defaultGroupAvatar();
 
-    return new ImageDetails(this.imageService.getImage(image));
+    return getImageDetails(image);
   }
 
   public ImageDetails getSuperGroupBanner(UUID superGroupId) {
@@ -155,12 +175,16 @@ public class ImageFacade extends Facade {
 
     ImageUri image = randomBanner != null ? randomBanner : ImageUri.defaultGroupBanner();
 
-    return new ImageDetails(this.imageService.getImage(image));
+    return getImageDetails(image);
   }
 
-  public record ImageDetails(byte[] data, String imageType) {
-    public ImageDetails(ImageService.ImageDetails image) {
-      this(image.data(), image.type());
-    }
+  private ImageDetails getImageDetails(ImageUri imageUri) {
+    ImageService.ImageDetails image = this.imageService.getImage(imageUri);
+    return new ImageDetails(image.data(), image.type(), imageUri.version());
   }
+
+  /**
+   * @param version identifies the image, see {@link ImageUri#version()}
+   */
+  public record ImageDetails(byte[] data, String imageType, String version) {}
 }
