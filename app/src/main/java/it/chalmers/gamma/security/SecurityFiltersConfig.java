@@ -59,13 +59,23 @@ public class SecurityFiltersConfig {
             authorizationServerConfigurer,
             authorizationServer ->
                 authorizationServer
+                    .authorizationServerMetadataEndpoint(
+                        metadataEndpoint ->
+                            metadataEndpoint.authorizationServerMetadataCustomizer(
+                                AuthorizationServerMetadataCustomizer::customize))
                     .authorizationEndpoint(
                         authorizationEndpoint ->
                             authorizationEndpoint.consentPage("/oauth2/consent"))
                     .oidc(
                         oidcConfigurer ->
-                            oidcConfigurer.userInfoEndpoint(
-                                userInfo -> userInfo.userInfoMapper(userInfoMapper))))
+                            oidcConfigurer
+                                .providerConfigurationEndpoint(
+                                    providerConfigurationEndpoint ->
+                                        providerConfigurationEndpoint
+                                            .providerConfigurationCustomizer(
+                                                AuthorizationServerMetadataCustomizer::customize))
+                                .userInfoEndpoint(
+                                    userInfo -> userInfo.userInfoMapper(userInfoMapper))))
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
         .exceptionHandling(
             (exceptions) ->

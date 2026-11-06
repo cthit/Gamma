@@ -9,10 +9,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ClaimsMapper {
+
+  /** Non-standard claim with the user's cid. */
+  public static final String CID = "cid";
+
+  /**
+   * Every user claim that {@link #generateClaims} can return. They are advertised as {@code
+   * claims_supported} in the OpenID provider configuration.
+   */
+  public static final List<String> USER_CLAIMS =
+      List.of(
+          StandardClaimNames.NAME,
+          StandardClaimNames.GIVEN_NAME,
+          StandardClaimNames.FAMILY_NAME,
+          StandardClaimNames.NICKNAME,
+          StandardClaimNames.LOCALE,
+          StandardClaimNames.PICTURE,
+          CID,
+          StandardClaimNames.EMAIL);
 
   private final UserRepository userRepository;
   private final UserAvatarRepository userAvatarRepository;
@@ -39,18 +58,18 @@ public class ClaimsMapper {
       if (scope.equals(PROFILE_SCOPE)) {
         // https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
         claims.put(
-            "name",
+            StandardClaimNames.NAME,
             me.firstName().value() + " '" + me.nick().value() + "' " + me.lastName().value());
-        claims.put("given_name", me.firstName().value());
-        claims.put("family_name", me.lastName().value());
-        claims.put("nickname", me.nick().value());
-        claims.put("locale", me.language().toString().toLowerCase());
-        claims.put("picture", pictureUrl(me));
+        claims.put(StandardClaimNames.GIVEN_NAME, me.firstName().value());
+        claims.put(StandardClaimNames.FAMILY_NAME, me.lastName().value());
+        claims.put(StandardClaimNames.NICKNAME, me.nick().value());
+        claims.put(StandardClaimNames.LOCALE, me.language().toString().toLowerCase());
+        claims.put(StandardClaimNames.PICTURE, pictureUrl(me));
 
         // Non-standard claims.
-        claims.put("cid", me.cid().value());
+        claims.put(CID, me.cid().value());
       } else if (scope.equals(EMAIL_SCOPE)) {
-        claims.put("email", me.extended().email().value());
+        claims.put(StandardClaimNames.EMAIL, me.extended().email().value());
       }
     }
 
