@@ -10,4 +10,6 @@ public interface ClientApiKeyJpaRepository extends JpaRepository<ClientApiKeyEnt
   Optional<ClientApiKeyEntity> findByApiKey_Token(String apiKeyToken);
 
   ClientApiKeyEntity getByApiKey_Id(UUID apiKeyId);
+
+  Optional<ClientApiKeyEntity> findByApiKey_Id(UUID apiKeyId);
 }

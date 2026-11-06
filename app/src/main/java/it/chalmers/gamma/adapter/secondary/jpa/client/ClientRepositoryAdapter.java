@@ -147,8 +147,9 @@ public class ClientRepositoryAdapter implements ClientRepository {
 
   @Override
   public Optional<Client> getByApiKey(ApiKeyId apiKeyId) {
+    // The client api key entity is keyed by client uid, so look it up by the api key id column.
     return this.clientApiKeyJpaRepository
-        .findById(apiKeyId.value())
+        .findByApiKey_Id(apiKeyId.value())
         .map(ClientApiKeyEntity::getClient)
         .map(this.clientEntityConverter::toDomain);
   }
