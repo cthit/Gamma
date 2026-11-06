@@ -41,7 +41,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 @Configuration
@@ -59,13 +61,23 @@ public class SecurityFiltersConfig {
             authorizationServerConfigurer,
             authorizationServer ->
                 authorizationServer
+                    .authorizationServerMetadataEndpoint(
+                        metadataEndpoint ->
+                            metadataEndpoint.authorizationServerMetadataCustomizer(
+                                AuthorizationServerMetadataCustomizer::customize))
                     .authorizationEndpoint(
                         authorizationEndpoint ->
                             authorizationEndpoint.consentPage("/oauth2/consent"))
                     .oidc(
                         oidcConfigurer ->
-                            oidcConfigurer.userInfoEndpoint(
-                                userInfo -> userInfo.userInfoMapper(userInfoMapper))))
+                            oidcConfigurer
+                                .providerConfigurationEndpoint(
+                                    providerConfigurationEndpoint ->
+                                        providerConfigurationEndpoint
+                                            .providerConfigurationCustomizer(
+                                                AuthorizationServerMetadataCustomizer::customize))
+                                .userInfoEndpoint(
+                                    userInfo -> userInfo.userInfoMapper(userInfoMapper))))
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
         .exceptionHandling(
             (exceptions) ->
@@ -74,6 +86,42 @@ public class SecurityFiltersConfig {
                     new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
         .oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
 
+    return http.build();
+  }
+
+  /**
+   * Serves 404 for the authorization server endpoints that Gamma does not support and that are
+   * therefore left out of the discovery documents (see {@link
+   * AuthorizationServerMetadataCustomizer}). This chain is matched before the authorization server
+   * chain and lets the requests through to MVC, which has no handler for them.
+   *
+   * <p>Spring Authorization Server always registers token revocation, token introspection and
+   * RP-initiated logout, but Gamma's token storage cannot look tokens up the way they need, so they
+   * only ever fail. Pushed authorization requests and device authorization are not enabled, but
+   * their paths are still claimed by the authorization server chain, which redirects
+   * unauthenticated clients to the login page instead of saying the endpoint does not exist.
+   */
+  @Order(0)
+  @Bean
+  SecurityFilterChain unsupportedAuthorizationServerEndpointsSecurityFilterChain(
+      HttpSecurity http, AuthorizationServerSettings authorizationServerSettings) throws Exception {
+    http.securityMatcher(
+            new OrRequestMatcher(
+                PathPatternRequestMatcher.pathPattern(
+                    authorizationServerSettings.getTokenRevocationEndpoint()),
+                PathPatternRequestMatcher.pathPattern(
+                    authorizationServerSettings.getTokenIntrospectionEndpoint()),
+                PathPatternRequestMatcher.pathPattern(
+                    authorizationServerSettings.getOidcLogoutEndpoint()),
+                PathPatternRequestMatcher.pathPattern(
+                    authorizationServerSettings.getPushedAuthorizationRequestEndpoint()),
+                PathPatternRequestMatcher.pathPattern(
+                    authorizationServerSettings.getDeviceAuthorizationEndpoint())))
+        .authorizeHttpRequests(authorization -> authorization.anyRequest().permitAll())
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .csrf(csrf -> csrf.disable());
     return http.build();
   }
 
