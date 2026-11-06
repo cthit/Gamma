@@ -51,6 +51,7 @@ test("OpenID provider configuration only advertises what Gamma supports", async 
       "aud",
       "exp",
       "iat",
+      "jti",
       "auth_time",
       "nonce",
       "azp",

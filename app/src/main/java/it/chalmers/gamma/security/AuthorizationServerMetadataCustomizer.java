@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
+import org.springframework.security.oauth2.jwt.JwtClaimNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationServerMetadata;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationServerMetadataClaimNames;
 import org.springframework.security.oauth2.server.authorization.oidc.OidcProviderConfiguration;
@@ -35,6 +36,7 @@ final class AuthorizationServerMetadataCustomizer {
           IdTokenClaimNames.AUD,
           IdTokenClaimNames.EXP,
           IdTokenClaimNames.IAT,
+          JwtClaimNames.JTI,
           IdTokenClaimNames.AUTH_TIME,
           IdTokenClaimNames.NONCE,
           IdTokenClaimNames.AZP,
