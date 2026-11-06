@@ -12,6 +12,7 @@ public class BootstrapRunner {
   @Bean
   public CommandLineRunner runBootStrap(
       ApiKeyBootstrap apiKeyBootstrap,
+      ClientBootstrap clientBootstrap,
       EnsureAnAdminUserBootstrap ensureAnAdminUserBootstrap,
       GroupBootstrap groupBootstrap,
       MiscBootstrap miscBootstrap,
@@ -33,6 +34,8 @@ public class BootstrapRunner {
         groupBootstrap.createGroups();
 
         apiKeyBootstrap.ensureApiKeys();
+        // After the api keys, since a client api key would make ensureApiKeys skip
+        clientBootstrap.createClients();
 
         SecurityContextHolder.clearContext();
       } catch (Throwable throwable) {
