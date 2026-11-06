@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
 @Component
@@ -26,9 +27,13 @@ public class LocalImageService implements ImageService {
   private static final Logger LOGGER = LoggerFactory.getLogger(LocalImageService.class);
 
   private final String relativePath;
+  private final DataSize maxImageSize;
 
-  public LocalImageService(@Value("${application.files.path}") String relativePath) {
+  public LocalImageService(
+      @Value("${application.files.path}") String relativePath,
+      @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize) {
     this.relativePath = relativePath;
+    this.maxImageSize = maxImageSize;
   }
 
   public ImageUri saveImage(Image image) throws ImageCouldNotBeSavedException {
@@ -102,12 +107,9 @@ public class LocalImageService implements ImageService {
   }
 
   private void checkIfValidImageContent(MultipartFile file) throws ImageCouldNotBeSavedException {
-    long fileSizeInBytes = file.getSize();
-    long fileSizeInKB = fileSizeInBytes / 1024;
-    long fileSizeInMB = fileSizeInKB / 1024;
-
-    if (fileSizeInMB > 2) {
-      throw new ImageCouldNotBeSavedException("Image size exceeds the limit of 2MB");
+    if (file.getSize() > this.maxImageSize.toBytes()) {
+      throw new ImageCouldNotBeSavedException(
+          "Image size exceeds the limit of " + this.maxImageSize.toMegabytes() + "MB");
     }
 
     String contentType = file.getContentType();

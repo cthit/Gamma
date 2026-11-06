@@ -1,1 +1,1 @@
-<th:block th:replace="~{common/alert :: error('File is larger than 2MB')}"/>
+<th:block th:replace="~{common/alert :: error(|The file is too large. It must be at most ${imageUploadLimit.text()}.|)}"/>
