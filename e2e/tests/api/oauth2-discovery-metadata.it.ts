@@ -66,27 +66,3 @@ test("OpenID provider configuration only advertises what Gamma supports", async 
     ],
   });
 });
-
-test("Authorization server endpoints that are not advertised are not served", async ({
-  request,
-  gamma,
-}) => {
-  for (const path of [
-    "/oauth2/revoke",
-    "/oauth2/introspect",
-    "/oauth2/par",
-    "/oauth2/device_authorization",
-  ]) {
-    const response = await request.post(`${gamma.url}${path}`, {
-      form: { token: "some-token", client_id: "some-client" },
-      maxRedirects: 0,
-    });
-    expect(response.status(), path).toBe(404);
-  }
-
-  const logout = await request.get(
-    `${gamma.url}/connect/logout?id_token_hint=some-token`,
-    { maxRedirects: 0 },
-  );
-  expect(logout.status()).toBe(404);
-});

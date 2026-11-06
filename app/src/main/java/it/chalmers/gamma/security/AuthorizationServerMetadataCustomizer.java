@@ -21,9 +21,9 @@ import org.springframework.security.oauth2.server.authorization.oidc.OidcProvide
  * /.well-known/openid-configuration}) to what Gamma supports.
  *
  * <p>Spring Authorization Server advertises every feature it can provide. Gamma registers its
- * clients with a narrower set (see {@link GammaRegisteredClientRepository}), and its token storage
- * does not support token revocation, token introspection or RP-initiated logout, so those endpoints
- * are disabled and left out here.
+ * clients with a narrower set (see {@link GammaRegisteredClientRepository}). Gamma's token storage
+ * also cannot look tokens up the way token revocation, token introspection and RP-initiated logout
+ * need, so those endpoints only fail and are left out here.
  */
 final class AuthorizationServerMetadataCustomizer {
 
