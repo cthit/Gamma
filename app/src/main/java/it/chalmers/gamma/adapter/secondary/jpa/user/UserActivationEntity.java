@@ -17,7 +17,6 @@ public class UserActivationEntity extends ImmutableEntity<String> {
   @Column(name = "cid")
   private String cid;
 
-  /** SHA-256 hash of the activation token, the raw token is never stored. */
   @Column(name = "token")
   private String tokenHash;
 

@@ -27,11 +27,6 @@ public final class Tokens {
     return code.toString();
   }
 
-  /**
-   * Hashes a high-entropy, randomly generated token so that it can be stored at rest. A plain
-   * SHA-256 digest is used instead of a slow password hash since the tokens are long and random,
-   * which also keeps the hash deterministic so tokens can be looked up by it.
-   */
   public static String hash(String token) {
     try {
       MessageDigest digest = MessageDigest.getInstance("SHA-256");

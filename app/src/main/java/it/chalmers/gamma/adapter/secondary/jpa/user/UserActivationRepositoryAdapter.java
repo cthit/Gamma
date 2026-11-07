@@ -30,8 +30,6 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   public UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException {
     UserActivationToken token = UserActivationToken.generate();
 
-    // Only the hash of the token is stored, so an existing activation can't be resent. Replace it
-    // with a new one instead, which also restarts its validity period.
     this.userActivationJpaRepository.deleteById(cid.value());
 
     try {

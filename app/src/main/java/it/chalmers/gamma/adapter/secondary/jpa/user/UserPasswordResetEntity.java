@@ -17,7 +17,6 @@ public class UserPasswordResetEntity extends ImmutableEntity<UUID> {
   @Column(name = "user_id", columnDefinition = "uuid")
   protected UUID userId;
 
-  /** SHA-256 hash of the password reset token, the raw token is never stored. */
   @Column(name = "token")
   protected String tokenHash;
 
