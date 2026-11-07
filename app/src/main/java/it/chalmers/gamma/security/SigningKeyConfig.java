@@ -24,7 +24,7 @@ public class SigningKeyConfig {
   public SigningKeys signingKeys(
       OAuth2SigningKeyProperties properties,
       @Value("${application.production}") boolean production) {
-    SigningKeys keys = SigningKeys.load(properties, production);
+    SigningKeys keys = SigningKeys.load(properties);
 
     if (properties.hasSigningKey()) {
       LOGGER.info("Signing OAuth2 tokens with key {}", keys.signingKey().getKeyID());
@@ -33,6 +33,11 @@ public class SigningKeyConfig {
           "No OAuth2 signing key is configured, so a temporary key {} is used. Tokens signed with"
               + " it stop working when Gamma restarts. Set OAUTH2_SIGNING_KEY to keep them.",
           keys.signingKey().getKeyID());
+      if (production) {
+        LOGGER.warn(
+            "Running in production without OAUTH2_SIGNING_KEY is deprecated. Gamma v3 will refuse"
+                + " to start without it.");
+      }
     }
     for (RSAKey key : keys.verificationKeys()) {
       LOGGER.info("Publishing OAuth2 verification key {}", key.getKeyID());

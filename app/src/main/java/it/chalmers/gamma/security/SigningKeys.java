@@ -55,18 +55,11 @@ public record SigningKeys(RSAKey signingKey, List<RSAKey> verificationKeys) {
     }
   }
 
-  public static SigningKeys load(OAuth2SigningKeyProperties properties, boolean production) {
-    RSAKey signingKey;
-    if (properties.hasSigningKey()) {
-      signingKey = loadKey(properties.signingKey(), "OAUTH2_SIGNING_KEY", false);
-    } else if (production) {
-      throw new IllegalStateException(
-          "No OAuth2 signing key is configured. Set OAUTH2_SIGNING_KEY to an RSA private key in"
-              + " PEM format, or to the location of one, such as"
-              + " file:/run/secrets/gamma-signing-key.pem");
-    } else {
-      signingKey = generateKey();
-    }
+  public static SigningKeys load(OAuth2SigningKeyProperties properties) {
+    RSAKey signingKey =
+        properties.hasSigningKey()
+            ? loadKey(properties.signingKey(), "OAUTH2_SIGNING_KEY", false)
+            : generateKey();
 
     List<RSAKey> verificationKeys = new ArrayList<>();
     for (String key : properties.verificationKeys()) {

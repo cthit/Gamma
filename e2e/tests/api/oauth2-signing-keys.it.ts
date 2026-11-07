@@ -1,12 +1,13 @@
+import { execFile } from "node:child_process";
 import { writeFile } from "node:fs/promises";
-import { GenericContainer, Wait } from "testcontainers";
+import { promisify } from "node:util";
 import type { APIRequestContext } from "@playwright/test";
 import {
   expect,
   testWithEnvironment as test,
 } from "../../helpers/test-fixtures";
 import { startMockGamma } from "../../helpers/gamma";
-import { stopGammaInstance } from "../../gamma-setup";
+import { startGammaInstance, stopGammaInstance } from "../../gamma-setup";
 import { login } from "../../helpers/auth";
 import {
   authorizeClientWithPkce,
@@ -18,24 +19,33 @@ import {
 import { generateSigningKey, publishedJwk } from "../../helpers/signing-keys";
 import { uniqueLabel } from "../../helpers/strings";
 
+const execFileAsync = promisify(execFile);
+
 async function publishedKeys(request: APIRequestContext, baseUrl: string) {
   const response = await request.get(`${baseUrl}/oauth2/jwks`);
   expect(response.status()).toBe(200);
   return ((await response.json()) as { keys: unknown[] }).keys;
 }
 
-test("Gamma does not start in production without an OAuth2 signing key", async ({
+test("Gamma starts in production without an OAuth2 signing key and warns that v3 requires one", async ({
   env,
+  request,
 }) => {
-  const container = await new GenericContainer(
-    process.env.GAMMA_TEST_IMAGE ?? "gamma-app:test",
-  )
-    .withNetwork(env.network)
-    .withEnvironment({ PRODUCTION: "true", OAUTH2_SIGNING_KEY: "" })
-    .withWaitStrategy(Wait.forLogMessage("No OAuth2 signing key is configured"))
-    .withStartupTimeout(120000)
-    .start();
-  await container.stop();
+  const gamma = await startGammaInstance(env, {
+    env: { OAUTH2_SIGNING_KEY: "" },
+  });
+  try {
+    expect(await publishedKeys(request, gamma.url)).toHaveLength(1);
+    const { stdout } = await execFileAsync("docker", [
+      "logs",
+      gamma.container.getId(),
+    ]);
+    expect(stdout).toContain(
+      "Running in production without OAUTH2_SIGNING_KEY is deprecated. Gamma v3 will refuse to start without it.",
+    );
+  } finally {
+    await stopGammaInstance(gamma);
+  }
 });
 
 test("rotating the OAuth2 signing key keeps tokens signed by the previous key valid", async ({

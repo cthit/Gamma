@@ -132,7 +132,7 @@ All configuration is environment-variable-driven via `application.yml`.
 | `REDIS_PORT` | `6379` | Redis port |
 | `REDIS_PASSWORD` | *(empty)* | Redis password |
 | `PRODUCTION` | `true` | Production mode (disables Thymeleaf caching, dev services, etc.) |
-| `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Required when `PRODUCTION=true`, see [OAuth2 signing keys](#oauth2-signing-keys) |
+| `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Will be required in production from v3, see [OAuth2 signing keys](#oauth2-signing-keys) |
 | `OAUTH2_VERIFICATION_KEYS` | *(empty)* | Comma separated keys that are still published so the tokens they signed can be verified, but that no longer sign tokens |
 | `DEV_SERVICES_ENABLED` | `false` | Auto-start PostgreSQL + Redis via Testcontainers |
 | `IS_MOCKING` | `false` | Load mock data on startup |
@@ -148,7 +148,7 @@ All configuration is environment-variable-driven via `application.yml`.
 
 ## OAuth2 signing keys
 
-Gamma signs ID tokens and access tokens with the RSA key in `OAUTH2_SIGNING_KEY` and publishes its public key at `/oauth2/jwks`. Gamma refuses to start in production without one. Outside production, a temporary key is generated on every start, so tokens stop working when Gamma restarts.
+Gamma signs ID tokens and access tokens with the RSA key in `OAUTH2_SIGNING_KEY` and publishes its public key at `/oauth2/jwks`. Without one, a temporary key is generated on every start, so tokens stop working when Gamma restarts and instances can't verify each other's tokens. Running in production without `OAUTH2_SIGNING_KEY` is deprecated, and Gamma v3 will refuse to start without it ([#1004](https://github.com/cthit/Gamma/issues/1004)).
 
 Both settings take PEM content directly or the location of a PEM file, such as `/run/secrets/gamma-signing-key.pem` or `file:/run/secrets/gamma-signing-key.pem`. Each key gets its [RFC 7638](https://www.rfc-editor.org/rfc/rfc7638) thumbprint as key id (`kid`), so every instance that uses the same key publishes the same key id. Keys must be RSA keys of at least 2048 bits.
 
