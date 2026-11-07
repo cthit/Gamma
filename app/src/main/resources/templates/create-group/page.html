@@ -33,7 +33,9 @@
                     </label>
                     <label class="field member-row__field">
                         <span class="field__label">Unofficial post name</span>
-                        <input class="input unofficialPostName" type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}"/>
+                        <input class="input unofficialPostName" type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}"
+                               th:attr="aria-invalid=${#fields.hasErrors('members[__${memberStat.index}__].unofficialPostName') ? 'true' : null},
+                                       aria-describedby=${#fields.hasErrors('members[__${memberStat.index}__].unofficialPostName') ? 'members' + memberStat.index + '-unofficialPostName-error' : null}"/>
                     </label>
                     <button class="button button--secondary button--small member-row__remove"
                             type="button"
@@ -46,6 +48,11 @@
                        th:id="|members${memberStat.index}-error|"
                        th:if="${#fields.hasErrors('members[__${memberStat.index}__]')}"
                        th:errors="*{members[__${memberStat.index}__]}">
+                </small>
+                <small class="field__error member-row__error"
+                       th:id="|members${memberStat.index}-unofficialPostName-error|"
+                       th:if="${#fields.hasErrors('members[__${memberStat.index}__].unofficialPostName')}"
+                       th:errors="*{members[__${memberStat.index}__].unofficialPostName}">
                 </small>
             </div>
             <button class="button button--secondary" type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">

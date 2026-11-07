@@ -6,6 +6,79 @@ import tseslint from "typescript-eslint";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Page and Frame still have methods that take a selector string, like
+// page.click("#save") or page.fill(selector, value). Locators have methods of
+// the same names, so tell them apart by type rather than by the arguments.
+const SELECTOR_METHODS = new Set([
+  "check",
+  "click",
+  "dblclick",
+  "dispatchEvent",
+  "dragAndDrop",
+  "fill",
+  "focus",
+  "getAttribute",
+  "hover",
+  "innerHTML",
+  "innerText",
+  "inputValue",
+  "isChecked",
+  "isDisabled",
+  "isEditable",
+  "isEnabled",
+  "isHidden",
+  "isVisible",
+  "press",
+  "selectOption",
+  "setChecked",
+  "setInputFiles",
+  "tap",
+  "textContent",
+  "type",
+  "uncheck",
+]);
+
+const accessibleLocators = {
+  rules: {
+    "no-page-selector-methods": {
+      meta: {
+        type: "problem",
+        schema: [],
+        messages: {
+          selector:
+            "Don't pass a selector to page.{{name}}(). Find the element with getByRole, getByLabel or getByText and call {{name}}() on that locator.",
+        },
+      },
+      create(context) {
+        const services = context.sourceCode.parserServices;
+        const checker = services.program.getTypeChecker();
+        return {
+          "CallExpression > MemberExpression.callee"(node) {
+            if (
+              node.computed ||
+              node.property.type !== "Identifier" ||
+              !SELECTOR_METHODS.has(node.property.name)
+            ) {
+              return;
+            }
+            const type = checker.getTypeAtLocation(
+              services.esTreeNodeToTSNodeMap.get(node.object),
+            );
+            const typeName = (type.aliasSymbol ?? type.getSymbol())?.getName();
+            if (typeName === "Page" || typeName === "Frame") {
+              context.report({
+                node,
+                messageId: "selector",
+                data: { name: node.property.name },
+              });
+            }
+          },
+        };
+      },
+    },
+  },
+};
+
 export default defineConfig(
   {
     ignores: [
@@ -36,7 +109,9 @@ export default defineConfig(
     // accessible name (getByRole), label (getByLabel) or text (getByText).
     // If a test can't find something that way, fix the markup, not the test.
     files: ["**/*.ts"],
+    plugins: { "accessible-locators": accessibleLocators },
     rules: {
+      "accessible-locators/no-page-selector-methods": "error",
       "no-restricted-syntax": [
         "error",
         {
@@ -44,20 +119,6 @@ export default defineConfig(
             "CallExpression[callee.property.name=/^(locator|frameLocator|getByPlaceholder|getByTestId|waitForSelector|\\$|\\$\\$|\\$eval|\\$\\$eval)$/]",
           message:
             "Use accessible locators only: getByRole (preferred), getByLabel or getByText. CSS/XPath selectors, placeholders and test ids are not allowed.",
-        },
-        {
-          // page.click("selector"), page.isChecked("selector"), ...
-          selector:
-            "CallExpression[callee.property.name=/^(click|dblclick|tap|hover|focus|check|uncheck|textContent|innerText|innerHTML|inputValue|isChecked|isVisible|isHidden|isEnabled|isDisabled|isEditable)$/][arguments.0.type=/^(Literal|TemplateLiteral)$/]",
-          message:
-            "Don't pass a selector string to page methods. Find the element with getByRole, getByLabel or getByText and call the method on that locator.",
-        },
-        {
-          // page.fill("selector", value), page.selectOption("selector", value), ...
-          selector:
-            "CallExpression[callee.property.name=/^(fill|type|press|pressSequentially|selectOption|setChecked|setInputFiles|getAttribute)$/][arguments.0.type=/^(Literal|TemplateLiteral)$/][arguments.1][arguments.1.type!='ObjectExpression']",
-          message:
-            "Don't pass a selector string to page methods. Find the element with getByRole, getByLabel or getByText and call the method on that locator.",
         },
         {
           selector:

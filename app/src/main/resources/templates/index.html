@@ -29,7 +29,7 @@
 </head>
 <body class="app"
       hx-boost:inherited="true"
-      _="on htmx:after:swap remove .app--nav-open from document.body"
+      _="on htmx:after:swap remove .app--nav-open from document.body then set @aria-expanded of <.app-header__menu/> to 'false'"
       data-loading-delay="500">
     <th:block th:replace="~{__${page}__}"></th:block>
 </body>
