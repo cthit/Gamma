@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserPasswordResetJpaRepository
     extends JpaRepository<UserPasswordResetEntity, UUID> {
-  Optional<UserPasswordResetEntity> findByToken(String token);
+  Optional<UserPasswordResetEntity> findByTokenHash(String tokenHash);
 
-  void deleteByToken(String token);
+  void deleteByTokenHash(String tokenHash);
 }
