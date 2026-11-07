@@ -3,6 +3,7 @@ import {
   startGammaInstance,
   type GammaEnvironment,
   type GammaInstance,
+  type GammaStartOptions,
 } from "../gamma-setup";
 
 export async function startDefaultGamma(
@@ -13,14 +14,17 @@ export async function startDefaultGamma(
 
 export async function startMockGamma(
   env: GammaEnvironment,
+  options: GammaStartOptions = {},
 ): Promise<GammaInstance> {
   return startGammaInstance(env, {
+    waitForBootstrapApiKeys: true,
+    ...options,
     env: {
       PRODUCTION: "true",
       IS_MOCKING: "true",
       MOCK_DATA_RESOURCE: "file:/tmp/e2e-mock.json",
+      ...options.env,
     },
-    waitForBootstrapApiKeys: true,
     filesToCopy: [
       {
         source: path.resolve(
@@ -32,6 +36,7 @@ export async function startMockGamma(
         ),
         target: "/tmp/e2e-mock.json",
       },
+      ...(options.filesToCopy ?? []),
     ],
   });
 }
