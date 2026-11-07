@@ -27,10 +27,12 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException {
     UserActivationToken token = UserActivationToken.generate();
 
     this.userActivationJpaRepository.deleteById(cid.value());
+    this.userActivationJpaRepository.flush();
 
     try {
       this.userActivationJpaRepository.saveAndFlush(new UserActivationEntity(cid, token));
