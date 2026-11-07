@@ -33,7 +33,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     UserPasswordResetEntity userPasswordResetEntity = new UserPasswordResetEntity();
 
     userPasswordResetEntity.userId = userEntity.id;
-    userPasswordResetEntity.token = token.value();
+    userPasswordResetEntity.tokenHash = token.hashed();
 
     this.userPasswordResetJpaRepository.save(userPasswordResetEntity);
 
@@ -77,7 +77,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   @Override
   public boolean isTokenValid(PasswordResetToken token) {
     return this.userPasswordResetJpaRepository
-        .findByToken(token.value())
+        .findByTokenHash(token.hashed())
         .map(this::isStillValid)
         .orElse(false);
   }
@@ -86,7 +86,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   @Transactional
   public UserId useToken(PasswordResetToken token) {
     Optional<UserPasswordResetEntity> maybeReset =
-        this.userPasswordResetJpaRepository.findByToken(token.value());
+        this.userPasswordResetJpaRepository.findByTokenHash(token.hashed());
 
     if (maybeReset.isEmpty()) {
       throw new TokenNotFoundRuntimeException();
@@ -96,7 +96,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
       throw new TokenNotFoundRuntimeException();
     }
 
-    this.userPasswordResetJpaRepository.deleteByToken(token.value());
+    this.userPasswordResetJpaRepository.deleteByTokenHash(token.hashed());
 
     return new UserId(maybeReset.get().userId);
   }

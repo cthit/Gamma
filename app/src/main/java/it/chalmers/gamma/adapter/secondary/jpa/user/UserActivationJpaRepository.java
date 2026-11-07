@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserActivationJpaRepository extends JpaRepository<UserActivationEntity, String> {
 
-  Optional<UserActivationEntity> findByToken(String token);
+  Optional<UserActivationEntity> findByTokenHash(String tokenHash);
 }

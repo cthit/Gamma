@@ -17,19 +17,19 @@ public class UserActivationEntity extends ImmutableEntity<String> {
   @Column(name = "cid")
   private String cid;
 
+  /** SHA-256 hash of the activation token, the raw token is never stored. */
   @Column(name = "token")
-  private String token;
+  private String tokenHash;
 
   protected UserActivationEntity() {}
 
   protected UserActivationEntity(Cid cid, UserActivationToken token) {
     this.cid = cid.getValue();
-    this.token = token.value();
+    this.tokenHash = token.hashed();
   }
 
   public UserActivation toDomain() {
-    return new UserActivation(
-        Cid.valueOf(this.cid), new UserActivationToken(this.token), this.getCreatedAt());
+    return new UserActivation(Cid.valueOf(this.cid), this.getCreatedAt());
   }
 
   @Override

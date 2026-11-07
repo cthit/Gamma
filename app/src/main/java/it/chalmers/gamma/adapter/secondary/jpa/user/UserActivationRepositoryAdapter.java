@@ -30,13 +30,12 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   public UserActivationToken createActivationToken(Cid cid) throws CidNotAllowedException {
     UserActivationToken token = UserActivationToken.generate();
 
-    UserActivationEntity entity =
-        this.userActivationJpaRepository
-            .findById(cid.value())
-            .orElse(new UserActivationEntity(cid, token));
+    // Only the hash of the token is stored, so an existing activation can't be resent. Replace it
+    // with a new one instead, which also restarts its validity period.
+    this.userActivationJpaRepository.deleteById(cid.value());
 
     try {
-      this.userActivationJpaRepository.saveAndFlush(entity);
+      this.userActivationJpaRepository.saveAndFlush(new UserActivationEntity(cid, token));
       return token;
     } catch (DataIntegrityViolationException e) {
       PersistenceErrorState state = PersistenceErrorHelper.getState(e);
@@ -59,7 +58,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   @Override
   public boolean isTokenValid(UserActivationToken token) {
     return this.userActivationJpaRepository
-        .findByToken(token.value())
+        .findByTokenHash(token.hashed())
         .map(this::isStillValid)
         .orElse(false);
   }
@@ -68,7 +67,7 @@ public class UserActivationRepositoryAdapter implements UserActivationRepository
   @Transactional
   public Cid useToken(UserActivationToken token) {
     Optional<UserActivationEntity> maybeActivation =
-        this.userActivationJpaRepository.findByToken(token.value());
+        this.userActivationJpaRepository.findByTokenHash(token.hashed());
     if (maybeActivation.isEmpty()) {
       throw new TokenNotActivatedRuntimeException();
     }

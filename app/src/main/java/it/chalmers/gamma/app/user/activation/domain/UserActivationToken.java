@@ -14,4 +14,13 @@ public record UserActivationToken(String value) {
   public static UserActivationToken generate() {
     return new UserActivationToken(Tokens.generate(72, UPPERCASE, NUMBERS, LOWERCASE));
   }
+
+  public String hashed() {
+    return Tokens.hash(this.value);
+  }
+
+  @Override
+  public String toString() {
+    return "<value redacted>";
+  }
 }

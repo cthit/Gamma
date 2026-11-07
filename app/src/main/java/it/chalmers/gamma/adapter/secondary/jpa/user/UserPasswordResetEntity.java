@@ -3,7 +3,6 @@ package it.chalmers.gamma.adapter.secondary.jpa.user;
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordReset;
-import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -18,8 +17,9 @@ public class UserPasswordResetEntity extends ImmutableEntity<UUID> {
   @Column(name = "user_id", columnDefinition = "uuid")
   protected UUID userId;
 
+  /** SHA-256 hash of the password reset token, the raw token is never stored. */
   @Column(name = "token")
-  protected String token;
+  protected String tokenHash;
 
   protected UserPasswordResetEntity() {}
 
@@ -29,11 +29,6 @@ public class UserPasswordResetEntity extends ImmutableEntity<UUID> {
   }
 
   public PasswordReset toDomain() {
-    return new PasswordReset(
-        new UserId(this.userId), new PasswordResetToken(this.token), this.getCreatedAt());
-  }
-
-  public String getToken() {
-    return this.token;
+    return new PasswordReset(new UserId(this.userId), this.getCreatedAt());
   }
 }
