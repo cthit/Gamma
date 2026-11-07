@@ -1,54 +1,54 @@
-<link rel="stylesheet" th:href="@{/css/login.css}" />
-<img th:src="@{/img/bg.webp}" alt="Background image" _="on load transition *opacity to 1.0 over 5 seconds"/>
-<main hx-boost:inherited="false">
-    <article>
-        <header>
-            <h1>
-                Gamma
-            </h1>
+<img class="login-backdrop" th:src="@{/img/bg.webp}" alt="" _="on load add .login-backdrop--loaded to me"/>
+<main id="main" class="app__main login" hx-boost:inherited="false">
+    <article class="login__card">
+        <header class="login__header">
+            <img class="login__logo" src="/img/itlogo.svg" alt="" width="56" height="56"/>
+            <h1 class="login__title">Gamma</h1>
         </header>
         <p th:if="${authorizing}">
             Before deciding on authorizing the client, please verify your identity
         </p>
-        <form th:action="@{/login}" th:method="post">
-            <input type="text" name="username" placeholder="Cid / Email">
-            <input type="password" name="password" placeholder="Password">
-            <button class="outline contrast" data-loading-disable>Login</button>
+        <form class="login__form" th:action="@{/login}" th:method="post">
+            <div class="field">
+                <label class="field__label" for="username">Cid or email</label>
+                <input class="input" id="username" type="text" name="username" autocomplete="username">
+            </div>
+            <div class="field">
+                <label class="field__label" for="password">Password</label>
+                <input class="input" id="password" type="password" name="password" autocomplete="current-password">
+            </div>
+            <button class="button button--block" data-loading-disable>Login</button>
         </form>
-        <footer>
-            <p id="links">
-                <p th:if="${error}">
+        <footer class="login__footer">
+            <div class="login__messages" role="status">
+                <p class="callout callout--danger" th:if="${error}">
                     Invalid credentials or locked account due to system migration. Password reset may be needed.
                 </p>
 
-                <p th:if="${logout}">
+                <p class="callout" th:if="${logout}">
                     You have been logged out.
                 </p>
 
-                <p th:if="${throttle}">
+                <p class="callout callout--danger" th:if="${throttle}">
                     You have been throttled for attempting to sign in too many times...
                 </p>
 
-                <p th:if="${deleted}">
+                <p class="callout" th:if="${deleted}">
                     Your account has been deleted.
                 </p>
 
-                <p th:if="${accountCreated}">
+                <p class="callout callout--success" th:if="${accountCreated}">
                     Your account has been created.
                 </p>
 
-                <p th:if="${passwordReset}">
+                <p class="callout callout--success" th:if="${passwordReset}">
                     Your password was reset.
                 </p>
-
-                <a href="/activate-cid">
-                    Register
-                </a>
-
-                <a href="/forgot-password">
-                    Forgot password
-                </a>
             </div>
+            <nav class="login__links" aria-label="Account">
+                <a href="/activate-cid">Register</a>
+                <a href="/forgot-password">Forgot password</a>
+            </nav>
         </footer>
     </article>
 </main>

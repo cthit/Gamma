@@ -78,7 +78,8 @@ public class SuperGroupTypesController {
     List<SuperGroupFacade.SuperGroupDTO> usages;
     try {
       usages = this.superGroupFacade.getAllSuperGroupsByType(type);
-    } catch (SuperGroupRepository.TypeNotFoundRuntimeException e) {
+    } catch (SuperGroupRepository.TypeNotFoundRuntimeException | IllegalArgumentException e) {
+      // IllegalArgumentException: the path is not a valid type name, so no such type exists.
       return createSuperGroupTypeNotFound(type, htmxRequest);
     }
 

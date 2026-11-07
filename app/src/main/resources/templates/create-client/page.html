@@ -1,8 +1,8 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            Create client
+            <h2>Create client</h2>
         </header>
         <form id="create-clients"
               th:object="${form}"
@@ -13,18 +13,21 @@
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
             <div th:replace="~{common/input :: textInput2(field='redirectUrl', label='Redirect url')}"></div>
-            <label>
-                Generate api key
-                <input type="checkbox" th:field="*{generateApiKey}"/>
+            <label class="choice">
+                <input class="checkbox" type="checkbox" th:field="*{generateApiKey}"/>
+                <span class="choice__label">Generate api key</span>
             </label>
-            <label>
-                Include email scope
-                <input type="checkbox" th:field="*{emailScope}"/>
+            <label class="choice">
+                <input class="checkbox" type="checkbox" th:field="*{emailScope}"/>
+                <span class="choice__label">Include email scope</span>
             </label>
-            <button class="outline contrast" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin" data-loading-disable>Add restriction</button>
+            <button class="button button--secondary" data-hx-get="/clients/create/new-restriction" data-hx-target="this" data-hx-swap="beforebegin" data-loading-disable>
+                <span class="icon icon--plus" aria-hidden="true"></span>
+                Add restriction
+            </button>
         </form>
         <footer>
-            <button class="outline" form="create-clients" data-loading-disable>Create</button>
+            <button class="button" form="create-clients" data-loading-disable>Create</button>
         </footer>
     </article>
 </main>

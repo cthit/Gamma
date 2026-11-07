@@ -1,13 +1,13 @@
 <th:block th:fragment="success(text)">
     <div data-hx-swap-oob="afterbegin:#alerts">
         <div role="alert"
-             style="opacity: 0"
-             class="success"
-             th:text="${text}"
+             class="toast toast--success"
              _="on load
                 transition *opacity to 1
                 then wait 7s
                 then transition *opacity to 0 then remove me">
+            <span class="toast__icon icon icon--check" aria-hidden="true"></span>
+            <span class="toast__text" th:text="${text}"></span>
         </div>
     </div>
 </th:block>
@@ -15,13 +15,13 @@
 <th:block th:fragment="error(text)">
     <div data-hx-swap-oob="afterbegin:#alerts">
         <div role="alert"
-             style="opacity: 0"
-             class="error"
-             th:text="${text}"
+             class="toast toast--error"
              _="on load
                 transition *opacity to 1
                 then wait 7s
                 then transition *opacity to 0 then remove me">
+            <span class="toast__icon icon icon--warning" aria-hidden="true"></span>
+            <span class="toast__text" th:text="${text}"></span>
         </div>
     </div>
 </th:block>

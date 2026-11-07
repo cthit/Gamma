@@ -11,17 +11,26 @@ test("given a signed in user when creating a personal oauth client then client d
   const prettyName = uniqueLabel("E2E My Client");
 
   await page.goto(`${gamma.url}/my-clients/create`, { timeout: 30000 });
-  await expect(page.locator("article > header")).toHaveText(
-    "Create new client",
-    {
-      timeout: 10000,
-    },
-  );
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: "Create new client",
+      exact: true,
+    }),
+  ).toBeVisible({
+    timeout: 10000,
+  });
 
-  await page.fill('input[name="prettyName"]', prettyName);
-  await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
-  await page.fill('input[name="enDescription"]', "E2E english description");
-  await page.fill('input[name="redirectUrl"]', "https://example.org/callback");
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill("E2E svensk beskrivning");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("E2E english description");
+  await page
+    .getByLabel("Redirect url", { exact: true })
+    .fill("https://example.org/callback");
 
   await Promise.all([
     page.waitForURL("**/clients/*", { timeout: 15000 }),

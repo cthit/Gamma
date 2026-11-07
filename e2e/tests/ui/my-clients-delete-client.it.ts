@@ -11,10 +11,16 @@ test("given a personal client when deleting it then it is removed from my client
   const prettyName = uniqueLabel("E2E My Client Del");
 
   await page.goto(`${gamma.url}/my-clients/create`, { timeout: 30000 });
-  await page.fill('input[name="prettyName"]', prettyName);
-  await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
-  await page.fill('input[name="enDescription"]', "E2E english description");
-  await page.fill('input[name="redirectUrl"]', "https://example.org/callback");
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill("E2E svensk beskrivning");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("E2E english description");
+  await page
+    .getByLabel("Redirect url", { exact: true })
+    .fill("https://example.org/callback");
 
   await Promise.all([
     page.waitForURL("**/clients/*", { timeout: 15000 }),

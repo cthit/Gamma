@@ -1,17 +1,19 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            Deleting your account
+            <h2>Deleting your account</h2>
         </header>
         <p>
             Deleting your account can't be reversed.
         </p>
         <form th:object="${form}" id="delete-account" th:action="@{/delete-your-account}" th:method="delete">
-            <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Confirm password')}"></div>
+            <th:block th:with="passwordPurpose='current-password'">
+                <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Confirm password')}"></div>
+            </th:block>
         </form>
         <footer>
-            <button form="delete-account">
+            <button class="button button--danger" form="delete-account">
                 Delete the account
             </button>
         </footer>

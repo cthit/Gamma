@@ -2,6 +2,7 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { createUserClientViaUi } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { articleByHeading, rowWithText } from "../../helpers/a11y";
 
 const jhalpertUserId = "bc605869-9a4d-46ec-8a29-d00819d4c195";
 // '#', '/' and '=' are valid in an email local part but must be
@@ -36,7 +37,7 @@ test("given a user-owned client when admin opens user clients page then the clie
 
   await page.goto(`${gamma.url}/users/${jhalpertUserId}`, { timeout: 30000 });
   await page.getByRole("button", { name: "Edit user" }).click();
-  await page.fill('input[name="email"]', ownerEmail);
+  await page.getByLabel("Email", { exact: true }).fill(ownerEmail);
   await Promise.all([
     page.waitForResponse(
       (response) =>
@@ -51,12 +52,12 @@ test("given a user-owned client when admin opens user clients page then the clie
 
   await page.goto(`${gamma.url}/user-clients`, { timeout: 30000 });
 
-  const row = page.locator("tr", { hasText: prettyName }).first();
+  const row = rowWithText(page, prettyName).first();
   await expect(row).toBeVisible({ timeout: 10000 });
   await expect(row.getByRole("link", { name: /Jim .*Halpert/ })).toBeVisible({
     timeout: 10000,
   });
-  await expect(row.locator("code")).toHaveText(clientId);
+  await expect(row.getByRole("code")).toHaveText(clientId);
 
   const rowEmailLink = row.getByRole("link", { name: ownerEmail });
   await expect(rowEmailLink).toBeVisible();
@@ -67,8 +68,14 @@ test("given a user-owned client when admin opens user clients page then the clie
     row.getByRole("link", { name: "Details" }).click(),
   ]);
 
-  const ownedBy = page.locator("ul.details li", { hasText: "Owned by:" });
-  await expect(ownedBy).toBeVisible({ timeout: 10000 });
+  const clientDetails = articleByHeading(page, "Client details");
+  await expect(
+    clientDetails.getByRole("term").filter({ hasText: "Owned by" }),
+  ).toBeVisible({ timeout: 10000 });
+  const ownedBy = clientDetails
+    .getByRole("definition")
+    .filter({ has: page.getByRole("link", { name: "Big Tuna" }) });
+  await expect(ownedBy).toBeVisible();
   await expect(ownedBy.getByRole("link", { name: "Big Tuna" })).toBeVisible();
   const ownerEmailLink = ownedBy.getByRole("link", { name: ownerEmail });
   await expect(ownerEmailLink).toBeVisible();

@@ -23,7 +23,7 @@ test("given a group banner when a new one is uploaded then its url gets a new ve
   );
 
   await page.goto(`${gamma.url}/groups/${digitGroupId}`, { timeout: 30000 });
-  const banner = page.locator('img[alt="Group banner"]');
+  const banner = page.getByRole("img", { name: "Group banner", exact: true });
   await expect(banner).toBeVisible({ timeout: 10000 });
 
   const versionedUrl = new RegExp(
@@ -54,7 +54,7 @@ test("given a group banner when a new one is uploaded then its url gets a new ve
   });
   expect(revalidated.status()).toBe(304);
 
-  await page.locator("#edit-group-banner input[type=file]").setInputFiles({
+  await page.getByLabel("Choose a new banner", { exact: true }).setInputFiles({
     name: "banner.png",
     mimeType: "image/png",
     buffer: onePixelPng,
@@ -100,7 +100,9 @@ test("given a signed in user when viewing their avatar then its url is versioned
     "admin",
   );
 
-  await expect(page.locator('img[alt="Me avatar"]')).toHaveAttribute(
+  await expect(
+    page.getByRole("img", { name: "Me avatar", exact: true }),
+  ).toHaveAttribute(
     "src",
     /^\/images\/user\/avatar\/[0-9a-f-]{36}\?v=[0-9a-f]{16}$/,
   );

@@ -156,6 +156,7 @@ public class SuperGroupsController {
     }
 
     mv.addObject("superGroup", superGroup.get());
+    mv.addObject("usages", this.groupFacade.getAllBySuperGroup(superGroup.get().id()));
 
     return mv;
   }

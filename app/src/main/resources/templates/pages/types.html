@@ -1,15 +1,18 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article th:if="${isAdmin}">
         <header>
-            Create new super group type
+            <h2>Create new super group type</h2>
         </header>
         <form th:object="${form}" th:action="@{/types}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='type', label='Type')}"></div>
-            <button data-loading-disable>Save</button>
+            <button class="button" data-loading-disable>Save</button>
         </form>
     </article>
-    <table>
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Types</h2>
+    </div>
+    <table class="table" aria-labelledby="page-title">
         <thead>
         <tr>
             <th>
@@ -24,7 +27,7 @@
         <tr th:each="type : ${types}">
             <td th:text="${type}"></td>
             <td>
-                <a th:href="${'/types/' + type}">Details</a>
+                <a th:href="${'/types/' + type}">Details<span class="visually-hidden" th:text="| ${type}|"></span></a>
             </td>
         </tr>
         </tbody>

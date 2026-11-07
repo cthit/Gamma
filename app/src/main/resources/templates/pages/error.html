@@ -1,13 +1,13 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
-        <header th:text="|${statusCode ?: 500} - ${statusReason ?: 'Internal Server Error'}|">
-            500 - Internal Server Error
+        <header>
+            <h2 th:text="|${statusCode ?: 500} - ${statusReason ?: 'Internal Server Error'}|">500 - Internal Server Error</h2>
         </header>
         <p>Something went wrong...</p>
         <th:block th:if="${exceptionMessage != null}">
-            <details>
-                <summary>Error details</summary>
+            <details class="disclosure">
+                <summary class="disclosure__summary">Error details</summary>
                 <p th:text="${exceptionMessage}"></p>
                 <pre th:text="${exceptionStackTrace}"></pre>
             </details>
@@ -16,9 +16,7 @@
             <p>No additional error information is available.</p>
         </th:block>
         <footer>
-            <a href="/">
-                <button type="button">Go home</button>
-            </a>
+            <a class="button" href="/">Go home</a>
         </footer>
     </article>
 </main>

@@ -1,24 +1,26 @@
 <div class="member-row">
-    <hr>
-    <label>
-        User
-        <select class="userId">
+    <label class="field member-row__field member-row__field--user">
+        <span class="field__label">User</span>
+        <select class="input input--select userId">
             <option th:each="userKey : ${userKeys}" th:value="${userKey}" th:text="${users.get(userKey)}"></option>
         </select>
     </label>
-    <div>
-        <label>
-            Post
-            <select class="postId">
+    <div class="member-row__fields">
+        <label class="field member-row__field">
+            <span class="field__label">Post</span>
+            <select class="input input--select postId">
                 <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
             </select>
         </label>
-        <label>
-            Unofficial post name
-            <input class="unofficialPostName" type="text" value=""/>
+        <label class="field member-row__field">
+            <span class="field__label">Unofficial post name</span>
+            <input class="input unofficialPostName" type="text" value=""/>
         </label>
-        <button _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')"
-                type="button" class="outline contrast">Delete
+        <button class="button button--secondary button--small member-row__remove"
+                type="button"
+                aria-label="Delete new member"
+                _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
+            Delete
         </button>
     </div>
 </div>

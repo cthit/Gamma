@@ -15,9 +15,13 @@ test("given a signed in user when changing password then old password fails and 
     timeout: 10000,
   });
 
-  await page.fill('input[name="currentPassword"]', "password1337");
-  await page.fill('input[name="newPassword"]', newPassword);
-  await page.fill('input[name="confirmNewPassword"]', newPassword);
+  await page
+    .getByLabel("Current password", { exact: true })
+    .fill("password1337");
+  await page.getByLabel("New password", { exact: true }).fill(newPassword);
+  await page
+    .getByLabel("Confirm new password", { exact: true })
+    .fill(newPassword);
 
   await Promise.all([
     page.waitForResponse(
@@ -36,8 +40,8 @@ test("given a signed in user when changing password then old password fails and 
 
   await logout(page);
 
-  await page.fill('input[name="username"]', "pbeesly");
-  await page.fill('input[name="password"]', "password1337");
+  await page.getByLabel("Cid or email", { exact: true }).fill("pbeesly");
+  await page.getByLabel("Password", { exact: true }).fill("password1337");
 
   await Promise.all([
     page.waitForURL("**/login?error**", { timeout: 15000 }),

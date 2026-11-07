@@ -1,15 +1,16 @@
 <div data-hx-swap-oob="afterbegin:#alerts">
     <div role="alert"
-         style="opacity: 0"
-         class="error"
+         class="toast toast--error"
          _="on load transition *opacity to 1">
-        <span>
+        <span class="toast__icon icon icon--warning" aria-hidden="true"></span>
+        <span class="toast__text">
             This item was modified by someone else while you were editing it.
             Reload the page to get the latest version, then apply your changes again.
         </span>
         <button type="button"
-                class="outline contrast"
+                class="button button--secondary button--small toast__action"
                 _="on click call window.location.reload()">
+            <span class="icon icon--refresh" aria-hidden="true"></span>
             Reload
         </button>
     </div>

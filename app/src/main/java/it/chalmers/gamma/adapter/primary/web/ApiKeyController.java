@@ -123,7 +123,7 @@ public class ApiKeyController {
       mv.setViewName("api-key-details/not-found");
     } else {
       mv.setViewName("index");
-      mv.addObject("page", "pages/api-key-not-found");
+      mv.addObject("page", "api-key-details/not-found");
     }
 
     mv.addObject("id", apiKeyId);

@@ -1,5 +1,6 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
+import { rowWithText, articleByHeading } from "../../helpers/a11y";
 
 test("given an admin user when generating a password reset link then a link is shown", async ({
   page,
@@ -14,13 +15,13 @@ test("given an admin user when generating a password reset link then a link is s
   );
 
   await page.goto(`${gamma.url}/users`, { timeout: 30000 });
-  await page
-    .locator("tr", { hasText: "jhalpert" })
+  await rowWithText(page, "jhalpert")
     .getByRole("link", { name: "Details" })
     .click();
 
-  const passwordLinkArticle = page.locator(
-    "article:has-text('Generate reset password link')",
+  const passwordLinkArticle = articleByHeading(
+    page,
+    "Generate reset password link",
   );
 
   await Promise.all([
@@ -34,10 +35,10 @@ test("given an admin user when generating a password reset link then a link is s
     passwordLinkArticle.getByRole("button", { name: "Generate" }).click(),
   ]);
 
-  await expect(passwordLinkArticle.locator("code")).toBeVisible({
+  await expect(passwordLinkArticle.getByRole("code")).toBeVisible({
     timeout: 10000,
   });
-  await expect(passwordLinkArticle.locator("code")).toContainText(
+  await expect(passwordLinkArticle.getByRole("code")).toContainText(
     "forgot-password",
   );
 });

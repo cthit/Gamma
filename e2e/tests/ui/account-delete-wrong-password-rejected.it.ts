@@ -8,7 +8,9 @@ test("given a user account when deleting it with wrong password then deletion is
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
 
   await page.goto(`${gamma.url}/delete-your-account`, { timeout: 30000 });
-  await page.fill('input[name="password"]', "wrong-password");
+  await page
+    .getByLabel("Confirm password", { exact: true })
+    .fill("wrong-password");
   await page.getByRole("button", { name: "Delete the account" }).click();
 
   await expect(page.getByText("Incorrect password")).toBeVisible({

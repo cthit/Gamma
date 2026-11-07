@@ -22,9 +22,9 @@ test("given an admin user when deleting a created post then it is removed from p
   const emailPrefix = uniqueCid("dp");
 
   await page.goto(`${gamma.url}/posts/create`, { timeout: 30000 });
-  await page.fill('input[name="svName"]', svName);
-  await page.fill('input[name="enName"]', enName);
-  await page.fill('input[name="emailPrefix"]', emailPrefix);
+  await page.getByLabel("Swedish name", { exact: true }).fill(svName);
+  await page.getByLabel("English name", { exact: true }).fill(enName);
+  await page.getByLabel("Email prefix", { exact: true }).fill(emailPrefix);
 
   await Promise.all([
     page.waitForURL("**/posts/*", { timeout: 15000 }),

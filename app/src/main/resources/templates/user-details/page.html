@@ -1,67 +1,67 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article th:fragment="userinfo">
-        <header>User details</header>
-        <img class="m-auto" th:src="@{/images/user/avatar/{id}(id=${userId},v=${avatarVersion})}" alt="User avatar"/>
-        <div class="userinfo">
-            <ul class="tuple">
-                <li>
-                    <b>Name:</b>
-                    <span th:text="${name}"></span>
-                </li>
-                <li>
-                    <b>Cid:</b>
-                    <span th:text="${cid}"></span>
-                </li>
-                <li>
-                    <b>Acceptance year</b>
-                    <span th:text="${acceptanceYear}"></span>
-                </li>
-                <li th:if="${isAdmin}">
-                    <b>Email:</b>
-                    <span th:text="${email}"></span>
-                </li>
-                <li th:if="${isAdmin}">
-                    <b>Has GDPR training:</b>
-                    <span th:text="${gdpr}"></span>
-                </li>
-                <li th:if="${isAdmin}">
-                    <b>Is locked:</b>
-                    <span th:text="${locked}"></span>
-                </li>
-            </ul>
+        <header><h2>User details</h2></header>
+        <div class="profile">
+            <img class="profile__avatar" th:src="@{/images/user/avatar/{id}(id=${userId},v=${avatarVersion})}" alt="User avatar"/>
+            <dl class="key-value profile__details">
+                <div class="key-value__row">
+                    <dt class="key-value__key">Name</dt>
+                    <dd class="key-value__value" th:text="${name}"></dd>
+                </div>
+                <div class="key-value__row">
+                    <dt class="key-value__key">Cid</dt>
+                    <dd class="key-value__value" th:text="${cid}"></dd>
+                </div>
+                <div class="key-value__row">
+                    <dt class="key-value__key">Acceptance year</dt>
+                    <dd class="key-value__value" th:text="${acceptanceYear}"></dd>
+                </div>
+                <div class="key-value__row" th:if="${isAdmin}">
+                    <dt class="key-value__key">Email</dt>
+                    <dd class="key-value__value" th:text="${email}"></dd>
+                </div>
+                <div class="key-value__row" th:if="${isAdmin}">
+                    <dt class="key-value__key">Has GDPR training</dt>
+                    <dd class="key-value__value" th:text="${gdpr}"></dd>
+                </div>
+                <div class="key-value__row" th:if="${isAdmin}">
+                    <dt class="key-value__key">Is locked</dt>
+                    <dd class="key-value__value" th:text="${locked}"></dd>
+                </div>
+            </dl>
         </div>
         <footer th:if="${isAdmin}">
-            <button class="outline contrast"
+            <button class="button button--secondary"
                     data-hx-target="closest article"
                     th:data-hx-get="@{|/users/${userId}/edit|}"
                     data-hx-swap="outerHTML" data-loading-disable>Edit user
             </button>
             <form th:data-hx-confirm="|Are you sure you wish to delete ${name}?|" th:action="|/users/${userId}|" th:method="delete">
-                <button class="outline contrast" data-loading-disable>Delete user</button>
+                <button class="button button--danger" data-loading-disable>Delete user</button>
             </form>
         </footer>
     </article>
 
     <article th:if="${isAdmin}" th:fragment="password-link-generated">
         <header>
-            Generate reset password link
+            <h2>Generate reset password link</h2>
         </header>
         <p th:if="${passwordLink == null}">Password link will appear here</p>
         <th:block th:if="${passwordLink != null}">
             <p>Link valid for 15 minutes.</p>
-            <code th:text="${passwordLink}"></code>
+            <p><code th:text="${passwordLink}"></code></p>
         </th:block>
         <footer>
             <form th:data-hx-post="|/users/${userId}/generate-password-link|" data-hx-target="closest article" data-hx-swap="outerHTML">
                 <div th:replace="~{common/form-csrf}"></div>
-                <button class="outline contrast" data-loading-disable>Generate</button>
+                <button class="button" data-loading-disable>Generate</button>
             </form>
         </footer>
     </article>
 
     <article>
-        <header th:text="|${nick}:s groups|"></header>
+        <header><h2 th:text="|${nick}:s groups|"></h2></header>
         <p th:if="${groups.size() == 0}">
             Is not a part of any groups
         </p>

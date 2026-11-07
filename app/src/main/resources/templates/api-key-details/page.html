@@ -1,49 +1,45 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <th:block th:if="${apiKeyToken!= null}">
         <article th:replace="~{partial/api-key-credentials}"></article>
     </th:block>
 
     <article th:fragment="details(details)">
         <header>
-            Api key details
+            <h2>Api key details</h2>
         </header>
-        <ul class="tuple">
-            <li>
-                <b>Pretty name</b>
-                <span th:text="${apiKey.prettyName()}"></span>
-            </li>
-            <li>
-                <b>Type</b>
-                <span th:text="${apiKey.keyType()}"></span>
-            </li>
-            <li>
-                <b>Swedish description</b>
-                <span th:text="${apiKey.svDescription()}"></span>
-            </li>
-            <li>
-                <b>English description</b>
-                <span th:text="${apiKey.enDescription()}"></span>
-            </li>
-        </ul>
+        <dl class="key-value">
+            <div class="key-value__row">
+                <dt class="key-value__key">Pretty name</dt>
+                <dd class="key-value__value" th:text="${apiKey.prettyName()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Type</dt>
+                <dd class="key-value__value" th:text="${apiKey.keyType()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Swedish description</dt>
+                <dd class="key-value__value" th:text="${apiKey.svDescription()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">English description</dt>
+                <dd class="key-value__value" th:text="${apiKey.enDescription()}"></dd>
+            </div>
+        </dl>
         <footer th:if="${details != null && details}">
-            <a th:href="|/api-keys/${apiKey.id()}|">
-                <button class="outline contrast">
-                    More details
-                </button>
-            </a>
+            <a class="button button--secondary" th:href="|/api-keys/${apiKey.id()}|">More details</a>
         </footer>
         <footer th:if="${details == null || !details}">
             <form data-hx-confirm="Are you sure you want to reset the token? The old token will be immediately revoked."
                   data-hx-target="body"
                   th:data-hx-headers="${redirectUri != null} ? '{&quot;redirectUri&quot;: &quot;' + ${redirectUri} + '&quot;}' : null" th:data-hx-post="|/api-keys/${apiKey.id()}/reset|">
                 <div th:replace="~{common/form-csrf}"></div>
-                <button class="outline contrast" data-loading-disable>Reset token</button>
+                <button class="button button--danger" data-loading-disable>Reset token</button>
             </form>
             <form th:if="${isAdmin}" data-hx-confirm="Are you sure you want to delete this api key?" th:data-hx-post="|/api-keys/${apiKey.id()}|">
                 <input type="hidden" name="_method" value="delete" />
                 <div th:replace="~{common/form-csrf}"></div>
-                <button class="outline contrast" data-loading-disable>Delete</button>
+                <button class="button button--danger" data-loading-disable>Delete</button>
             </form>
         </footer>
     </article>

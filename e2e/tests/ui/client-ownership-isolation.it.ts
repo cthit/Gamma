@@ -6,6 +6,7 @@ import {
   exchangeCode,
 } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { articleByHeading, csrfTokenOf } from "../../helpers/a11y";
 
 test("another user cannot read, reset, delete, or change authorities on another user's client", async ({
   page,
@@ -20,10 +21,12 @@ test("another user cannot read, reset, delete, or change authorities on another 
     uniqueLabel("Private client"),
   );
   const authorityName = "existing";
-  await page.fill('input[name="authority"]', authorityName);
-  await page.locator('button[form="create-client-authority"]').click();
+  await page.getByLabel("Authority name", { exact: true }).fill(authorityName);
+  await articleByHeading(page, "Create client authority")
+    .getByRole("button", { name: "Save", exact: true })
+    .click();
   await expect(
-    page.locator("article > header", { hasText: authorityName }),
+    page.getByRole("heading", { level: 2, name: authorityName, exact: true }),
   ).toBeVisible();
 
   const otherContext = await browser.newContext({ ignoreHTTPSErrors: true });
@@ -34,9 +37,9 @@ test("another user cannot read, reset, delete, or change authorities on another 
       other.getByRole("link", { name: "Admins", exact: true }),
     ).toHaveCount(0);
     await other.goto(`${gamma.url}/my-clients/create`);
-    const csrf = await other
-      .locator('#create-my-client input[name="_csrf"]')
-      .inputValue();
+    const csrf = await csrfTokenOf(
+      other.getByLabel("Pretty name", { exact: true }),
+    );
     // Use the attacker's valid CSRF token so denial must come from authorization.
     // A forged owner header must not grant permission either.
     const headers = { "HX-Request": "true", owner: "true" };
@@ -87,10 +90,10 @@ test("another user cannot read, reset, delete, or change authorities on another 
   await page.goto(`${gamma.url}/clients/${client.clientUid}`);
   await expect(page.getByText("Client details", { exact: true })).toBeVisible();
   await expect(
-    page.locator("article > header", { hasText: authorityName }),
+    page.getByRole("heading", { level: 2, name: authorityName, exact: true }),
   ).toBeVisible();
   await expect(
-    page.locator("article > header", { hasText: "intruder" }),
+    page.getByRole("heading", { level: 2, name: "intruder", exact: true }),
   ).toHaveCount(0);
   // The original secret still authenticates, proving a denied reset did not mutate it.
   const grant = await authorizeClientWithPkce(

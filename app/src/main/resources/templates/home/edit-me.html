@@ -1,17 +1,19 @@
 <form th:object="${form}" th:data-hx-post="@{/me}" data-hx-target="this" data-hx-swap="outerHTML">
     <article>
         <header>
-            Editing your information
+            <h2>Editing your information</h2>
         </header>
         <div th:replace="~{common/form-csrf}"></div>
         <input type="hidden" name="_method" value="put"/>
-        <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
-        <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
-        <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
-        <div th:replace="~{common/input :: emailInput2('email', 'Email')}"></div>
-        <label>
-            Language
-            <select th:field="*{language}">
+        <th:block th:with="autofill=true">
+            <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
+            <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
+            <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
+            <div th:replace="~{common/input :: emailInput2('email', 'Email')}"></div>
+        </th:block>
+        <label class="field">
+            <span class="field__label">Language</span>
+            <select class="input input--select" th:field="*{language}">
                 <option value="SV">
                     Swedish
                 </option>
@@ -22,8 +24,8 @@
         </label>
         <div th:replace="~{common/error :: text}"></div>
         <footer>
-            <button data-hx-get="/me/cancel-edit" data-hx-target="closest form" data-hx-swap="outerHTML" class="outline contrast" type="button" data-loading-disable>Cancel</button>
-            <button data-loading-disable>Save</button>
+            <button data-hx-get="/me/cancel-edit" data-hx-target="closest form" data-hx-swap="outerHTML" class="button button--secondary" type="button" data-loading-disable>Cancel</button>
+            <button class="button" data-loading-disable>Save</button>
         </footer>
     </article>
 </form>

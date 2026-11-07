@@ -1,7 +1,13 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <a th:if="${isAdmin}" href="/super-groups/create">Create super group</a>
-    <table>
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Super groups</h2>
+        <a class="button" th:if="${isAdmin}" href="/super-groups/create">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Create super group
+        </a>
+    </div>
+    <table class="table" aria-labelledby="page-title">
         <thead>
             <tr>
                 <th>
@@ -22,7 +28,7 @@
                     <a th:href="|/types/${superGroup.type()}|" th:text="${superGroup.type()}"></a>
                 </td>
                 <td>
-                    <a th:href="${'/super-groups/' + superGroup.id()}">Details</a>
+                    <a th:href="${'/super-groups/' + superGroup.id()}">Details<span class="visually-hidden" th:text="| ${superGroup.prettyName()}|"></span></a>
                 </td>
             </tr>
         </tbody>

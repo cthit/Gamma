@@ -5,6 +5,7 @@ import {
 import { login } from "../../helpers/auth";
 import { createUserClientViaUi } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given an official client when admin opens clients page then the client id is listed", async ({
   page,
@@ -29,8 +30,8 @@ test("given an official client when admin opens clients page then the client id 
 
   await page.goto(`${gamma.url}/clients`, { timeout: 30000 });
 
-  const row = page.locator("tr", { hasText: prettyName }).first();
+  const row = rowWithText(page, prettyName).first();
   await expect(row).toBeVisible({ timeout: 10000 });
-  await expect(row.locator("code")).toHaveText(clientId);
+  await expect(row.getByRole("code")).toHaveText(clientId);
   await expect(row.getByRole("button", { name: "Copy" })).toBeVisible();
 });

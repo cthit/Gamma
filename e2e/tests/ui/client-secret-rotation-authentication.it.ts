@@ -6,6 +6,7 @@ import {
   exchangeCode,
 } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { articleByHeading } from "../../helpers/a11y";
 
 for (const official of [false, true]) {
   test(`rotating a ${official ? "official client's secret as admin" : "user client's secret as owner"} invalidates the old secret`, async ({
@@ -38,7 +39,9 @@ for (const official of [false, true]) {
     await page.goto(`${gamma.url}/clients/${client.clientUid}`);
     page.once("dialog", (dialog) => dialog.accept());
     await page.getByRole("button", { name: "Reset client secret" }).click();
-    const secret = page.locator('article:has-text("Credentials") code').first();
+    const secret = articleByHeading(page, "Credentials")
+      .getByRole("code")
+      .first();
     await expect(secret).toBeVisible();
     const newSecret = (await secret.innerText()).trim();
     expect(newSecret).not.toBe(client.clientSecret);

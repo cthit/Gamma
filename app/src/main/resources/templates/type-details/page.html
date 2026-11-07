@@ -1,12 +1,11 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
-        <header th:text="${type}">
-        </header>
+        <header><h2 th:text="${type}"></h2></header>
         <p>
             These are the super group that has <span th:text="${type}"></span> as the type.
         </p>
-        <table>
+        <table class="table">
             <thead>
             <tr>
                 <th>
@@ -24,7 +23,7 @@
             <tr th:each="superGroup : ${usages}">
                 <td th:text="${superGroup.prettyName()}"></td>
                 <td>
-                    <a th:href="|/super-groups/${superGroup.id()}|">View</a>
+                    <a th:href="|/super-groups/${superGroup.id()}|">View<span class="visually-hidden" th:text="| ${superGroup.prettyName()}|"></span></a>
                 </td>
             </tr>
             </tbody>
@@ -32,7 +31,7 @@
         <footer th:if="${isAdmin}">
             <form data-hx-confirm="Are you sure you want to delete this super group type?"
                   th:action="|/types/${type}|" th:method="delete" th:if="${usages.size() == 0}">
-                <button class="outline contrast" data-loading-disable>Delete</button>
+                <button class="button button--danger" data-loading-disable>Delete</button>
             </form>
         </footer>
     </article>

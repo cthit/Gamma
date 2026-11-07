@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { articleByHeading } from "./a11y";
 
 export interface ApiKeyInput {
   prettyName: string;
@@ -18,14 +19,20 @@ export async function createApiKeyViaUi(
   input: ApiKeyInput,
 ): Promise<ApiKeyCredentials> {
   await page.goto(`${baseUrl}/api-keys/create`, { timeout: 30000 });
-  await expect(page.locator("article > header")).toHaveText("Create api key", {
-    timeout: 10000,
-  });
+  await expect(
+    page.getByRole("heading", { level: 2, name: "Create api key" }),
+  ).toBeVisible({ timeout: 10000 });
 
-  await page.fill('input[name="prettyName"]', input.prettyName);
-  await page.fill('input[name="svDescription"]', input.svDescription);
-  await page.fill('input[name="enDescription"]', input.enDescription);
-  await page.selectOption('select[name="keyType"]', input.keyType);
+  await page.getByLabel("Pretty name", { exact: true }).fill(input.prettyName);
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill(input.svDescription);
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill(input.enDescription);
+  await page
+    .getByRole("combobox", { name: "Key type", exact: true })
+    .selectOption(input.keyType);
 
   await Promise.all([
     page.waitForResponse(
@@ -48,26 +55,28 @@ export async function createApiKeyViaUi(
 export async function readApiKeyCredentials(
   page: Page,
 ): Promise<ApiKeyCredentials> {
+  const credentials = articleByHeading(page, "Credentials");
   const apiKeyToken = (
-    await page
-      .locator('article:has-text("Credentials") code')
+    await credentials.getByRole("code").first().innerText()
+  ).trim();
+
+  const authorizationHeader = (
+    await credentials
+      .getByRole("code")
+      .filter({ hasText: "pre-shared" })
       .first()
       .innerText()
   ).trim();
 
-  const resetPath =
-    (await page
-      .locator('form[data-hx-post$="/reset"]')
-      .first()
-      .getAttribute("data-hx-post")) ?? "";
-
-  const apiKeyIdMatch = /\/api-keys\/([0-9a-fA-F-]+)\/reset/.exec(resetPath);
+  const apiKeyIdMatch = /pre-shared\s+([0-9a-fA-F-]+):/.exec(
+    authorizationHeader,
+  );
   if (!apiKeyIdMatch) {
-    throw new Error("Could not parse api key id from reset form path");
+    throw new Error("Could not parse api key id from the authorization header");
   }
   const apiKeyId = apiKeyIdMatch[1];
   if (!apiKeyId) {
-    throw new Error("Could not parse api key id from reset form path");
+    throw new Error("Could not parse api key id from the authorization header");
   }
 
   return {

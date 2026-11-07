@@ -6,6 +6,7 @@ import {
   type JsonWebKey,
 } from "node:crypto";
 import { expect, type Page, type APIRequestContext } from "@playwright/test";
+import { articleByHeading } from "./a11y";
 
 export interface CreatedUserClient {
   clientId: string;
@@ -28,21 +29,27 @@ export async function createUserClientViaUi(
     `${baseUrl}/${options.official ? "clients" : "my-clients"}/create`,
     { timeout: 30000 },
   );
-  await expect(page.locator('input[name="prettyName"]')).toBeVisible();
+  await expect(page.getByLabel("Pretty name", { exact: true })).toBeVisible();
 
   const redirectUri = `${baseUrl}/oauth2/callback`;
 
-  await page.fill('input[name="prettyName"]', prettyName);
-  await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
-  await page.fill('input[name="enDescription"]', "E2E english description");
-  await page.fill('input[name="redirectUrl"]', redirectUri);
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
   await page
-    .locator('input[name="emailScope"]')
+    .getByLabel("Swedish description", { exact: true })
+    .fill("E2E svensk beskrivning");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("E2E english description");
+  await page.getByLabel("Redirect url", { exact: true }).fill(redirectUri);
+  await page
+    .getByLabel("Include email scope", { exact: true })
     .setChecked(options.emailScope ?? true);
 
   if (options.superGroupId) {
     await page.getByRole("button", { name: "Add restriction" }).click();
-    await page.locator("select.restriction").selectOption(options.superGroupId);
+    await page
+      .getByRole("combobox", { name: "Super group restriction", exact: true })
+      .selectOption(options.superGroupId);
   }
 
   await Promise.all([
@@ -63,13 +70,16 @@ export async function createUserClientViaUi(
   });
 
   const clientSecret = (
-    await page
-      .locator('article:has-text("Credentials") code')
+    await articleByHeading(page, "Credentials")
+      .getByRole("code")
       .first()
       .innerText()
   ).trim();
   const clientId = (
-    await page.locator('li:has-text("Client id:") span').first().innerText()
+    await articleByHeading(page, "Client details")
+      .getByRole("code")
+      .first()
+      .innerText()
   ).trim();
 
   await page.waitForURL(/\/clients\/[0-9a-f-]+$/);

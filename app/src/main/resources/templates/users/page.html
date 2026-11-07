@@ -1,7 +1,13 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <a th:if="${isAdmin}" href="/users/create">Create user</a>
-    <table>
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Users</h2>
+        <a class="button" th:if="${isAdmin}" href="/users/create">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Create user
+        </a>
+    </div>
+    <table class="table" aria-labelledby="page-title">
         <thead>
             <tr>
                 <th>First name</th>
@@ -20,7 +26,7 @@
                 <td th:text="${user.cid()}"></td>
                 <td th:text="${user.acceptanceYear()}"></td>
                 <td>
-                    <a th:href="${'/users/' + user.id}">Details</a>
+                    <a th:href="${'/users/' + user.id}">Details<span class="visually-hidden" th:text="| ${user.nick()}|"></span></a>
                 </td>
             </tr>
         </tbody>

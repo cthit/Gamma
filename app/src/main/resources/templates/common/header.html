@@ -1,93 +1,36 @@
-<div id="alerts">
+<a class="skip-link" href="#main">Skip to main content</a>
+<div id="alerts" class="toasts">
 </div>
-<div id="loader-container" data-loading data-loading-class="loading">
-    <progress></progress>
+<div id="loader-container" class="loader" aria-hidden="true" data-loading data-loading-class="loader--active">
+    <div class="loader__bar"></div>
 </div>
-<nav>
-    <aside>
-        <ul>
-            <li>
-                <a th:href="@{/me/accepted-clients}">Your accepted clients</a>
-            </li>
-            <li>
-                <a th:href="@{/my-clients}">Your clients</a>
-            </li>
-            <li>
-                <a th:href="@{/users}">Users</a>
-            </li>
-            <li>
-                <a th:href="@{/groups}">Groups</a>
-            </li>
-            <li>
-                <a th:href="@{/super-groups}">Super groups</a>
-            </li>
-            <li>
-                <a th:href="@{/types}">Types</a>
-            </li>
-            <li>
-                <a th:href="@{/posts}">Posts</a>
-            </li>
-            <li>
-                <a th:href="@{/user-agreement}">User agreement</a>
-            </li>
-            <th:block th:if="${isAdmin}">
-                <hr>
-                <li>
-                    <a th:href="@{/clients}">Official clients</a>
-                </li>
-                <li>
-                    <a th:href="@{/user-clients}">User clients</a>
-                </li>
-                <li>
-                    <a th:href="@{/api-keys}">Api keys</a>
-                </li>
-                <li>
-                    <a th:href="@{/activation-codes}">Activation codes</a>
-                </li>
-                <li>
-                    <a th:href="@{/admins}">Admins</a>
-                </li>
-                <li>
-                    <a th:href="@{/gdpr}">Gdpr trained</a>
-                </li>
-                <li>
-                    <a th:href="@{/allow-list}">Allow lists</a>
-                </li>
-                <li>
-                    <a th:href="@{/throttling}">Throttling</a>
-                </li>
-            </th:block>
-            <hr>
-            <li>
-                <a href="https://github.com/cthit/gamma" target="_blank">GitHub</a>
-            </li>
-            <li>
-                Made by <span><a href="https://digit.chalmers.it">digIT</a></span>
-            </li>
-            <li>
-                <img src="/img/digit18.svg" alt="digit18 smurf" id="digit18-smurf"/>
-            </li>
-        </ul>
-    </aside>
-</nav>
-<header>
-    <button id="toggle-nav" class="outline contrast"
-            _="on click toggle .show-nav on document.body">
+<header class="app-header">
+    <button id="toggle-nav"
+            class="button button--secondary app-header__menu"
+            type="button"
+            aria-controls="app-nav"
+            aria-expanded="false"
+            _="on click
+               toggle .app--nav-open on document.body
+               if document.body matches .app--nav-open
+                 set @aria-expanded to 'true'
+               else
+                 set @aria-expanded to 'false'
+               end">
+        <span class="icon icon--menu" aria-hidden="true"></span>
         Menu
     </button>
-    <div>
-        <a href="/">
-            <h1>
-                Gamma
-            </h1>
-        </a>
-    </div>
-    <div>
+    <a class="app-header__brand" href="/">
+        <img class="app-header__logo" src="/img/itlogo.svg" alt="" width="32" height="32"/>
+        <h1 class="app-header__title">Gamma</h1>
+    </a>
+    <div class="app-header__user">
         <th:block sec:authorize="isAuthenticated()">
             <th:block th:if="${#authentication.details instanceof T(it.chalmers.gamma.security.authentication.UserAuthentication)}">
-                <div th:text="|Hey, ${#authentication.details.gammaUser().nick().value()}!|"></div>
-                <form th:action="@{/logout}" th:method="post" >
-                    <button class="outline contrast" data-loading-disable>
+                <span class="app-header__greeting" th:text="|Hey, ${#authentication.details.gammaUser().nick().value()}!|"></span>
+                <form class="app-header__logout" th:action="@{/logout}" th:method="post">
+                    <button class="button button--secondary" data-loading-disable>
+                        <span class="icon icon--logout" aria-hidden="true"></span>
                         Logout
                     </button>
                 </form>
@@ -95,4 +38,71 @@
         </th:block>
     </div>
 </header>
-
+<nav id="app-nav" class="app-nav" aria-label="Main">
+    <ul class="app-nav__list">
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/me/accepted-clients}">Your accepted clients</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/my-clients}">Your clients</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/users}">Users</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/groups}">Groups</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/super-groups}">Super groups</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/types}">Types</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/posts}">Posts</a>
+        </li>
+        <li class="app-nav__item">
+            <a class="app-nav__link" th:href="@{/user-agreement}">User agreement</a>
+        </li>
+    </ul>
+    <th:block th:if="${isAdmin}">
+        <h2 class="app-nav__heading" id="app-nav-admin">Admin</h2>
+        <ul class="app-nav__list" aria-labelledby="app-nav-admin">
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/clients}">Official clients</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/user-clients}">User clients</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/api-keys}">Api keys</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/activation-codes}">Activation codes</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/admins}">Admins</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/gdpr}">Gdpr trained</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/allow-list}">Allow lists</a>
+            </li>
+            <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/throttling}">Throttling</a>
+            </li>
+        </ul>
+    </th:block>
+    <div class="app-nav__footer">
+        <a class="app-nav__link app-nav__link--external" href="https://github.com/cthit/gamma" target="_blank" rel="noopener noreferrer">
+            GitHub
+            <span class="icon icon--external" aria-hidden="true"></span>
+            <span class="visually-hidden">(opens in a new tab)</span>
+        </a>
+        <p class="app-nav__credit">
+            Made by <a href="https://digit.chalmers.it">digIT</a>
+        </p>
+        <img class="app-nav__mascot" src="/img/digit18.svg" alt="digit18 smurf"/>
+    </div>
+</nav>

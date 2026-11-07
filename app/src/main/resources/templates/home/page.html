@@ -1,8 +1,8 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <article th:if="${me.cid() == 'admin'}">
+<main id="main" class="app__main">
+    <article class="callout callout--danger" th:if="${me.cid() == 'admin'}">
         <header>
-            Urgency for Deletion of This 'Admin' Account
+            <h2>Urgency for Deletion of This 'Admin' Account</h2>
         </header>
         <p>
             The security of your system is paramount. Given that accounts with the "admin" username tend to
@@ -12,58 +12,58 @@
 
     <article th:fragment="userinfo">
         <header>
-            Your information
+            <h2>Your information</h2>
         </header>
-        <ul class="tuple">
-            <li>
-                <b>First name:</b>
-                <span th:text="${me.firstName()}"></span>
-            </li>
-            <li>
-                <b>Last name:</b>
-                <span th:text="${me.lastName()}"></span>
-            </li>
-            <li>
-                <b>Nick</b>
-                <span th:text="${me.nick()}"></span>
-            </li>
-            <li>
-                <b>Email:</b>
-                <span th:text="${me.email()}"></span>
-            </li>
-            <li>
-                <b>Acceptance year:</b>
-                <span th:text="${me.acceptanceYear()}"></span>
-            </li>
-            <li>
-                <b>Cid:</b>
-                <span th:text="${me.cid()}"></span>
-            </li>
-            <li>
-                <b>Preferred language:</b>
-                <span th:text="${me.language() == 'EN' ? 'English' : (me.language() == 'SV' ? 'Swedish' : '')}"></span>
-            </li>
-            <li>
-                <b>Have you attended GDPR training?</b>
-                <span th:text="${gdpr ? 'Yes' : 'No'}"></span>
-            </li>
-            <li th:if="${me.isAdmin()}">
-                <b>Is admin?</b>
-                <span>Yes</span>
-            </li>
-        </ul>
+        <dl class="key-value">
+            <div class="key-value__row">
+                <dt class="key-value__key">First name</dt>
+                <dd class="key-value__value" th:text="${me.firstName()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Last name</dt>
+                <dd class="key-value__value" th:text="${me.lastName()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Nick</dt>
+                <dd class="key-value__value" th:text="${me.nick()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Email</dt>
+                <dd class="key-value__value" th:text="${me.email()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Acceptance year</dt>
+                <dd class="key-value__value" th:text="${me.acceptanceYear()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Cid</dt>
+                <dd class="key-value__value" th:text="${me.cid()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Preferred language</dt>
+                <dd class="key-value__value" th:text="${me.language() == 'EN' ? 'English' : (me.language() == 'SV' ? 'Swedish' : '')}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Have you attended GDPR training?</dt>
+                <dd class="key-value__value" th:text="${gdpr ? 'Yes' : 'No'}"></dd>
+            </div>
+            <div class="key-value__row" th:if="${me.isAdmin()}">
+                <dt class="key-value__key">Is admin?</dt>
+                <dd class="key-value__value">Yes</dd>
+            </div>
+        </dl>
         <footer>
-            <button class="outline contrast" th:data-hx-get="@{/me/edit}" data-hx-target="closest article" data-hx-swap="outerHTML" data-loading-disable>Edit</button>
-            <button class="outline contrast" th:data-hx-get="@{/me/edit-password}" data-hx-target="closest article" data-hx-swap="outerHTML" data-loading-disable>Change password</button>
+            <button class="button button--secondary" th:data-hx-get="@{/me/edit}" data-hx-target="closest article" data-hx-swap="outerHTML" data-loading-disable>Edit</button>
+            <button class="button button--secondary" th:data-hx-get="@{/me/edit-password}" data-hx-target="closest article" data-hx-swap="outerHTML" data-loading-disable>Change password</button>
         </footer>
     </article>
     <article>
         <header>
-            My groups
+            <h2>My groups</h2>
         </header>
-        <th:block th:if="${me.groups().size() == 0}">
+        <p th:if="${me.groups().size() == 0}">
             You are not part of any groups
-        </th:block>
+        </p>
         <ul th:if="${me.groups().size() > 0}">
             <li th:each="group : ${me.groups()}">
                 <a th:href="|/groups/${group.group().id()}|" th:text="|${group.group().prettyName()} - ${group.post().enName()}|"></a>
@@ -72,30 +72,32 @@
     </article>
     <article th:with="meId = ${me.id()}">
         <header>
-            Your avatar
+            <h2>Your avatar</h2>
         </header>
-        <div class="image-input-container" th:fragment="me-avatar">
-            <img th:src="@{/images/user/avatar/{id}(id=${meId},v=${meAvatarVersion})}" alt="Me avatar" />
-            <form id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
+        <div class="image-upload" th:fragment="me-avatar">
+            <img class="image-upload__preview image-upload__preview--avatar" th:src="@{/images/user/avatar/{id}(id=${meId},v=${meAvatarVersion})}" alt="Me avatar" />
+            <form class="image-upload__form" id="update-me-avatar" th:data-hx-post="@{/me/avatar}"
                   _="on htmx:before:request add @disabled to the next <button/> "
                   enctype="multipart/form-data"
                   data-hx-target="closest div"
                   data-hx-swap="outerHTML">
                 <div th:replace="~{common/form-csrf}"></div>
                 <input type="hidden" name="_method" value="put" />
-                <input _='on change remove @disabled from the next <button/>' type='file' name='file'
+                <label class="image-upload__label" for="update-me-avatar-file">Choose a new avatar</label>
+                <input class="image-upload__input" id="update-me-avatar-file"
+                       _='on change remove @disabled from the next <button/>' type='file' name='file'
                            accept="image/jpeg,image/png,image/gif"
                            th:data-max-size="${imageUploadLimit.bytes()}"
                            th:data-max-size-message="|The file is too large. It must be at most ${imageUploadLimit.text()}.|">
             </form>
         </div>
         <footer>
-            <button disabled class="outline" form="update-me-avatar">Upload avatar</button>
+            <button disabled class="button" form="update-me-avatar">Upload avatar</button>
         </footer>
     </article>
     <article>
         <header>
-            Do you want to delete your account?
+            <h2>Do you want to delete your account?</h2>
         </header>
         <p>
             Here you can delete your account and prevent further access for clients you have accepted.
@@ -109,9 +111,7 @@
             Cid: <span th:text="${me.cid()}"></span>
         </p>
         <footer>
-            <a th:href="@{/delete-your-account}" >
-                Proceed to deleting your account
-            </a>
+            <a class="button button--danger" th:href="@{/delete-your-account}">Proceed to deleting your account</a>
         </footer>
     </article>
 </main>

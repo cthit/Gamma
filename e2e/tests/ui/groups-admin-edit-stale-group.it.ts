@@ -1,6 +1,7 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
+import { articleByHeading, formValuesOf } from "../../helpers/a11y";
 
 test("given a group edited in another tab when saving a stale edit then a conflict message is shown", async ({
   page,
@@ -19,39 +20,48 @@ test("given a group edited in another tab when saving a stale edit then a confli
   const otherTabPrettyName = uniqueLabel("E2E Group Other Tab");
 
   await page.goto(`${gamma.url}/groups/create`, { timeout: 30000 });
-  await page.fill('input[name="name"]', name);
-  await page.fill('input[name="prettyName"]', uniqueLabel("E2E Group"));
+  await page.getByLabel("Name", { exact: true }).fill(name);
+  await page
+    .getByLabel("Pretty name", { exact: true })
+    .fill(uniqueLabel("E2E Group"));
 
   await Promise.all([
     page.waitForURL("**/groups/*", { timeout: 15000 }),
     page.getByRole("button", { name: "Create" }).click(),
   ]);
-  await expect(page.locator("main > article").first()).toContainText(
-    "Group details",
-    { timeout: 10000 },
-  );
+  await expect(
+    page.getByRole("heading", { level: 2, name: "Group details", exact: true }),
+  ).toBeVisible({ timeout: 10000 });
 
   const groupUrl = page.url();
   const groupId = new URL(groupUrl).pathname.split("/").pop() ?? "";
   expect(groupId).toMatch(/^[0-9a-f-]{36}$/);
 
   await page.getByRole("button", { name: "Edit" }).click();
-  await expect(page.locator("main > article").first()).toContainText(
-    "Edit group details",
-    { timeout: 10000 },
-  );
-  await page.fill('input[name="prettyName"]', stalePrettyName);
+  await expect(
+    page.getByRole("heading", {
+      level: 2,
+      name: "Edit group details",
+      exact: true,
+    }),
+  ).toBeVisible({ timeout: 10000 });
+  await page.getByLabel("Pretty name", { exact: true }).fill(stalePrettyName);
 
   const otherTab = await page.context().newPage();
   await otherTab.goto(groupUrl, { timeout: 30000 });
   await otherTab.getByRole("button", { name: "Edit" }).click();
-  await expect(otherTab.locator("main > article").first()).toContainText(
-    "Edit group details",
-    { timeout: 10000 },
-  );
-  await otherTab.fill('input[name="prettyName"]', otherTabPrettyName);
+  await expect(
+    otherTab.getByRole("heading", {
+      level: 2,
+      name: "Edit group details",
+      exact: true,
+    }),
+  ).toBeVisible({ timeout: 10000 });
+  await otherTab
+    .getByLabel("Pretty name", { exact: true })
+    .fill(otherTabPrettyName);
   await otherTab.getByRole("button", { name: "Save" }).click();
-  await expect(otherTab.locator("article .tuple")).toContainText(
+  await expect(articleByHeading(otherTab, "Group details")).toContainText(
     otherTabPrettyName,
     { timeout: 10000 },
   );
@@ -66,27 +76,28 @@ test("given a group edited in another tab when saving a stale edit then a confli
     page.getByRole("button", { name: "Save" }).click(),
   ]);
   expect(staleResponse.status()).toBe(409);
-  await expect(page.locator('#alerts [role="alert"]')).toContainText(
+  await expect(page.getByRole("alert")).toContainText(
     "modified by someone else",
     { timeout: 10000 },
   );
   expect(page.url()).toBe(groupUrl);
   await expect(page.getByText("Internal Server Error")).toHaveCount(0);
 
-  const form = page.locator("form#edit-group");
-  const formValue = async (field: string) =>
-    (await form.locator(`[name="${field}"]`).first().inputValue()).trim();
+  const formValues = await formValuesOf(
+    page.getByLabel("Name", { exact: true }),
+  );
+  const formValue = (field: string) => (formValues[field] ?? "").trim();
   const staleFormResponse = await page.request.fetch(groupUrl, {
     method: "POST",
     maxRedirects: 0,
     headers: { Accept: "text/html" },
     form: {
       _method: "put",
-      _csrf: await formValue("_csrf"),
-      version: await formValue("version"),
-      name: await formValue("name"),
+      _csrf: formValue("_csrf"),
+      version: formValue("version"),
+      name: formValue("name"),
       prettyName: stalePrettyName,
-      superGroupId: await formValue("superGroupId"),
+      superGroupId: formValue("superGroupId"),
     },
   });
   expect(staleFormResponse.status()).toBe(409);
@@ -95,11 +106,11 @@ test("given a group edited in another tab when saving a stale edit then a confli
   expect(staleFormBody).toContain("modified by someone else");
 
   await page.reload();
-  await expect(page.locator("article .tuple")).toContainText(
+  await expect(articleByHeading(page, "Group details")).toContainText(
     otherTabPrettyName,
     { timeout: 10000 },
   );
-  await expect(page.locator("article .tuple")).not.toContainText(
+  await expect(articleByHeading(page, "Group details")).not.toContainText(
     stalePrettyName,
   );
 });

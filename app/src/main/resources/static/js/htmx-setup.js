@@ -50,9 +50,15 @@
         if (!alerts) return;
         var alert = document.createElement("div");
         alert.setAttribute("role", "alert");
-        alert.className = "error";
+        alert.className = "toast toast--error";
         alert.style.opacity = "0";
-        alert.textContent = text;
+        var icon = document.createElement("span");
+        icon.className = "toast__icon icon icon--warning";
+        icon.setAttribute("aria-hidden", "true");
+        var message = document.createElement("span");
+        message.className = "toast__text";
+        message.textContent = text;
+        alert.append(icon, message);
         alert.setAttribute("_", "on load transition *opacity to 1 then wait 7s then transition *opacity to 0 then remove me");
         alerts.prepend(alert);
         if (window._hyperscript) {
@@ -106,6 +112,23 @@
             showErrorAlert("The upload failed. Is the file too large?");
         }
     });
+
+    // Marks the navigation link of the current page, so it is both styled and
+    // announced as the current page (aria-current).
+    function markCurrentNavLink() {
+        document.querySelectorAll(".app-nav__link").forEach(function (link) {
+            var current = link.origin === window.location.origin && link.pathname === window.location.pathname;
+            if (current) {
+                link.setAttribute("aria-current", "page");
+            } else {
+                link.removeAttribute("aria-current");
+            }
+        });
+    }
+    document.addEventListener("DOMContentLoaded", markCurrentNavLink);
+    document.addEventListener("htmx:after:swap", markCurrentNavLink);
+    document.addEventListener("htmx:after:history:update", markCurrentNavLink);
+    window.addEventListener("popstate", markCurrentNavLink);
 
     // htmx 4 always runs <script> tags in swapped content; keep the htmx 1
     // allowScriptTags: false behaviour.

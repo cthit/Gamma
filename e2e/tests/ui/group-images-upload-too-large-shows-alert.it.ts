@@ -48,12 +48,10 @@ test("given a banner larger than the limit when selecting it then an error is sh
   });
 
   await page
-    .locator("#edit-group-banner input[type=file]")
+    .getByLabel("Choose a new banner", { exact: true })
     .setInputFiles(pngOfSize(3 * 1024 * 1024));
 
-  await expect(page.locator("#alerts [role=alert]")).toHaveText(
-    tooLargeMessage,
-  );
+  await expect(page.getByRole("alert")).toHaveText(tooLargeMessage);
   await expect(
     page.getByRole("button", { name: "Upload banner" }),
   ).toBeDisabled();
@@ -71,10 +69,12 @@ for (const [description, bytes] of [
   }) => {
     await openDigitGroupAsAdmin(page, gamma);
 
-    const fileInput = page.locator("#edit-group-banner input[type=file]");
+    const fileInput = page.getByLabel("Choose a new banner", { exact: true });
     // Simulate a client that does not check the size before uploading.
-    await page.evaluate(
-      "document.querySelector('#edit-group-banner input[type=file]').removeAttribute('data-max-size')",
+    await fileInput.evaluate((input: unknown) =>
+      (input as { removeAttribute(name: string): void }).removeAttribute(
+        "data-max-size",
+      ),
     );
     await fileInput.setInputFiles(pngOfSize(bytes));
 
@@ -84,9 +84,7 @@ for (const [description, bytes] of [
     await page.getByRole("button", { name: "Upload banner" }).click();
     expect((await uploadResponse).status()).toBe(413);
 
-    await expect(page.locator("#alerts [role=alert]")).toHaveText(
-      tooLargeMessage,
-    );
+    await expect(page.getByRole("alert")).toHaveText(tooLargeMessage);
     await expectGroupPageIntact(page);
   });
 }

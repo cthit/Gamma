@@ -1,6 +1,7 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
+import { rowWithText, articleByHeading } from "../../helpers/a11y";
 
 test("given a generated password reset link when finalizing reset then the user can login with new password", async ({
   page,
@@ -15,13 +16,13 @@ test("given a generated password reset link when finalizing reset then the user 
   );
 
   await page.goto(`${gamma.url}/users`, { timeout: 30000 });
-  await page
-    .locator("tr", { hasText: "jhalpert" })
+  await rowWithText(page, "jhalpert")
     .getByRole("link", { name: "Details" })
     .click();
 
-  const passwordLinkArticle = page.locator(
-    "article:has-text('Generate reset password link')",
+  const passwordLinkArticle = articleByHeading(
+    page,
+    "Generate reset password link",
   );
 
   await Promise.all([
@@ -36,7 +37,7 @@ test("given a generated password reset link when finalizing reset then the user 
   ]);
 
   const resetLink = (
-    await passwordLinkArticle.locator("code").innerText()
+    await passwordLinkArticle.getByRole("code").innerText()
   ).trim();
   const resetUrl = new URL(resetLink);
   const reachableResetLink = `${gamma.url}${resetUrl.pathname}${resetUrl.search}`;
@@ -52,8 +53,8 @@ test("given a generated password reset link when finalizing reset then the user 
     timeout: 10000,
   });
 
-  await page.fill('input[name="password"]', newPassword);
-  await page.fill('input[name="confirmPassword"]', newPassword);
+  await page.getByLabel("Password", { exact: true }).fill(newPassword);
+  await page.getByLabel("Confirm password", { exact: true }).fill(newPassword);
 
   await Promise.all([
     page.waitForURL("**/login?password-reset", { timeout: 15000 }),

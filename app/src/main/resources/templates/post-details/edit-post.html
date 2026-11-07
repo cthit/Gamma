@@ -1,5 +1,5 @@
 <article>
-    <header>Post details</header>
+    <header><h2>Post details</h2></header>
     <form id="edit-post" th:object="${form}" th:action="@{|/posts/${postId}|}" th:method="put">
         <div th:replace="~{common/input :: textInput2('svName', 'Swedish name')}"></div>
         <div th:replace="~{common/input :: textInput2('enName', 'English name')}"></div>
@@ -8,11 +8,11 @@
     </form>
     <footer>
         <button type="button"
-                class="outline contrast"
-                th:data-hx-get="|/posts/${postId}/cancel|"
+                class="button button--secondary"
+                th:data-hx-get="|/posts/${postId}|"
                 data-hx-target="body"
                 data-hx-swap="innerHTML" data-loading-disable>Cancel
         </button>
-        <button class="outline" form="edit-post" data-loading-disable>Save</button>
+        <button class="button" form="edit-post" data-loading-disable>Save</button>
     </footer>
 </article>

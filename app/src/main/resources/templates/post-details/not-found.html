@@ -1,16 +1,14 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            404 - Not Found
+            <h2>404 - Not Found</h2>
         </header>
         <p>
             Post: [<span th:text="${id}"></span>] was not found.
         </p>
         <footer>
-            <a href="/posts">
-                <button type="button">Go to all posts</button>
-            </a>
+            <a class="button" href="/posts">Go to all posts</a>
         </footer>
     </article>
 </main>

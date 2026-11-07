@@ -9,28 +9,33 @@
 
     <article>
         <header>
-            Info settings
+            <h2>Info settings</h2>
         </header>
         <p>
             Set the super group types from which the information will be query from.
         </p>
-        <div class="super-group-type row"
+        <div class="super-group-type"
              th:each="type : ${settings_form.superGroupTypes}"
              _="on load call updateNames('superGroupTypes', 'select')">
-            <select>
-                <option disabled selected th:value="${type}" th:text="${type}"></option>
-            </select>
-            <button class="outline contrast"
+            <div class="super-group-type__fields">
+                <select class="input input--select" aria-label="Super group type">
+                    <option disabled selected th:value="${type}" th:text="${type}"></option>
+                </select>
+            </div>
+            <button class="button button--secondary button--small super-group-type__remove"
                     type="button"
+                    th:aria-label="|Remove ${type}|"
                     _="on click remove closest .super-group-type then call updateNames('superGroupTypes', 'select')">
                 Remove
             </button>
         </div>
         <footer>
-            <button class="outline contrast" type="button" data-hx-get="/api-keys/new-super-group-type/info"
-                    data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
+            <button class="button button--secondary" type="button" data-hx-get="/api-keys/new-super-group-type/info"
+                    data-hx-target="closest footer" data-hx-swap="beforebegin">
+                <span class="icon icon--plus" aria-hidden="true"></span>
+                Add type
             </button>
-            <button class="outline contrast" data-loading-disable>Save</button>
+            <button class="button" data-loading-disable>Save</button>
         </footer>
     </article>
 </form>

@@ -1,10 +1,16 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <a th:if="${isAdmin}" href="/posts/create">Create posts</a>
-    <form data-hx-post="/posts/order" data-hx-trigger="end" data-hx-target="body">
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Posts</h2>
+        <a class="button" th:if="${isAdmin}" href="/posts/create">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Create posts
+        </a>
+    </div>
+    <form class="app__wide" data-hx-post="/posts/order" data-hx-trigger="end" data-hx-target="body">
         <th:block th:replace="~{common/form-csrf}"></th:block>
         <input type="hidden" name="_method" value="put" />
-        <table th:fragment="table">
+        <table class="table" aria-labelledby="page-title" th:fragment="table">
             <thead>
                 <tr>
                     <th>Order</th>
@@ -25,8 +31,9 @@
                         <td th:text="${post.svName()}"></td>
                         <td th:text="${post.enName()}"></td>
                         <td>
-                            <a th:href="|/posts/${post.id()}|">Details</a>
+                            <a th:href="|/posts/${post.id()}|">Details<span class="visually-hidden" th:text="| ${post.enName()}|"></span></a>
                         </td>
+                    </tr>
                 </th:block>
             </tbody>
         </table>

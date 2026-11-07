@@ -1,37 +1,41 @@
 <article>
     <header>
-        Create client authority
+        <h2>Create client authority</h2>
     </header>
-    <form id="create-client-authority"
+    <form class="authority-form" id="create-client-authority"
           th:data-hx-post="@{/clients/{id}/authority(id=${clientUid})}"
           data-hx-target="closest article"
           data-hx-swap="outerHTML"
           _="on htmx:after:swap call updateNames('users', '.authority-user-row') then call updateNames('superGroups', '.authority-super-group-row')">
         <div th:replace="~{common/form-csrf}"></div>
         <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${authorityValue}, errorMessage=${authorityErrorMessage})}"></div>
-        <p>Super groups:</p>
+        <h3 class="authority-form__heading">Super groups</h3>
         <select th:each="selectedSuperGroup, stat : ${selectedSuperGroups}"
-                class="authority-super-group-row" required
+                class="input input--select authority-super-group-row" required aria-label="Super group"
                 th:name="|superGroups[${stat.index}]|" th:id="|superGroups${stat.index}|">
             <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"
                     th:selected="${superGroup.key == selectedSuperGroup}"></option>
         </select>
-        <button class="outline contrast" data-hx-get="/clients/authority/new-super-group"
-                data-hx-target="previous p" data-hx-swap="afterend" type="button">Add super group authority
+        <button class="button button--secondary" data-hx-get="/clients/authority/new-super-group"
+                data-hx-target="previous h3" data-hx-swap="afterend" type="button">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Add super group authority
         </button>
-        <p>Users:</p>
+        <h3 class="authority-form__heading">Users</h3>
         <select th:each="selectedUser, stat : ${selectedUsers}"
-                class="authority-user-row" required
+                class="input input--select authority-user-row" required aria-label="User"
                 th:name="|users[${stat.index}]|" th:id="|users${stat.index}|">
             <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"
                     th:selected="${user.key == selectedUser}"></option>
         </select>
-        <button class="outline contrast" data-hx-get="/clients/authority/new-user" data-hx-target="previous p"
-                data-hx-swap="afterend" type="button">Add user authority
+        <button class="button button--secondary" data-hx-get="/clients/authority/new-user" data-hx-target="previous h3"
+                data-hx-swap="afterend" type="button">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Add user authority
         </button>
     </form>
     <footer>
-        <button class="outline" form="create-client-authority" data-loading-disable>Save</button>
+        <button class="button" form="create-client-authority" data-loading-disable>Save</button>
     </footer>
 </article>
 

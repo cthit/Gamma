@@ -5,6 +5,7 @@ import {
 import { waitForMailLink } from "../../helpers/mail";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid, uniqueEmail } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given an allowed cid when completing registration then the new user can sign in", async ({
   page,
@@ -22,20 +23,20 @@ test("given an allowed cid when completing registration then the new user can si
   const cid = uniqueCid("reg").slice(0, 10);
 
   await page.goto(`${gamma.url}/allow-list`, { timeout: 30000 });
-  await page.fill('input[name="cid"]', cid);
+  await page.getByLabel("Cid", { exact: true }).fill(cid);
 
   await Promise.all([
     // The form updates this same URL; wait for persistence before logging out.
-    expect(page.locator("tr", { hasText: cid })).toBeVisible({
+    expect(rowWithText(page, cid)).toBeVisible({
       timeout: 15000,
     }),
-    page.locator('button[form="allow-cid-form"]').click(),
+    page.getByRole("button", { name: "Active", exact: true }).click(),
   ]);
 
   await logout(page);
 
   await page.goto(`${gamma.url}/activate-cid`, { timeout: 30000 });
-  await page.fill('input[name="cid"]', cid);
+  await page.getByLabel("Cid", { exact: true }).fill(cid);
 
   await Promise.all([
     page.waitForURL("**/email-sent", { timeout: 20000 }),
@@ -61,15 +62,27 @@ test("given an allowed cid when completing registration then the new user can si
   const password = `${uniqueCid("register")}pw`;
   const nick = uniqueCid("nick");
 
-  await page.fill('input[name="email"]', uniqueEmail("newuser"));
-  await page.fill('input[name="nick"]', nick);
-  await page.fill('input[name="firstName"]', "Register");
-  await page.fill('input[name="lastName"]', "Tester");
-  await page.fill('input[name="password"]', password);
-  await page.fill('input[name="confirmPassword"]', password);
-  await page.selectOption('select[name="acceptanceYear"]', "2020");
-  await page.selectOption('select[name="language"]', "EN");
-  await page.check('input[name="acceptUserAgreement"]');
+  await page
+    .getByLabel("Non student email", { exact: true })
+    .fill(uniqueEmail("newuser"));
+  await page.getByLabel("Nick", { exact: true }).fill(nick);
+  await page.getByLabel("First name", { exact: true }).fill("Register");
+  await page.getByLabel("Last name", { exact: true }).fill("Tester");
+  await page.getByLabel("Password", { exact: true }).fill(password);
+  await page.getByLabel("Confirm password", { exact: true }).fill(password);
+  await page
+    .getByRole("combobox", {
+      name: "Which year did the user start at IT?",
+      exact: true,
+    })
+    .selectOption("2020");
+  await page
+    .getByRole("combobox", {
+      name: "What language does the user prefer?",
+      exact: true,
+    })
+    .selectOption("EN");
+  await page.getByLabel("I accept the user agreement", { exact: true }).check();
 
   await Promise.all([
     page.waitForURL("**/login?account-created", { timeout: 15000 }),
