@@ -14,4 +14,13 @@ public record PasswordResetToken(String value) {
   public static PasswordResetToken generate() {
     return new PasswordResetToken(Tokens.generate(72, UPPERCASE, NUMBERS, LOWERCASE));
   }
+
+  public String hashed() {
+    return Tokens.hash(this.value);
+  }
+
+  @Override
+  public String toString() {
+    return "<value redacted>";
+  }
 }
