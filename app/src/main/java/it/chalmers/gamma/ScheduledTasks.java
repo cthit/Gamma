@@ -1,6 +1,7 @@
 package it.chalmers.gamma;
 
 import it.chalmers.gamma.app.user.activation.domain.UserActivationRepository;
+import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
@@ -15,12 +16,15 @@ public class ScheduledTasks {
 
   private final UserActivationRepository userActivationRepository;
   private final PasswordResetRepository passwordResetRepository;
+  private final EmailChangeRepository emailChangeRepository;
 
   public ScheduledTasks(
       UserActivationRepository userActivationRepository,
-      PasswordResetRepository passwordResetRepository) {
+      PasswordResetRepository passwordResetRepository,
+      EmailChangeRepository emailChangeRepository) {
     this.userActivationRepository = userActivationRepository;
     this.passwordResetRepository = passwordResetRepository;
+    this.emailChangeRepository = emailChangeRepository;
   }
 
   @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 15)
@@ -36,6 +40,14 @@ public class ScheduledTasks {
     int i = passwordResetRepository.removeInvalidPasswordResetTokens();
     if (i > 0) {
       LOGGER.info("Removed {} expired password reset tokens", i);
+    }
+  }
+
+  @Scheduled(timeUnit = TimeUnit.MINUTES, fixedRate = 15)
+  public void clearExpiredEmailChanges() {
+    int i = emailChangeRepository.removeExpired();
+    if (i > 0) {
+      LOGGER.info("Removed {} expired email change requests", i);
     }
   }
 }

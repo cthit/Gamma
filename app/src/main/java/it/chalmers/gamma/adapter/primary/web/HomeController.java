@@ -5,7 +5,6 @@ import static it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
 import static it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 
 import it.chalmers.gamma.adapter.secondary.image.ImageFile;
-import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.user.MeFacade;
@@ -63,7 +62,6 @@ public class HomeController {
       @ValidatedWith(NickValidator.class) String nick,
       @ValidatedWith(FirstNameValidator.class) String firstName,
       @ValidatedWith(LastNameValidator.class) String lastName,
-      @ValidatedWith(EmailValidator.class) String email,
       String language) {}
 
   private ModelAndView createEditMeMV(EditMe form) {
@@ -79,7 +77,7 @@ public class HomeController {
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
     MeFacade.MeDTO me = this.meFacade.getMe();
 
-    EditMe form = new EditMe(me.nick(), me.firstName(), me.lastName(), me.email(), me.language());
+    EditMe form = new EditMe(me.nick(), me.firstName(), me.lastName(), me.language());
 
     return createEditMeMV(form);
   }
@@ -102,7 +100,7 @@ public class HomeController {
     }
 
     this.meFacade.updateMe(
-        new MeFacade.UpdateMe(form.nick, form.firstName, form.lastName, form.email, form.language));
+        new MeFacade.UpdateMe(form.nick, form.firstName, form.lastName, form.language));
 
     MeFacade.MeDTO me = this.meFacade.getMe();
 
@@ -114,7 +112,7 @@ public class HomeController {
             form.firstName,
             form.lastName,
             me.cid(),
-            form.email,
+            me.email(),
             me.id(),
             me.acceptanceYear(),
             me.groups(),
