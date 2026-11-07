@@ -1,7 +1,13 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <a href="/clients/create">Create client</a>
-    <table>
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Official clients</h2>
+        <a class="button" href="/clients/create">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Create client
+        </a>
+    </div>
+    <table class="table" aria-labelledby="page-title">
         <thead>
         <tr>
             <th>Name</th>
@@ -16,7 +22,7 @@
                 <div th:replace="~{common/client-id :: clientId(clientId=${client.clientId()})}"></div>
             </td>
             <td>
-                <a th:href="${'/clients/' + client.clientUid()}">Details</a>
+                <a th:href="${'/clients/' + client.clientUid()}">Details<span class="visually-hidden" th:text="| ${client.prettyName()}|"></span></a>
             </td>
         </tr>
         </tbody>

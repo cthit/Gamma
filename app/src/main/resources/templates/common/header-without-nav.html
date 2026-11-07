@@ -1,27 +1,21 @@
-<div id="alerts">
+<a class="skip-link" href="#main">Skip to main content</a>
+<div id="alerts" class="toasts">
 </div>
-<link rel="stylesheet" th:href="@{/css/no-nav.css}"/>
-<div id="loader-container" data-loading data-loading-class="loading">
-    <progress></progress>
+<div id="loader-container" class="loader" aria-hidden="true" data-loading data-loading-class="loader--active">
+    <div class="loader__bar"></div>
 </div>
-<header id="main-header">
-    <button id="toggle-nav" class="outline contrast"
-            _="on click toggle .show-nav on document.body">
-        Menu
-    </button>
-    <div>
-        <a href="/">
-            <h1>
-                Gamma
-            </h1>
-        </a>
-    </div>
-    <div id="login-container">
+<header class="app-header app-header--standalone">
+    <a class="app-header__brand" href="/">
+        <img class="app-header__logo" src="/img/itlogo.svg" alt="" width="32" height="32"/>
+        <h1 class="app-header__title">Gamma</h1>
+    </a>
+    <div class="app-header__user">
         <th:block sec:authorize="isAuthenticated()">
             <th:block th:if="${#authentication.details instanceof T(it.chalmers.gamma.security.authentication.UserAuthentication)}">
-                <div th:text="|Hey, ${#authentication.details.gammaUser().nick().value()}!|"></div>
-                <form th:action="@{/logout}" th:method="post" >
-                    <button class="outline contrast" data-loading-disable>
+                <span class="app-header__greeting" th:text="|Hey, ${#authentication.details.gammaUser().nick().value()}!|"></span>
+                <form class="app-header__logout" th:action="@{/logout}" th:method="post">
+                    <button class="button button--secondary" data-loading-disable>
+                        <span class="icon icon--logout" aria-hidden="true"></span>
                         Logout
                     </button>
                 </form>

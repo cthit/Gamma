@@ -1,6 +1,11 @@
 <div class="restriction-row">
-    <select class="restriction">
+    <select class="input input--select restriction" aria-label="Super group restriction">
         <option th:each="superGroupKey : ${superGroupKeys}" th:value="${superGroupKey}" th:text="${superGroups.get(superGroupKey)}"></option>
     </select>
-    <button class="outline contrast" _="on click remove closest .restriction-row then call updateNames('restrictions', '.restriction')" type="button">Delete</button>
+    <button class="button button--secondary button--small restriction-row__remove"
+            type="button"
+            aria-label="Delete restriction"
+            _="on click remove closest .restriction-row then call updateNames('restrictions', '.restriction')">
+        Delete
+    </button>
 </div>

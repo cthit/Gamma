@@ -1,5 +1,6 @@
 <th:block th:fragment="text" th:if="${#fields.hasErrors('global')}">
-    <p class="error">
+    <p class="form-error" role="alert">
+        <span class="icon icon--warning" aria-hidden="true"></span>
         <span th:each="err : ${#fields.errors('global')}" th:text="${err}"></span>
     </p>
 </th:block>

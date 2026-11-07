@@ -1,16 +1,14 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            404 - Not Found
+            <h2>404 - Not Found</h2>
         </header>
         <p>
             User with the id: [<span th:text="${id}"></span>] was not found.
         </p>
         <footer>
-            <a href="/groups">
-                <button type="button">Go to all users</button>
-            </a>
+            <a class="button" href="/groups">Go to all users</a>
         </footer>
     </article>
 </main>

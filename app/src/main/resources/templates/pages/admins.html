@@ -1,9 +1,12 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <form th:action="@{/admins}" th:method="put" >
-        <button data-loading-disable>Save</button>
+<main id="main" class="app__main">
+    <form class="app__wide" th:action="@{/admins}" th:method="put" >
+        <div class="toolbar">
+            <h2 class="toolbar__title" id="page-title">Admins</h2>
+            <button class="button" data-loading-disable>Save</button>
+        </div>
         <p th:if="${errorMessage}" th:text="${errorMessage}"></p>
-        <table>
+        <table class="table" aria-labelledby="page-title">
             <thead>
             <tr>
                 <th>Admin</th>
@@ -15,8 +18,9 @@
             <tbody>
             <tr th:each="user : ${users}">
                 <td>
-                    <input type="checkbox"
+                    <input class="checkbox" type="checkbox"
                            th:name="${user.id()}"
+                           th:aria-label="|Admin: ${user.firstName()} ${user.nick()} ${user.lastName()}|"
                            th:checked="${admins.contains(user.id())}"
                     />
                 </td>

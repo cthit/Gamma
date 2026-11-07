@@ -1,6 +1,5 @@
 <article>
-    <header th:text="|Edit ${form.prettyName()}|">>
-    </header>
+    <header><h2 th:text="|Edit ${form.prettyName()}|"></h2></header>
     <form id="edit-super-group" th:object="${form}" th:data-hx-post="@{/super-groups/{superGroupId}(superGroupId=${superGroupId})}" data-hx-target="closest article" data-hx-swap="outerHTML">
         <input type="hidden" name="version" th:value="${form.version}" />
         <input type="hidden" name="_method" value="put" />
@@ -9,13 +8,16 @@
         <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
         <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>
         <div th:replace="~{common/input :: textInput2(field='enDescription', label='English description')}"></div>
-        <select name="type">
-            <option th:each="type : ${types}" th:text="${type}" th:value="${type}" th:selected="${type == form.type}"></option>
-        </select>
+        <label class="field">
+            <span class="field__label">Type</span>
+            <select class="input input--select" name="type">
+                <option th:each="type : ${types}" th:text="${type}" th:value="${type}" th:selected="${type == form.type}"></option>
+            </select>
+        </label>
     </form>
     <footer>
-        <button type="button" data-hx-target="closest article" data-hx-swap="outerHTML" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|" data-loading-disable>Cancel</button>
-        <button form="edit-super-group" data-loading-disable>Save</button>
+        <button class="button button--secondary" type="button" data-hx-target="closest article" data-hx-swap="outerHTML" th:data-hx-get="|/super-groups/${superGroupId}/cancel-edit|" data-loading-disable>Cancel</button>
+        <button class="button" form="edit-super-group" data-loading-disable>Save</button>
     </footer>
 </article>
 <div th:replace="~{common/alert :: success('Super group updated')}"></div>

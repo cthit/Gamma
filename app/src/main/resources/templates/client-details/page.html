@@ -1,77 +1,74 @@
 <header th:replace="~{common/header}"></header>
-<main th:data-hx-headers:inherited="${amIOwner} ? '{&quot;owner&quot;: &quot;true&quot;}' : null">
+<main id="main" class="app__main" th:data-hx-headers:inherited="${amIOwner} ? '{&quot;owner&quot;: &quot;true&quot;}' : null">
     <th:block th:if="${clientSecret != null}">
         <article th:replace="~{client-details/client-credentials}"></article>
     </th:block>
     <article>
         <header>
-           Client details
+           <h2>Client details</h2>
         </header>
-        <ul class="details">
-            <li>
-                <b>Pretty name:</b>
-                <span th:text="${client.prettyName()}"></span>
-            </li>
-            <li>
-                <b>Swedish description:</b>
-                <span th:text="${client.svDescription()}"></span>
-            </li>
-            <li>
-                <b>English description:</b>
-                <span th:text="${client.enDescription()}"></span>
-            </li>
-            <li>
-                <b>Client id:</b>
-                <span th:text="${client.clientId()}"></span>
-            </li>
-            <li>
-                <b>Redirect:</b>
-                <span th:text="${client.webServerRedirectUrl()}"></span>
-            </li>
-            <li th:if="${client.restriction() != null && client.restriction().superGroups().size() > 0}">
-                <b>Super group restrictions:</b>
-                <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}">
-                    <a th:href="|/super-groups/${restrictionSuperGroup.id()}|" th:text="${restrictionSuperGroup.prettyName() + (stat.count == client.restriction().superGroups().size() ? '' : ', ')}"></a>
-                </span>
-            </li>
-            <li th:if="${client.restriction() == null || client.restriction().superGroups().size() == 0}">
-                This client has no restrictions.
-            </li>
-            <li th:if="${owner != null && !amIOwner}">
-                <b>Owned by:</b>
-                <a class="contrast" th:href="|/users/${owner.id()}|">
-                    <span th:text="${owner.nick()}"></span>
-                </a>
-                <th:block th:if="${ownerEmail != null}">
-                    <span> - </span>
-                    <a th:href="${ownerMailto}" th:text="${ownerEmail}"></a>
-                </th:block>
-            </li>
-        </ul>
+        <dl class="key-value">
+            <div class="key-value__row">
+                <dt class="key-value__key">Pretty name</dt>
+                <dd class="key-value__value" th:text="${client.prettyName()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Swedish description</dt>
+                <dd class="key-value__value" th:text="${client.svDescription()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">English description</dt>
+                <dd class="key-value__value" th:text="${client.enDescription()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Client id</dt>
+                <dd class="key-value__value"><code th:text="${client.clientId()}"></code></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Redirect</dt>
+                <dd class="key-value__value" th:text="${client.webServerRedirectUrl()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Super group restrictions</dt>
+                <dd class="key-value__value" th:if="${client.restriction() != null && client.restriction().superGroups().size() > 0}">
+                    <span th:each="restrictionSuperGroup, stat : ${client.restriction().superGroups()}">
+                        <a th:href="|/super-groups/${restrictionSuperGroup.id()}|" th:text="${restrictionSuperGroup.prettyName()}"></a><th:block th:if="${stat.count != client.restriction().superGroups().size()}">, </th:block>
+                    </span>
+                </dd>
+                <dd class="key-value__value" th:if="${client.restriction() == null || client.restriction().superGroups().size() == 0}">
+                    This client has no restrictions.
+                </dd>
+            </div>
+            <div class="key-value__row" th:if="${owner != null && !amIOwner}">
+                <dt class="key-value__key">Owned by</dt>
+                <dd class="key-value__value">
+                    <a th:href="|/users/${owner.id()}|" th:text="${owner.nick()}"></a>
+                    <th:block th:if="${ownerEmail != null}">
+                        <span aria-hidden="true"> - </span>
+                        <a th:href="${ownerMailto}" th:text="${ownerEmail}"></a>
+                    </th:block>
+                </dd>
+            </div>
+        </dl>
         <footer>
             <form data-hx-confirm="Are you sure you want to reset the client secret? The old client secret will be immediately revoked." th:data-hx-post="|/clients/${client.clientUid()}/reset|" data-hx-target="body">
                 <div th:replace="~{common/form-csrf}"></div>
-                <button class="outline contrast" data-loading-disable>Reset client secret</button>
+                <button class="button button--danger" data-loading-disable>Reset client secret</button>
             </form>
             <form data-hx-confirm="Are you sure you want to delete this client?" th:action="|/clients/${clientUid}|" th:method="delete">
-                <button class="outline contrast" data-loading-disable>Delete</button>
+                <button class="button button--danger" data-loading-disable>Delete</button>
             </form>
         </footer>
     </article>
 
     <th:block th:if="${client.apiKey().isPresent()}" th:with="apiKey = ${client.apiKey().get()}">
-        <div class="contents">
-            <article th:replace="~{api-key-details/page :: details(details = true)}"></article>
-        </div>
+        <article th:replace="~{api-key-details/page :: details(details = true)}"></article>
     </th:block>
 
     <th:block th:each="clientAuthority : ${clientAuthorities}">
         <article th:fragment="client-authority-article">
-            <header th:text="${clientAuthority.authorityName()}">
-            </header>
-            <p>
-                Super groups:
-            </p>
+            <header><h2 th:text="${clientAuthority.authorityName()}"></h2></header>
+            <h3>Super groups</h3>
             <p th:if="${clientAuthority.superGroups().size() == 0}">
                 No super groups
             </p>
@@ -80,9 +77,7 @@
                     <a th:href="|/super-groups/${superGroup.id()}|" th:text="${superGroup.prettyName()}"></a>
                 </li>
             </ul>
-            <p>
-                Users:
-            </p>
+            <h3>Users</h3>
             <p th:if="${clientAuthority.users().size() == 0}">
                 No users
             </p>
@@ -97,19 +92,19 @@
                       data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete"/>
-                    <button class="outline contrast" data-loading-disable>Delete</button>
+                    <button class="button button--danger" data-loading-disable>Delete</button>
                 </form>
             </footer>
         </article>
     </th:block>
 
-    <div id="client-authorities-anchor" style="visibility: hidden"></div>
+    <div id="client-authorities-anchor" hidden></div>
 
     <article th:replace="~{client-details/add-authority-to-client}"></article>
 
     <article>
         <header>
-            User approvals
+            <h2>User approvals</h2>
         </header>
         <p th:if="${userApprovals.size() == 0}">
             No users have approved this client yet

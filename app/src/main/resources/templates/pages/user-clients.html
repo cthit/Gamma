@@ -1,6 +1,9 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <table>
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">User clients</h2>
+    </div>
+    <table class="table" aria-labelledby="page-title">
         <thead>
         <tr>
             <th>Name</th>
@@ -21,7 +24,7 @@
                 <a th:if="${client.email() != null}" th:href="${client.mailto()}" th:text="${client.email()}"></a>
             </td>
             <td>
-                <a th:href="${'/clients/' + client.clientUid()}">Details</a>
+                <a th:href="${'/clients/' + client.clientUid()}">Details<span class="visually-hidden" th:text="| ${client.prettyName()}|"></span></a>
             </td>
         </tr>
         </tbody>

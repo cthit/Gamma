@@ -8,14 +8,14 @@
     <meta name="color-scheme" content="light dark" />
     <link rel="shortcut icon" type="image/svg" th:href="@{/img/itlogo.svg}" />
 
-    <link rel="stylesheet" th:href="@{/webjars/picocss__pico/2.1.1/css/pico.green.min.css}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" />
 
     <meta name="htmx-config"
           content='{
             "includeIndicatorCSS": false,
             "history": "reload",
-            "allowEmptySwapAfterOOB": true
+            "allowEmptySwapAfterOOB": true,
+            "defaultSettleDelay": 0
           }'
     >
 
@@ -27,9 +27,9 @@
     <script th:src="@{/js/reorder.js}"></script>
     <script th:src="@{/js/posts-sortable.js}"></script>
 </head>
-<body class="container-fluid"
+<body class="app"
       hx-boost:inherited="true"
-      _="on htmx:after:swap remove .show-nav from document.body"
+      _="on htmx:after:swap remove .app--nav-open from document.body"
       data-loading-delay="500">
     <th:block th:replace="~{__${page}__}"></th:block>
 </body>

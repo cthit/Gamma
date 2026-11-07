@@ -7,7 +7,7 @@ Gamma is a **membership and identity management system** built for [Chalmers IT 
 - **Build:** Gradle 9.5.1 (wrapper)
 - **Database:** PostgreSQL 16+ with Flyway migrations
 - **Cache/Sessions:** Redis 7+
-- **UI:** Thymeleaf + HTMX + Pico CSS
+- **UI:** Thymeleaf + HTMX, styled by a single hand-written stylesheet (`app/src/main/resources/static/css/main.css`, BEM naming)
 - **Auth:** Spring Security, OAuth2 Authorization Server, API keys
 
 

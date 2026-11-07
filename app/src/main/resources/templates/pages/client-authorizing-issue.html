@@ -1,12 +1,11 @@
 <header th:replace="~{common/header-without-nav}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
-        <header th:text="${title}">
-        </header>
+        <header><h2 th:text="${title}"></h2></header>
         <p th:text="${description}"></p>
         <p>
             Read more how to authorize with gamma here:
-            <a target="_blank" href="https://github.com/cthit/Gamma/wiki/Authenticating-With-Gamma">github.com/cthit/Gamma/wiki/Authenticating-With-Gamma</a>
+            <a href="https://github.com/cthit/Gamma/wiki/Authenticating-With-Gamma" target="_blank" rel="noopener noreferrer">github.com/cthit/Gamma/wiki/Authenticating-With-Gamma<span class="icon icon--external" aria-hidden="true"></span><span class="visually-hidden"> (opens in a new tab)</span></a>
         </p>
     </article>
 </main>

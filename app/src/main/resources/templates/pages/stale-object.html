@@ -1,15 +1,15 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            409 - Conflict
+            <h2>409 - Conflict</h2>
         </header>
         <p>
             This item was modified by someone else while you were editing it.
             Reload the page to get the latest version, then apply your changes again.
         </p>
         <footer>
-            <button type="button" _="on click call history.back()">Go back</button>
+            <button class="button button--secondary" type="button" _="on click call history.back()">Go back</button>
         </footer>
     </article>
 </main>

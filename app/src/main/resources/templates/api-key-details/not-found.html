@@ -1,16 +1,14 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            404 - Not Found
+            <h2>404 - Not Found</h2>
         </header>
         <p>
             Api key with the id: [<span th:text="${id}"></span>] was not found.
         </p>
         <footer>
-            <a href="/api-keys">
-                <button type="button">Go to all api keys</button>
-            </a>
+            <a class="button" href="/api-keys">Go to all api keys</a>
         </footer>
     </article>
 </main>

@@ -1,7 +1,17 @@
-<select class="type">
-    <option th:each="type : ${superGroupTypes}" th:value="${type}" th:text="${type}"></option>
-</select>
-<label>
-    <input class="requiresManaged" type="checkbox"/>
-    Requires managed account for access
-</label>
+<div class="super-group-type">
+    <div class="super-group-type__fields">
+        <select class="input input--select type" aria-label="Super group type">
+            <option th:each="type : ${superGroupTypes}" th:value="${type}" th:text="${type}"></option>
+        </select>
+        <label class="choice">
+            <input class="checkbox requiresManaged" type="checkbox"/>
+            <span class="choice__label">Requires managed account for access</span>
+        </label>
+    </div>
+    <button class="button button--secondary button--small super-group-type__remove"
+            type="button"
+            aria-label="Remove new type"
+            _="on click remove closest .super-group-type then call updateNames('superGroupTypes', '.type', '.requiresManaged')">
+        Remove
+    </button>
+</div>

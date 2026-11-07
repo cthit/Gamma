@@ -9,33 +9,36 @@
 
     <article>
         <header>
-            Account scaffold
+            <h2>Account scaffold</h2>
         </header>
         <p>
             Set the super group types from which the information will query from
         </p>
-        <div class="super-group-type row"
+        <div class="super-group-type"
              th:each="type : ${settings_form.superGroupTypes}">
-            <div>
-            <select class="type">
-                <option disabled selected th:value="${type.getType()}" th:text="${type.getType()}"></option>
-            </select>
-            <label>
-                <input class="requiresManaged" type="checkbox" th:checked="${'on'.equals(type.getRequiresManaged())}"/>
-                Requires managed account for access
-            </label>
+            <div class="super-group-type__fields">
+                <select class="input input--select type" aria-label="Super group type">
+                    <option disabled selected th:value="${type.getType()}" th:text="${type.getType()}"></option>
+                </select>
+                <label class="choice">
+                    <input class="checkbox requiresManaged" type="checkbox" th:checked="${'on'.equals(type.getRequiresManaged())}"/>
+                    <span class="choice__label">Requires managed account for access</span>
+                </label>
             </div>
-            <button class="outline contrast"
+            <button class="button button--secondary button--small super-group-type__remove"
                     type="button"
+                    th:aria-label="|Remove ${type.getType()}|"
                     _="on click remove closest .super-group-type then call updateNames('superGroupTypes', '.type', '.requiresManaged')">
                 Remove
             </button>
         </div>
         <footer>
-            <button class="outline contrast" type="button" data-hx-get="/api-keys/new-super-group-type/account-scaffold"
-                    data-hx-target="closest footer" data-hx-swap="beforebegin">Add type
+            <button class="button button--secondary" type="button" data-hx-get="/api-keys/new-super-group-type/account-scaffold"
+                    data-hx-target="closest footer" data-hx-swap="beforebegin">
+                <span class="icon icon--plus" aria-hidden="true"></span>
+                Add type
             </button>
-            <button class="outline contrast" data-loading-disable>Save</button>
+            <button class="button" data-loading-disable>Save</button>
         </footer>
     </article>
 </form>

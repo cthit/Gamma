@@ -73,7 +73,6 @@ dependencies {
             // web dependencies
             "org.webjars.npm:htmx.org:4.0.0",
             "org.webjars.npm:hyperscript.org:0.9.93",
-            "org.webjars.npm:picocss__pico:2.1.1",
             "org.webjars.npm:sortablejs:1.15.7"
     )
 }

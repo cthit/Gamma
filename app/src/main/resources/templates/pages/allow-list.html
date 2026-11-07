@@ -1,34 +1,37 @@
 <header th:replace="~{common/header}"></header>
-<main>
+<main id="main" class="app__main">
     <article>
         <header>
-            Allow new cid
+            <h2>Allow new cid</h2>
         </header>
         <form id="allow-cid-form" th:action="@{/allow-list}" th:method="put" >
             <div th:replace="~{common/input :: textInput(name='cid', label='Cid', errorMessage=${cidInputError}, value=${name})}"></div>
         </form>
         <footer>
-            <button form="allow-cid-form" class="outline contrast" data-loading-disable>Active</button>
+            <button form="allow-cid-form" class="button" data-loading-disable>Active</button>
         </footer>
     </article>
-    <table>
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Allowed cids</h2>
+    </div>
+    <table class="table" aria-labelledby="page-title">
         <thead>
         <tr>
             <th>Cid</th>
-            <th></th>
+            <th><span class="visually-hidden">Actions</span></th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="allowedCid : ${allowList}">
             <td th:text="${allowedCid.cid()}"></td>
-            <td class="table-align-right">
+            <td class="table__cell table__cell--end">
                 <span th:if="${allowedCid.hasActivationCode()}">
                     Has activation code
                 </span>
                 <form th:if="${!allowedCid.hasActivationCode()}" th:data-hx-post="|/allow-list/${allowedCid.cid()}|" data-hx-target="closest tr" data-hx-swap="delete">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
-                    <button class="outline contrast" data-loading-disable>Retract approval</button>
+                    <button class="button button--danger" data-loading-disable>Retract approval</button>
                 </form>
             </td>
         </tr>

@@ -1,8 +1,11 @@
 <header th:replace="~{common/header}"></header>
-<main>
-    <form th:action="@{/gdpr}" th:method="put" >
-        <button data-loading-disable>Save</button>
-        <table>
+<main id="main" class="app__main">
+    <form class="app__wide" th:action="@{/gdpr}" th:method="put" >
+        <div class="toolbar">
+            <h2 class="toolbar__title" id="page-title">Gdpr trained</h2>
+            <button class="button" data-loading-disable>Save</button>
+        </div>
+        <table class="table" aria-labelledby="page-title">
             <thead>
             <tr>
                 <th>Gdpr trained</th>
@@ -14,8 +17,9 @@
             <tbody>
             <tr th:each="user : ${users}">
                 <td>
-                    <input type="checkbox"
+                    <input class="checkbox" type="checkbox"
                            th:name="${user.id()}"
+                           th:aria-label="|Gdpr trained: ${user.firstName()} ${user.nick()} ${user.lastName()}|"
                            th:checked="${gdprTrained.contains(user.id())}"
                     />
                 </td>

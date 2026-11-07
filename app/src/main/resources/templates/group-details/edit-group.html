@@ -1,6 +1,6 @@
 <article>
     <header>
-        Edit group details
+        <h2>Edit group details</h2>
     </header>
     <form id="edit-group"
           th:object="${form}"
@@ -10,48 +10,55 @@
         <input type="hidden" name="version" th:value="${form.version}"/>
         <div th:replace="~{common/input :: textInput2(field='name', label='Name')}"></div>
         <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
-        <label>
-            Super group
-            <select name="superGroupId">
+        <label class="field">
+            <span class="field__label">Super group</span>
+            <select class="input input--select" name="superGroupId">
                 <option th:each="superGroup : ${superGroups}" th:text="${superGroup.prettyName()}"
                         th:value="${superGroup.id()}"
                         th:selected="${superGroup.id() == form.superGroupId}"></option>
             </select>
         </label>
         <div class="member-row" th:each="member, memberStat : *{members}">
-            <hr>
-            <p th:text="${users.get(member.userId)}"></p>
-            <div>
-                <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}"/>
-                <div>
-                    <label>
-                        Post
-                    </label>
-                    <select class="postId" th:field="*{members[__${memberStat.index}__].postId}">
+            <p class="member-row__name" th:text="${users.get(member.userId)}"></p>
+            <input class="userId" type="hidden" th:field="*{members[__${memberStat.index}__].userId}"/>
+            <div class="member-row__fields">
+                <label class="field member-row__field">
+                    <span class="field__label">Post</span>
+                    <select class="input input--select postId" th:field="*{members[__${memberStat.index}__].postId}"
+                            th:attr="aria-invalid=${#fields.hasErrors('members[__${memberStat.index}__]') ? 'true' : null},
+                                    aria-describedby=${#fields.hasErrors('members[__${memberStat.index}__]') ? 'members' + memberStat.index + '-error' : null}">
                         <option th:each="postKey : ${postKeys}" th:value="${postKey}" th:text="${posts.get(postKey)}"></option>
                     </select>
-                    <small th:if="${#fields.hasErrors('members[__${memberStat.index}__]')}" class="error-message" th:errors="*{members[__${memberStat.index}__]}">
-                    </small>
-                </div>
-                <div>
-                    <div th:replace="~{common/input :: textInputWithClassName(field='members[__${memberStat.index}__].unofficialPostName', label='Unofficial post name', className='unofficialPostName')}"></div>
-                </div>
-                <button class="outline contrast" _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')"
-                        type="button">Delete
+                </label>
+                <label class="field member-row__field">
+                    <span class="field__label">Unofficial post name</span>
+                    <input class="input unofficialPostName" type="text" th:field="*{members[__${memberStat.index}__].unofficialPostName}"/>
+                </label>
+                <button class="button button--secondary button--small member-row__remove"
+                        type="button"
+                        th:aria-label="|Delete ${users.get(member.userId)}|"
+                        _="on click remove closest .member-row then call updateNames('members', '.userId', '.postId', '.unofficialPostName')">
+                    Delete
                 </button>
             </div>
+            <small class="field__error member-row__error"
+                   th:id="|members${memberStat.index}-error|"
+                   th:if="${#fields.hasErrors('members[__${memberStat.index}__]')}"
+                   th:errors="*{members[__${memberStat.index}__]}">
+            </small>
         </div>
-        <button class="outline contrast" type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">Add
-            member
+        <button class="button button--secondary" type="button" data-hx-get="/groups/new-member" data-hx-target="this" data-hx-swap="beforebegin">
+            <span class="icon icon--plus" aria-hidden="true"></span>
+            Add member
         </button>
     </form>
     <footer>
         <button type="button"
-                class="outline contrast"
+                class="button button--secondary"
                 th:data-hx-get="|/groups/${groupId}/cancel-edit|"
                 data-hx-target="closest article"
                 data-hx-swap="outerHTML" data-loading-disable>Cancel
         </button>
-        <button form="edit-group" class="outline contrast" data-loading-disable>Save</button>
+        <button form="edit-group" class="button" data-loading-disable>Save</button>
     </footer>
 </article>
