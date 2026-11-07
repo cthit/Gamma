@@ -21,17 +21,24 @@ test("given an admin user when creating a user then the new user is visible in u
   const email = uniqueEmail("usr");
 
   await page.goto(`${gamma.url}/users/create`, { timeout: 30000 });
-  await expect(page.locator("article > header")).toHaveText("Create user", {
+  await expect(
+    page.getByRole("heading", { level: 2, name: "Create user", exact: true }),
+  ).toBeVisible({
     timeout: 10000,
   });
 
-  await page.fill('input[name="firstName"]', "E2E");
-  await page.fill('input[name="lastName"]', "Created");
-  await page.fill('input[name="nick"]', "E2ENick");
-  await page.fill('input[name="cid"]', cid);
-  await page.fill('input[name="email"]', email);
-  await page.fill('input[name="password"]', "password1337");
-  await page.selectOption('select[name="language"]', "EN");
+  await page.getByLabel("First name", { exact: true }).fill("E2E");
+  await page.getByLabel("Last name", { exact: true }).fill("Created");
+  await page.getByLabel("Nick", { exact: true }).fill("E2ENick");
+  await page.getByLabel("Cid", { exact: true }).fill(cid);
+  await page.getByLabel("Email", { exact: true }).fill(email);
+  await page.getByLabel("Password", { exact: true }).fill("password1337");
+  await page
+    .getByRole("combobox", {
+      name: "What language does the user prefer?",
+      exact: true,
+    })
+    .selectOption("EN");
 
   await Promise.all([
     page.waitForURL("**/users/*", { timeout: 15000 }),

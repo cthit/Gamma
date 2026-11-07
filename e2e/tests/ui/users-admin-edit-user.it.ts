@@ -1,6 +1,7 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
+import { articleByHeading, rowWithText } from "../../helpers/a11y";
 
 test("given an admin user when editing another user then updated details are shown", async ({
   page,
@@ -18,8 +19,7 @@ test("given an admin user when editing another user then updated details are sho
   const updatedFirstName = uniqueCid("first");
 
   await page.goto(`${gamma.url}/users`, { timeout: 30000 });
-  await page
-    .locator("tr", { hasText: "jhalpert" })
+  await rowWithText(page, "jhalpert")
     .getByRole("link", { name: "Details" })
     .click();
 
@@ -28,8 +28,8 @@ test("given an admin user when editing another user then updated details are sho
   });
 
   await page.getByRole("button", { name: "Edit user" }).click();
-  await page.fill('input[name="nick"]', updatedNick);
-  await page.fill('input[name="firstName"]', updatedFirstName);
+  await page.getByLabel("Nick", { exact: true }).fill(updatedNick);
+  await page.getByLabel("First name", { exact: true }).fill(updatedFirstName);
 
   await Promise.all([
     page.waitForResponse(
@@ -45,7 +45,10 @@ test("given an admin user when editing another user then updated details are sho
   await expect(page.getByText("User updated")).toBeVisible({
     timeout: 10000,
   });
-  await expect(page.locator("article .tuple")).toContainText(updatedFirstName, {
-    timeout: 10000,
-  });
+  await expect(articleByHeading(page, "User details")).toContainText(
+    updatedFirstName,
+    {
+      timeout: 10000,
+    },
+  );
 });

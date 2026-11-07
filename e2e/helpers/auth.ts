@@ -8,14 +8,16 @@ export async function login(
   expectedNick?: string,
 ): Promise<void> {
   await page.goto(baseUrl, { timeout: 60000 });
-  await expect(page.getByText("Gamma")).toBeVisible({ timeout: 60000 });
+  await expect(page.getByRole("heading", { name: "Gamma" })).toBeVisible({
+    timeout: 60000,
+  });
 
-  await page.fill('input[name="username"]', username);
-  await page.fill('input[name="password"]', password);
+  await page.getByLabel("Cid or email", { exact: true }).fill(username);
+  await page.getByLabel("Password", { exact: true }).fill(password);
 
   await Promise.all([
     page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
-    page.click('button:has-text("Login")'),
+    page.getByRole("button", { name: "Login" }).click(),
   ]);
 
   if (expectedNick) {
@@ -27,7 +29,7 @@ export async function login(
 
 export async function logout(page: Page): Promise<void> {
   await page.getByRole("button", { name: "Logout" }).click();
-  await expect(page.locator('input[name="username"]')).toBeVisible({
+  await expect(page.getByLabel("Cid or email", { exact: true })).toBeVisible({
     timeout: 10000,
   });
 }

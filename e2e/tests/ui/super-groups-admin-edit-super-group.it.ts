@@ -1,6 +1,7 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
+import { articleByHeading } from "../../helpers/a11y";
 
 test("given an admin user when editing a super group then updated details are shown", async ({
   page,
@@ -20,16 +21,18 @@ test("given an admin user when editing a super group then updated details are sh
   const updatedEnDescription = uniqueLabel("E2E Updated Description");
 
   await page.goto(`${gamma.url}/super-groups/create`, { timeout: 30000 });
-  await page.fill('input[name="name"]', name);
-  await page.fill('input[name="prettyName"]', initialPrettyName);
-  await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
-  await page.fill('input[name="enDescription"]', "E2E english description");
+  await page.getByLabel("Name", { exact: true }).fill(name);
+  await page.getByLabel("Pretty name", { exact: true }).fill(initialPrettyName);
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill("E2E svensk beskrivning");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("E2E english description");
 
-  const firstType = await page
-    .locator('select[name="type"] option')
-    .first()
-    .getAttribute("value");
-  await page.selectOption('select[name="type"]', firstType ?? "");
+  await page
+    .getByRole("combobox", { name: "Type", exact: true })
+    .selectOption({ index: 0 });
 
   await Promise.all([
     page.waitForURL("**/super-groups/*", { timeout: 15000 }),
@@ -37,25 +40,22 @@ test("given an admin user when editing a super group then updated details are sh
   ]);
 
   await page.getByRole("button", { name: "Edit" }).click();
-  await expect(page.locator("article > header").first()).toContainText("Edit", {
-    timeout: 10000,
-  });
+  await expect(
+    page.getByRole("heading", { level: 2, name: /^Edit / }),
+  ).toBeVisible({ timeout: 10000 });
 
-  await page.fill('input[name="prettyName"]', updatedPrettyName);
-  await page.fill('input[name="enDescription"]', updatedEnDescription);
+  await page.getByLabel("Pretty name", { exact: true }).fill(updatedPrettyName);
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill(updatedEnDescription);
 
   await page.getByRole("button", { name: "Save" }).click();
 
-  await expect(page.locator("main > article").first()).toContainText(
-    updatedPrettyName,
-    {
-      timeout: 15000,
-    },
-  );
-  await expect(page.locator("main > article").first()).toContainText(
-    updatedEnDescription,
-    {
-      timeout: 15000,
-    },
-  );
+  const superGroupInfo = articleByHeading(page, updatedPrettyName);
+  await expect(superGroupInfo).toContainText(updatedPrettyName, {
+    timeout: 15000,
+  });
+  await expect(superGroupInfo).toContainText(updatedEnDescription, {
+    timeout: 15000,
+  });
 });

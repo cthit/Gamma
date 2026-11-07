@@ -5,6 +5,7 @@ import {
 import { login } from "../../helpers/auth";
 import { uniqueCid, uniqueLabel } from "../../helpers/strings";
 import type { Page } from "@playwright/test";
+import { articleByHeading } from "../../helpers/a11y";
 
 async function submitAuthority(page: Page): Promise<void> {
   await Promise.all([
@@ -15,7 +16,9 @@ async function submitAuthority(page: Page): Promise<void> {
         response.status() >= 200 &&
         response.status() < 400,
     ),
-    page.locator('button[form="create-client-authority"]').click(),
+    articleByHeading(page, "Create client authority")
+      .getByRole("button", { name: "Save", exact: true })
+      .click(),
   ]);
 }
 
@@ -35,10 +38,16 @@ test("given an official client when an admin submits invalid or duplicate author
   const authorityName = uniqueCid("auth");
 
   await page.goto(`${gamma.url}/clients/create`, { timeout: 30000 });
-  await page.fill('input[name="prettyName"]', prettyName);
-  await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
-  await page.fill('input[name="enDescription"]', "E2E english description");
-  await page.fill('input[name="redirectUrl"]', "https://example.org/callback");
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill("E2E svensk beskrivning");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("E2E english description");
+  await page
+    .getByLabel("Redirect url", { exact: true })
+    .fill("https://example.org/callback");
 
   await Promise.all([
     page.waitForURL("**/clients/*", { timeout: 15000 }),
@@ -49,7 +58,7 @@ test("given an official client when an admin submits invalid or duplicate author
     timeout: 10000,
   });
 
-  const authorityInput = page.locator('input[name="authority"]');
+  const authorityInput = page.getByLabel("Authority name", { exact: true });
 
   await authorityInput.fill("A");
   await submitAuthority(page);
@@ -73,9 +82,11 @@ test("given an official client when an admin submits invalid or duplicate author
   await authorityInput.fill(authorityName);
   await submitAuthority(page);
 
-  const authorityHeaders = page
-    .locator("main > article > header")
-    .filter({ hasText: authorityName });
+  const authorityHeaders = page.getByRole("heading", {
+    level: 2,
+    name: authorityName,
+    exact: true,
+  });
 
   await expect(authorityHeaders).toHaveCount(1, { timeout: 10000 });
   await expect(authorityInput).toHaveValue("");

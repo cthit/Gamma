@@ -4,6 +4,7 @@ import {
 } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given an activation code when admin deletes it then it is removed from activation codes", async ({
   page,
@@ -20,20 +21,20 @@ test("given an activation code when admin deletes it then it is removed from act
   const cid = uniqueCid("act").slice(0, 10);
 
   await page.goto(`${gamma.url}/allow-list`, { timeout: 30000 });
-  await page.fill('input[name="cid"]', cid);
+  await page.getByLabel("Cid", { exact: true }).fill(cid);
 
   await Promise.all([
     // The form updates this same URL; wait for persistence before logging out.
-    expect(page.locator("tr", { hasText: cid })).toBeVisible({
+    expect(rowWithText(page, cid)).toBeVisible({
       timeout: 15000,
     }),
-    page.locator('button[form="allow-cid-form"]').click(),
+    page.getByRole("button", { name: "Active", exact: true }).click(),
   ]);
 
   await logout(page);
 
   await page.goto(`${gamma.url}/activate-cid`, { timeout: 30000 });
-  await page.fill('input[name="cid"]', cid);
+  await page.getByLabel("Cid", { exact: true }).fill(cid);
 
   await Promise.all([
     page.waitForURL("**/email-sent", { timeout: 15000 }),
@@ -54,12 +55,12 @@ test("given an activation code when admin deletes it then it is removed from act
 
   await page.goto(`${gamma.url}/activation-codes`, { timeout: 30000 });
 
-  const activationRow = page.locator("tr", { hasText: cid }).first();
+  const activationRow = rowWithText(page, cid).first();
   await expect(activationRow).toBeVisible({ timeout: 10000 });
 
   await activationRow
     .getByRole("button", { name: "Delete activation" })
     .click();
 
-  await expect(page.locator("tr", { hasText: cid })).toHaveCount(0);
+  await expect(rowWithText(page, cid)).toHaveCount(0);
 });

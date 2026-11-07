@@ -22,8 +22,8 @@ test("given an admin user when creating a group then it is visible in groups and
     timeout: 10000,
   });
 
-  await page.fill('input[name="name"]', groupName);
-  await page.fill('input[name="prettyName"]', prettyName);
+  await page.getByLabel("Name", { exact: true }).fill(groupName);
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
 
   await Promise.all([
     page.waitForURL("**/groups/*", { timeout: 15000 }),
@@ -33,5 +33,7 @@ test("given an admin user when creating a group then it is visible in groups and
   await expect(page.getByText(prettyName)).toBeVisible({ timeout: 10000 });
 
   await page.goto(`${gamma.url}/groups`, { timeout: 30000 });
-  await expect(page.getByText(prettyName)).toBeVisible({ timeout: 10000 });
+  await expect(
+    page.getByRole("cell", { name: prettyName, exact: true }),
+  ).toBeVisible({ timeout: 10000 });
 });

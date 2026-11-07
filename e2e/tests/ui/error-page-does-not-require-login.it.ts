@@ -55,8 +55,8 @@ test("given an anonymous user when an error occurs then the error is returned in
   });
   expect(browserResponse?.status()).toBe(400);
   expect(page.url()).not.toContain("/login");
-  await expect(page.locator("main > article > header")).toHaveText(
-    "400 - Bad Request",
-  );
-  await expect(page.locator('input[name="username"]')).toHaveCount(0);
+  await expect(
+    page.getByRole("main").getByRole("heading", { level: 2 }),
+  ).toHaveText("400 - Bad Request");
+  await expect(page.getByLabel("Cid or email", { exact: true })).toHaveCount(0);
 });

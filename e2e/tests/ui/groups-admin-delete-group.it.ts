@@ -18,8 +18,8 @@ test("given an admin user when deleting a created group then the group is remove
   const prettyName = uniqueLabel("E2E Group Delete");
 
   await page.goto(`${gamma.url}/groups/create`, { timeout: 30000 });
-  await page.fill('input[name="name"]', groupName);
-  await page.fill('input[name="prettyName"]', prettyName);
+  await page.getByLabel("Name", { exact: true }).fill(groupName);
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
 
   await Promise.all([
     page.waitForURL("**/groups/*", { timeout: 15000 }),

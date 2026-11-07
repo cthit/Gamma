@@ -21,13 +21,18 @@ test("given a created user when admin deletes the user then it is removed from u
   const email = uniqueEmail("del");
 
   await page.goto(`${gamma.url}/users/create`, { timeout: 30000 });
-  await page.fill('input[name="firstName"]', "Delete");
-  await page.fill('input[name="lastName"]', "Me");
-  await page.fill('input[name="nick"]', "DeleteMe");
-  await page.fill('input[name="cid"]', cid);
-  await page.fill('input[name="email"]', email);
-  await page.fill('input[name="password"]', "password1337");
-  await page.selectOption('select[name="language"]', "EN");
+  await page.getByLabel("First name", { exact: true }).fill("Delete");
+  await page.getByLabel("Last name", { exact: true }).fill("Me");
+  await page.getByLabel("Nick", { exact: true }).fill("DeleteMe");
+  await page.getByLabel("Cid", { exact: true }).fill(cid);
+  await page.getByLabel("Email", { exact: true }).fill(email);
+  await page.getByLabel("Password", { exact: true }).fill("password1337");
+  await page
+    .getByRole("combobox", {
+      name: "What language does the user prefer?",
+      exact: true,
+    })
+    .selectOption("EN");
 
   await Promise.all([
     page.waitForURL("**/users/*", { timeout: 15000 }),

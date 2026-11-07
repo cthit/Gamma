@@ -41,7 +41,7 @@ test("given a signed in session when logging out then protected routes require l
 
   await page.goto(`${gamma.url}/users`, { timeout: 30000 });
 
-  await expect(page.locator('input[name="username"]')).toBeVisible({
+  await expect(page.getByLabel("Cid or email", { exact: true })).toBeVisible({
     timeout: 10000,
   });
   await expect(page).toHaveURL(/\/login/);

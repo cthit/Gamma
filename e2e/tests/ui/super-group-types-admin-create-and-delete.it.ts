@@ -4,6 +4,7 @@ import {
 } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given an admin user when creating and deleting a super group type then the type is removed", async ({
   page,
@@ -24,7 +25,7 @@ test("given an admin user when creating and deleting a super group type then the
     timeout: 10000,
   });
 
-  await page.fill('input[name="type"]', typeName);
+  await page.getByLabel("Type", { exact: true }).fill(typeName);
   await Promise.all([
     page.waitForResponse(
       (response) =>
@@ -36,11 +37,9 @@ test("given an admin user when creating and deleting a super group type then the
     page.getByRole("button", { name: "Save" }).click(),
   ]);
 
-  const detailsLink = page
-    .locator("tr", { hasText: typeName })
-    .getByRole("link", {
-      name: "Details",
-    });
+  const detailsLink = rowWithText(page, typeName).getByRole("link", {
+    name: "Details",
+  });
   await expect(detailsLink).toBeVisible({ timeout: 10000 });
 
   await Promise.all([

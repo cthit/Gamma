@@ -1,5 +1,6 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given an admin user when toggling gdpr trained for a user then the new gdpr state is saved", async ({
   page,
@@ -15,8 +16,8 @@ test("given an admin user when toggling gdpr trained for a user then the new gdp
 
   await page.goto(`${gamma.url}/gdpr`, { timeout: 30000 });
 
-  const userRow = page.locator("tr", { hasText: "Big Tuna" }).first();
-  const checkbox = userRow.locator('input[type="checkbox"]');
+  const userRow = rowWithText(page, "Big Tuna").first();
+  const checkbox = userRow.getByRole("checkbox");
 
   await expect(checkbox).toBeVisible({ timeout: 10000 });
 
@@ -28,10 +29,9 @@ test("given an admin user when toggling gdpr trained for a user then the new gdp
     page.getByRole("button", { name: "Save" }).click(),
   ]);
 
-  const refreshedCheckbox = page
-    .locator("tr", { hasText: "Big Tuna" })
+  const refreshedCheckbox = rowWithText(page, "Big Tuna")
     .first()
-    .locator('input[type="checkbox"]');
+    .getByRole("checkbox");
 
   await expect(refreshedCheckbox).toBeVisible({ timeout: 10000 });
   expect(await refreshedCheckbox.isChecked()).toBe(!wasChecked);

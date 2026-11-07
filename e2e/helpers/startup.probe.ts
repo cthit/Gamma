@@ -75,8 +75,10 @@ test("a cold Gamma serves the login page and its assets", async ({
     });
     const response = await page.goto(gamma.url, { timeout: 60000 });
     expect(response?.status()).toBe(200);
-    await expect(page.locator('input[name="username"]')).toBeVisible();
-    await expect(page.locator('input[name="password"]')).toBeVisible();
+    await expect(
+      page.getByLabel("Cid or email", { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByLabel("Password", { exact: true })).toBeVisible();
     expect(pending.size).toBe(0);
     expect(failures).toEqual([]);
   } finally {

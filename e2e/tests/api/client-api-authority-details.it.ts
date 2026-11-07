@@ -4,6 +4,7 @@ import { login } from "../../helpers/auth";
 import { createUserClientWithApiKeyViaUi } from "../../helpers/client-api";
 import { authorizeClientWithPkce } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { articleByHeading } from "../../helpers/a11y";
 
 const DIGIT = {
   enDescription: "",
@@ -116,16 +117,21 @@ async function createAuthority(
   name: string,
   members: { superGroup: string; user: string },
 ): Promise<void> {
-  await page.fill('input[name="authority"]', name);
+  const authorityForm = articleByHeading(page, "Create client authority");
+  await authorityForm.getByLabel("Authority name", { exact: true }).fill(name);
 
-  await page.getByRole("button", { name: "Add super group authority" }).click();
-  await page
-    .locator("select.authority-super-group-row")
+  await authorityForm
+    .getByRole("button", { name: "Add super group authority" })
+    .click();
+  await authorityForm
+    .getByRole("combobox", { name: "Super group", exact: true })
     .selectOption({ label: members.superGroup });
 
-  await page.getByRole("button", { name: "Add user authority" }).click();
-  await page
-    .locator("select.authority-user-row")
+  await authorityForm
+    .getByRole("button", { name: "Add user authority" })
+    .click();
+  await authorityForm
+    .getByRole("combobox", { name: "User", exact: true })
     .selectOption({ label: members.user });
 
   await Promise.all([
@@ -136,10 +142,10 @@ async function createAuthority(
         response.status() >= 200 &&
         response.status() < 400,
     ),
-    page.locator('button[form="create-client-authority"]').click(),
+    authorityForm.getByRole("button", { name: "Save", exact: true }).click(),
   ]);
 
   await expect(
-    page.locator("article > header", { hasText: name }),
+    page.getByRole("heading", { level: 2, name, exact: true }),
   ).toBeVisible();
 }

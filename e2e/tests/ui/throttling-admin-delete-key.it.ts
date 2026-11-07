@@ -1,12 +1,13 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given a throttling key when admin deletes it then it is removed from throttling", async ({
   page,
   gamma,
 }) => {
   await page.goto(`${gamma.url}/forgot-password`, { timeout: 30000 });
-  await page.fill('input[name="cidOrEmail"]', "jhalpert");
+  await page.getByLabel("Cid or Email", { exact: true }).fill("jhalpert");
 
   await Promise.all([
     page.waitForResponse(
@@ -29,12 +30,15 @@ test("given a throttling key when admin deletes it then it is removed from throt
 
   await page.goto(`${gamma.url}/throttling`, { timeout: 30000 });
 
-  const throttledRow = page.locator("tbody tr").first();
+  const throttledRow = page
+    .getByRole("row")
+    .filter({ has: page.getByRole("button", { name: "Delete" }) })
+    .first();
   await expect(throttledRow).toBeVisible({ timeout: 10000 });
 
-  const key = (await throttledRow.locator("td").first().innerText()).trim();
+  const key = (await throttledRow.getByRole("cell").first().innerText()).trim();
 
   await throttledRow.getByRole("button", { name: "Delete" }).click();
 
-  await expect(page.locator("tr", { hasText: key })).toHaveCount(0);
+  await expect(rowWithText(page, key)).toHaveCount(0);
 });

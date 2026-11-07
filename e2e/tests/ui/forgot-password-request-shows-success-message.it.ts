@@ -6,10 +6,14 @@ test("given a cid when requesting forgot password then reset instructions are sh
 }) => {
   await page.goto(`${gamma.url}/forgot-password`, { timeout: 30000 });
   await expect(
-    page.locator("article > header", { hasText: "Reset password" }),
+    page.getByRole("heading", {
+      level: 2,
+      name: "Reset password",
+      exact: true,
+    }),
   ).toBeVisible({ timeout: 10000 });
 
-  await page.fill('input[name="cidOrEmail"]', "jhalpert");
+  await page.getByLabel("Cid or Email", { exact: true }).fill("jhalpert");
 
   await Promise.all([
     page.waitForResponse(

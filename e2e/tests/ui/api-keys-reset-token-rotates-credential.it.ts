@@ -8,6 +8,7 @@ import {
 } from "../../helpers/api-keys";
 import { login } from "../../helpers/auth";
 import { uniqueLabel } from "../../helpers/strings";
+import { articleByHeading } from "../../helpers/a11y";
 
 test("given an api key when resetting its token then old token is rejected and new token is accepted", async ({
   page,
@@ -52,7 +53,7 @@ test("given an api key when resetting its token then old token is rejected and n
   ]);
 
   await expect(
-    page.locator('article:has-text("Credentials") code').first(),
+    articleByHeading(page, "Credentials").getByRole("code").first(),
   ).not.toHaveText(originalCredentials.apiKeyToken);
 
   const resetCredentials = await readApiKeyCredentials(page);

@@ -5,6 +5,7 @@ import { login } from "../../helpers/auth";
 import { createUserClientWithApiKeyViaUi } from "../../helpers/client-api";
 import { authorizeClientWithPkce, exchangeCode } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { articleByHeading, csrfTokenOf } from "../../helpers/a11y";
 
 // jhalpert and pbeesly are non-admin users in the mock data.
 const OWNER = { cid: "jhalpert", nick: "Big Tuna" };
@@ -46,7 +47,9 @@ test("a non-admin owner can reset the secret of a client that has an api key", a
   ]);
   expect(resetResponse.status()).toBe(200);
 
-  const secret = page.locator('article:has-text("Credentials") code').first();
+  const secret = articleByHeading(page, "Credentials")
+    .getByRole("code")
+    .first();
   await expect(secret).toBeVisible();
   const newSecret = (await secret.innerText()).trim();
   expect(newSecret.length).toBeGreaterThan(0);
@@ -111,7 +114,7 @@ test("a non-admin owner can open and reset the api key of their client", async (
   await page.goto(`${gamma.url}/clients/${client.clientUid}`);
   await Promise.all([
     page.waitForURL(`**/api-keys/${client.apiKeyId}`),
-    page.getByRole("button", { name: "More details" }).click(),
+    page.getByRole("link", { name: "More details" }).click(),
   ]);
   await expect(page.getByText("Api key details")).toBeVisible();
   await expect(page.getByText("403 - Unauthorized")).toHaveCount(0);
@@ -129,7 +132,7 @@ test("a non-admin owner can open and reset the api key of their client", async (
   ]);
   expect(resetResponse.status()).toBe(200);
   await expect(
-    page.locator('article:has-text("Credentials") code').first(),
+    articleByHeading(page, "Credentials").getByRole("code").first(),
   ).toBeVisible();
 
   const reset = await readApiKeyCredentials(page);
@@ -177,9 +180,9 @@ test("another non-admin user cannot open or reset the api key of someone else's 
     await expect(other.getByText("Api key details")).toHaveCount(0);
 
     await other.goto(`${gamma.url}/my-clients/create`);
-    const csrf = await other
-      .locator('#create-my-client input[name="_csrf"]')
-      .inputValue();
+    const csrf = await csrfTokenOf(
+      other.getByLabel("Pretty name", { exact: true }),
+    );
     // Use the other user's valid CSRF token so denial must come from authorization.
     const response = await other.request.post(
       `${gamma.url}/api-keys/${client.apiKeyId}/reset`,

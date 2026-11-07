@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
+import { articleByHeading } from "../../helpers/a11y";
 
 test("oauth2 userinfo returns expected claims for mscott", async ({
   page,
@@ -7,14 +8,16 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
   gamma,
 }) => {
   await page.goto(gamma.url, { timeout: 60000 });
-  await expect(page.getByText("Gamma")).toBeVisible({ timeout: 60000 });
+  await expect(page.getByRole("heading", { name: "Gamma" })).toBeVisible({
+    timeout: 60000,
+  });
 
-  await page.fill('input[name="username"]', "mscott");
-  await page.fill('input[name="password"]', "password1337");
+  await page.getByLabel("Cid or email", { exact: true }).fill("mscott");
+  await page.getByLabel("Password", { exact: true }).fill("password1337");
 
   await Promise.all([
     page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
-    page.click('button:has-text("Login")'),
+    page.getByRole("button", { name: "Login" }).click(),
   ]);
 
   await expect(page.getByText("Hey, Boss!")).toBeVisible({ timeout: 10000 });
@@ -24,12 +27,16 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
     timeout: 10000,
   });
 
-  await page.fill('input[name="prettyName"]', "E2E OIDC Client");
-  await page.fill('input[name="svDescription"]', "E2E svensk beskrivning");
-  await page.fill('input[name="enDescription"]', "E2E english description");
+  await page.getByLabel("Pretty name", { exact: true }).fill("E2E OIDC Client");
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill("E2E svensk beskrivning");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("E2E english description");
   const redirectUri = `${gamma.url}/oauth2/callback`;
-  await page.fill('input[name="redirectUrl"]', redirectUri);
-  await page.check('input[name="emailScope"]');
+  await page.getByLabel("Redirect url", { exact: true }).fill(redirectUri);
+  await page.getByLabel("Include email scope", { exact: true }).check();
 
   await Promise.all([
     page.waitForResponse(
@@ -39,24 +46,23 @@ test("oauth2 userinfo returns expected claims for mscott", async ({
         response.status() >= 200 &&
         response.status() < 400,
     ),
-    page.click('button:has-text("Create")'),
+    page.getByRole("button", { name: "Create" }).click(),
   ]);
 
   await expect(page.getByText("Client details")).toBeVisible({
     timeout: 10000,
   });
-  await expect(
-    page.locator("article header", { hasText: "Credentials" }).first(),
-  ).toBeVisible({ timeout: 10000 });
+  const credentials = articleByHeading(page, "Credentials");
+  await expect(credentials).toBeVisible({ timeout: 10000 });
 
   const clientSecret = (
-    await page
-      .locator('article:has-text("Credentials") code')
-      .first()
-      .innerText()
+    await credentials.getByRole("code").first().innerText()
   ).trim();
   const clientId = (
-    await page.locator('li:has-text("Client id:") span').first().innerText()
+    await articleByHeading(page, "Client details")
+      .getByRole("code")
+      .first()
+      .innerText()
   ).trim();
 
   expect(clientSecret).not.toEqual("");

@@ -1,6 +1,7 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
+import { articleByHeading } from "../../helpers/a11y";
 
 test("given a signed in user when editing profile info then home page shows updated values", async ({
   page,
@@ -15,7 +16,7 @@ test("given a signed in user when editing profile info then home page shows upda
     timeout: 10000,
   });
 
-  await page.fill('input[name="nick"]', updatedNick);
+  await page.getByLabel("Nick", { exact: true }).fill(updatedNick);
 
   await Promise.all([
     page.waitForResponse(
@@ -32,7 +33,8 @@ test("given a signed in user when editing profile info then home page shows upda
     page.getByText("You have successfully edited your information"),
   ).toBeVisible({ timeout: 10000 });
 
-  await expect(
-    page.locator("article", { hasText: "Your information" }),
-  ).toContainText(updatedNick, { timeout: 10000 });
+  await expect(articleByHeading(page, "Your information")).toContainText(
+    updatedNick,
+    { timeout: 10000 },
+  );
 });

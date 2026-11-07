@@ -6,6 +6,7 @@ import {
   exchangeCode,
 } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 test("a restricted client admits a member of its super group and refuses a nonmember", async ({
   page,
@@ -57,7 +58,5 @@ test("a restricted client admits a member of its super group and refuses a nonme
     page.getByRole("button", { name: "Authorize", exact: true }),
   ).toHaveCount(0);
   await page.goto(`${gamma.url}/me/accepted-clients`);
-  await expect(
-    page.locator("tr", { hasText: "Restricted client" }),
-  ).toHaveCount(0);
+  await expect(rowWithText(page, "Restricted client")).toHaveCount(0);
 });

@@ -112,8 +112,8 @@ test("given an OAuth access token when an OAuth endpoint fails then the error st
     timeout: 30000,
   });
   expect(browserResponse?.status()).toBe(400);
-  await expect(page.locator("main > article > header")).toHaveText(
-    "400 - Bad Request",
-  );
+  await expect(
+    page.getByRole("main").getByRole("heading", { level: 2 }),
+  ).toHaveText("400 - Bad Request");
   await expect(page.getByText("Hey, Boss!")).toBeVisible();
 });

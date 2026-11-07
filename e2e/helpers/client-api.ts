@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { articleByHeading } from "./a11y";
 
 export interface ClientApiCredentials {
   clientUid: string;
@@ -21,12 +22,16 @@ export async function createUserClientWithApiKeyViaUi(
 
   const redirectUri = `${baseUrl}/oauth2/callback`;
 
-  await page.fill('input[name="prettyName"]', prettyName);
-  await page.fill('input[name="svDescription"]', "API snapshot sv description");
-  await page.fill('input[name="enDescription"]', "API snapshot en description");
-  await page.fill('input[name="redirectUrl"]', redirectUri);
-  await page.check('input[name="generateApiKey"]');
-  await page.check('input[name="emailScope"]');
+  await page.getByLabel("Pretty name", { exact: true }).fill(prettyName);
+  await page
+    .getByLabel("Swedish description", { exact: true })
+    .fill("API snapshot sv description");
+  await page
+    .getByLabel("English description", { exact: true })
+    .fill("API snapshot en description");
+  await page.getByLabel("Redirect url", { exact: true }).fill(redirectUri);
+  await page.getByLabel("Generate api key", { exact: true }).check();
+  await page.getByLabel("Include email scope", { exact: true }).check();
 
   await Promise.all([
     page.waitForResponse(
@@ -44,19 +49,22 @@ export async function createUserClientWithApiKeyViaUi(
   });
 
   const clientId = (
-    await page.locator('li:has-text("Client id:") span').first().innerText()
+    await articleByHeading(page, "Client details")
+      .getByRole("code")
+      .first()
+      .innerText()
   ).trim();
   const clientSecret = (
-    await page
-      .locator('article:has-text("Credentials") code')
+    await articleByHeading(page, "Credentials")
+      .getByRole("code")
       .first()
       .innerText()
   ).trim();
   await page.waitForURL(/\/clients\/[0-9a-f-]+$/);
   const clientUid = new URL(page.url()).pathname.split("/").at(-1)!;
   const authorizationHeader = (
-    await page
-      .locator('article:has-text("Credentials") code')
+    await articleByHeading(page, "Credentials")
+      .getByRole("code")
       .filter({ hasText: "pre-shared" })
       .first()
       .innerText()

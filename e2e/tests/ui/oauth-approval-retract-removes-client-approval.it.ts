@@ -6,6 +6,7 @@ import {
   exchangeCode,
 } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 test("given an approved client when retracting approval then it is removed from accepted clients", async ({
   page,
@@ -48,17 +49,17 @@ test("given an approved client when retracting approval then it is removed from 
 
   await page.goto(`${gamma.url}/me/accepted-clients`, { timeout: 30000 });
 
-  const approvedRow = page.locator("tr", { hasText: prettyName }).first();
+  const approvedRow = rowWithText(page, prettyName).first();
   await expect(approvedRow).toBeVisible({ timeout: 10000 });
 
   await approvedRow
     .getByRole("button", { name: "Retract approval" })
     .click({ timeout: 10000 });
 
-  await expect(page.locator("tr", { hasText: prettyName })).toHaveCount(0);
+  await expect(rowWithText(page, prettyName)).toHaveCount(0);
 
   await page.reload({ timeout: 15000 });
-  await expect(page.locator("tr", { hasText: prettyName })).toHaveCount(0);
+  await expect(rowWithText(page, prettyName)).toHaveCount(0);
   const renewedGrant = await authorizeClientWithPkce(
     page,
     gamma.url,

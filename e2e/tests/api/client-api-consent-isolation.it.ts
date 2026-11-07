@@ -3,6 +3,7 @@ import { login } from "../../helpers/auth";
 import { createUserClientWithApiKeyViaUi } from "../../helpers/client-api";
 import { authorizeClientWithPkce } from "../../helpers/oauth";
 import { uniqueLabel } from "../../helpers/strings";
+import { rowWithText } from "../../helpers/a11y";
 
 const OWNER_ID = "bc605869-9a4d-46ec-8a29-d00819d4c195";
 const OTHER_ID = "ec8987d7-4087-461d-bed5-9365086b6e3b";
@@ -74,11 +75,10 @@ test("client API exposes only approving users and withdraws access when approval
   }
 
   await page.goto(`${gamma.url}/me/accepted-clients`);
-  await page
-    .locator("tr", { hasText: name })
+  await rowWithText(page, name)
     .getByRole("button", { name: "Retract approval" })
     .click();
-  await expect(page.locator("tr", { hasText: name })).toHaveCount(0);
+  await expect(rowWithText(page, name)).toHaveCount(0);
   expect(
     (
       await request.get(`${gamma.url}/api/client/v1/users/${OWNER_ID}`, options)
