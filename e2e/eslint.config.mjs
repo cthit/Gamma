@@ -52,25 +52,45 @@ const accessibleLocators = {
       create(context) {
         const services = context.sourceCode.parserServices;
         const checker = services.program.getTypeChecker();
+        // page.click and page["click"] (or page[`click`]) name the same method.
+        const methodName = (node) => {
+          if (!node.computed) {
+            return node.property.type === "Identifier"
+              ? node.property.name
+              : null;
+          }
+          if (node.property.type === "Literal") {
+            return typeof node.property.value === "string"
+              ? node.property.value
+              : null;
+          }
+          if (
+            node.property.type === "TemplateLiteral" &&
+            node.property.expressions.length === 0
+          ) {
+            return node.property.quasis[0].value.cooked;
+          }
+          return null;
+        };
+        // A value typed Page | Frame, or Page & Something, is still a page.
+        const isPageOrFrame = (type) => {
+          if (type.isUnionOrIntersection()) {
+            return type.types.some(isPageOrFrame);
+          }
+          const typeName = (type.aliasSymbol ?? type.getSymbol())?.getName();
+          return typeName === "Page" || typeName === "Frame";
+        };
         return {
           "CallExpression > MemberExpression.callee"(node) {
-            if (
-              node.computed ||
-              node.property.type !== "Identifier" ||
-              !SELECTOR_METHODS.has(node.property.name)
-            ) {
+            const name = methodName(node);
+            if (name === null || !SELECTOR_METHODS.has(name)) {
               return;
             }
             const type = checker.getTypeAtLocation(
               services.esTreeNodeToTSNodeMap.get(node.object),
             );
-            const typeName = (type.aliasSymbol ?? type.getSymbol())?.getName();
-            if (typeName === "Page" || typeName === "Frame") {
-              context.report({
-                node,
-                messageId: "selector",
-                data: { name: node.property.name },
-              });
+            if (isPageOrFrame(type)) {
+              context.report({ node, messageId: "selector", data: { name } });
             }
           },
         };
