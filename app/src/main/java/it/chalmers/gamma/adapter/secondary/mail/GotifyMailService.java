@@ -52,6 +52,15 @@ public class GotifyMailService implements MailService {
       return;
     }
 
+    send(email, subject, body);
+  }
+
+  @Override
+  public boolean sendSystemMail(String email, String subject, String body) {
+    return send(email, subject, body);
+  }
+
+  private boolean send(String email, String subject, String body) {
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -64,8 +73,10 @@ public class GotifyMailService implements MailService {
     RestTemplate restTemplate = new RestTemplate();
     try {
       restTemplate.postForEntity(this.gotifyURL + "/mail", entity, String.class);
+      return true;
     } catch (RestClientException e) {
       LOGGER.error(e.getMessage());
+      return false;
     }
   }
 }

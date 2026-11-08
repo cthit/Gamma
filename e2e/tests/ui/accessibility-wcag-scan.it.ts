@@ -24,6 +24,8 @@ const signedInPages = [
   { name: "admins", path: "/admins" },
   { name: "gdpr", path: "/gdpr" },
   { name: "allow list", path: "/allow-list" },
+  { name: "data deletion", path: "/data-deletion" },
+  { name: "delete your account", path: "/delete-your-account" },
   { name: "group not found", path: `/groups/${missingId}` },
 ];
 

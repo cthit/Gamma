@@ -8,12 +8,14 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.approval.ClientApprovalsRepository;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.datadeletion.DataDeletionRecorder;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import jakarta.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,16 +28,19 @@ public class UserFacade extends Facade {
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
   private final ClientApprovalsRepository clientApprovalsRepository;
+  private final DataDeletionRecorder dataDeletionRecorder;
 
   public UserFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
       GroupRepository groupRepository,
-      ClientApprovalsRepository clientApprovalsRepository) {
+      ClientApprovalsRepository clientApprovalsRepository,
+      DataDeletionRecorder dataDeletionRecorder) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
     this.clientApprovalsRepository = clientApprovalsRepository;
+    this.dataDeletionRecorder = dataDeletionRecorder;
   }
 
   public Optional<UserDTO> get(UUID id) {
@@ -82,10 +87,14 @@ public class UserFacade extends Facade {
     this.userRepository.setPassword(new UserId(id), new UnencryptedPassword(newPassword));
   }
 
+  @Transactional
   public void deleteUser(UUID id) {
     accessGuard.require(isAdmin());
 
     try {
+      this.userRepository
+          .get(new UserId(id))
+          .ifPresent(this.dataDeletionRecorder::recordAccountDeletion);
       this.userRepository.delete(new UserId(id));
     } catch (UserRepository.UserNotFoundException e) {
       e.printStackTrace();

@@ -13,6 +13,7 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -135,6 +136,24 @@ public class ClientRepositoryAdapter implements ClientRepository {
   public void deleteUserApproval(ClientUid clientUid, UserId userId) {
     this.userApprovalJpaRepository.deleteById_Client_ClientUidAndId_User_Id(
         clientUid.value(), userId.value());
+  }
+
+  @Override
+  public Optional<Email> getUserOwnerEmail(ClientUid clientUid) {
+    return this.clientJpaRepository
+        .findById(clientUid.value())
+        .map(client -> client.createdBy)
+        .flatMap(this.userJpaRepository::findEmailById)
+        .map(Email::new);
+  }
+
+  @Override
+  public boolean isUserOwnerLocked(ClientUid clientUid) {
+    return this.clientJpaRepository
+        .findById(clientUid.value())
+        .map(client -> client.createdBy)
+        .flatMap(this.userJpaRepository::findLockedById)
+        .orElse(false);
   }
 
   @Override

@@ -1,0 +1,125 @@
+<header th:replace="~{common/header}"></header>
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="page-title">Data deletion requests</h2>
+    </div>
+    <p>
+        A user has deleted their account, or retracted their approval of an official client.
+        Each request must be handled within one month, as required by the GDPR.
+        Make sure the official client has deleted the data it has about the user, then clear the request.
+        Clearing it removes the cid and the client name. The ids are kept for one year as a record that the data was deleted.
+    </p>
+    <table class="table" aria-labelledby="page-title">
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Client</th>
+            <th>Reason</th>
+            <th>Deadline</th>
+            <th><span class="visually-hidden">Actions</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${openRequests}">
+            <td>
+                <strong th:text="${request.cid()}"></strong>
+                <br/>
+                <code th:text="${request.userId()}"></code>
+            </td>
+            <td>
+                <span th:text="${request.clientName()}"></span>
+                <br/>
+                <code th:text="${request.clientUid()}"></code>
+            </td>
+            <td>
+                <span th:text="${request.reason() == 'ACCOUNT_DELETED' ? 'Account deleted' : 'Approval retracted'}"></span>
+                on <time th:datetime="${request.createdOn()}" th:text="${request.createdOn()}"></time>
+                <th:block th:if="${request.reApproved()}">
+                    <br/>
+                    <strong>Approved the client again on <time th:datetime="${request.reApprovedOn()}" th:text="${request.reApprovedOn()}"></time></strong>
+                </th:block>
+            </td>
+            <td>
+                <time th:datetime="${request.deadline()}" th:text="${request.deadline()}"></time>
+                <br/>
+                <strong class="data-deletion__status data-deletion__status--overdue"
+                        th:if="${request.overdue()}"
+                        th:text="|Overdue by ${-request.daysLeft()} ${-request.daysLeft() == 1 ? 'day' : 'days'}|"></strong>
+                <span th:if="${!request.overdue() && request.daysLeft() == 0}"
+                      class="data-deletion__status">Due today</span>
+                <span th:if="${request.daysLeft() > 0}"
+                      th:text="|${request.daysLeft()} ${request.daysLeft() == 1 ? 'day' : 'days'} left|"></span>
+            </td>
+            <td class="table__cell table__cell--end">
+                <form th:action="|/data-deletion/requests/${request.id()}/clear|"
+                      th:method="post"
+                      th:data-hx-confirm="|Has ${request.clientName()} deleted the data about ${request.cid()}? The cid and the client name will be removed from the request.|">
+                    <button class="button button--danger"
+                            th:aria-label="|Clear the request for ${request.cid()} in ${request.clientName()}|"
+                            data-loading-disable>Clear</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <p th:if="${openRequests.isEmpty()}">There are no open requests.</p>
+
+    <article>
+        <header>
+            <h2 id="recipients-title">Daily email</h2>
+        </header>
+        <p>
+            While there are open requests, these addresses get an email every day with the deadlines.
+        </p>
+        <p class="callout callout--danger" th:if="${recipients.isEmpty()}">
+            No one gets the email. Add at least one address.
+        </p>
+        <ul th:if="${!recipients.isEmpty()}" aria-labelledby="recipients-title" class="data-deletion__recipients">
+            <li th:each="recipient : ${recipients}" class="data-deletion__recipient">
+                <span th:text="${recipient}"></span>
+                <form th:action="@{/data-deletion/recipients}" th:method="delete">
+                    <input type="hidden" name="email" th:value="${recipient}"/>
+                    <button class="button button--secondary button--small"
+                            th:aria-label="|Remove ${recipient}|"
+                            data-loading-disable>Remove</button>
+                </form>
+            </li>
+        </ul>
+        <form id="add-recipient-form" th:action="@{/data-deletion/recipients}" th:method="put">
+            <div th:replace="~{common/input :: textInput(name='email', label='Email', errorMessage=${emailError}, value=${email})}"></div>
+        </form>
+        <footer>
+            <button form="add-recipient-form" class="button" data-loading-disable>Add</button>
+        </footer>
+    </article>
+
+    <div class="toolbar">
+        <h2 class="toolbar__title" id="cleared-title">Cleared requests</h2>
+    </div>
+    <p>Removed one year after they were cleared.</p>
+    <table class="table" aria-labelledby="cleared-title">
+        <thead>
+        <tr>
+            <th>User id</th>
+            <th>Client uid</th>
+            <th>Reason</th>
+            <th>Cleared</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="request : ${clearedRequests}">
+            <td><code th:text="${request.userId()}"></code></td>
+            <td><code th:text="${request.clientUid()}"></code></td>
+            <td>
+                <span th:text="${request.reason() == 'ACCOUNT_DELETED' ? 'Account deleted' : 'Approval retracted'}"></span>
+                on <time th:datetime="${request.createdOn()}" th:text="${request.createdOn()}"></time>
+            </td>
+            <td>
+                <time th:datetime="${request.clearedOn()}" th:text="${request.clearedOn()}"></time>
+                <br/>
+                <span th:text="${request.clearedByName() != null ? 'by ' + request.clearedByName() : 'by a deleted admin'}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>

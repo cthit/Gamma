@@ -12,6 +12,7 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestriction;
 import it.chalmers.gamma.app.client.domain.restriction.ClientRestrictionId;
+import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
@@ -202,6 +203,22 @@ public class ClientFacade extends Facade {
     }
 
     return Optional.empty();
+  }
+
+  public boolean isClientOwnerLocked(String clientId) {
+    accessGuard.require(isSignedIn());
+
+    Client client = this.clientRepository.get(new ClientId(clientId)).orElseThrow();
+
+    return this.clientRepository.isUserOwnerLocked(client.clientUid());
+  }
+
+  public Optional<String> getClientOwnerEmail(String clientId) {
+    accessGuard.require(isSignedIn());
+
+    Client client = this.clientRepository.get(new ClientId(clientId)).orElseThrow();
+
+    return this.clientRepository.getUserOwnerEmail(client.clientUid()).map(Email::value);
   }
 
   public record NewClientRestrictions(List<UUID> superGroups) {}

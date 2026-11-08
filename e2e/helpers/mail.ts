@@ -56,14 +56,9 @@ function unquoteGoString(quoted: string): string {
   return Buffer.from(bytes).toString("utf8");
 }
 
-export function latestMailLink(
-  logs: string,
-  baseUrl: string,
-  recipient: string,
-  pathname: MailPath,
-): string | undefined {
+function mailRecords(logs: string): Map<string, string>[] | undefined {
   const marker = /Sending mail:\s*gotify\.Mail\{/g;
-  let latest: string | undefined;
+  const records: Map<string, string>[] = [];
   while (marker.exec(logs) !== null) {
     const start = marker.lastIndex;
     let depth = 1;
@@ -93,10 +88,23 @@ export function latestMailLink(
     for (const field of record.matchAll(
       /\b(\w+):\s*("(?:[^"\\]|\\[\s\S])*")/g,
     )) {
-      if (field[1] === "To" || field[1] === "Body") {
+      if (field[1] === "To" || field[1] === "Subject" || field[1] === "Body") {
         fields.set(field[1], unquoteGoString(field[2]!));
       }
     }
+    records.push(fields);
+  }
+  return records;
+}
+
+export function latestMailLink(
+  logs: string,
+  baseUrl: string,
+  recipient: string,
+  pathname: MailPath,
+): string | undefined {
+  let latest: string | undefined;
+  for (const fields of mailRecords(logs) ?? []) {
     if (fields.get("To") !== recipient) continue;
     for (const link of (fields.get("Body") ?? "").matchAll(
       /https?:\/\/[^\s<>"']+/g,
@@ -112,6 +120,56 @@ export function latestMailLink(
   return latest;
 }
 
+export interface Mail {
+  subject: string;
+  body: string;
+}
+
+export function latestMail(logs: string, recipient: string): Mail | undefined {
+  let latest: Mail | undefined;
+  for (const fields of mailRecords(logs) ?? []) {
+    if (fields.get("To") === recipient) {
+      latest = {
+        subject: fields.get("Subject") ?? "",
+        body: fields.get("Body") ?? "",
+      };
+    }
+  }
+  return latest;
+}
+
+async function gotifyLogs(
+  gotify: Pick<StartedTestContainer, "getId">,
+  deadline: number,
+): Promise<string> {
+  // Read a finite snapshot, not `docker logs --follow`. execFile buffers
+  // partial stdout chunks with a UTF-8 decoder and closes its pipe listeners
+  // when the process exits. Its timeout kills a stuck reader as well.
+  const { stdout } = await execFileAsync("docker", ["logs", gotify.getId()], {
+    encoding: "utf8",
+    timeout: Math.max(1, Math.ceil(deadline - performance.now())),
+    killSignal: "SIGKILL",
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  return stdout;
+}
+
+export async function waitForMail(
+  gotify: Pick<StartedTestContainer, "getId">,
+  recipient: string,
+  timeoutMs = 15000,
+): Promise<Mail> {
+  const deadline = performance.now() + timeoutMs;
+  while (performance.now() < deadline) {
+    const mail = latestMail(await gotifyLogs(gotify, deadline), recipient);
+    if (mail) return mail;
+    await delay(Math.max(0, Math.min(200, deadline - performance.now())));
+  }
+  throw new Error(
+    `No mail for ${recipient} in Gotify logs within ${timeoutMs}ms`,
+  );
+}
+
 export async function waitForMailLink(
   gotify: Pick<StartedTestContainer, "getId">,
   baseUrl: string,
@@ -121,15 +179,7 @@ export async function waitForMailLink(
 ): Promise<string> {
   const deadline = performance.now() + timeoutMs;
   while (performance.now() < deadline) {
-    // Read a finite snapshot, not `docker logs --follow`. execFile buffers
-    // partial stdout chunks with a UTF-8 decoder and closes its pipe listeners
-    // when the process exits. Its timeout kills a stuck reader as well.
-    const { stdout } = await execFileAsync("docker", ["logs", gotify.getId()], {
-      encoding: "utf8",
-      timeout: Math.max(1, Math.ceil(deadline - performance.now())),
-      killSignal: "SIGKILL",
-      maxBuffer: 4 * 1024 * 1024,
-    });
+    const stdout = await gotifyLogs(gotify, deadline);
     const link = latestMailLink(stdout, baseUrl, recipient, pathname);
     if (link) return link;
     await delay(Math.max(0, Math.min(200, deadline - performance.now())));

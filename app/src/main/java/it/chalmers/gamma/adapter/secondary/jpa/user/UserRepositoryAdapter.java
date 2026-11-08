@@ -70,6 +70,11 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
+  public void lockForDeletion(UserId userId) {
+    this.repository.lockForUpdate(userId.value());
+  }
+
+  @Override
   public List<GammaUser> getAll() {
     return this.repository.findAll().stream()
         .map(this.converter::toDomain)

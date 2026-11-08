@@ -13,6 +13,8 @@ public interface UserRepository {
 
   void delete(UserId userId) throws UserNotFoundException;
 
+  void lockForDeletion(UserId userId);
+
   List<GammaUser> getAll();
 
   Optional<GammaUser> get(UserId userId);

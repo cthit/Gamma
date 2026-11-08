@@ -331,9 +331,10 @@ article ul:not([class]) li::marker {
     );
     display: grid;
     grid-template-columns: var(--nav-width) minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
     grid-template-areas:
         "header header"
+        "nav banner"
         "nav main";
     min-height: 100vh;
     min-height: 100dvh;
@@ -559,10 +560,11 @@ article ul:not([class]) li::marker {
     .app {
         background-image: none;
         grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto auto auto 1fr;
         grid-template-areas:
             "header"
             "nav"
+            "banner"
             "main";
     }
 
@@ -1034,6 +1036,87 @@ article .table {
 
 .sortable-ghost {
     opacity: 0.4;
+}
+
+
+.action-required {
+    grid-area: banner;
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+    justify-self: center;
+    width: calc(100% - 2 * var(--space-5));
+    max-width: var(--content-width);
+    margin-top: var(--space-6);
+    padding: var(--space-5);
+    border: 2px solid var(--color-danger);
+    border-left-width: 8px;
+    border-radius: var(--radius-lg);
+    background: var(--color-danger-soft);
+    color: var(--color-danger-text);
+}
+
+.app:has(.action-required) .app__main {
+    padding-top: var(--space-5);
+}
+
+.action-required__icon {
+    flex: none;
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.action-required__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+
+.action-required__title {
+    margin: 0;
+    color: inherit;
+    font-size: 1.375rem;
+}
+
+.action-required__content > p {
+    margin: 0;
+}
+
+.action-required__content > .button {
+    margin-top: var(--space-2);
+}
+
+@media (max-width: 48rem) {
+    .action-required {
+        width: calc(100% - 2 * var(--space-4));
+        margin-top: var(--space-5);
+        padding: var(--space-4);
+    }
+}
+
+
+.table time {
+    white-space: nowrap;
+}
+
+.data-deletion__status--overdue {
+    color: var(--color-danger-text);
+}
+
+.data-deletion__recipients {
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    list-style: none;
+}
+
+.data-deletion__recipient {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
 }
 
 /* Callout: an inline message in the page. -------------------------------- */

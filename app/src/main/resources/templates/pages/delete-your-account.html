@@ -7,6 +7,34 @@
         <p>
             Deleting your account can't be reversed.
         </p>
+        <section th:if="${!officialClients.isEmpty()}" aria-labelledby="official-clients-heading">
+            <h3 id="official-clients-heading">Official clients you have approved</h3>
+            <ul>
+                <li th:each="client : ${officialClients}" th:text="${client}"></li>
+            </ul>
+            <p>
+                Gamma's administrators will make sure that these clients delete the data they have about you.
+                Until they have confirmed that for a client, Gamma keeps your user id, your cid and the name of that client.
+                The deadline for this is one month after you delete your account.
+                When they have confirmed it, your cid and the client name are removed.
+                Your user id and the id of the client are then kept for one year, as a record that your data was deleted.
+            </p>
+        </section>
+        <section th:if="${!clientOwners.isEmpty()}" aria-labelledby="unofficial-clients-heading">
+            <h3 id="unofficial-clients-heading">Clients made by other users</h3>
+            <p>
+                These clients are not official, so Gamma can't make sure they delete your data.
+                If you want them to, email their owners before you delete your account.
+            </p>
+            <ul>
+                <li th:each="owner : ${clientOwners}">
+                    <strong th:text="${owner.name()}"></strong>
+                    <span th:text="|owns ${#strings.listJoin(owner.clients(), ', ')}|"></span>
+                    <br/>
+                    <a th:href="${owner.mailto()}" th:text="|Email ${owner.email()}|"></a>
+                </li>
+            </ul>
+        </section>
         <form th:object="${form}" id="delete-account" th:action="@{/delete-your-account}" th:method="delete">
             <th:block th:with="passwordPurpose='current-password'">
                 <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Confirm password')}"></div>

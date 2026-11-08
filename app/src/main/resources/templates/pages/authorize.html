@@ -8,6 +8,10 @@
                 Warning! This application you are authorizing Gamma with is not an approved, official client.
             </p>
             <p th:text="'It is created, and owned by ' + ${userOwner.name()}"></p>
+            <p th:if="${userOwner.email() != null}">
+                If you have questions about it, email the owner at
+                <a th:href="${userOwner.mailto()}" th:text="${userOwner.email()}"></a>.
+            </p>
         </div>
 
         <ul class="checklist">
