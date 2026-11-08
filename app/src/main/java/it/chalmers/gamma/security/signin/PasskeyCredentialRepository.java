@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import org.jspecify.annotations.Nullable;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.web.webauthn.api.Bytes;
 import org.springframework.security.web.webauthn.api.CredentialRecord;
@@ -17,16 +18,19 @@ public class PasskeyCredentialRepository implements UserCredentialRepository {
 
   private final JdbcUserCredentialRepository delegate;
   private final JdbcOperations jdbcOperations;
+  private final ObjectProvider<PasskeyRegistrationGuard> registrationGuard;
 
-  public PasskeyCredentialRepository(JdbcOperations jdbcOperations) {
+  public PasskeyCredentialRepository(
+      JdbcOperations jdbcOperations, ObjectProvider<PasskeyRegistrationGuard> registrationGuard) {
     this.delegate = new JdbcUserCredentialRepository(jdbcOperations);
     this.jdbcOperations = jdbcOperations;
+    this.registrationGuard = registrationGuard;
   }
 
   @Override
   public void save(CredentialRecord record) {
     if (Objects.equals(record.getCreated(), record.getLastUsed())) {
-      this.delegate.save(record);
+      this.registrationGuard.getObject().register(() -> this.delegate.save(record));
       return;
     }
 

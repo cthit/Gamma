@@ -4,6 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import java.util.Collections;
 import java.util.UUID;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,8 +36,9 @@ public class PasskeyConfig {
   }
 
   @Bean
-  public UserCredentialRepository userCredentialRepository(JdbcOperations jdbcOperations) {
-    return new PasskeyCredentialRepository(jdbcOperations);
+  public UserCredentialRepository userCredentialRepository(
+      JdbcOperations jdbcOperations, ObjectProvider<PasskeyRegistrationGuard> registrationGuard) {
+    return new PasskeyCredentialRepository(jdbcOperations, registrationGuard);
   }
 
   @Bean

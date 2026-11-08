@@ -85,6 +85,11 @@ public class SignInAuthorizationManagers {
         .orElse(true);
   }
 
+  public boolean mayAddPasskeyNow(Authentication authentication) {
+    AuthorizationResult result = mayAddPasskey().authorize(() -> authentication, null);
+    return result != null && result.isGranted();
+  }
+
   public boolean isSetupStillAllowed(SignInSetupAuthenticationToken setup) {
     if (setup.getPrincipal().isExpired()) {
       return false;

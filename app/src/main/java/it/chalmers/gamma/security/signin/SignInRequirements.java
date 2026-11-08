@@ -68,6 +68,13 @@ public class SignInRequirements {
     return Optional.of(methods);
   }
 
+  public static void forget(String name) {
+    RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+    if (attributes != null) {
+      attributes.removeAttribute(REQUEST_ATTRIBUTE + "." + name, RequestAttributes.SCOPE_REQUEST);
+    }
+  }
+
   public record UserSignInMethods(
       UserId userId,
       boolean admin,
