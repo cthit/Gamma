@@ -25,6 +25,13 @@ public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntity
       fetch = FetchType.EAGER)
   protected Set<ClientAuthoritySuperGroupEntity> superGroupEntityList;
 
+  @OneToMany(
+      mappedBy = "id.clientAuthority",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true,
+      fetch = FetchType.EAGER)
+  protected Set<ClientAuthoritySuperGroupPostEntity> superGroupPostEntityList;
+
   @EmbeddedId private ClientAuthorityEntityPK id;
 
   protected ClientAuthorityEntity() {}
@@ -33,6 +40,7 @@ public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntity
     this.id = new ClientAuthorityEntityPK(client, name);
     this.userEntityList = new HashSet<>();
     this.superGroupEntityList = new HashSet<>();
+    this.superGroupPostEntityList = new HashSet<>();
   }
 
   @Override
@@ -46,5 +54,9 @@ public class ClientAuthorityEntity extends ImmutableEntity<ClientAuthorityEntity
 
   public List<ClientAuthoritySuperGroupEntity> getSuperGroups() {
     return superGroupEntityList.stream().toList();
+  }
+
+  public List<ClientAuthoritySuperGroupPostEntity> getSuperGroupPosts() {
+    return superGroupPostEntityList.stream().toList();
   }
 }

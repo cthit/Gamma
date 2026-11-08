@@ -1,6 +1,8 @@
 package it.chalmers.gamma.adapter.secondary.jpa.client.authority;
 
 import it.chalmers.gamma.adapter.secondary.jpa.client.ClientJpaRepository;
+import it.chalmers.gamma.adapter.secondary.jpa.group.PostEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
@@ -11,6 +13,7 @@ import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
+import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -32,6 +35,7 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
   private final ClientAuthorityJpaRepository clientAuthorityJpaRepository;
   private final UserJpaRepository userJpaRepository;
   private final SuperGroupJpaRepository superGroupJpaRepository;
+  private final PostJpaRepository postJpaRepository;
   private final ClientJpaRepository clientJpaRepository;
   private final ClientAuthorityEntityConverter clientAuthorityEntityConverter;
 
@@ -39,11 +43,13 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
       ClientAuthorityJpaRepository clientAuthorityJpaRepository,
       UserJpaRepository userJpaRepository,
       SuperGroupJpaRepository superGroupJpaRepository,
+      PostJpaRepository postJpaRepository,
       ClientJpaRepository clientJpaRepository,
       ClientAuthorityEntityConverter clientAuthorityEntityConverter) {
     this.clientAuthorityJpaRepository = clientAuthorityJpaRepository;
     this.userJpaRepository = userJpaRepository;
     this.superGroupJpaRepository = superGroupJpaRepository;
+    this.postJpaRepository = postJpaRepository;
     this.clientJpaRepository = clientJpaRepository;
     this.clientAuthorityEntityConverter = clientAuthorityEntityConverter;
   }
@@ -134,12 +140,23 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
             .map(superGroup ->
                 new ClientAuthoritySuperGroupEntity(toEntity(superGroup), clientAuthorityEntity))
             .toList();
+    List<ClientAuthoritySuperGroupPostEntity> superGroupPosts =
+        authority.superGroupPosts().stream()
+            .map(superGroupPost ->
+                new ClientAuthoritySuperGroupPostEntity(
+                    toEntity(superGroupPost.superGroup()),
+                    toEntity(superGroupPost.post()),
+                    clientAuthorityEntity))
+            .toList();
 
     clientAuthorityEntity.userEntityList.clear();
     clientAuthorityEntity.userEntityList.addAll(users);
 
     clientAuthorityEntity.superGroupEntityList.clear();
     clientAuthorityEntity.superGroupEntityList.addAll(superGroups);
+
+    clientAuthorityEntity.superGroupPostEntityList.clear();
+    clientAuthorityEntity.superGroupPostEntityList.addAll(superGroupPosts);
 
     return clientAuthorityEntity;
   }
@@ -150,6 +167,10 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
 
   private SuperGroupEntity toEntity(SuperGroup superGroup) {
     return this.superGroupJpaRepository.getReferenceById(superGroup.id().getValue());
+  }
+
+  private PostEntity toEntity(Post post) {
+    return this.postJpaRepository.getReferenceById(post.id().value());
   }
 
   private ClientAuthorityEntityPK toAuthorityEntityPK(

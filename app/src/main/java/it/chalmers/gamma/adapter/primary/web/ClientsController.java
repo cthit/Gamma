@@ -11,6 +11,7 @@ import it.chalmers.gamma.app.client.domain.authority.AuthorityName.AuthorityName
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.common.PrettyName.PrettyNameValidator;
 import it.chalmers.gamma.app.common.TextValue;
+import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -32,6 +33,7 @@ public class ClientsController {
   private final ClientAuthorityFacade clientAuthorityFacade;
   private final ClientApprovalFacade clientApprovalFacade;
   private final SuperGroupFacade superGroupFacade;
+  private final PostFacade postFacade;
   private final UserFacade userFacade;
 
   public ClientsController(
@@ -39,11 +41,13 @@ public class ClientsController {
       ClientAuthorityFacade clientAuthorityFacade,
       ClientApprovalFacade clientApprovalFacade,
       SuperGroupFacade superGroupFacade,
+      PostFacade postFacade,
       UserFacade userFacade) {
     this.clientFacade = clientFacade;
     this.clientAuthorityFacade = clientAuthorityFacade;
     this.clientApprovalFacade = clientApprovalFacade;
     this.superGroupFacade = superGroupFacade;
+    this.postFacade = postFacade;
     this.userFacade = userFacade;
   }
 
@@ -385,15 +389,47 @@ public class ClientsController {
 
     mv.setViewName("client-details/add-super-group-authority-to-client");
 
-    mv.addObject(
-        "superGroups",
-        this.superGroupFacade.getAll().stream()
-            .collect(
-                Collectors.toMap(
-                    SuperGroupFacade.SuperGroupDTO::id,
-                    SuperGroupFacade.SuperGroupDTO::prettyName)));
+    mv.addObject("superGroups", superGroupNames());
 
     return mv;
+  }
+
+  @GetMapping("/clients/authority/new-super-group-post")
+  public ModelAndView newSuperGroupPostAuthority(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest) {
+    ModelAndView mv = new ModelAndView();
+
+    mv.setViewName("client-details/add-super-group-post-authority-to-client");
+
+    mv.addObject("superGroups", superGroupNames());
+    mv.addObject("posts", postNames());
+
+    return mv;
+  }
+
+  /** Super group pretty names by id, in alphabetical order. */
+  private Map<UUID, String> superGroupNames() {
+    return this.superGroupFacade.getAll().stream()
+        .sorted(
+            Comparator.comparing(superGroup -> superGroup.prettyName().toLowerCase(Locale.ROOT)))
+        .collect(
+            Collectors.toMap(
+                SuperGroupFacade.SuperGroupDTO::id,
+                SuperGroupFacade.SuperGroupDTO::prettyName,
+                (a, b) -> a,
+                LinkedHashMap::new));
+  }
+
+  /** Post names by id, in alphabetical order. */
+  private Map<UUID, String> postNames() {
+    return this.postFacade.getAll().stream()
+        .sorted(Comparator.comparing(post -> post.enName().toLowerCase(Locale.ROOT)))
+        .collect(
+            Collectors.toMap(
+                PostFacade.PostDTO::id,
+                PostFacade.PostDTO::enName,
+                (a, b) -> a,
+                LinkedHashMap::new));
   }
 
   @GetMapping("/clients/authority/new-user")
@@ -411,8 +447,30 @@ public class ClientsController {
     return mv;
   }
 
+  public static final class SuperGroupPostForm {
+    private UUID superGroupId;
+    private UUID postId;
+
+    public UUID getSuperGroupId() {
+      return superGroupId;
+    }
+
+    public void setSuperGroupId(UUID superGroupId) {
+      this.superGroupId = superGroupId;
+    }
+
+    public UUID getPostId() {
+      return postId;
+    }
+
+    public void setPostId(UUID postId) {
+      this.postId = postId;
+    }
+  }
+
   public static final class CreateAuthority {
     private List<UUID> superGroups;
+    private List<SuperGroupPostForm> superGroupPosts;
     private List<UUID> users;
 
     @ValidatedWith(AuthorityNameValidator.class)
@@ -424,6 +482,26 @@ public class ClientsController {
 
     public void setSuperGroups(List<UUID> superGroups) {
       this.superGroups = superGroups;
+    }
+
+    public List<SuperGroupPostForm> getSuperGroupPosts() {
+      return superGroupPosts;
+    }
+
+    public void setSuperGroupPosts(List<SuperGroupPostForm> superGroupPosts) {
+      this.superGroupPosts = superGroupPosts;
+    }
+
+    /** The super group post rows that have both a super group and a post selected. */
+    private List<SuperGroupPostForm> selectedSuperGroupPosts() {
+      return superGroupPosts == null
+          ? List.of()
+          : superGroupPosts.stream()
+              .filter(superGroupPost ->
+                  superGroupPost != null
+                      && superGroupPost.superGroupId != null
+                      && superGroupPost.postId != null)
+              .toList();
     }
 
     public List<UUID> getUsers() {
@@ -451,6 +529,7 @@ public class ClientsController {
         form.superGroups == null
             ? List.of()
             : form.superGroups.stream().filter(Objects::nonNull).toList();
+    List<SuperGroupPostForm> selectedSuperGroupPosts = form.selectedSuperGroupPosts();
     List<UUID> selectedUsers =
         form.users == null ? List.of() : form.users.stream().filter(Objects::nonNull).toList();
 
@@ -458,16 +537,15 @@ public class ClientsController {
     mv.addObject("authorityValue", form.authority);
     mv.addObject("authorityErrorMessage", errorMessage);
     mv.addObject("selectedSuperGroups", selectedSuperGroups);
+    mv.addObject("selectedSuperGroupPosts", selectedSuperGroupPosts);
     mv.addObject("selectedUsers", selectedUsers);
 
-    if (!selectedSuperGroups.isEmpty()) {
-      mv.addObject(
-          "superGroups",
-          this.superGroupFacade.getAll().stream()
-              .collect(
-                  Collectors.toMap(
-                      SuperGroupFacade.SuperGroupDTO::id,
-                      SuperGroupFacade.SuperGroupDTO::prettyName)));
+    if (!selectedSuperGroups.isEmpty() || !selectedSuperGroupPosts.isEmpty()) {
+      mv.addObject("superGroups", superGroupNames());
+    }
+
+    if (!selectedSuperGroupPosts.isEmpty()) {
+      mv.addObject("posts", postNames());
     }
 
     if (!selectedUsers.isEmpty()) {
@@ -507,6 +585,7 @@ public class ClientsController {
     }
 
     List<SuperGroupFacade.SuperGroupDTO> superGroups = new ArrayList<>();
+    List<ClientAuthorityFacade.SuperGroupPostDTO> superGroupPosts = new ArrayList<>();
     List<UserFacade.UserDTO> users = new ArrayList<>();
 
     if (form.superGroups != null) {
@@ -523,6 +602,17 @@ public class ClientsController {
       });
     }
 
+    for (SuperGroupPostForm superGroupPost : form.selectedSuperGroupPosts()) {
+      try {
+        this.clientAuthorityFacade.addSuperGroupPostToClientAuthority(
+            clientUid, form.authority, superGroupPost.superGroupId, superGroupPost.postId);
+      } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
+          | ClientAuthorityFacade.SuperGroupNotFoundException
+          | ClientAuthorityFacade.PostNotFoundException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
     if (form.users != null) {
       form.users.forEach(user -> {
         try {
@@ -536,13 +626,19 @@ public class ClientsController {
       });
     }
 
+    // Read back so that duplicate rows are only shown once, in the same order as on the page.
+    this.clientAuthorityFacade
+        .get(clientUid, form.authority)
+        .map(ClientAuthorityFacade.ClientAuthorityDTO::superGroupPosts)
+        .ifPresent(superGroupPosts::addAll);
+
     ModelAndView mv = new ModelAndView("client-details/created-client-authority");
 
     mv.addObject("clientUid", clientUid);
     mv.addObject(
         "clientAuthority",
         new ClientAuthorityFacade.ClientAuthorityDTO(
-            clientUid, form.authority, superGroups, users));
+            clientUid, form.authority, superGroups, superGroupPosts, users));
 
     return mv;
   }

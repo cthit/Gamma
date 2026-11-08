@@ -1507,6 +1507,23 @@ article.callout > header {
     margin-bottom: var(--space-2);
 }
 
+.authority-form__hint {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-muted);
+}
+
+.authority-super-group-post-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+}
+
+.authority-super-group-post-row > .input {
+    flex: 1 1 12rem;
+    width: auto;
+}
+
 /* Disclosure: <details> with a styled summary. -------------------------- */
 
 .disclosure {
