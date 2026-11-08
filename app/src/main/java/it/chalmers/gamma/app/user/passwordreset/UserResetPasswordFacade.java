@@ -19,6 +19,7 @@ import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
 import it.chalmers.gamma.security.TimerBlock;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -144,17 +145,18 @@ public class UserResetPasswordFacade extends Facade {
   }
 
   @Transactional
-  public UUID useTokenToSetUpPasskey(String inputToken) {
+  public PasskeySetup useTokenToSetUpPasskey(String inputToken) {
     this.accessGuard.require(isNotSignedIn());
 
     PasswordResetToken token = new PasswordResetToken(inputToken);
     UserId owner = lockRecoverableOwner(token);
+    Instant startedAt = Instant.now();
     if (this.totpRepository.isEnabled(owner)) {
       throw new IllegalArgumentException("Can only reset the password");
     }
 
     this.passwordResetRepository.useToken(token);
-    return owner.value();
+    return new PasskeySetup(owner.value(), startedAt);
   }
 
   private boolean canRecoverByEmail(UserId userId) {
@@ -190,6 +192,8 @@ public class UserResetPasswordFacade extends Facade {
   }
 
   public record ResetOptions(boolean canSetUpPasskey) {}
+
+  public record PasskeySetup(UUID userId, Instant startedAt) {}
 
   public static final class EmailRecoveryNotAllowedException extends Exception {}
 

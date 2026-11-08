@@ -16,6 +16,7 @@ import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Instant;
 import java.time.Year;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -209,7 +210,7 @@ public class RegisterAccountController {
 
     if (withPasskey) {
       this.signInSetupSessions.start(
-          userId, SignInSetupAuthentication.Reason.NEW_ACCOUNT, request, response);
+          userId, SignInSetupAuthentication.Reason.NEW_ACCOUNT, Instant.now(), request, response);
       return new ModelAndView("redirect:" + SignInSetupSessions.SETUP_URL);
     }
 

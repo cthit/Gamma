@@ -19,6 +19,7 @@ import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
 import it.chalmers.gamma.security.signin.PasskeyConfig;
+import it.chalmers.gamma.security.signin.PasskeySignInProvider;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationFilter;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
 import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
@@ -68,7 +69,9 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationFilter;
+import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationProvider;
 import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
 
 @Configuration
 @EnableMultiFactorAuthentication(authorities = {})
@@ -199,7 +202,8 @@ public class SecurityFiltersConfig {
       RecoveryKeyUse recoveryKeyUse,
       ThrottlingService throttlingService,
       SignInAuthorizationManagers signIn,
-      PublicKeyCredentialUserEntityRepository passkeyUsers)
+      PublicKeyCredentialUserEntityRepository passkeyUsers,
+      WebAuthnRelyingPartyOperations relyingPartyOperations)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
@@ -261,6 +265,8 @@ public class SecurityFiltersConfig {
                 .denyAll()
                 .requestMatchers("/me/security", "/me/security/**")
                 .access(signIn.recentlySignedIn())
+                .requestMatchers("/me/edit-password", "/users/*/reset-sign-in")
+                .access(signIn.recentlySignedIn())
                 .requestMatchers("/me/edit-email", "/delete-your-account")
                 .access(signIn.recentlySignedInIfPasswordless())
                 .requestMatchers(HttpMethod.GET, "/activate-cid")
@@ -304,6 +310,13 @@ public class SecurityFiltersConfig {
                       public <O extends WebAuthnAuthenticationFilter> O postProcess(O filter) {
                         filter.setSessionAuthenticationStrategy(
                             new ChangeSessionIdAuthenticationStrategy());
+                        filter.setAuthenticationManager(
+                            new ProviderManager(
+                                new PasskeySignInProvider(
+                                    new WebAuthnAuthenticationProvider(
+                                        relyingPartyOperations,
+                                        PasskeyConfig.passkeyUserDetailsService(
+                                            userJpaRepository)))));
                         return filter;
                       }
                     }))

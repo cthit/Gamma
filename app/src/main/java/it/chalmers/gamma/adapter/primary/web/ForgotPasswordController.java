@@ -14,7 +14,6 @@ import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -175,9 +174,9 @@ public class ForgotPasswordController {
       @RequestParam("token") String token,
       HttpServletRequest request,
       HttpServletResponse response) {
-    UUID userId;
+    UserResetPasswordFacade.PasskeySetup setup;
     try {
-      userId = this.userResetPasswordFacade.useTokenToSetUpPasskey(token);
+      setup = this.userResetPasswordFacade.useTokenToSetUpPasskey(token);
     } catch (PasswordResetRepository.TokenNotFoundRuntimeException | IllegalArgumentException e) {
       ModelAndView mv = new ModelAndView();
       if (htmxRequest) {
@@ -190,7 +189,11 @@ public class ForgotPasswordController {
     }
 
     this.signInSetupSessions.start(
-        userId, SignInSetupAuthentication.Reason.EMAIL, request, response);
+        setup.userId(),
+        SignInSetupAuthentication.Reason.EMAIL,
+        setup.startedAt(),
+        request,
+        response);
     return new ModelAndView("redirect:" + SignInSetupSessions.SETUP_URL);
   }
 }

@@ -217,6 +217,9 @@ public class SignInMethodsFacade extends Facade {
     }
 
     this.userRepository.lockSignInMethods(userId);
+    if (!userIsAdmin(me().id()) || !this.recentSignIn.isRecent()) {
+      throw new AccessGuard.AccessDeniedException();
+    }
     if (userIsAdmin(userId) && !this.userRepository.hasPassword(userId)) {
       throw new AdminWithoutPasswordException();
     }

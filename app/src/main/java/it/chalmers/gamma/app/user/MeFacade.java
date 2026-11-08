@@ -13,6 +13,7 @@ import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.GammaAuthentication;
@@ -33,14 +34,17 @@ public class MeFacade extends Facade {
   private final ClientRepository clientRepository;
   private final GroupRepository groupRepository;
   private final ImageService imageService;
+  private final RecentSignIn recentSignIn;
 
   public MeFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
       ClientRepository clientRepository,
       GroupRepository groupRepository,
-      ImageService imageService) {
+      ImageService imageService,
+      RecentSignIn recentSignIn) {
     super(accessGuard);
+    this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
@@ -119,6 +123,9 @@ public class MeFacade extends Facade {
 
       GammaUser me = userAuthentication.gammaUser();
       this.userRepository.lockSignInMethods(me.id());
+      if (!this.recentSignIn.isRecent()) {
+        throw new AccessGuard.AccessDeniedException();
+      }
       if (this.userRepository.hasPassword(me.id())
           && this.userRepository.checkPassword(
               me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {

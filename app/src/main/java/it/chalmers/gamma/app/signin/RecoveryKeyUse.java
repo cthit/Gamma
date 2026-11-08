@@ -7,6 +7,8 @@ import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,17 +31,18 @@ public class RecoveryKeyUse {
   }
 
   @Transactional
-  public boolean use(UserId userId, RecoveryKey key) {
+  public Optional<Instant> use(UserId userId, RecoveryKey key) {
     this.userRepository.lockSignInMethods(userId);
+    Instant usedAt = Instant.now();
 
     if (this.adminRepository.isAdmin(userId)
         || this.userRepository.isLocked(userId)
         || !key.isWellFormed()
         || !this.recoveryKeyRepository.use(userId, key)) {
-      return false;
+      return Optional.empty();
     }
 
     this.totpRepository.delete(userId);
-    return true;
+    return Optional.of(usedAt);
   }
 }

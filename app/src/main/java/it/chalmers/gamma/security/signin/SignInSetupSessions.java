@@ -23,6 +23,7 @@ public class SignInSetupSessions {
   public void start(
       UUID userId,
       SignInSetupAuthentication.Reason reason,
+      Instant startedAt,
       HttpServletRequest request,
       HttpServletResponse response) {
     request.getSession(true);
@@ -31,7 +32,7 @@ public class SignInSetupSessions {
     SecurityContext context = SecurityContextHolder.createEmptyContext();
     context.setAuthentication(
         new SignInSetupAuthenticationToken(
-            new SignInSetupAuthentication(userId, reason, Instant.now())));
+            new SignInSetupAuthentication(userId, reason, startedAt)));
     SecurityContextHolder.setContext(context);
     this.securityContextRepository.saveContext(context, request, response);
   }

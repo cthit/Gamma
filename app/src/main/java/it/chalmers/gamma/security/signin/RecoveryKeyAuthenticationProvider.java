@@ -54,15 +54,16 @@ public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider
       throw new BadCredentialsException("Too many attempts");
     }
 
-    if (!this.recoveryKeyUse.use(userId, RecoveryKey.parse(request.getCredentials()))) {
-      throw new BadCredentialsException("Wrong cid, email or recovery key");
-    }
+    Instant usedAt =
+        this.recoveryKeyUse
+            .use(userId, RecoveryKey.parse(request.getCredentials()))
+            .orElseThrow(() -> new BadCredentialsException("Wrong cid, email or recovery key"));
 
     LOGGER.info("User {} signed in with their recovery key", userId.value());
 
     return new SignInSetupAuthenticationToken(
         new SignInSetupAuthentication(
-            userId.value(), SignInSetupAuthentication.Reason.RECOVERY_KEY, Instant.now()));
+            userId.value(), SignInSetupAuthentication.Reason.RECOVERY_KEY, usedAt));
   }
 
   private Optional<UserId> find(String username) {
