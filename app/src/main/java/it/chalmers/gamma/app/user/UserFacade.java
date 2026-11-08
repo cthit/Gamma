@@ -14,6 +14,7 @@ import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -91,6 +92,26 @@ public class UserFacade extends Facade {
       e.printStackTrace();
     }
   }
+
+  /**
+   * Locks or unlocks a user account. A locked user can't sign in, is signed out of their current
+   * sessions, can't authorize clients and is hidden from everyone but admins.
+   */
+  public void setLocked(UUID id, boolean locked) throws CannotLockYourselfException {
+    accessGuard.require(isAdmin());
+
+    UserId userId = new UserId(id);
+
+    if (locked
+        && AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn
+        && signedIn.gammaUser().id().equals(userId)) {
+      throw new CannotLockYourselfException();
+    }
+
+    this.userRepository.setLocked(userId, locked);
+  }
+
+  public static class CannotLockYourselfException extends Exception {}
 
   public Optional<UserExtendedWithGroupsDTO> getAsAdmin(UUID id) {
     return getExtendedAsAdmin(id)

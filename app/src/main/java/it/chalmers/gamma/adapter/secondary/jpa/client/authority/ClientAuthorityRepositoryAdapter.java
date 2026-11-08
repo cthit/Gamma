@@ -6,6 +6,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.group.PostJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.supergroup.SuperGroupJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
+import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntityConverter;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
@@ -38,6 +39,7 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
   private final PostJpaRepository postJpaRepository;
   private final ClientJpaRepository clientJpaRepository;
   private final ClientAuthorityEntityConverter clientAuthorityEntityConverter;
+  private final UserEntityConverter userEntityConverter;
 
   public ClientAuthorityRepositoryAdapter(
       ClientAuthorityJpaRepository clientAuthorityJpaRepository,
@@ -45,13 +47,15 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
       SuperGroupJpaRepository superGroupJpaRepository,
       PostJpaRepository postJpaRepository,
       ClientJpaRepository clientJpaRepository,
-      ClientAuthorityEntityConverter clientAuthorityEntityConverter) {
+      ClientAuthorityEntityConverter clientAuthorityEntityConverter,
+      UserEntityConverter userEntityConverter) {
     this.clientAuthorityJpaRepository = clientAuthorityJpaRepository;
     this.userJpaRepository = userJpaRepository;
     this.superGroupJpaRepository = superGroupJpaRepository;
     this.postJpaRepository = postJpaRepository;
     this.clientJpaRepository = clientJpaRepository;
     this.clientAuthorityEntityConverter = clientAuthorityEntityConverter;
+    this.userEntityConverter = userEntityConverter;
   }
 
   @Override
@@ -149,7 +153,10 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
                     clientAuthorityEntity))
             .toList();
 
-    clientAuthorityEntity.userEntityList.clear();
+    // An authority only holds the users the signed-in user can see (see UserEntityConverter), so
+    // keep the users it can't see, such as locked users when the owner of the client edits it.
+    clientAuthorityEntity.userEntityList.removeIf(
+        userEntity -> this.userEntityConverter.toDomain(userEntity.getUserEntity()) != null);
     clientAuthorityEntity.userEntityList.addAll(users);
 
     clientAuthorityEntity.superGroupEntityList.clear();

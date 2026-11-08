@@ -1437,9 +1437,6 @@ article.callout > header {
 
 /* Client authority form. ------------------------------------------------ */
 
-.authority-form > .input {
-    margin-bottom: var(--space-3);
-}
 
 .authority-form__heading {
     margin-top: var(--space-5);
@@ -1454,16 +1451,21 @@ article.callout > header {
     color: var(--color-text-muted);
 }
 
-.authority-super-group-post-row {
+.authority-row {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: var(--space-3);
     margin-bottom: var(--space-3);
 }
 
-.authority-super-group-post-row > .input {
+.authority-row > .input {
     flex: 1 1 12rem;
     width: auto;
+}
+
+.authority-row__remove {
+    flex: 0 0 auto;
 }
 
 /* Disclosure: <details> with a styled summary. -------------------------- */

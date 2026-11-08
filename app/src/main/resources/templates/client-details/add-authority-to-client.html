@@ -6,52 +6,10 @@
           th:data-hx-post="@{/clients/{id}/authority(id=${clientUid})}"
           data-hx-target="closest article"
           data-hx-swap="outerHTML"
-          _="on htmx:after:swap call updateNames('users', '.authority-user-row') then call updateNames('superGroups', '.authority-super-group-row') then call updateNames('superGroupPosts', '.superGroupId', '.postId')">
+          _="on htmx:after:swap call updateAuthorityNames(me)">
         <div th:replace="~{common/form-csrf}"></div>
         <div th:replace="~{common/input :: textInput(name='authority', label='Authority name', value=${authorityValue}, errorMessage=${authorityErrorMessage})}"></div>
-        <h3 class="authority-form__heading">Super groups</h3>
-        <select th:each="selectedSuperGroup, stat : ${selectedSuperGroups}"
-                class="input input--select authority-super-group-row" required aria-label="Super group"
-                th:name="|superGroups[${stat.index}]|" th:id="|superGroups${stat.index}|">
-            <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"
-                    th:selected="${superGroup.key == selectedSuperGroup}"></option>
-        </select>
-        <button class="button button--secondary" data-hx-get="/clients/authority/new-super-group"
-                data-hx-target="previous h3" data-hx-swap="afterend" type="button">
-            <span class="icon icon--plus" aria-hidden="true"></span>
-            Add super group authority
-        </button>
-        <h3 class="authority-form__heading">Posts in super groups</h3>
-        <p class="authority-form__hint">Members of the super group's groups who hold the post.</p>
-        <div th:each="selectedSuperGroupPost, stat : ${selectedSuperGroupPosts}" class="authority-super-group-post-row">
-            <select class="input input--select superGroupId" required aria-label="Super group of post"
-                    th:name="|superGroupPosts[${stat.index}].superGroupId|">
-                <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"
-                        th:selected="${superGroup.key == selectedSuperGroupPost.superGroupId}"></option>
-            </select>
-            <select class="input input--select postId" required aria-label="Post"
-                    th:name="|superGroupPosts[${stat.index}].postId|">
-                <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"
-                        th:selected="${post.key == selectedSuperGroupPost.postId}"></option>
-            </select>
-        </div>
-        <button class="button button--secondary" data-hx-get="/clients/authority/new-super-group-post"
-                data-hx-target="previous .authority-form__hint" data-hx-swap="afterend" type="button">
-            <span class="icon icon--plus" aria-hidden="true"></span>
-            Add post authority
-        </button>
-        <h3 class="authority-form__heading">Users</h3>
-        <select th:each="selectedUser, stat : ${selectedUsers}"
-                class="input input--select authority-user-row" required aria-label="User"
-                th:name="|users[${stat.index}]|" th:id="|users${stat.index}|">
-            <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"
-                    th:selected="${user.key == selectedUser}"></option>
-        </select>
-        <button class="button button--secondary" data-hx-get="/clients/authority/new-user" data-hx-target="previous h3"
-                data-hx-swap="afterend" type="button">
-            <span class="icon icon--plus" aria-hidden="true"></span>
-            Add user authority
-        </button>
+        <th:block th:replace="~{client-details/authority-members :: fields}"></th:block>
     </form>
     <footer>
         <button class="button" form="create-client-authority" data-loading-disable>Save</button>

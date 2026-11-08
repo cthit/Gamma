@@ -1,0 +1,24 @@
+<article>
+    <header>
+        <h2 th:text="|Edit ${authorityName}|"></h2>
+    </header>
+    <form class="authority-form" th:id="|edit-client-authority-${authorityName}|"
+          th:data-hx-post="@{/clients/{id}/authority/{name}(id=${clientUid},name=${authorityName})}"
+          data-hx-target="closest article"
+          data-hx-swap="outerHTML"
+          _="on htmx:after:swap call updateAuthorityNames(me)">
+        <div th:replace="~{common/form-csrf}"></div>
+        <input type="hidden" name="_method" value="put"/>
+        <th:block th:replace="~{client-details/authority-members :: fields}"></th:block>
+    </form>
+    <footer>
+        <button type="button"
+                class="button button--secondary"
+                th:data-hx-get="@{/clients/{id}/authority/{name}(id=${clientUid},name=${authorityName})}"
+                data-hx-target="closest article"
+                data-hx-swap="outerHTML"
+                data-loading-disable>Cancel
+        </button>
+        <button class="button" th:form="|edit-client-authority-${authorityName}|" data-loading-disable>Save</button>
+    </footer>
+</article>

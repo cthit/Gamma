@@ -41,6 +41,12 @@ public interface UserRepository {
 
   void acceptUserAgreement(UserId userId) throws UserNotFoundException;
 
+  /**
+   * Locking also revokes the user's current sessions, so that they stay signed out after being
+   * unlocked.
+   */
+  void setLocked(UserId userId, boolean locked) throws UserNotFoundException;
+
   void setEmail(UserId userId, Email email)
       throws UserNotFoundException, EmailAlreadyInUseException;
 

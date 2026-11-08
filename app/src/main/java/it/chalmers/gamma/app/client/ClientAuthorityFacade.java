@@ -11,7 +11,6 @@ import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
 import it.chalmers.gamma.app.client.domain.authority.AuthoritySuperGroupPost;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.post.PostFacade;
-import it.chalmers.gamma.app.post.domain.Post;
 import it.chalmers.gamma.app.post.domain.PostId;
 import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
@@ -27,6 +26,7 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -87,89 +87,18 @@ public class ClientAuthorityFacade extends Facade {
         .map(ClientAuthorityDTO::new);
   }
 
+  /**
+   * Replaces who has the authority: the members of the super groups, the members of the super
+   * groups' groups who hold the given posts, and the users.
+   */
   @Transactional
-  public void addSuperGroupToClientAuthority(UUID clientUid, String name, UUID superGroupId)
-      throws ClientAuthorityNotFoundException, SuperGroupNotFoundException {
-    ClientUid uid = new ClientUid(clientUid);
-
-    this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
-
-    Authority authority =
-        this.clientAuthorityRepository
-            .get(uid, new AuthorityName(name))
-            .orElseThrow(ClientAuthorityNotFoundException::new);
-
-    List<SuperGroup> superGroups = new ArrayList<>(authority.superGroups());
-    superGroups.add(
-        this.superGroupRepository
-            .get(new SuperGroupId(superGroupId))
-            .orElseThrow(SuperGroupNotFoundException::new));
-
-    this.clientAuthorityRepository.save(authority.withSuperGroups(superGroups));
-  }
-
-  /** Gives the authority to the members of the super group's groups who hold the post. */
-  @Transactional
-  public void addSuperGroupPostToClientAuthority(
-      UUID clientUid, String name, UUID superGroupId, UUID postId)
-      throws ClientAuthorityNotFoundException, SuperGroupNotFoundException, PostNotFoundException {
-    ClientUid uid = new ClientUid(clientUid);
-
-    this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
-
-    Authority authority =
-        this.clientAuthorityRepository
-            .get(uid, new AuthorityName(name))
-            .orElseThrow(ClientAuthorityNotFoundException::new);
-
-    SuperGroup superGroup =
-        this.superGroupRepository
-            .get(new SuperGroupId(superGroupId))
-            .orElseThrow(SuperGroupNotFoundException::new);
-    Post post = this.postRepository.get(new PostId(postId)).orElseThrow(PostNotFoundException::new);
-
-    boolean alreadyAdded =
-        authority.superGroupPosts().stream()
-            .anyMatch(superGroupPost ->
-                superGroupPost.superGroup().id().equals(superGroup.id())
-                    && superGroupPost.post().id().equals(post.id()));
-    if (alreadyAdded) {
-      return;
-    }
-
-    List<AuthoritySuperGroupPost> superGroupPosts = new ArrayList<>(authority.superGroupPosts());
-    superGroupPosts.add(new AuthoritySuperGroupPost(superGroup, post));
-
-    this.clientAuthorityRepository.save(authority.withSuperGroupPosts(superGroupPosts));
-  }
-
-  @Transactional
-  public void addUserToClientAuthority(UUID clientUid, String name, UUID userId)
-      throws ClientAuthorityRepository.ClientAuthorityNotFoundRuntimeException,
-          ClientAuthorityNotFoundException,
+  public void setMembers(UUID clientUid, String name, AuthorityMembers members)
+      throws ClientAuthorityNotFoundException,
+          SuperGroupNotFoundException,
+          PostNotFoundException,
           UserNotFoundException {
     ClientUid uid = new ClientUid(clientUid);
 
-    this.accessGuard.requireEither(isAdmin(), isLocalRunner(), ownerOfClient(uid));
-
-    Authority authority =
-        this.clientAuthorityRepository
-            .get(uid, new AuthorityName(name))
-            .orElseThrow(ClientAuthorityNotFoundException::new);
-
-    List<GammaUser> newUsersList = new ArrayList<>(authority.users());
-    GammaUser newUser =
-        this.userRepository.get(new UserId(userId)).orElseThrow(UserNotFoundException::new);
-    newUsersList.add(newUser);
-
-    this.clientAuthorityRepository.save(authority.withUsers(newUsersList));
-  }
-
-  @Transactional
-  public void removeSuperGroupFromClientAuthority(UUID clientUid, String name, UUID superGroupId)
-      throws ClientAuthorityNotFoundException {
-    ClientUid uid = new ClientUid(clientUid);
-
     this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
 
     Authority authority =
@@ -177,15 +106,42 @@ public class ClientAuthorityFacade extends Facade {
             .get(uid, new AuthorityName(name))
             .orElseThrow(ClientAuthorityNotFoundException::new);
 
-    List<SuperGroup> newSuperGroups = new ArrayList<>(authority.superGroups());
-    for (int i = 0; i < newSuperGroups.size(); i++) {
-      if (newSuperGroups.get(i).id().value().equals(superGroupId)) {
-        newSuperGroups.remove(i);
-        break;
-      }
+    List<SuperGroup> superGroups = new ArrayList<>();
+    for (UUID superGroupId : distinct(members.superGroupIds())) {
+      superGroups.add(getSuperGroup(superGroupId));
     }
 
-    this.clientAuthorityRepository.save(authority.withSuperGroups(newSuperGroups));
+    List<AuthoritySuperGroupPost> superGroupPosts = new ArrayList<>();
+    for (SuperGroupPostIds superGroupPost : distinct(members.superGroupPosts())) {
+      superGroupPosts.add(
+          new AuthoritySuperGroupPost(
+              getSuperGroup(superGroupPost.superGroupId()),
+              this.postRepository
+                  .get(new PostId(superGroupPost.postId()))
+                  .orElseThrow(PostNotFoundException::new)));
+    }
+
+    List<GammaUser> users = new ArrayList<>();
+    for (UUID userId : distinct(members.userIds())) {
+      users.add(
+          this.userRepository.get(new UserId(userId)).orElseThrow(UserNotFoundException::new));
+    }
+
+    this.clientAuthorityRepository.save(
+        authority
+            .withSuperGroups(superGroups)
+            .withSuperGroupPosts(superGroupPosts)
+            .withUsers(users));
+  }
+
+  private SuperGroup getSuperGroup(UUID superGroupId) throws SuperGroupNotFoundException {
+    return this.superGroupRepository
+        .get(new SuperGroupId(superGroupId))
+        .orElseThrow(SuperGroupNotFoundException::new);
+  }
+
+  private static <T> List<T> distinct(List<T> values) {
+    return values.stream().filter(Objects::nonNull).distinct().toList();
   }
 
   public List<ClientAuthorityDTO> getAll(UUID clientUid) {
@@ -196,29 +152,6 @@ public class ClientAuthorityFacade extends Facade {
     var authorities = this.clientAuthorityRepository.getAllByClient(uid);
 
     return authorities.stream().map(ClientAuthorityDTO::new).toList();
-  }
-
-  @Transactional
-  public void removeUserFromClientAuthority(UUID clientUid, String name, UUID userId)
-      throws ClientAuthorityNotFoundException {
-    ClientUid uid = new ClientUid(clientUid);
-
-    this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
-
-    Authority authority =
-        this.clientAuthorityRepository
-            .get(uid, new AuthorityName(name))
-            .orElseThrow(ClientAuthorityNotFoundException::new);
-
-    List<GammaUser> newUsers = new ArrayList<>(authority.users());
-    for (int i = 0; i < newUsers.size(); i++) {
-      if (newUsers.get(i).id().value().equals(userId)) {
-        newUsers.remove(i);
-        break;
-      }
-    }
-
-    this.clientAuthorityRepository.save(authority.withUsers(newUsers));
   }
 
   public List<String> getClientAuthorities() {
@@ -303,6 +236,19 @@ public class ClientAuthorityFacade extends Facade {
           new PostFacade.PostDTO(superGroupPost.post()));
     }
   }
+
+  /** The ids of who should have an authority, see {@link #setMembers}. */
+  public record AuthorityMembers(
+      List<UUID> superGroupIds, List<SuperGroupPostIds> superGroupPosts, List<UUID> userIds) {
+
+    public AuthorityMembers {
+      superGroupIds = superGroupIds == null ? List.of() : superGroupIds;
+      superGroupPosts = superGroupPosts == null ? List.of() : superGroupPosts;
+      userIds = userIds == null ? List.of() : userIds;
+    }
+  }
+
+  public record SuperGroupPostIds(UUID superGroupId, UUID postId) {}
 
   public static class ClientAuthorityNotFoundException extends Exception {}
 

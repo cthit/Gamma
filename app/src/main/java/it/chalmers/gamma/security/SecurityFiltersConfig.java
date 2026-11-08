@@ -59,6 +59,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -79,12 +80,20 @@ public class SecurityFiltersConfig {
       HttpSecurity http,
       UserInfoMapper userInfoMapper,
       SignInAuthorizationManagers signInAuthorizationManagers,
-      AuthorizationServerSettings authorizationServerSettings)
+      AuthorizationServerSettings authorizationServerSettings,
+      UserJpaRepository userJpaRepository,
+      AdminRepository adminRepository)
       throws Exception {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         new OAuth2AuthorizationServerConfigurer();
 
     http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+        // The authorization endpoint uses the same session as the web interface. Check it here as
+        // well, so that a user that has been locked can't authorize clients.
+        .addFilterAfter(
+            new UpdateUserPrincipalFilter(
+                new TrustedUserDetailsRepository(userJpaRepository), adminRepository),
+            SecurityContextHolderFilter.class)
         .with(
             authorizationServerConfigurer,
             authorizationServer ->

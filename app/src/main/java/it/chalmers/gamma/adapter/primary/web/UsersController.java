@@ -18,6 +18,7 @@ import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPassword
 import it.chalmers.gamma.app.user.passwordreset.UserResetPasswordFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
@@ -104,14 +105,9 @@ public class UsersController {
         }
 
         UserFacade.UserExtendedWithGroupsDTO u = userExtended.get();
-        String name = u.user().firstName() + " '" + u.user().nick() + "' " + u.user().lastName();
 
-        mv.addObject("userId", u.user().id());
-        mv.addObject("avatarVersion", this.imageFacade.getAvatarVersion(u.user().id()));
-        mv.addObject("name", name);
+        addAdminUserInfo(mv, u.user());
         mv.addObject("nick", u.user().nick());
-        mv.addObject("cid", u.user().cid());
-        mv.addObject("acceptanceYear", u.user().acceptanceYear());
         mv.addObject(
             "groups",
             u.groups().stream()
@@ -120,10 +116,6 @@ public class UsersController {
                         userGroup.group().prettyName() + " - " + userGroup.post().enName(),
                         userGroup.group().id()))
                 .toList());
-
-        mv.addObject("email", u.user().email());
-        mv.addObject("locked", u.user().locked());
-        mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(u.user().id()));
         mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(u.user().id()));
         mv.addObject("isMe", userAuthenticated.gammaUser().id().value().equals(u.user().id()));
       } else {
@@ -155,6 +147,26 @@ public class UsersController {
     }
 
     return mv;
+  }
+
+  /** Everything that the user-details/page :: userinfo fragment needs for an admin. */
+  private void addAdminUserInfo(ModelAndView mv, UserFacade.UserExtendedDTO user) {
+    String name = user.firstName() + " '" + user.nick() + "' " + user.lastName();
+
+    mv.addObject("userId", user.id());
+    mv.addObject("avatarVersion", this.imageFacade.getAvatarVersion(user.id()));
+    mv.addObject("name", name);
+    mv.addObject("cid", user.cid());
+    mv.addObject("acceptanceYear", user.acceptanceYear());
+    mv.addObject("email", user.email());
+    mv.addObject("locked", user.locked());
+    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(user.id()));
+    mv.addObject("isSelf", isSignedInUser(user.id()));
+  }
+
+  private static boolean isSignedInUser(UUID userId) {
+    return AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn
+        && signedIn.gammaUser().id().value().equals(userId);
   }
 
   private ModelAndView createUserNotFound(String userId, boolean htmxRequest) {
@@ -313,17 +325,45 @@ public class UsersController {
       throw new RuntimeException();
     }
 
-    String name = form.firstName() + " '" + form.nick() + "' " + form.lastName();
-
     mv.setViewName("user-details/edited-user");
-    mv.addObject("name", name);
-    mv.addObject("cid", user.get().user().cid());
-    mv.addObject("acceptanceYear", form.acceptanceYear);
-    mv.addObject("email", form.email);
-    mv.addObject("locked", user.get().user().locked());
-    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(user.get().user().id()));
-    mv.addObject("userId", userId);
-    mv.addObject("avatarVersion", this.imageFacade.getAvatarVersion(userId));
+    addAdminUserInfo(mv, user.get().user());
+
+    return mv;
+  }
+
+  @PostMapping("/users/{id}/lock")
+  public ModelAndView lockUser(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID userId,
+      HttpServletResponse response) {
+    return setLocked(userId, true, response);
+  }
+
+  @PostMapping("/users/{id}/unlock")
+  public ModelAndView unlockUser(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID userId,
+      HttpServletResponse response) {
+    return setLocked(userId, false, response);
+  }
+
+  private ModelAndView setLocked(UUID userId, boolean locked, HttpServletResponse response) {
+    try {
+      this.userFacade.setLocked(userId, locked);
+    } catch (UserFacade.CannotLockYourselfException e) {
+      response.addHeader("HX-Retarget", "#alerts");
+      response.addHeader("HX-Reswap", "afterbegin");
+      return new ModelAndView("user-details/lock-yourself-error");
+    }
+
+    Optional<UserFacade.UserExtendedDTO> user = this.userFacade.getExtendedAsAdmin(userId);
+
+    if (user.isEmpty()) {
+      throw new RuntimeException();
+    }
+
+    ModelAndView mv = new ModelAndView("user-details/lock-changed");
+    addAdminUserInfo(mv, user.get());
 
     return mv;
   }
