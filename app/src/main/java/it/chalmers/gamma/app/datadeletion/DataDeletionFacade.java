@@ -60,14 +60,13 @@ public class DataDeletionFacade extends Facade {
 
     return this.dataDeletionRequestRepository.getAllCleared().stream()
         .sorted(Comparator.comparing(DataDeletionRequest::clearedAt).reversed())
-        .map(
-            request ->
-                new ClearedRequestDTO(
-                    request,
-                    Optional.ofNullable(request.clearedBy())
-                        .flatMap(this.userRepository::get)
-                        .map(ClearedRequestDTO::name)
-                        .orElse(null)))
+        .map(request ->
+            new ClearedRequestDTO(
+                request,
+                Optional.ofNullable(request.clearedBy())
+                    .flatMap(this.userRepository::get)
+                    .map(ClearedRequestDTO::name)
+                    .orElse(null)))
         .toList();
   }
 

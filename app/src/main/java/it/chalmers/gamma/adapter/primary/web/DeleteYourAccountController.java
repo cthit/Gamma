@@ -70,14 +70,13 @@ public class DeleteYourAccountController {
     mv.addObject(
         "clientOwners",
         overview.unofficialClientOwners().stream()
-            .map(
-                owner ->
-                    new ClientOwnerContact(
-                        owner.name(),
-                        owner.email(),
-                        owner.clients(),
-                        MailtoLink.href(
-                            owner.email(), subject(owner.clients()), body(overview, owner))))
+            .map(owner ->
+                new ClientOwnerContact(
+                    owner.name(),
+                    owner.email(),
+                    owner.clients(),
+                    MailtoLink.href(
+                        owner.email(), subject(owner.clients()), body(overview, owner))))
             .toList());
   }
 
@@ -89,15 +88,15 @@ public class DeleteYourAccountController {
       MeFacade.AccountDeletionOverviewDTO me, MeFacade.UnofficialClientOwnerDTO owner) {
     String clients = String.join(", ", owner.clients());
     return """
-        %s
+    %s
 
-        I am deleting my Gamma account. Please delete all data you have about me in %s.
+    I am deleting my Gamma account. Please delete all data you have about me in %s.
 
-        My Gamma user id is %s and my cid is %s.
+    My Gamma user id is %s and my cid is %s.
 
-        Thanks,
-        %s
-        """
+    Thanks,
+    %s
+    """
         .formatted(
             owner.firstName() == null ? "Hi," : "Hi " + owner.firstName() + ",",
             clients,

@@ -118,19 +118,18 @@ public class MeFacade extends Facade {
 
     List<UnofficialClientOwnerDTO> ownerDTOs =
         owners.values().stream()
-            .map(
-                contact ->
-                    new UnofficialClientOwnerDTO(
-                        contact.owner() == null
-                            ? contact.email().value()
-                            : "%s '%s' %s"
-                                .formatted(
-                                    contact.owner().firstName().value(),
-                                    contact.owner().nick().value(),
-                                    contact.owner().lastName().value()),
-                        contact.owner() == null ? null : contact.owner().firstName().value(),
-                        contact.email().value(),
-                        contact.clients().stream().sorted(String::compareToIgnoreCase).toList()))
+            .map(contact ->
+                new UnofficialClientOwnerDTO(
+                    contact.owner() == null
+                        ? contact.email().value()
+                        : "%s '%s' %s"
+                            .formatted(
+                                contact.owner().firstName().value(),
+                                contact.owner().nick().value(),
+                                contact.owner().lastName().value()),
+                    contact.owner() == null ? null : contact.owner().firstName().value(),
+                    contact.email().value(),
+                    contact.clients().stream().sorted(String::compareToIgnoreCase).toList()))
             .sorted(
                 Comparator.comparing(UnofficialClientOwnerDTO::name, String::compareToIgnoreCase))
             .toList();
