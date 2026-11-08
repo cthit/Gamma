@@ -6,12 +6,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.FactorGrantedAuthority;
 
-public class PasskeySignInProvider implements AuthenticationProvider {
+public class FactorCheckedAtStartProvider implements AuthenticationProvider {
 
   private final AuthenticationProvider delegate;
+  private final String factor;
 
-  public PasskeySignInProvider(AuthenticationProvider delegate) {
+  public FactorCheckedAtStartProvider(AuthenticationProvider delegate, String factor) {
     this.delegate = delegate;
+    this.factor = factor;
   }
 
   @Override
@@ -24,11 +26,9 @@ public class PasskeySignInProvider implements AuthenticationProvider {
 
     return result.toBuilder()
         .authorities(authorities -> {
-          authorities.removeIf(authority -> SignInFactors.PASSKEY.equals(authority.getAuthority()));
+          authorities.removeIf(authority -> this.factor.equals(authority.getAuthority()));
           authorities.add(
-              FactorGrantedAuthority.withAuthority(SignInFactors.PASSKEY)
-                  .issuedAt(checkedAt)
-                  .build());
+              FactorGrantedAuthority.withAuthority(this.factor).issuedAt(checkedAt).build());
         })
         .build();
   }

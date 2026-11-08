@@ -17,9 +17,9 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import it.chalmers.gamma.security.signin.FactorCheckedAtStartProvider;
 import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
 import it.chalmers.gamma.security.signin.PasskeyConfig;
-import it.chalmers.gamma.security.signin.PasskeySignInProvider;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationFilter;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
 import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
@@ -312,18 +312,19 @@ public class SecurityFiltersConfig {
                             new ChangeSessionIdAuthenticationStrategy());
                         filter.setAuthenticationManager(
                             new ProviderManager(
-                                new PasskeySignInProvider(
+                                new FactorCheckedAtStartProvider(
                                     new WebAuthnAuthenticationProvider(
                                         relyingPartyOperations,
-                                        PasskeyConfig.passkeyUserDetailsService(
-                                            userJpaRepository)))));
+                                        PasskeyConfig.passkeyUserDetailsService(userJpaRepository)),
+                                    SignInFactors.PASSKEY)));
                         return filter;
                       }
                     }))
         .logout(logout ->
             logout.addLogoutHandler(
                 new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(CACHE, COOKIES))))
-        .authenticationProvider(userAuthenticationProvider)
+        .authenticationProvider(
+            new FactorCheckedAtStartProvider(userAuthenticationProvider, SignInFactors.PASSWORD))
         .sessionManagement(sessionManagement ->
             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .cors(Customizer.withDefaults())
