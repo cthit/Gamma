@@ -37,6 +37,21 @@
                     th:data-hx-get="@{|/users/${userId}/edit|}"
                     data-hx-swap="outerHTML" data-loading-disable>Edit user
             </button>
+            <form th:if="${!locked && !isSelf}"
+                  th:data-hx-confirm="|Are you sure you wish to lock ${name}? They will be signed out and will not be able to sign in until the account is unlocked.|"
+                  th:data-hx-post="|/users/${userId}/lock|"
+                  data-hx-target="closest article"
+                  data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="button button--danger" data-loading-disable>Lock user</button>
+            </form>
+            <form th:if="${locked}"
+                  th:data-hx-post="|/users/${userId}/unlock|"
+                  data-hx-target="closest article"
+                  data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="button button--secondary" data-loading-disable>Unlock user</button>
+            </form>
             <form th:data-hx-confirm="|Are you sure you wish to delete ${name}?|" th:action="|/users/${userId}|" th:method="delete">
                 <button class="button button--danger" data-loading-disable>Delete user</button>
             </form>
