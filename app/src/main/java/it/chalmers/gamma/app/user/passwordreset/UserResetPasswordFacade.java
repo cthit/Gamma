@@ -18,6 +18,7 @@ import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
 import it.chalmers.gamma.security.TimerBlock;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -115,6 +116,7 @@ public class UserResetPasswordFacade extends Facade {
         });
   }
 
+  @Transactional
   public void finishResetPasswordProcess(
       String inputToken, String newPassword, String confirmPassword) {
     this.accessGuard.require(isNotSignedIn());
@@ -126,8 +128,8 @@ public class UserResetPasswordFacade extends Facade {
     UnencryptedPassword unencryptedPassword = new UnencryptedPassword(newPassword);
 
     PasswordResetToken token = new PasswordResetToken(inputToken);
-    requireRecoverableByEmail(token);
-    UserId userId = this.passwordResetRepository.useToken(token);
+    UserId userId = lockRecoverableOwner(token);
+    this.passwordResetRepository.useToken(token);
 
     this.userRepository.setPassword(userId, unencryptedPassword);
   }
@@ -141,16 +143,18 @@ public class UserResetPasswordFacade extends Facade {
         .map(userId -> new ResetOptions(!this.totpRepository.isEnabled(userId)));
   }
 
+  @Transactional
   public UUID useTokenToSetUpPasskey(String inputToken) {
     this.accessGuard.require(isNotSignedIn());
 
     PasswordResetToken token = new PasswordResetToken(inputToken);
-    UserId owner = requireRecoverableByEmail(token);
+    UserId owner = lockRecoverableOwner(token);
     if (this.totpRepository.isEnabled(owner)) {
       throw new IllegalArgumentException("Can only reset the password");
     }
 
-    return this.passwordResetRepository.useToken(token).value();
+    this.passwordResetRepository.useToken(token);
+    return owner.value();
   }
 
   private boolean canRecoverByEmail(UserId userId) {
@@ -162,11 +166,16 @@ public class UserResetPasswordFacade extends Facade {
     }
   }
 
-  private UserId requireRecoverableByEmail(PasswordResetToken token) {
-    return this.passwordResetRepository
-        .getUserOfValidToken(token)
-        .filter(this::canRecoverByEmail)
-        .orElseThrow(PasswordResetRepository.TokenNotFoundRuntimeException::new);
+  private UserId lockRecoverableOwner(PasswordResetToken token) {
+    UserId owner =
+        this.passwordResetRepository
+            .getUserOfValidToken(token)
+            .orElseThrow(PasswordResetRepository.TokenNotFoundRuntimeException::new);
+    this.userRepository.lockSignInMethods(owner);
+    if (!canRecoverByEmail(owner)) {
+      throw new PasswordResetRepository.TokenNotFoundRuntimeException();
+    }
+    return owner;
   }
 
   private Optional<UserId> findUser(String cidOrEmail) {

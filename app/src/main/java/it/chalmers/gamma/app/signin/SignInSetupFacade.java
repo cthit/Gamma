@@ -52,7 +52,8 @@ public class SignInSetupFacade extends Facade {
   public SignInSetupDTO getSetup() {
     this.accessGuard.require(isSettingUpSignIn());
 
-    SignInSetupAuthentication setup = setup();
+    SignInSetupAuthentication setup = currentSetup();
+    requireStillAllowed(setup);
     UserId userId = new UserId(setup.userId());
     GammaUser user = this.userRepository.get(userId).orElseThrow();
 
@@ -87,8 +88,10 @@ public class SignInSetupFacade extends Facade {
       throw new PasswordsDontMatchException();
     }
 
-    UserId userId = new UserId(setup().userId());
+    SignInSetupAuthentication setup = currentSetup();
+    UserId userId = new UserId(setup.userId());
     this.userRepository.lockSignInMethods(userId);
+    requireStillAllowed(setup);
     this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
@@ -97,7 +100,7 @@ public class SignInSetupFacade extends Facade {
   public void saveRecoveryKey(RecoveryKey key) throws RecoveryKeyNotNeededException {
     this.accessGuard.require(isSettingUpSignIn());
 
-    SignInSetupAuthentication setup = setup();
+    SignInSetupAuthentication setup = currentSetup();
     UserId userId = new UserId(setup.userId());
     this.userRepository.lockSignInMethods(userId);
     if (setup.reason() == Reason.EMAIL || !getSetup().needsRecoveryKey()) {
@@ -108,16 +111,17 @@ public class SignInSetupFacade extends Facade {
     LOGGER.info("User {} saved a new recovery key", userId.value());
   }
 
-  private SignInSetupAuthentication setup() {
-    SignInSetupAuthentication setup =
-        (SignInSetupAuthentication) AuthenticationExtractor.getAuthentication();
+  private static SignInSetupAuthentication currentSetup() {
+    return (SignInSetupAuthentication) AuthenticationExtractor.getAuthentication();
+  }
+
+  private void requireStillAllowed(SignInSetupAuthentication setup) {
     UserId userId = new UserId(setup.userId());
     if (this.adminRepository.isAdmin(userId)
         || (setup.reason() == Reason.EMAIL
             && !this.userRepository.isEmailRecoveryEnabled(userId))) {
       throw new AccessGuard.AccessDeniedException();
     }
-    return setup;
   }
 
   public record SignInSetupDTO(
