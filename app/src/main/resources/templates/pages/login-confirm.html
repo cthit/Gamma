@@ -6,7 +6,7 @@
             <h1 class="login__title">Gamma</h1>
         </header>
 
-        <th:block th:if="${methods.isAdmin() and !methods.hasPasskeys()}">
+        <th:block th:if="${methods.isAdmin() and !methods.hasPasskeys() and !adminConfirmsPassword}">
             <h2>Add a passkey to continue</h2>
             <p>
                 Admins sign in with a passkey. Add one now, for example with your phone, a security key
@@ -36,9 +36,10 @@
             <p class="field__error" id="passkey-error" role="alert" hidden></p>
         </th:block>
 
-        <th:block th:if="${!methods.isAdmin() and methods.hasPassword()}">
+        <th:block th:if="${(!methods.isAdmin() or adminConfirmsPassword) and methods.hasPassword()}">
             <p class="login__divider" th:if="${methods.hasPasskeys()}"><span>or with your password</span></p>
             <h2 th:if="${!methods.hasPasskeys()}">Confirm that it is you</h2>
+            <p th:if="${adminConfirmsPassword}">Enter your password again before adding a passkey.</p>
             <form class="login__form" th:action="@{/login}" th:method="post">
                 <input type="hidden" name="confirming" value="true">
                 <input type="hidden" name="username" th:value="${cid}" autocomplete="username">

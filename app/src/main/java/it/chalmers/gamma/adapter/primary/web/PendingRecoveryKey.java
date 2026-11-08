@@ -20,14 +20,12 @@ public record PendingRecoveryKey(RecoveryKey key, Purpose purpose) implements Se
 
   public static PendingRecoveryKey start(HttpSession session, Purpose purpose) {
     PendingRecoveryKey pending = new PendingRecoveryKey(RecoveryKey.generate(), purpose);
-    session.setAttribute(ATTRIBUTE, pending);
+    session.setAttribute(ATTRIBUTE, new SessionOwned<>(SessionOwned.currentOwner(), pending));
     return pending;
   }
 
   public static Optional<PendingRecoveryKey> get(HttpSession session) {
-    return session.getAttribute(ATTRIBUTE) instanceof PendingRecoveryKey pending
-        ? Optional.of(pending)
-        : Optional.empty();
+    return SessionOwned.get(session, ATTRIBUTE, PendingRecoveryKey.class);
   }
 
   public static void clear(HttpSession session) {

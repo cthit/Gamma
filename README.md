@@ -176,7 +176,7 @@ If the last admin loses all their passkeys, remove them in the database, so the 
 DELETE FROM user_entities WHERE name = '<user id of the admin>';
 ```
 
-If they have forgotten their password too, remove their admin rights (`DELETE FROM g_admin_user WHERE user_id = '<user id>';`), let them reset their password through the forgot password page, and give the rights back (`INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());`).
+If they have forgotten their password too, remove their admin rights and turn email recovery on (`DELETE FROM g_admin_user WHERE user_id = '<user id>'; UPDATE g_user SET email_recovery = true WHERE user_id = '<user id>';`), let them reset their password through the forgot password page, and give the rights back (`INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());`).
 
 ## OAuth2 signing keys
 

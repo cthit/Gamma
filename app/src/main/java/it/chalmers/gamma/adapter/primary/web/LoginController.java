@@ -81,15 +81,12 @@ public class LoginController {
             && authentication.getAuthorities().stream()
                 .anyMatch(authority -> SignInFactors.PASSWORD.equals(authority.getAuthority()));
 
-    boolean signedInWithTotp =
-        authentication != null
-            && authentication.getAuthorities().stream()
-                .anyMatch(authority -> SignInFactors.TOTP.equals(authority.getAuthority()));
-    if (methods.isAdmin()
-        && !methods.hasPasskeys()
+    boolean adminAddingFirstPasskey = methods.isAdmin() && !methods.hasPasskeys();
+    boolean passwordRecent = SignInFactors.isRecent(authentication, SignInFactors.PASSWORD);
+    if (adminAddingFirstPasskey
+        && passwordRecent
         && methods.totpEnabled()
-        && signedInWithPassword
-        && !signedInWithTotp) {
+        && !SignInFactors.isRecent(authentication, SignInFactors.TOTP)) {
       return new ModelAndView("redirect:/login/totp");
     }
 
@@ -102,6 +99,9 @@ public class LoginController {
     mv.addObject("cid", cid);
     mv.addObject("error", error != null);
     mv.addObject("adminNeedsPasskey", methods.isAdmin() && signedInWithPassword);
+    mv.addObject(
+        "adminConfirmsPassword",
+        adminAddingFirstPasskey && methods.hasPassword() && !passwordRecent);
 
     return mv;
   }

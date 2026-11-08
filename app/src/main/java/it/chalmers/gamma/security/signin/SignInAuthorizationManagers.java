@@ -158,8 +158,7 @@ public class SignInAuthorizationManagers {
 
     UserSignInMethods user = methods.get();
     boolean adminSettingUpPasskey = addingPasskey && user.admin() && !user.hasPasskey();
-    Duration requiredValidity =
-        addingPasskey && !adminSettingUpPasskey ? SignInFactors.CONFIRMATION_VALIDITY : validity;
+    Duration requiredValidity = addingPasskey ? SignInFactors.CONFIRMATION_VALIDITY : validity;
 
     return factors(user, current, requiredValidity, adminSettingUpPasskey)
         .authorize(authentication, object);
@@ -172,7 +171,7 @@ public class SignInAuthorizationManagers {
       boolean signInLikeNonAdmin) {
     AllRequiredFactorsAuthorizationManager<T> passkey = require(validity, SignInFactors.PASSKEY);
 
-    if (user.admin() && !signInLikeNonAdmin) {
+    if ((user.admin() && !signInLikeNonAdmin) || !user.hasPassword()) {
       return passkey;
     }
 

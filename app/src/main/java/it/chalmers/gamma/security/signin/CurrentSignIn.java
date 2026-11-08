@@ -24,8 +24,10 @@ public class CurrentSignIn {
 
     Authentication updated =
         current.toBuilder()
-            .authorities(
-                authorities -> authorities.add(FactorGrantedAuthority.fromAuthority(factor)))
+            .authorities(authorities -> {
+              authorities.removeIf(authority -> factor.equals(authority.getAuthority()));
+              authorities.add(FactorGrantedAuthority.fromAuthority(factor));
+            })
             .build();
 
     SecurityContext context = SecurityContextHolder.createEmptyContext();

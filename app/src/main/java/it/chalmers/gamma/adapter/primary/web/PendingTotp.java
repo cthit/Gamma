@@ -10,13 +10,11 @@ public record PendingTotp(TotpSecret secret, long usedTimeStep) implements Seria
   private static final String ATTRIBUTE = PendingTotp.class.getName();
 
   public static void save(HttpSession session, PendingTotp pending) {
-    session.setAttribute(ATTRIBUTE, pending);
+    session.setAttribute(ATTRIBUTE, new SessionOwned<>(SessionOwned.currentOwner(), pending));
   }
 
   public static Optional<PendingTotp> get(HttpSession session) {
-    return session.getAttribute(ATTRIBUTE) instanceof PendingTotp pending
-        ? Optional.of(pending)
-        : Optional.empty();
+    return SessionOwned.get(session, ATTRIBUTE, PendingTotp.class);
   }
 
   public static void clear(HttpSession session) {

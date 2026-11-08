@@ -70,7 +70,11 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   ).toBeVisible();
   await page.goto(`${gamma.url}/`);
   await expect(page).toHaveURL(/\/login\/confirm/);
+  await page.goto(authorizeUrl.toString());
+  await expect(page).toHaveURL(/\/login\/confirm/);
   await signInWithPasskey(page);
+  await expect(page).toHaveURL(/\/oauth2\/callback\?code=/);
+  await page.goto(`${gamma.url}/`);
   await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
