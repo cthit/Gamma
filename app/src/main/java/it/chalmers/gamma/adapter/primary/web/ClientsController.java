@@ -410,7 +410,8 @@ public class ClientsController {
   /** Super group pretty names by id, in alphabetical order. */
   private Map<UUID, String> superGroupNames() {
     return this.superGroupFacade.getAll().stream()
-        .sorted(Comparator.comparing(superGroup -> superGroup.prettyName().toLowerCase()))
+        .sorted(
+            Comparator.comparing(superGroup -> superGroup.prettyName().toLowerCase(Locale.ROOT)))
         .collect(
             Collectors.toMap(
                 SuperGroupFacade.SuperGroupDTO::id,
@@ -422,7 +423,7 @@ public class ClientsController {
   /** Post names by id, in alphabetical order. */
   private Map<UUID, String> postNames() {
     return this.postFacade.getAll().stream()
-        .sorted(Comparator.comparing(post -> post.enName().toLowerCase()))
+        .sorted(Comparator.comparing(post -> post.enName().toLowerCase(Locale.ROOT)))
         .collect(
             Collectors.toMap(
                 PostFacade.PostDTO::id,
