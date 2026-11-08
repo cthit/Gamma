@@ -17,6 +17,7 @@ import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.GammaAuthentication;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -107,6 +108,7 @@ public class MeFacade extends Facade {
     }
   }
 
+  @Transactional
   public void updatePassword(UpdatePassword updatePassword)
       throws NewPasswordNotConfirmedException, PasswordIncorrectException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
@@ -116,8 +118,10 @@ public class MeFacade extends Facade {
       }
 
       GammaUser me = userAuthentication.gammaUser();
-      if (this.userRepository.checkPassword(
-          me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
+      this.userRepository.lockSignInMethods(me.id());
+      if (this.userRepository.hasPassword(me.id())
+          && this.userRepository.checkPassword(
+              me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
         this.userRepository.setPassword(
             me.id(), new UnencryptedPassword(updatePassword.newPassword));
       } else {
