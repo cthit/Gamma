@@ -138,6 +138,8 @@ All configuration is environment-variable-driven via `application.yml`.
 | `PRODUCTION` | `true` | Production mode (disables Thymeleaf caching, dev services, etc.) |
 | `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Will be required in production from v3, see [OAuth2 signing keys](#oauth2-signing-keys) |
 | `OAUTH2_VERIFICATION_KEYS` | *(empty)* | Comma separated keys that are still published so the tokens they signed can be verified, but that no longer sign tokens |
+| `PASSKEYS_RP_ID` | host of `BASE_URL` | The domain passkeys are registered for, see [Signing in](#signing-in). Changing it makes every registered passkey stop working |
+| `PASSKEYS_ALLOWED_ORIGINS` | origin of `BASE_URL` | Comma separated origins that passkeys may be used on |
 | `DEV_SERVICES_ENABLED` | `false` | Auto-start PostgreSQL + Redis via Testcontainers |
 | `IS_MOCKING` | `false` | Load mock data on startup |
 | `MOCK_DATA_RESOURCE` | `classpath:/mock/mock.json` | Path to mock data JSON |
@@ -149,6 +151,32 @@ All configuration is environment-variable-driven via `application.yml`.
 | `ROOT_DEBUG_LEVEL` | `INFO` | Root log level |
 | `SERVER_SSL_ENABLED` | *(varies)* | Enable HTTPS |
 
+
+## Signing in
+
+Users sign in with a **passkey**, or with their **password** and, if they have set one up, a code from an **authenticator app** (TOTP). Admins must sign in with a passkey: an admin who signs in with their password can only add a passkey until they have one, and can't use Gamma or sign in to other clients before that. A user who is made admin gets the same on their next request.
+
+Everything is built on Spring Security:
+
+- Passkeys use Spring Security's WebAuthn support (`http.webAuthn()`), which stores them in the `user_entities` and `user_credentials` tables. Passkeys must verify the user, for example with a fingerprint or PIN.
+- Each way of signing in is a Spring Security factor (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN` and Gamma's `FACTOR_TOTP`), and the factors each user needs are required factors (`AllRequiredFactorsAuthorizationManager`). Changing how you sign in needs a sign in from the last 10 minutes.
+- Authenticator app codes are checked with [java-otp](https://github.com/jchambers/java-otp) (HMAC-SHA1, six digits, 30 second steps), and each code can only be used once.
+
+Users manage this under **Sign in and security** (`/me/security`): add and remove passkeys, add or remove their password once they have a passkey, set up an authenticator app (QR code, or the key typed in by hand), and turn email recovery off.
+
+### Getting back in
+
+- **Email recovery**: the forgot password link lets the user set a new password, or set up a passkey instead. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
+- **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) lets the user set up a new passkey or password once, and removes their authenticator app.
+- **Admin reset**: an admin can reset how another user signs in from the user's page. That removes the user's passkeys, authenticator app and recovery key and turns email recovery on. A reset admin signs in with their password and adds a new passkey.
+
+If the last admin loses all their passkeys, remove them in the database, so the admin can sign in with their password and add a new one:
+
+```sql
+DELETE FROM user_entities WHERE name = '<user id of the admin>';
+```
+
+If they have forgotten their password too, remove their admin rights (`DELETE FROM g_admin_user WHERE user_id = '<user id>';`), let them reset their password through the forgot password page, and give the rights back (`INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());`).
 
 ## OAuth2 signing keys
 

@@ -2,6 +2,7 @@ import {
   expect,
   testWithDefaultGamma as test,
 } from "../../helpers/test-fixtures";
+import { finishAdminSignIn } from "../../helpers/passkeys";
 
 test("login in with admin account", async ({ page, gamma }) => {
   if (!gamma.adminCid || !gamma.adminPassword) {
@@ -22,6 +23,12 @@ test("login in with admin account", async ({ page, gamma }) => {
     page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
     page.getByRole("button", { name: "Login" }).click(),
   ]);
+
+  // The bootstrapped admin has no passkey yet, so they add one first.
+  await expect(
+    page.getByRole("heading", { name: "Add a passkey to continue" }),
+  ).toBeVisible();
+  await finishAdminSignIn(page);
 
   await expect(page.getByText("Hey, admin!")).toBeVisible({ timeout: 10000 });
 });

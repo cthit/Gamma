@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.image.ImageFacade;
+import it.chalmers.gamma.app.signin.SignInMethodsFacade;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
@@ -37,13 +38,16 @@ public class UsersController {
   private final UserResetPasswordFacade userResetPasswordFacade;
   private final UserGdprTrainingFacade userGdprTrainingFacade;
   private final ImageFacade imageFacade;
+  private final SignInMethodsFacade signInMethodsFacade;
 
   public UsersController(
       UserFacade userFacade,
       UserCreationFacade userCreationFacade,
       UserResetPasswordFacade userResetPasswordFacade,
       UserGdprTrainingFacade userGdprTrainingFacade,
-      ImageFacade imageFacade) {
+      ImageFacade imageFacade,
+      SignInMethodsFacade signInMethodsFacade) {
+    this.signInMethodsFacade = signInMethodsFacade;
     this.userFacade = userFacade;
     this.userCreationFacade = userCreationFacade;
     this.userResetPasswordFacade = userResetPasswordFacade;
@@ -120,6 +124,8 @@ public class UsersController {
         mv.addObject("email", u.user().email());
         mv.addObject("locked", u.user().locked());
         mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(u.user().id()));
+        mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(u.user().id()));
+        mv.addObject("isMe", userAuthenticated.gammaUser().id().value().equals(u.user().id()));
       } else {
         Optional<UserFacade.UserWithGroupsDTO> user =
             this.userFacade.getWithGroups(UUID.fromString(userId));
@@ -336,11 +342,35 @@ public class UsersController {
   public ModelAndView generatePasswordLink(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       @PathVariable("id") UUID userId) {
-    String passwordResetLink = userResetPasswordFacade.generatePasswordLink(userId);
-
     ModelAndView mv = new ModelAndView();
     mv.setViewName("user-details/page :: password-link-generated");
-    mv.addObject("passwordLink", passwordResetLink);
+    mv.addObject("userId", userId);
+
+    try {
+      mv.addObject("passwordLink", userResetPasswordFacade.generatePasswordLink(userId));
+    } catch (UserResetPasswordFacade.EmailRecoveryNotAllowedException e) {
+      mv.addObject("passwordLinkNotAllowed", true);
+    }
+
+    return mv;
+  }
+
+  /**
+   * Lets a user who has lost every way to sign in get back in, see {@link
+   * SignInMethodsFacade#resetSignInMethods}.
+   */
+  @PostMapping("/users/{id}/reset-sign-in")
+  public ModelAndView resetSignIn(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID userId) {
+    this.signInMethodsFacade.resetSignInMethods(userId);
+
+    ModelAndView mv = new ModelAndView();
+    mv.setViewName("user-details/page :: sign-in-methods");
+    mv.addObject("userId", userId);
+    mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(userId));
+    mv.addObject("isMe", false);
+    mv.addObject("signInReset", true);
 
     return mv;
   }

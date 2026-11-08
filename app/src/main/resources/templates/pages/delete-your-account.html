@@ -8,7 +8,8 @@
             Deleting your account can't be reversed.
         </p>
         <form th:object="${form}" id="delete-account" th:action="@{/delete-your-account}" th:method="delete">
-            <th:block th:with="passwordPurpose='current-password'">
+            <input type="hidden" name="password" value="" th:if="${!hasPassword}" />
+            <th:block th:if="${hasPassword}" th:with="passwordPurpose='current-password'">
                 <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Confirm password')}"></div>
             </th:block>
         </form>

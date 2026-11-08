@@ -10,6 +10,11 @@ import it.chalmers.gamma.app.validation.FailedValidation;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
 import it.chalmers.gamma.app.validation.ValidationResult;
 import it.chalmers.gamma.app.validation.Validator;
+import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
+import it.chalmers.gamma.security.signin.SignInSetupSessions;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -23,9 +28,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class ForgotPasswordController {
 
   private final UserResetPasswordFacade userResetPasswordFacade;
+  private final SignInSetupSessions signInSetupSessions;
 
-  public ForgotPasswordController(UserResetPasswordFacade userResetPasswordFacade) {
+  public ForgotPasswordController(
+      UserResetPasswordFacade userResetPasswordFacade, SignInSetupSessions signInSetupSessions) {
     this.userResetPasswordFacade = userResetPasswordFacade;
+    this.signInSetupSessions = signInSetupSessions;
   }
 
   public static final class IdentifierValidator implements Validator<String> {
@@ -101,6 +109,13 @@ public class ForgotPasswordController {
     }
 
     mv.addObject("form", form);
+    // Unless the user has an authenticator app, they can set up a passkey instead.
+    mv.addObject(
+        "canSetUpPasskey",
+        this.userResetPasswordFacade
+            .getResetOptions(form.token)
+            .map(UserResetPasswordFacade.ResetOptions::canSetUpPasskey)
+            .orElse(false));
 
     if (bindingResult != null && bindingResult.hasErrors()) {
       mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
@@ -113,7 +128,7 @@ public class ForgotPasswordController {
   public ModelAndView getFinalizeForgotPassword(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @RequestParam(value = "token", required = true) String token) {
-    if (!this.userResetPasswordFacade.isValidToken(token)) {
+    if (this.userResetPasswordFacade.getResetOptions(token).isEmpty()) {
       ModelAndView mv = new ModelAndView();
       if (htmxRequest) {
         mv.setViewName("pages/password-reset-token-bad");
@@ -153,5 +168,31 @@ public class ForgotPasswordController {
     }
 
     return new ModelAndView("redirect:/login?password-reset");
+  }
+
+  /** Uses the link to set up a passkey instead of a password. */
+  @PostMapping("/forgot-password/finalize/passkey")
+  public ModelAndView finalizeWithPasskey(
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      @RequestParam("token") String token,
+      HttpServletRequest request,
+      HttpServletResponse response) {
+    UUID userId;
+    try {
+      userId = this.userResetPasswordFacade.useTokenToSetUpPasskey(token);
+    } catch (PasswordResetRepository.TokenNotFoundRuntimeException | IllegalArgumentException e) {
+      ModelAndView mv = new ModelAndView();
+      if (htmxRequest) {
+        mv.setViewName("pages/password-reset-token-bad");
+      } else {
+        mv.setViewName("index");
+        mv.addObject("page", "pages/password-reset-token-bad");
+      }
+      return mv;
+    }
+
+    this.signInSetupSessions.start(
+        userId, SignInSetupAuthentication.Reason.EMAIL, request, response);
+    return new ModelAndView("redirect:" + SignInSetupSessions.SETUP_URL);
   }
 }

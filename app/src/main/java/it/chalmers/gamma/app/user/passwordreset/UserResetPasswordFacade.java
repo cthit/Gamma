@@ -4,9 +4,11 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
@@ -16,6 +18,7 @@ import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.app.validation.SuccessfulValidation;
 import it.chalmers.gamma.security.TimerBlock;
+import java.util.Optional;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,8 @@ public class UserResetPasswordFacade extends Facade {
   private final UserRepository userRepository;
   private final PasswordResetRepository passwordResetRepository;
   private final ThrottlingService throttlingService;
+  private final AdminRepository adminRepository;
+  private final TotpRepository totpRepository;
   private final String baseUrl;
 
   public UserResetPasswordFacade(
@@ -38,8 +43,12 @@ public class UserResetPasswordFacade extends Facade {
       UserRepository userRepository,
       PasswordResetRepository passwordResetRepository,
       ThrottlingService throttlingService,
+      AdminRepository adminRepository,
+      TotpRepository totpRepository,
       @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
+    this.adminRepository = adminRepository;
+    this.totpRepository = totpRepository;
     this.mailService = mailService;
     this.userRepository = userRepository;
     this.passwordResetRepository = passwordResetRepository;
@@ -47,8 +56,12 @@ public class UserResetPasswordFacade extends Facade {
     this.baseUrl = baseUrl;
   }
 
-  public String generatePasswordLink(UUID userId) {
+  public String generatePasswordLink(UUID userId) throws EmailRecoveryNotAllowedException {
     super.accessGuard.require(isAdmin());
+
+    if (!canRecoverByEmail(new UserId(userId))) {
+      throw new EmailRecoveryNotAllowedException();
+    }
 
     try {
       PasswordResetRepository.PasswordReset passwordReset =
@@ -66,6 +79,16 @@ public class UserResetPasswordFacade extends Facade {
     TimerBlock.minimum(3000)
         .execute(() -> {
           try {
+            Optional<UserId> userId = findUser(cidOrEmailString);
+            if (userId.isPresent() && !canRecoverByEmail(userId.get())) {
+              // Admins and users who have turned off email recovery get back in in other ways,
+              // so nothing is mailed. The page says the same as when a mail is sent.
+              LOGGER.info(
+                  "Not mailing a password reset link to {}, who can't recover by email",
+                  userId.get().value());
+              return;
+            }
+
             PasswordResetRepository.PasswordReset passwordReset;
             if (new Email.EmailValidator().validate(cidOrEmailString)
                 instanceof SuccessfulValidation) {
@@ -104,10 +127,77 @@ public class UserResetPasswordFacade extends Facade {
 
     UnencryptedPassword unencryptedPassword = new UnencryptedPassword(newPassword);
 
-    UserId userId = this.passwordResetRepository.useToken(new PasswordResetToken(inputToken));
+    PasswordResetToken token = new PasswordResetToken(inputToken);
+    requireRecoverableByEmail(token);
+    UserId userId = this.passwordResetRepository.useToken(token);
 
     this.userRepository.setPassword(userId, unencryptedPassword);
   }
+
+  /**
+   * What the user can set up with the link: a password, and unless they have an authenticator app,
+   * a passkey. Empty if the link can't be used.
+   */
+  public Optional<ResetOptions> getResetOptions(String token) {
+    this.accessGuard.require(isNotSignedIn());
+
+    return this.passwordResetRepository
+        .getUserOfValidToken(new PasswordResetToken(token))
+        .filter(this::canRecoverByEmail)
+        .map(userId -> new ResetOptions(!this.totpRepository.isEnabled(userId)));
+  }
+
+  /**
+   * Uses the link to let the user set up a passkey instead of a password.
+   *
+   * @return the user that may set up a passkey
+   */
+  public UUID useTokenToSetUpPasskey(String inputToken) {
+    this.accessGuard.require(isNotSignedIn());
+
+    PasswordResetToken token = new PasswordResetToken(inputToken);
+    UserId owner = requireRecoverableByEmail(token);
+    if (this.totpRepository.isEnabled(owner)) {
+      // The link only resets the password of a user with an authenticator app, so that the email
+      // can't be used to get around the app.
+      throw new IllegalArgumentException("Can only reset the password");
+    }
+
+    return this.passwordResetRepository.useToken(token).value();
+  }
+
+  /** Admins never can, and other users can turn it off. */
+  private boolean canRecoverByEmail(UserId userId) {
+    try {
+      return !this.adminRepository.isAdmin(userId)
+          && this.userRepository.isEmailRecoveryEnabled(userId);
+    } catch (UserRepository.UserNotFoundException e) {
+      return false;
+    }
+  }
+
+  private UserId requireRecoverableByEmail(PasswordResetToken token) {
+    return this.passwordResetRepository
+        .getUserOfValidToken(token)
+        .filter(this::canRecoverByEmail)
+        .orElseThrow(PasswordResetRepository.TokenNotFoundRuntimeException::new);
+  }
+
+  private Optional<UserId> findUser(String cidOrEmail) {
+    String identifier = cidOrEmail.toLowerCase();
+    if (new Email.EmailValidator().validate(identifier) instanceof SuccessfulValidation) {
+      return this.userRepository.findId(new Email(identifier));
+    }
+    if (new Cid.CidValidator().validate(identifier) instanceof SuccessfulValidation) {
+      return this.userRepository.findId(new Cid(identifier));
+    }
+    return Optional.empty();
+  }
+
+  public record ResetOptions(boolean canSetUpPasskey) {}
+
+  /** The user is an admin, or has turned off resetting how they sign in through email. */
+  public static final class EmailRecoveryNotAllowedException extends Exception {}
 
   private String generatePasswordResetLink(PasswordResetToken token) {
     return this.baseUrl + "/forgot-password/finalize?token=" + token.value();

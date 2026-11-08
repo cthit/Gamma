@@ -136,7 +136,15 @@ public class UserEmailChangeFacade extends Facade {
     return change.newEmail().value();
   }
 
+  /**
+   * A user without a password confirms that it is them by having recently signed in with a passkey
+   * instead.
+   */
   private boolean isCurrentPassword(GammaUser me, String candidate) {
+    if (!this.userRepository.hasPassword(me.id())) {
+      return AuthenticationExtractor.recentlySignedInWithPasskey();
+    }
+
     UnencryptedPassword password;
     try {
       password = new UnencryptedPassword(candidate);

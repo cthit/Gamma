@@ -29,4 +29,21 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
       "update UserEntity u set u.email = :email, u.version = u.version + 1, u.updatedAt = :now"
           + " where u.id = :id")
   int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
+
+  /** Only touches the password and the version, like {@link #updateEmail}. */
+  @Transactional
+  @Modifying
+  @Query(
+      "update UserEntity u set u.password = :password, u.version = u.version + 1,"
+          + " u.updatedAt = :now where u.id = :id")
+  int updatePassword(
+      @Param("id") UUID id, @Param("password") String password, @Param("now") Instant now);
+
+  @Transactional
+  @Modifying
+  @Query(
+      "update UserEntity u set u.emailRecovery = :enabled, u.version = u.version + 1,"
+          + " u.updatedAt = :now where u.id = :id")
+  int updateEmailRecovery(
+      @Param("id") UUID id, @Param("enabled") boolean enabled, @Param("now") Instant now);
 }

@@ -47,7 +47,11 @@
         <header>
             <h2>Generate reset password link</h2>
         </header>
-        <p th:if="${passwordLink == null}">Password link will appear here</p>
+        <p th:if="${passwordLinkNotAllowed}" class="callout callout--warning" role="alert">
+            This user can't reset their password by email, since they are an admin or have turned off email recovery.
+            Reset how they sign in below first if they have lost every way to sign in.
+        </p>
+        <p th:if="${passwordLink == null and passwordLinkNotAllowed == null}">Password link will appear here</p>
         <th:block th:if="${passwordLink != null}">
             <p>Link valid for 15 minutes.</p>
             <p><code th:text="${passwordLink}"></code></p>
@@ -56,6 +60,51 @@
             <form th:data-hx-post="|/users/${userId}/generate-password-link|" data-hx-target="closest article" data-hx-swap="outerHTML">
                 <div th:replace="~{common/form-csrf}"></div>
                 <button class="button" data-loading-disable>Generate</button>
+            </form>
+        </footer>
+    </article>
+
+    <article th:if="${isAdmin and signInMethods != null}" th:fragment="sign-in-methods">
+        <header>
+            <h2>How the user signs in</h2>
+        </header>
+        <p th:if="${signInReset}" class="callout callout--success" role="status">
+            The user's passkeys, authenticator app and recovery key were removed, and email recovery is on.
+        </p>
+        <dl class="key-value">
+            <div class="key-value__row">
+                <dt class="key-value__key">Password</dt>
+                <dd class="key-value__value" th:text="${signInMethods.hasPassword()} ? 'Yes' : 'No'"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Passkeys</dt>
+                <dd class="key-value__value" th:text="${signInMethods.passkeys().size()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Authenticator app</dt>
+                <dd class="key-value__value" th:text="${signInMethods.totpEnabled()} ? 'Yes' : 'No'"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Recovery key</dt>
+                <dd class="key-value__value" th:text="${signInMethods.hasRecoveryKey()} ? 'Yes' : 'No'"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Email recovery</dt>
+                <dd class="key-value__value"
+                    th:text="${signInMethods.isAdmin()} ? 'No, admins can never recover by email' : (${signInMethods.emailRecovery()} ? 'Yes' : 'No')"></dd>
+            </div>
+        </dl>
+        <p>
+            If the user has lost every way to sign in, reset how they sign in. That removes their passkeys,
+            authenticator app and recovery key and turns email recovery on, so they can set up a new way to sign in
+            through the forgot password page. An admin signs in with their password afterwards and adds a new passkey.
+            Only do this once you know that it really is the user asking.
+        </p>
+        <footer th:if="${!isMe}">
+            <form th:data-hx-post="|/users/${userId}/reset-sign-in|" data-hx-target="closest article" data-hx-swap="outerHTML"
+                  data-hx-confirm="Reset how this user signs in?">
+                <div th:replace="~{common/form-csrf}"></div>
+                <button class="button button--danger" data-loading-disable>Reset how the user signs in</button>
             </form>
         </footer>
     </article>

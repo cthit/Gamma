@@ -83,6 +83,14 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   }
 
   @Override
+  public Optional<UserId> getUserOfValidToken(PasswordResetToken token) {
+    return this.userPasswordResetJpaRepository
+        .findByTokenHash(token.hashed())
+        .filter(this::isStillValid)
+        .map(reset -> new UserId(reset.userId));
+  }
+
+  @Override
   @Transactional
   public UserId useToken(PasswordResetToken token) {
     Optional<UserPasswordResetEntity> maybeReset =

@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.StaleDomainObjectException;
+import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,10 +27,13 @@ public class ThymeleafAdvice {
   private static final Logger LOGGER = LoggerFactory.getLogger(ThymeleafAdvice.class);
 
   private final ImageUploadLimit imageUploadLimit;
+  private final MeFacade meFacade;
 
   public ThymeleafAdvice(
-      @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize) {
+      @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize,
+      MeFacade meFacade) {
     this.imageUploadLimit = new ImageUploadLimit(maxImageSize);
+    this.meFacade = meFacade;
   }
 
   /**
@@ -49,6 +53,18 @@ public class ThymeleafAdvice {
     } else {
       return false;
     }
+  }
+
+  /**
+   * Whether the signed in user has a password. Users without one confirm that it is them with a
+   * passkey instead, so forms leave out the password field for them.
+   */
+  @ModelAttribute("hasPassword")
+  public boolean hasPassword() {
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication) {
+      return this.meFacade.hasPassword();
+    }
+    return false;
   }
 
   @ExceptionHandler(IllegalArgumentException.class)

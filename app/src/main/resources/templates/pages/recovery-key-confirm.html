@@ -1,0 +1,23 @@
+<header th:replace="${withNav} ? ~{common/header} : ~{common/header-without-nav}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header><h2>Type your recovery key</h2></header>
+        <p>Type in the recovery key you just saved. Case, spaces and dashes don't matter.</p>
+        <form th:action="|${baseUrl}/confirm|" th:method="post" id="confirm-recovery-key">
+            <div class="field">
+                <label class="field__label" for="recoveryKey">Recovery key</label>
+                <textarea class="input recovery-key-input" id="recoveryKey" name="recoveryKey" rows="4"
+                          autocomplete="off" autocapitalize="characters" spellcheck="false" required
+                          th:attr="aria-invalid=${error ? 'true' : null},
+                                  aria-describedby=${error ? 'recovery-key-error' : null}"></textarea>
+                <small class="field__error" id="recovery-key-error" th:if="${error}">
+                    That isn't the recovery key. Check what you saved, or go back to see it again.
+                </small>
+            </div>
+        </form>
+        <footer>
+            <a class="button button--secondary" th:href="${baseUrl}">Show the key again</a>
+            <button class="button" form="confirm-recovery-key" data-loading-disable>Confirm</button>
+        </footer>
+    </article>
+</main>

@@ -49,9 +49,13 @@ test("given a generated password reset link when finalizing reset then the user 
   await logout(page);
 
   await page.goto(reachableResetLink, { timeout: 30000 });
-  await expect(page.getByText("Finalize resetting password")).toBeVisible({
-    timeout: 10000,
-  });
+  // The link offers a passkey first, or a new password.
+  await expect(
+    page.getByRole("heading", { name: "Sign in with a passkey (recommended)" }),
+  ).toBeVisible({ timeout: 10000 });
+  await expect(
+    page.getByRole("heading", { name: "Or choose a new password" }),
+  ).toBeVisible();
 
   await page.getByLabel("Password", { exact: true }).fill(newPassword);
   await page.getByLabel("Confirm password", { exact: true }).fill(newPassword);

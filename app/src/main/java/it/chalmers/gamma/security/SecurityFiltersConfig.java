@@ -10,10 +10,24 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
+import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
+import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
+import it.chalmers.gamma.security.signin.PasskeyConfig;
+import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationFilter;
+import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
+import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
+import it.chalmers.gamma.security.signin.SignInAuthorizationManagers;
+import it.chalmers.gamma.security.signin.SignInFactors;
+import it.chalmers.gamma.security.signin.SignInSetupSessions;
+import it.chalmers.gamma.security.signin.SignInStepEntryPoint;
+import it.chalmers.gamma.security.signin.TotpAuthenticationFilter;
+import it.chalmers.gamma.security.signin.TotpAuthenticationProvider;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,33 +38,52 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.ObjectPostProcessor;
+import org.springframework.security.config.annotation.authorization.EnableMultiFactorAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationFilter;
 
+/**
+ * Users sign in with a passkey, or with their password and, if they have one, a code from their
+ * authenticator app. Admins sign in with a passkey. See {@link SignInAuthorizationManagers}.
+ */
 @Configuration
+// Lets Spring Security add a factor to the factors the user has already signed in with, instead of
+// replacing them, such as the code of an authenticator app after the password.
+@EnableMultiFactorAuthentication(authorities = {})
 public class SecurityFiltersConfig {
 
   @Order(1)
   @Bean
   public SecurityFilterChain authorizationServerSecurityFilterChain(
-      HttpSecurity http, UserInfoMapper userInfoMapper) throws Exception {
+      HttpSecurity http,
+      UserInfoMapper userInfoMapper,
+      SignInAuthorizationManagers signInAuthorizationManagers)
+      throws Exception {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         new OAuth2AuthorizationServerConfigurer();
 
@@ -70,11 +103,16 @@ public class SecurityFiltersConfig {
                                 providerConfigurationEndpoint.providerConfigurationCustomizer(
                                     AuthorizationServerMetadataCustomizer::customize))
                             .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))))
-        .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .exceptionHandling(exceptions ->
-            exceptions.defaultAuthenticationEntryPointFor(
-                new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
-                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+        // Authorizing a client also needs every factor the user must sign in with, so for example
+        // an admin can't sign in to a client with only their password.
+        .authorizeHttpRequests(authorization ->
+            authorization.anyRequest().access(signInAuthorizationManagers.signedIn()))
+        .exceptionHandling(exceptions -> {
+          exceptions.defaultAuthenticationEntryPointFor(
+              new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
+              new MediaTypeRequestMatcher(MediaType.TEXT_HTML));
+          signInSteps(exceptions, new HttpSessionRequestCache());
+        })
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
     return http.build();
@@ -147,8 +185,12 @@ public class SecurityFiltersConfig {
       HttpSecurity http,
       PasswordEncoder passwordEncoder,
       UserJpaRepository userJpaRepository,
+      UserRepository userRepository,
       AdminRepository adminRepository,
-      ThrottlingService throttlingService)
+      TotpRepository totpRepository,
+      RecoveryKeyRepository recoveryKeyRepository,
+      ThrottlingService throttlingService,
+      SignInAuthorizationManagers signIn)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
@@ -158,11 +200,30 @@ public class SecurityFiltersConfig {
         new DaoAuthenticationProvider(trustedUserDetails);
     userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
-    HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-    requestCache.setMatchingRequestParameterName(null);
+    HttpSessionRequestCache requestCache = HtmxAwareRedirects.requestCache();
+
+    // Spring Security signs in passkeys of the user with the given user id.
+    http.setSharedObject(
+        UserDetailsService.class, PasskeyConfig.passkeyUserDetailsService(userJpaRepository));
 
     http.addFilterBefore(
             new LoginThrottlingFilter(throttlingService),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(
+            new TotpAuthenticationFilter(
+                new ProviderManager(
+                    new TotpAuthenticationProvider(totpRepository, throttlingService)),
+                requestCache),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(
+            new RecoveryKeyAuthenticationFilter(
+                new ProviderManager(
+                    new RecoveryKeyAuthenticationProvider(
+                        userRepository,
+                        adminRepository,
+                        recoveryKeyRepository,
+                        totpRepository,
+                        throttlingService))),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
@@ -179,8 +240,28 @@ public class SecurityFiltersConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/login")
                 .permitAll()
+                // Signed in users post their password again to confirm that it is them.
                 .requestMatchers(HttpMethod.POST, "/login")
-                .anonymous()
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, TotpAuthenticationFilter.URL)
+                .access(signIn.signingInWithTotp())
+                .requestMatchers(HttpMethod.GET, "/login/confirm")
+                .access(signIn.signingIn())
+                .requestMatchers(HttpMethod.GET, RecoveryKeyAuthenticationFilter.URL)
+                .permitAll()
+                .requestMatchers(
+                    SignInSetupSessions.SETUP_URL, SignInSetupSessions.SETUP_URL + "/**")
+                .access(signIn.settingUpSignIn())
+                // Spring Security's endpoints for adding and removing passkeys. Passkeys are
+                // removed from the security page instead.
+                .requestMatchers(HttpMethod.POST, "/webauthn/register")
+                .access(signIn.mayAddPasskey())
+                .requestMatchers("/webauthn/register/**")
+                .denyAll()
+                .requestMatchers("/me/security", "/me/security/**")
+                .access(signIn.recentlySignedIn())
+                .requestMatchers("/me/edit-email", "/delete-your-account")
+                .access(signIn.recentlySignedInIfPasswordless())
                 .requestMatchers(HttpMethod.GET, "/activate-cid")
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/activate-cid")
@@ -199,6 +280,8 @@ public class SecurityFiltersConfig {
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/forgot-password/finalize")
                 .anonymous()
+                .requestMatchers(HttpMethod.POST, "/forgot-password/finalize/passkey")
+                .anonymous()
                 .requestMatchers(HttpMethod.GET, "/robots.txt")
                 .permitAll()
                 // The error page must be reachable without logging in, otherwise errors
@@ -208,8 +291,23 @@ public class SecurityFiltersConfig {
                 .requestMatchers(HttpMethod.GET, "/error")
                 .permitAll()
                 .anyRequest()
-                .authenticated())
-        .formLogin(new LoginCustomizer())
+                .access(signIn.signedIn()))
+        .formLogin(new LoginCustomizer(requestCache))
+        .webAuthn(webAuthn ->
+            webAuthn
+                .disableDefaultRegistrationPage(true)
+                .withObjectPostProcessor(
+                    new ObjectPostProcessor<WebAuthnAuthenticationFilter>() {
+                      @Override
+                      public <O extends WebAuthnAuthenticationFilter> O postProcess(O filter) {
+                        // A new session id when signing in with a passkey, like when signing in
+                        // with a
+                        // password, so that a session id known from before can't be used.
+                        filter.setSessionAuthenticationStrategy(
+                            new ChangeSessionIdAuthenticationStrategy());
+                        return filter;
+                      }
+                    }))
         .logout(logout ->
             logout.addLogoutHandler(
                 new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(CACHE, COOKIES))))
@@ -219,14 +317,35 @@ public class SecurityFiltersConfig {
         .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
-        .exceptionHandling(exceptionConfig ->
-            exceptionConfig.accessDeniedHandler(
-                (request, response, accessDeniedException) -> response.sendRedirect("/")))
+        .exceptionHandling(exceptions -> signInSteps(exceptions, requestCache))
         .headers(headers ->
             headers.contentSecurityPolicy(csp ->
                 csp.policyDirectives(
                     "default-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none';")));
 
     return http.build();
+  }
+
+  /**
+   * Sends a signed in user who is missing a factor to the page where they sign in with it, and back
+   * to where they were going afterwards.
+   */
+  private static void signInSteps(
+      ExceptionHandlingConfigurer<HttpSecurity> exceptions, RequestCache requestCache) {
+    AuthenticationEntryPoint totp =
+        new SignInStepEntryPoint(TotpAuthenticationFilter.URL, requestCache);
+    AuthenticationEntryPoint confirm = new SignInStepEntryPoint("/login/confirm", requestCache);
+
+    exceptions
+        .defaultDeniedHandlerForMissingAuthority(
+            entryPoint -> entryPoint.addEntryPointFor(totp, AnyRequestMatcher.INSTANCE),
+            SignInFactors.TOTP)
+        .defaultDeniedHandlerForMissingAuthority(
+            entryPoint -> entryPoint.addEntryPointFor(confirm, AnyRequestMatcher.INSTANCE),
+            SignInFactors.PASSKEY)
+        .defaultDeniedHandlerForMissingAuthority(
+            entryPoint -> entryPoint.addEntryPointFor(confirm, AnyRequestMatcher.INSTANCE),
+            SignInFactors.PASSWORD)
+        .defaultAccessDeniedHandlerFor(new SignInAccessDeniedHandler(), AnyRequestMatcher.INSTANCE);
   }
 }

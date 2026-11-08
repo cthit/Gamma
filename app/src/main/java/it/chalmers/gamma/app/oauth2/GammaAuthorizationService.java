@@ -13,6 +13,7 @@ import it.chalmers.gamma.app.user.domain.UserMembership;
 import java.security.Principal;
 import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
@@ -37,10 +38,11 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
   @Override
   public void save(OAuth2Authorization authorization) {
-    UsernamePasswordAuthenticationToken authenticationToken =
-        authorization.getAttribute(Principal.class.getName());
+    // The user who authorized the client, whichever way they signed in: with a password, a
+    // passkey or an authenticator app.
+    Authentication authentication = authorization.getAttribute(Principal.class.getName());
 
-    if (authenticationToken != null && authenticationToken.getPrincipal() instanceof User user) {
+    if (authentication != null && authentication.isAuthenticated()) {
       Client client =
           this.clientRepository
               .get(ClientUid.valueOf(authorization.getRegisteredClientId()))
@@ -49,19 +51,20 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
       // If the client has no restrictions, then any user can sign in.
       if (client.restrictions().isPresent()
           && !client.restrictions().get().superGroups().isEmpty()
-          && !userPassesRestriction(client.restrictions().get(), user)) {
+          && !userPassesRestriction(
+              client.restrictions().get(), UserId.valueOf(authentication.getName()))) {
         throw new UserNotAllowedRuntimeException();
       }
     }
 
     OAuth2Authorization authorizationToSave = authorization;
-    if (authenticationToken != null) {
+    if (authentication != null) {
+      // Only the user and their authorities are kept, not the details of how they signed in.
       UsernamePasswordAuthenticationToken sanitizedAuthenticationToken =
-          new UsernamePasswordAuthenticationToken(
-              authenticationToken.getPrincipal(),
-              authenticationToken.getCredentials(),
-              authenticationToken.getAuthorities());
-      sanitizedAuthenticationToken.setDetails(null);
+          UsernamePasswordAuthenticationToken.authenticated(
+              new User(authentication.getName(), "", authentication.getAuthorities()),
+              null,
+              authentication.getAuthorities());
 
       authorizationToSave =
           OAuth2Authorization.from(authorization)
@@ -72,9 +75,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     gammaAuthorizationRepository.save(authorizationToSave);
   }
 
-  private boolean userPassesRestriction(ClientRestriction restriction, User user) {
-    UserId userId = UserId.valueOf(user.getUsername());
-
+  private boolean userPassesRestriction(ClientRestriction restriction, UserId userId) {
     List<UserMembership> memberships = this.groupRepository.getAllByUser(userId);
     List<SuperGroupId> userSuperGroups =
         memberships.stream()

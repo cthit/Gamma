@@ -130,7 +130,7 @@ public class MeFacade extends Facade {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
-      if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
+      if (isMe(me, password)) {
         try {
           this.userRepository.delete(me.id());
         } catch (UserRepository.UserNotFoundException e) {
@@ -140,6 +140,34 @@ public class MeFacade extends Facade {
         throw new IllegalArgumentException();
       }
     }
+  }
+
+  /**
+   * Confirms that it is the user, with their password or, for users without one, by having recently
+   * signed in with a passkey.
+   */
+  private boolean isMe(GammaUser me, String password) {
+    if (!this.userRepository.hasPassword(me.id())) {
+      return AuthenticationExtractor.recentlySignedInWithPasskey();
+    }
+
+    UnencryptedPassword unencryptedPassword;
+    try {
+      unencryptedPassword = new UnencryptedPassword(password);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+    return this.userRepository.checkPassword(me.id(), unencryptedPassword);
+  }
+
+  public boolean hasPassword() {
+    this.accessGuard.require(isSignedIn());
+
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthentication) {
+      return this.userRepository.hasPassword(userAuthentication.gammaUser().id());
+    }
+    return false;
   }
 
   public void setAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {

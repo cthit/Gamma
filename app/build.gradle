@@ -38,6 +38,18 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-oauth2-authorization-server",
 
+            // Passkeys (WebAuthn) through Spring Security
+            "org.springframework.security:spring-security-webauthn",
+
+            // Checks the codes of authenticator apps (TOTP, RFC 6238)
+            "com.eatthepath:java-otp:1.0.0",
+
+            // Base32 for the TOTP secret that authenticator apps are given
+            "commons-codec:commons-codec",
+
+            // QR code for setting up an authenticator app
+            "com.google.zxing:core:3.5.4",
+
             // Spring session
             "org.springframework.session:spring-session-core",
             "org.springframework.session:spring-session-data-redis",

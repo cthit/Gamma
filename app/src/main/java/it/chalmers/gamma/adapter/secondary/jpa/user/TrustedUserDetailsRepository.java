@@ -6,7 +6,6 @@ import it.chalmers.gamma.app.user.domain.*;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,21 +19,15 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
     this.userJpaRepository = userJpaRepository;
   }
 
-  public GammaUser getGammaUserByUser() {
-    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+  /** The signed in user, whichever way they signed in. */
+  public GammaUser getGammaUser(UUID userId) {
     UserEntity userEntity =
         this.userJpaRepository
-            .findById(UUID.fromString(user.getUsername()))
+            .findById(userId)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-    if (userEntity.password == null) {
-      // Same error to masquerade the account being locked
-      throw new UsernameNotFoundException("User credentials needs to be created");
-    }
-
     return new GammaUser(
-        new UserId(UUID.fromString(user.getUsername())),
+        new UserId(userId),
         new Cid(userEntity.cid),
         new Nick(userEntity.nick),
         new FirstName(userEntity.firstName),

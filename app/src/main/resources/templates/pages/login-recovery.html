@@ -1,0 +1,36 @@
+<img class="login-backdrop" th:src="@{/img/bg.webp}" alt="" _="on load add .login-backdrop--loaded to me"/>
+<main id="main" class="app__main login" hx-boost:inherited="false">
+    <article class="login__card">
+        <header class="login__header">
+            <img class="login__logo" src="/img/itlogo.svg" alt="" width="56" height="56"/>
+            <h1 class="login__title">Gamma</h1>
+        </header>
+        <form class="login__form" th:action="@{/login/recovery}" th:method="post">
+            <h2>Use your recovery key</h2>
+            <p>
+                Your recovery key lets you set up a new way to sign in. It can only be used once, and removes
+                your authenticator app if you have one.
+            </p>
+            <div class="field">
+                <label class="field__label" for="username">Cid or email</label>
+                <input class="input" id="username" type="text" name="username" autocomplete="username" required>
+            </div>
+            <div class="field">
+                <label class="field__label" for="recoveryKey">Recovery key</label>
+                <textarea class="input recovery-key-input" id="recoveryKey" name="recoveryKey" rows="4"
+                          autocomplete="off" autocapitalize="characters" spellcheck="false" required
+                          th:attr="aria-invalid=${error ? 'true' : null},
+                                  aria-describedby=${error ? 'recovery-key-error' : null}"></textarea>
+                <small class="field__error" id="recovery-key-error" th:if="${error}">
+                    That cid, email or recovery key wasn't right. Admins can't use recovery keys, ask another admin instead.
+                </small>
+            </div>
+            <button class="button button--block" data-loading-disable>Continue</button>
+        </form>
+        <footer class="login__footer">
+            <nav class="login__links" aria-label="Account">
+                <a href="/login">Back to signing in</a>
+            </nav>
+        </footer>
+    </article>
+</main>

@@ -1,0 +1,29 @@
+<header th:replace="${withNav} ? ~{common/header} : ~{common/header-without-nav}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header><h2>Save your recovery key</h2></header>
+        <p th:if="${purpose.name() == 'DISABLE_EMAIL_RECOVERY'}">
+            Before email recovery is turned off, save this recovery key. It is how you get back in if you can't sign in.
+        </p>
+        <p th:if="${purpose.name() == 'ENABLE_TOTP'}">
+            Save this recovery key. It lets you back in if you lose the phone with your authenticator app.
+        </p>
+        <p th:if="${purpose.name() == 'REPLACE'}">
+            This is your new recovery key. Your old one stops working once you have saved this one.
+        </p>
+        <p th:if="${purpose.name() == 'SIGN_IN_SETUP'}">
+            Save this recovery key. It is how you get back in if you can't sign in, since email recovery is off.
+        </p>
+        <p class="recovery-key" aria-label="Your recovery key" th:text="${recoveryKey}"></p>
+        <p>
+            Write it down or save it in your password manager, somewhere only you can get to.
+            It is only shown here, once. On the next page you type it in, to show that you have it.
+        </p>
+        <footer>
+            <form th:action="${cancelUrl}" th:method="post">
+                <button class="button button--secondary" data-loading-disable>Cancel</button>
+            </form>
+            <a class="button" th:href="|${baseUrl}/confirm|">I have saved it</a>
+        </footer>
+    </article>
+</main>

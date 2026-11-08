@@ -6,11 +6,11 @@ import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.image.ImageFacade;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.validation.FailedValidation;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -117,9 +117,9 @@ public class GroupsImageController {
     var group = this.groupFacade.getWithMembers(groupId).orElseThrow();
 
     boolean canEditImages = false;
-    if (SecurityContextHolder.getContext().getAuthentication()
-        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthentication) {
+      UUID myUserId = userAuthentication.gammaUser().id().value();
       canEditImages =
           group.groupMembers().stream()
               .anyMatch(groupMember -> groupMember.user().id().equals(myUserId));

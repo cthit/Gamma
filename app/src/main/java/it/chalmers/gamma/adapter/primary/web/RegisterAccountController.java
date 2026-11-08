@@ -11,11 +11,18 @@ import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
 import it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
+import it.chalmers.gamma.app.validation.FailedValidation;
+import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
+import it.chalmers.gamma.security.signin.SignInSetupSessions;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.Year;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +34,15 @@ import org.springframework.web.servlet.ModelAndView;
 public class RegisterAccountController {
 
   private final UserCreationFacade userCreationFacade;
+  private final SignInSetupSessions signInSetupSessions;
 
   private static final Logger LOGGER =
       LoggerFactory.getLogger(RegisterAccountController.class.getName());
 
-  public RegisterAccountController(UserCreationFacade userCreationFacade) {
+  public RegisterAccountController(
+      UserCreationFacade userCreationFacade, SignInSetupSessions signInSetupSessions) {
     this.userCreationFacade = userCreationFacade;
+    this.signInSetupSessions = signInSetupSessions;
   }
 
   public ModelAndView createGetActivateCid(
@@ -128,7 +138,18 @@ public class RegisterAccountController {
     }
 
     CreateAccountForm form =
-        new CreateAccountForm(token, "", "", "", "", "", "", Year.now().getValue(), "SV", false);
+        new CreateAccountForm(
+            token,
+            SIGN_IN_WITH_PASSKEY,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            Year.now().getValue(),
+            "SV",
+            false);
 
     return createGetRegister(htmxRequest, form, null);
   }
@@ -137,24 +158,35 @@ public class RegisterAccountController {
   public ModelAndView registerAccount(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       CreateAccountForm form,
-      BindingResult bindingResult) {
+      BindingResult bindingResult,
+      HttpServletRequest request,
+      HttpServletResponse response) {
 
     validateObject(form, bindingResult);
 
+    // Users who sign in with a passkey set it up after creating their account.
+    boolean withPasskey = !SIGN_IN_WITH_PASSWORD.equals(form.signInMethod);
+    if (!withPasskey) {
+      validatePassword(form.password, "password", bindingResult);
+      validatePassword(form.confirmPassword, "confirmPassword", bindingResult);
+    }
+
+    UUID userId = null;
     try {
       if (!bindingResult.hasErrors()) {
-        this.userCreationFacade.createUserWithCode(
-            new UserCreationFacade.NewUserByCode(
-                form.password,
-                form.nick,
-                form.firstName,
-                form.lastName,
-                form.email,
-                form.acceptanceYear,
-                form.language),
-            form.code,
-            form.confirmPassword,
-            form.acceptUserAgreement);
+        userId =
+            this.userCreationFacade.createUserWithCode(
+                new UserCreationFacade.NewUserByCode(
+                    withPasskey ? null : form.password,
+                    form.nick,
+                    form.firstName,
+                    form.lastName,
+                    form.email,
+                    form.acceptanceYear,
+                    form.language),
+                form.code,
+                form.confirmPassword,
+                form.acceptUserAgreement);
       }
     } catch (UserCreationFacade.SomePropertyNotUniqueRuntimeException e) {
       bindingResult.addError(
@@ -174,15 +206,36 @@ public class RegisterAccountController {
 
     if (bindingResult.hasErrors()) {
       return createGetRegister(htmxRequest, form, bindingResult);
-    } else {
-      return new ModelAndView("redirect:/login?account-created");
+    }
+
+    if (withPasskey) {
+      this.signInSetupSessions.start(
+          userId, SignInSetupAuthentication.Reason.NEW_ACCOUNT, request, response);
+      return new ModelAndView("redirect:" + SignInSetupSessions.SETUP_URL);
+    }
+
+    return new ModelAndView("redirect:/login?account-created");
+  }
+
+  private static void validatePassword(String password, String field, BindingResult bindingResult) {
+    if (new UnencryptedPasswordValidator().validate(password) instanceof FailedValidation failed) {
+      bindingResult.addError(new FieldError("form", field, failed.message()));
     }
   }
 
+  public static final String SIGN_IN_WITH_PASSKEY = "passkey";
+
+  public static final String SIGN_IN_WITH_PASSWORD = "password";
+
+  /**
+   * @param signInMethod {@link #SIGN_IN_WITH_PASSKEY}, which is recommended, or {@link
+   *     #SIGN_IN_WITH_PASSWORD}. The password fields are only used with a password.
+   */
   public record CreateAccountForm(
       String code,
-      @ValidatedWith(UnencryptedPasswordValidator.class) String password,
-      @ValidatedWith(UnencryptedPasswordValidator.class) String confirmPassword,
+      String signInMethod,
+      String password,
+      String confirmPassword,
       @ValidatedWith(NickValidator.class) String nick,
       @ValidatedWith(FirstNameValidator.class) String firstName,
       @ValidatedWith(LastNameValidator.class) String lastName,

@@ -93,6 +93,16 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
+  public Optional<UserId> findId(Cid cid) {
+    return this.repository.findByCidIgnoreCase(cid.getValue()).map(user -> new UserId(user.id));
+  }
+
+  @Override
+  public Optional<UserId> findId(Email email) {
+    return this.repository.findByEmailIgnoreCase(email.value()).map(user -> new UserId(user.id));
+  }
+
+  @Override
   public boolean checkPassword(UserId userId, UnencryptedPassword password)
       throws UserNotFoundException {
     UserEntity entity =
@@ -107,6 +117,34 @@ public class UserRepositoryAdapter implements UserRepository {
         this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
     userEntity.password = passwordEncoder.encode(newPassword.value());
     this.save(userEntity);
+  }
+
+  @Override
+  public boolean hasPassword(UserId userId) throws UserNotFoundException {
+    UserEntity userEntity =
+        this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
+    return userEntity.password != null;
+  }
+
+  @Override
+  public void removePassword(UserId userId) throws UserNotFoundException {
+    if (this.repository.updatePassword(userId.value(), null, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException {
+    UserEntity userEntity =
+        this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
+    return userEntity.emailRecovery;
+  }
+
+  @Override
+  public void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException {
+    if (this.repository.updateEmailRecovery(userId.value(), enabled, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
   }
 
   @Override

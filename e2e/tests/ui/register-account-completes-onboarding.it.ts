@@ -68,6 +68,7 @@ test("given an allowed cid when completing registration then the new user can si
   await page.getByLabel("Nick", { exact: true }).fill(nick);
   await page.getByLabel("First name", { exact: true }).fill("Register");
   await page.getByLabel("Last name", { exact: true }).fill("Tester");
+  await page.getByRole("radio", { name: /With a password/ }).check();
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByLabel("Confirm password", { exact: true }).fill(password);
   await page

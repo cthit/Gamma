@@ -8,6 +8,7 @@ import {
 import path from "node:path";
 import { access, mkdir, rename, rm } from "node:fs/promises";
 import { execFile } from "node:child_process";
+import { createServer } from "node:net";
 import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
@@ -130,6 +131,12 @@ export async function startGammaInstance(
   const instanceId = instanceCounter++;
   console.log(`Starting Gamma instance ${instanceId}...`);
 
+  // Passkeys only work on a domain, not an IP address, and only on the
+  // origins Gamma allows. So Gamma is published on a port chosen here, and
+  // opened through https://localhost:<port>.
+  const hostPort = await findFreePort();
+  const browserOrigin = `https://localhost:${hostPort}`;
+
   let adminCid: string | undefined;
   let adminPassword: string | undefined;
   let credentialsFound = false;
@@ -155,6 +162,7 @@ export async function startGammaInstance(
     SERVER_SSL_ENABLED: "true",
     UPLOAD_FOLDER: "/tmp/uploads/",
     OAUTH2_SIGNING_KEY: getDefaultSigningKey().privateKeyPem,
+    PASSKEYS_ALLOWED_ORIGINS: browserOrigin,
   };
 
   if (localhostTlsFilesAvailable) {
@@ -190,7 +198,7 @@ export async function startGammaInstance(
       ...options.env,
     })
     .withTmpFs({ "/tmp/uploads": "rw,noexec,nosuid,size=100m" })
-    .withExposedPorts(8080);
+    .withExposedPorts({ container: 8080, host: hostPort });
 
   if (filesToCopy.length > 0) {
     gammaContainerBuilder =
@@ -253,8 +261,7 @@ export async function startGammaInstance(
     )
     .start();
 
-  const port = gammaContainer.getMappedPort(8080);
-  const url = `https://127.0.0.1:${port}`;
+  const url = browserOrigin;
 
   console.log(`Gamma instance ${instanceId} started at ${url}`);
 
@@ -308,6 +315,24 @@ export async function startGammaInstance(
     ...(adminPassword !== undefined ? { adminPassword } : {}),
     ...(Object.keys(apiKeys).length > 0 ? { apiKeys } : {}),
   };
+}
+
+async function findFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.unref();
+    server.on("error", reject);
+    server.listen(0, () => {
+      const address = server.address();
+      if (address === null || typeof address === "string") {
+        server.close();
+        reject(new Error("Could not find a free port"));
+        return;
+      }
+      const { port } = address;
+      server.close(() => resolve(port));
+    });
+  });
 }
 
 export async function stopGammaInstance(

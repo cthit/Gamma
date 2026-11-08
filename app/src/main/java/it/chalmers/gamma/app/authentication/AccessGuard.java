@@ -11,6 +11,7 @@ import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.LocalRunnerAuthentication;
+import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -109,6 +110,12 @@ public class AccessGuard {
   public static AccessChecker isSignedIn() {
     return (clientRepository, userRepository) ->
         AuthenticationExtractor.getAuthentication() instanceof UserAuthentication;
+  }
+
+  /** A user who may only set up how they sign in, see {@link SignInSetupAuthentication}. */
+  public static AccessChecker isSettingUpSignIn() {
+    return (clientRepository, userRepository) ->
+        AuthenticationExtractor.getAuthentication() instanceof SignInSetupAuthentication;
   }
 
   public static AccessChecker isNotSignedIn() {

@@ -12,7 +12,10 @@
         <th:block th:with="autofill=true">
             <div th:replace="~{common/input :: emailInput2(field='newEmail', label='New email')}"></div>
         </th:block>
-        <div th:replace="~{common/input :: passwordTextInput2(field='currentPassword', label='Current password')}"></div>
+        <th:block th:if="${hasPassword}">
+            <div th:replace="~{common/input :: passwordTextInput2(field='currentPassword', label='Current password')}"></div>
+        </th:block>
+        <p th:if="${!hasPassword}">You confirmed that it is you with your passkey, so no password is needed.</p>
         <footer>
             <button data-hx-get="/me/cancel-edit" data-hx-target="closest form" data-hx-swap="outerHTML" class="button button--secondary" type="button" data-loading-disable>Cancel</button>
             <button class="button" data-loading-disable>Send confirmation link</button>

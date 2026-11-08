@@ -1,4 +1,5 @@
 import { expect, type Page } from "@playwright/test";
+import { finishAdminSignIn } from "./passkeys";
 
 export async function login(
   page: Page,
@@ -19,6 +20,11 @@ export async function login(
     page.waitForURL((url) => url.pathname !== "/login", { timeout: 15000 }),
     page.getByRole("button", { name: "Login" }).click(),
   ]);
+
+  // Admins sign in with a passkey after their password.
+  if (new URL(page.url()).pathname === "/login/confirm") {
+    await finishAdminSignIn(page);
+  }
 
   if (expectedNick) {
     await expect(page.getByText(`Hey, ${expectedNick}!`)).toBeVisible({

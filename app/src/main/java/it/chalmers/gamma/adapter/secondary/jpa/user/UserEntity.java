@@ -45,6 +45,9 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "locked")
   protected boolean locked;
 
+  @Column(name = "email_recovery")
+  protected boolean emailRecovery = true;
+
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   protected UserAvatarEntity userAvatar;
 
@@ -53,6 +56,26 @@ public class UserEntity extends MutableEntity<UUID> {
   @Override
   public UUID getId() {
     return this.id;
+  }
+
+  public String cid() {
+    return this.cid;
+  }
+
+  public String nick() {
+    return this.nick;
+  }
+
+  public String firstName() {
+    return this.firstName;
+  }
+
+  public String lastName() {
+    return this.lastName;
+  }
+
+  public boolean locked() {
+    return this.locked;
   }
 
   public void acceptUserAgreement() {
