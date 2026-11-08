@@ -10,7 +10,7 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
-import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
+import it.chalmers.gamma.app.signin.RecoveryKeyUse;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -187,7 +187,7 @@ public class SecurityFiltersConfig {
       UserRepository userRepository,
       AdminRepository adminRepository,
       TotpRepository totpRepository,
-      RecoveryKeyRepository recoveryKeyRepository,
+      RecoveryKeyUse recoveryKeyUse,
       ThrottlingService throttlingService,
       SignInAuthorizationManagers signIn,
       PublicKeyCredentialUserEntityRepository passkeyUsers)
@@ -218,11 +218,7 @@ public class SecurityFiltersConfig {
             new RecoveryKeyAuthenticationFilter(
                 new ProviderManager(
                     new RecoveryKeyAuthenticationProvider(
-                        userRepository,
-                        adminRepository,
-                        recoveryKeyRepository,
-                        totpRepository,
-                        throttlingService))),
+                        userRepository, recoveryKeyUse, throttlingService))),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),

@@ -1,10 +1,8 @@
 package it.chalmers.gamma.security.signin;
 
-import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.signin.RecoveryKeyUse;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
-import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
-import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -29,21 +27,15 @@ public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider
   private static final int MAX_ATTEMPTS_PER_DAY = 10;
 
   private final UserRepository userRepository;
-  private final AdminRepository adminRepository;
-  private final RecoveryKeyRepository recoveryKeyRepository;
-  private final TotpRepository totpRepository;
+  private final RecoveryKeyUse recoveryKeyUse;
   private final ThrottlingService throttlingService;
 
   public RecoveryKeyAuthenticationProvider(
       UserRepository userRepository,
-      AdminRepository adminRepository,
-      RecoveryKeyRepository recoveryKeyRepository,
-      TotpRepository totpRepository,
+      RecoveryKeyUse recoveryKeyUse,
       ThrottlingService throttlingService) {
     this.userRepository = userRepository;
-    this.adminRepository = adminRepository;
-    this.recoveryKeyRepository = recoveryKeyRepository;
-    this.totpRepository = totpRepository;
+    this.recoveryKeyUse = recoveryKeyUse;
     this.throttlingService = throttlingService;
   }
 
@@ -62,16 +54,10 @@ public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider
       throw new BadCredentialsException("Too many attempts");
     }
 
-    if (this.adminRepository.isAdmin(userId)) {
+    if (!this.recoveryKeyUse.use(userId, RecoveryKey.parse(request.getCredentials()))) {
       throw new BadCredentialsException("Wrong cid, email or recovery key");
     }
 
-    RecoveryKey key = RecoveryKey.parse(request.getCredentials());
-    if (!key.isWellFormed() || !this.recoveryKeyRepository.use(userId, key)) {
-      throw new BadCredentialsException("Wrong cid, email or recovery key");
-    }
-
-    this.totpRepository.delete(userId);
     LOGGER.info("User {} signed in with their recovery key", userId.value());
 
     return new SignInSetupAuthenticationToken(
