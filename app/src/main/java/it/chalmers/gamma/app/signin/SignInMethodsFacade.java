@@ -84,6 +84,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     requireNotAdmin(me);
     requireHasPassword(me);
 
@@ -107,6 +108,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     this.totpRepository.delete(me);
     removeRecoveryKeyIfUnneeded(me);
     LOGGER.info("User {} removed their authenticator app", me.value());
@@ -149,11 +151,13 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} removed their password", me.value());
   }
 
+  @Transactional
   public void addPassword(String newPassword, String confirmPassword)
       throws PasswordsDontMatchException {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     if (this.userRepository.hasPassword(me)) {
       throw new IllegalStateException("The user already has a password");
     }
@@ -165,10 +169,12 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} added a password", me.value());
   }
 
+  @Transactional
   public void replaceRecoveryKey(RecoveryKey key) {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     requireNotAdmin(me);
     this.recoveryKeyRepository.save(me, key);
     LOGGER.info("User {} created a new recovery key", me.value());
@@ -179,6 +185,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     requireNotAdmin(me);
     this.recoveryKeyRepository.save(me, newRecoveryKey);
     this.userRepository.setEmailRecoveryEnabled(me, false);
@@ -190,6 +197,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     this.userRepository.setEmailRecoveryEnabled(me, true);
     removeRecoveryKeyIfUnneeded(me);
     LOGGER.info("User {} turned on email recovery", me.value());

@@ -18,6 +18,7 @@ import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.authentication.SignInSetupAuthentication.Reason;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,7 @@ public class SignInSetupFacade extends Facade {
         needsRecoveryKey);
   }
 
+  @Transactional
   public void setPassword(String newPassword, String confirmPassword)
       throws PasswordsDontMatchException {
     this.accessGuard.require(isSettingUpSignIn());
@@ -86,19 +88,22 @@ public class SignInSetupFacade extends Facade {
     }
 
     UserId userId = new UserId(setup().userId());
+    this.userRepository.lockSignInMethods(userId);
     this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
 
+  @Transactional
   public void saveRecoveryKey(RecoveryKey key) throws RecoveryKeyNotNeededException {
     this.accessGuard.require(isSettingUpSignIn());
 
     SignInSetupAuthentication setup = setup();
+    UserId userId = new UserId(setup.userId());
+    this.userRepository.lockSignInMethods(userId);
     if (setup.reason() == Reason.EMAIL || !getSetup().needsRecoveryKey()) {
       throw new RecoveryKeyNotNeededException();
     }
 
-    UserId userId = new UserId(setup.userId());
     this.recoveryKeyRepository.save(userId, key);
     LOGGER.info("User {} saved a new recovery key", userId.value());
   }
