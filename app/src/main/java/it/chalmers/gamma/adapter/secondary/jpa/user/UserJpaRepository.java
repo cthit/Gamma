@@ -1,9 +1,14 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
@@ -13,4 +18,15 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
   Optional<UserEntity> findByCidIgnoreCase(String cid);
 
   Optional<UserEntity> findByEmailIgnoreCase(String email);
+
+  /**
+   * Only touches the email and the version, so it can't overwrite a concurrent change to any other
+   * column, such as the password.
+   */
+  @Transactional
+  @Modifying
+  @Query(
+      "update UserEntity u set u.email = :email, u.version = u.version + 1, u.updatedAt = :now"
+          + " where u.id = :id")
+  int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
 }

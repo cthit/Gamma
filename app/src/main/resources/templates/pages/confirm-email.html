@@ -1,0 +1,18 @@
+<header th:replace="~{common/header}"></header>
+<main id="main" class="app__main">
+    <form th:action="@{/me/confirm-email}" th:method="post">
+        <article>
+            <header>
+                <h2>Confirm your new email</h2>
+            </header>
+            <p>
+                Your email will be changed to <strong th:text="${newEmail}"></strong>.
+            </p>
+            <input type="hidden" name="token" th:value="${token}"/>
+            <footer>
+                <a class="button button--secondary" th:href="@{/}">Cancel</a>
+                <button class="button" data-loading-disable>Confirm new email</button>
+            </footer>
+        </article>
+    </form>
+</main>

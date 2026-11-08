@@ -27,6 +27,9 @@ public interface UserRepository {
 
   void acceptUserAgreement(UserId userId) throws UserNotFoundException;
 
+  void setEmail(UserId userId, Email email)
+      throws UserNotFoundException, EmailAlreadyInUseException;
+
   class UserNotFoundException extends RuntimeException {}
 
   /** A user with the given id already exists. Use save instead. */

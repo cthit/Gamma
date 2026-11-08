@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @Service
 public class GotifyMailService implements MailService {
@@ -34,12 +33,13 @@ public class GotifyMailService implements MailService {
 
   /** Sends mail using Gotify Rest API, see https://github.com/cthit/gotify */
   public void sendMail(String email, String subject, String body) {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    // Read the address from the request rather than the authentication details, since signed in
+    // users get their details replaced with a UserAuthentication by UpdateUserPrincipalFilter.
     String clientIp = null;
 
-    if (authentication != null
-        && authentication.getDetails() instanceof WebAuthenticationDetails details) {
-      clientIp = details.getRemoteAddress();
+    if (RequestContextHolder.getRequestAttributes()
+        instanceof ServletRequestAttributes attributes) {
+      clientIp = attributes.getRequest().getRemoteAddr();
     }
 
     if (clientIp != null && !throttlingService.canProceed("email:" + clientIp, 5)) {
@@ -52,6 +52,14 @@ public class GotifyMailService implements MailService {
       return;
     }
 
+    send(email, subject, body);
+  }
+
+  public void sendSecurityNotification(String email, String subject, String body) {
+    send(email, subject, body);
+  }
+
+  private void send(String email, String subject, String body) {
     HttpHeaders headers = new HttpHeaders();
     headers.add(HttpHeaders.AUTHORIZATION, "pre-shared: " + this.gotifyApiKey);
     headers.setContentType(MediaType.APPLICATION_JSON);

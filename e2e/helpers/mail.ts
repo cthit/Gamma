@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import type { StartedTestContainer } from "testcontainers";
 
 const execFileAsync = promisify(execFile);
-type MailPath = "/register" | "/forgot-password/finalize";
+type MailPath = "/register" | "/forgot-password/finalize" | "/me/confirm-email";
 
 // Go's %#v uses quoted Go strings, not JSON: \a, \v, \xNN, octal and
 // \UNNNNNNNN escapes are valid too. Decode byte escapes before UTF-8 decoding.
@@ -56,14 +56,13 @@ function unquoteGoString(quoted: string): string {
   return Buffer.from(bytes).toString("utf8");
 }
 
-export function latestMailLink(
-  logs: string,
-  baseUrl: string,
-  recipient: string,
-  pathname: MailPath,
-): string | undefined {
+type MailRecord = { to?: string; subject?: string; body?: string };
+
+// Returns the complete Gotify mail records in the logs, or undefined when the
+// last record is still being written.
+function mailRecords(logs: string): MailRecord[] | undefined {
   const marker = /Sending mail:\s*gotify\.Mail\{/g;
-  let latest: string | undefined;
+  const records: MailRecord[] = [];
   while (marker.exec(logs) !== null) {
     const start = marker.lastIndex;
     let depth = 1;
@@ -87,20 +86,32 @@ export function latestMailLink(
     if (depth !== 0) return undefined;
     const record = logs.slice(start, end - 1);
     marker.lastIndex = end;
-    const fields = new Map<string, string>();
+    const fields: MailRecord = {};
     // Match every quoted field, consuming strings whole so field-like text in
     // a subject/body cannot be mistaken for the top-level recipient or body.
     for (const field of record.matchAll(
       /\b(\w+):\s*("(?:[^"\\]|\\[\s\S])*")/g,
     )) {
-      if (field[1] === "To" || field[1] === "Body") {
-        fields.set(field[1], unquoteGoString(field[2]!));
-      }
+      if (field[1] === "To") fields.to = unquoteGoString(field[2]!);
+      else if (field[1] === "Subject")
+        fields.subject = unquoteGoString(field[2]!);
+      else if (field[1] === "Body") fields.body = unquoteGoString(field[2]!);
     }
-    if (fields.get("To") !== recipient) continue;
-    for (const link of (fields.get("Body") ?? "").matchAll(
-      /https?:\/\/[^\s<>"']+/g,
-    )) {
+    records.push(fields);
+  }
+  return records;
+}
+
+export function latestMailLink(
+  logs: string,
+  baseUrl: string,
+  recipient: string,
+  pathname: MailPath,
+): string | undefined {
+  let latest: string | undefined;
+  for (const record of mailRecords(logs) ?? []) {
+    if (record.to !== recipient) continue;
+    for (const link of (record.body ?? "").matchAll(/https?:\/\/[^\s<>"']+/g)) {
       const url = new URL(link[0]);
       if (url.pathname === pathname && url.searchParams.get("token")) {
         // Preserve the actual mailed path/query; BASE_URL uses the internal
@@ -112,6 +123,43 @@ export function latestMailLink(
   return latest;
 }
 
+async function gotifyLogs(
+  gotify: Pick<StartedTestContainer, "getId">,
+  deadline: number,
+): Promise<string> {
+  // Read a finite snapshot, not `docker logs --follow`. execFile buffers
+  // partial stdout chunks with a UTF-8 decoder and closes its pipe listeners
+  // when the process exits. Its timeout kills a stuck reader as well.
+  const { stdout } = await execFileAsync("docker", ["logs", gotify.getId()], {
+    encoding: "utf8",
+    timeout: Math.max(1, Math.ceil(deadline - performance.now())),
+    killSignal: "SIGKILL",
+    maxBuffer: 4 * 1024 * 1024,
+  });
+  return stdout;
+}
+
+/** Waits for a mail to the recipient whose subject matches, and returns its body. */
+export async function waitForMail(
+  gotify: Pick<StartedTestContainer, "getId">,
+  recipient: string,
+  subject: RegExp,
+  timeoutMs = 15000,
+): Promise<string> {
+  const deadline = performance.now() + timeoutMs;
+  while (performance.now() < deadline) {
+    const records = mailRecords(await gotifyLogs(gotify, deadline));
+    const mail = records
+      ?.filter((r) => r.to === recipient && subject.test(r.subject ?? ""))
+      .at(-1);
+    if (mail) return mail.body ?? "";
+    await delay(Math.max(0, Math.min(200, deadline - performance.now())));
+  }
+  throw new Error(
+    `No mail for ${recipient} with subject ${subject} in Gotify logs within ${timeoutMs}ms`,
+  );
+}
+
 export async function waitForMailLink(
   gotify: Pick<StartedTestContainer, "getId">,
   baseUrl: string,
@@ -121,15 +169,7 @@ export async function waitForMailLink(
 ): Promise<string> {
   const deadline = performance.now() + timeoutMs;
   while (performance.now() < deadline) {
-    // Read a finite snapshot, not `docker logs --follow`. execFile buffers
-    // partial stdout chunks with a UTF-8 decoder and closes its pipe listeners
-    // when the process exits. Its timeout kills a stuck reader as well.
-    const { stdout } = await execFileAsync("docker", ["logs", gotify.getId()], {
-      encoding: "utf8",
-      timeout: Math.max(1, Math.ceil(deadline - performance.now())),
-      killSignal: "SIGKILL",
-      maxBuffer: 4 * 1024 * 1024,
-    });
+    const stdout = await gotifyLogs(gotify, deadline);
     const link = latestMailLink(stdout, baseUrl, recipient, pathname);
     if (link) return link;
     await delay(Math.max(0, Math.min(200, deadline - performance.now())));

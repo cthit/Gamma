@@ -7,7 +7,6 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
-import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.image.domain.Image;
@@ -102,7 +101,6 @@ public class MeFacade extends Facade {
               .firstName(new FirstName(updateMe.firstName))
               .lastName(new LastName(updateMe.lastName))
               .language(Language.valueOf(updateMe.language))
-              .extended(oldMe.extended().with().email(new Email(updateMe.email)).build())
               .build();
 
       this.userRepository.save(newMe);
@@ -219,8 +217,7 @@ public class MeFacade extends Facade {
     }
   }
 
-  public record UpdateMe(
-      String nick, String firstName, String lastName, String email, String language) {}
+  public record UpdateMe(String nick, String firstName, String lastName, String language) {}
 
   public record UpdatePassword(String oldPassword, String newPassword, String confirmNewPassword) {}
 

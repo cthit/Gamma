@@ -1,0 +1,14 @@
+<header th:replace="~{common/header}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header>
+            <h2>Your email has been changed</h2>
+        </header>
+        <p>
+            Your email is now <strong th:text="${newEmail}"></strong>.
+        </p>
+        <footer>
+            <a class="button" th:href="@{/}">Go to your account</a>
+        </footer>
+    </article>
+</main>
