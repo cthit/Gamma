@@ -24,12 +24,12 @@ public class AllowListV1ApiController {
     this.allowListFacade = allowListFacade;
   }
 
-  @GetMapping()
+  @GetMapping
   public List<String> getAllowList() {
     return this.allowListFacade.getAllowList();
   }
 
-  @PostMapping()
+  @PostMapping
   public ResponseEntity<?> addAllowedUsers(@RequestBody AddListOfAllowListRequest request) {
     List<String> failedToAdd = new ArrayList<>();
 

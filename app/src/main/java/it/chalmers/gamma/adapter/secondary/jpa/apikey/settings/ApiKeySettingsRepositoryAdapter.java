@@ -84,13 +84,12 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
     return new ApiKeyAccountScaffoldSettings(
         apiKeySettingsEntity.getVersion(),
         apiKeySettingsEntity.superGroupTypes.stream()
-            .map(
-                entity ->
-                    new ApiKeyAccountScaffoldSettings.Row(
-                        entity.getSuperGroupType(),
-                        this.accountScaffoldRequiresManagedJpaRepository.existsById(
-                            new AccountScaffoldRequiresManagedPK(
-                                apiKeySettingsEntity.id, entity.getSuperGroupType().value()))))
+            .map(entity ->
+                new ApiKeyAccountScaffoldSettings.Row(
+                    entity.getSuperGroupType(),
+                    this.accountScaffoldRequiresManagedJpaRepository.existsById(
+                        new AccountScaffoldRequiresManagedPK(
+                            apiKeySettingsEntity.id, entity.getSuperGroupType().value()))))
             .toList());
   }
 
@@ -128,12 +127,10 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
     apiKeySettingsEntity.superGroupTypes.clear();
     apiKeySettingsEntity.superGroupTypes.addAll(
         settings.superGroupTypes().stream()
-            .map(
-                superGroupType ->
-                    new ApiKeySettingsSuperGroupTypeEntity(
-                        apiKeySettingsEntity,
-                        superGroupTypeJpaRepository.getReferenceById(
-                            superGroupType.type().value())))
+            .map(superGroupType ->
+                new ApiKeySettingsSuperGroupTypeEntity(
+                    apiKeySettingsEntity,
+                    superGroupTypeJpaRepository.getReferenceById(superGroupType.type().value())))
             .toList());
 
     for (var row : settings.superGroupTypes()) {
@@ -166,11 +163,10 @@ public class ApiKeySettingsRepositoryAdapter implements ApiKeySettingsRepository
     apiKeySettingsEntity.superGroupTypes.clear();
     apiKeySettingsEntity.superGroupTypes.addAll(
         settings.superGroupTypes().stream()
-            .map(
-                superGroupType ->
-                    new ApiKeySettingsSuperGroupTypeEntity(
-                        apiKeySettingsEntity,
-                        superGroupTypeJpaRepository.getReferenceById(superGroupType.value())))
+            .map(superGroupType ->
+                new ApiKeySettingsSuperGroupTypeEntity(
+                    apiKeySettingsEntity,
+                    superGroupTypeJpaRepository.getReferenceById(superGroupType.value())))
             .toList());
 
     apiKeySettingsEntity.increaseVersion(settings.version());

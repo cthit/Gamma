@@ -29,19 +29,18 @@ public class GdprController {
     List<UUID> gdprTrained = this.userGdprTrainingFacade.getGdprTrained();
     List<UserFacade.UserDTO> users =
         this.userFacade.getAll().stream()
-            .sorted(
-                (user1, user2) -> {
-                  boolean user1Trained = gdprTrained.contains(user1.id());
-                  boolean user2Trained = gdprTrained.contains(user2.id());
+            .sorted((user1, user2) -> {
+              boolean user1Trained = gdprTrained.contains(user1.id());
+              boolean user2Trained = gdprTrained.contains(user2.id());
 
-                  if (user1Trained && !user2Trained) {
-                    return -1;
-                  } else if (!user1Trained && user2Trained) {
-                    return 1;
-                  }
+              if (user1Trained && !user2Trained) {
+                return -1;
+              } else if (!user1Trained && user2Trained) {
+                return 1;
+              }
 
-                  return user1.nick().compareToIgnoreCase(user2.nick());
-                })
+              return user1.nick().compareToIgnoreCase(user2.nick());
+            })
             .toList();
 
     ModelAndView mv = new ModelAndView();

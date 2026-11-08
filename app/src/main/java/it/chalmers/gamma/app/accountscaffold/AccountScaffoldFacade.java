@@ -56,54 +56,46 @@ public class AccountScaffoldFacade extends Facade {
         this.apiKeySettingsRepository.getAccountScaffoldSettings(apiAuthentication.get().id());
 
     this.groupRepository.getAll().stream()
-        .filter(
-            group ->
-                settings.superGroupTypes().stream()
-                    .anyMatch(row -> row.type().equals(group.superGroup().type())))
-        .forEach(
-            group -> {
-              List<AccountScaffoldUserPostDTO> activeGroupMember =
-                  group.groupMembers().stream()
-                      .filter(
-                          groupMember ->
-                              gdprTrained.contains(groupMember.user().id())
-                                  || !isGroupWithManagedAccounts(group, settings))
-                      .map(AccountScaffoldUserPostDTO::new)
-                      .toList();
+        .filter(group ->
+            settings.superGroupTypes().stream()
+                .anyMatch(row -> row.type().equals(group.superGroup().type())))
+        .forEach(group -> {
+          List<AccountScaffoldUserPostDTO> activeGroupMember =
+              group.groupMembers().stream()
+                  .filter(groupMember ->
+                      gdprTrained.contains(groupMember.user().id())
+                          || !isGroupWithManagedAccounts(group, settings))
+                  .map(AccountScaffoldUserPostDTO::new)
+                  .toList();
 
-              SuperGroupId superGroupId = group.superGroup().id();
-              if (!superGroupMap.containsKey(superGroupId)) {
-                superGroupMap.put(
-                    superGroupId,
-                    new SuperGroupWithGroups(
-                        group.superGroup(),
-                        new ArrayList<>(
-                            List.of(
-                                new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
-              } else {
-                superGroupMap
-                    .get(superGroupId)
-                    .groups
-                    .add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
-              }
-            });
+          SuperGroupId superGroupId = group.superGroup().id();
+          if (!superGroupMap.containsKey(superGroupId)) {
+            superGroupMap.put(
+                superGroupId,
+                new SuperGroupWithGroups(
+                    group.superGroup(),
+                    new ArrayList<>(
+                        List.of(new GroupWithMembers(group, new HashSet<>(activeGroupMember))))));
+          } else {
+            superGroupMap
+                .get(superGroupId)
+                .groups
+                .add(new GroupWithMembers(group, new HashSet<>(activeGroupMember)));
+          }
+        });
 
     return superGroupMap.values().stream()
-        .map(
-            superGroupWithGroups ->
-                new AccountScaffoldSuperGroupDTO(
-                    superGroupWithGroups.superGroup,
-                    superGroupWithGroups.groups.stream()
-                        .map(
-                            group ->
-                                new AccountScaffoldGroupDTO(
-                                    group.group, new ArrayList<>(group.members)))
-                        .toList(),
-                    settings.superGroupTypes().stream()
-                        .anyMatch(
-                            row ->
-                                row.type().equals(superGroupWithGroups.superGroup.type())
-                                    && row.requiresManaged())))
+        .map(superGroupWithGroups ->
+            new AccountScaffoldSuperGroupDTO(
+                superGroupWithGroups.superGroup,
+                superGroupWithGroups.groups.stream()
+                    .map(group ->
+                        new AccountScaffoldGroupDTO(group.group, new ArrayList<>(group.members)))
+                    .toList(),
+                settings.superGroupTypes().stream()
+                    .anyMatch(row ->
+                        row.type().equals(superGroupWithGroups.superGroup.type())
+                            && row.requiresManaged())))
         .toList();
   }
 

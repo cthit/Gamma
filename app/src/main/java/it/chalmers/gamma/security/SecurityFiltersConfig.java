@@ -59,30 +59,23 @@ public class SecurityFiltersConfig {
             authorizationServerConfigurer,
             authorizationServer ->
                 authorizationServer
-                    .authorizationServerMetadataEndpoint(
-                        metadataEndpoint ->
-                            metadataEndpoint.authorizationServerMetadataCustomizer(
-                                AuthorizationServerMetadataCustomizer::customize))
-                    .authorizationEndpoint(
-                        authorizationEndpoint ->
-                            authorizationEndpoint.consentPage("/oauth2/consent"))
-                    .oidc(
-                        oidcConfigurer ->
-                            oidcConfigurer
-                                .providerConfigurationEndpoint(
-                                    providerConfigurationEndpoint ->
-                                        providerConfigurationEndpoint
-                                            .providerConfigurationCustomizer(
-                                                AuthorizationServerMetadataCustomizer::customize))
-                                .userInfoEndpoint(
-                                    userInfo -> userInfo.userInfoMapper(userInfoMapper))))
+                    .authorizationServerMetadataEndpoint(metadataEndpoint ->
+                        metadataEndpoint.authorizationServerMetadataCustomizer(
+                            AuthorizationServerMetadataCustomizer::customize))
+                    .authorizationEndpoint(authorizationEndpoint ->
+                        authorizationEndpoint.consentPage("/oauth2/consent"))
+                    .oidc(oidcConfigurer ->
+                        oidcConfigurer
+                            .providerConfigurationEndpoint(providerConfigurationEndpoint ->
+                                providerConfigurationEndpoint.providerConfigurationCustomizer(
+                                    AuthorizationServerMetadataCustomizer::customize))
+                            .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))))
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .exceptionHandling(
-            (exceptions) ->
-                exceptions.defaultAuthenticationEntryPointFor(
-                    new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
-                    new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
-        .oauth2ResourceServer((resourceServer) -> resourceServer.jwt(Customizer.withDefaults()));
+        .exceptionHandling(exceptions ->
+            exceptions.defaultAuthenticationEntryPointFor(
+                new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
+                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+        .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
     return http.build();
   }
@@ -94,18 +87,17 @@ public class SecurityFiltersConfig {
 
   @Bean
   public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(ClaimsMapper claimsMapper) {
-    return (context) -> {
+    return context -> {
       if (OidcParameterNames.ID_TOKEN.equals(context.getTokenType().getValue())) {
         context
             .getClaims()
-            .claims(
-                (claims) ->
-                    claims.putAll(
-                        claimsMapper.generateClaims(
-                            context.getAuthorizedScopes().stream()
-                                .map(scope -> "SCOPE_" + scope)
-                                .toList(),
-                            UserId.valueOf(context.getAuthorization().getPrincipalName()))));
+            .claims(claims ->
+                claims.putAll(
+                    claimsMapper.generateClaims(
+                        context.getAuthorizedScopes().stream()
+                            .map(scope -> "SCOPE_" + scope)
+                            .toList(),
+                        UserId.valueOf(context.getAuthorization().getPrincipalName()))));
       }
     };
   }
@@ -128,14 +120,12 @@ public class SecurityFiltersConfig {
             new ApiAuthenticationFilter(new ProviderManager(apiAuthenticationProvider)),
             BasicAuthenticationFilter.class)
         .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(sessionManagement ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         // Since only backends will call this
         .csrf(csrf -> csrf.disable())
-        .exceptionHandling(
-            config ->
-                config.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        .exceptionHandling(config ->
+            config.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
     return http.build();
   }
 
@@ -144,9 +134,8 @@ public class SecurityFiltersConfig {
   SecurityFilterChain imagesSecurityFilterChain(HttpSecurity http) throws Exception {
     http.securityMatcher(new RegexRequestMatcher("\\/images.+", null))
         .authorizeHttpRequests(authorization -> authorization.anyRequest().permitAll())
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(sessionManagement ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf -> csrf.disable());
     return http.build();
   }
@@ -178,71 +167,65 @@ public class SecurityFiltersConfig {
         .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
             UsernamePasswordAuthenticationFilter.class)
-        .authorizeHttpRequests(
-            authorize ->
-                authorize
-                    .requestMatchers(HttpMethod.GET, "/img/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/js/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/css/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/webjars/**")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/login")
-                    .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/login")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.GET, "/activate-cid")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.POST, "/activate-cid")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.GET, "/email-sent")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.GET, "/register")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.POST, "/register")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.GET, "/forgot-password")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.POST, "/forgot-password")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.GET, "/forgot-password/finalize")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.POST, "/forgot-password/finalize")
-                    .anonymous()
-                    .requestMatchers(HttpMethod.GET, "/robots.txt")
-                    .permitAll()
-                    // The error page must be reachable without logging in, otherwise errors
-                    // are turned into redirects to the login page.
-                    .dispatcherTypeMatchers(DispatcherType.ERROR)
-                    .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/error")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+        .authorizeHttpRequests(authorize ->
+            authorize
+                .requestMatchers(HttpMethod.GET, "/img/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/js/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/css/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/webjars/**")
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/login")
+                .permitAll()
+                .requestMatchers(HttpMethod.POST, "/login")
+                .anonymous()
+                .requestMatchers(HttpMethod.GET, "/activate-cid")
+                .anonymous()
+                .requestMatchers(HttpMethod.POST, "/activate-cid")
+                .anonymous()
+                .requestMatchers(HttpMethod.GET, "/email-sent")
+                .anonymous()
+                .requestMatchers(HttpMethod.GET, "/register")
+                .anonymous()
+                .requestMatchers(HttpMethod.POST, "/register")
+                .anonymous()
+                .requestMatchers(HttpMethod.GET, "/forgot-password")
+                .anonymous()
+                .requestMatchers(HttpMethod.POST, "/forgot-password")
+                .anonymous()
+                .requestMatchers(HttpMethod.GET, "/forgot-password/finalize")
+                .anonymous()
+                .requestMatchers(HttpMethod.POST, "/forgot-password/finalize")
+                .anonymous()
+                .requestMatchers(HttpMethod.GET, "/robots.txt")
+                .permitAll()
+                // The error page must be reachable without logging in, otherwise errors
+                // are turned into redirects to the login page.
+                .dispatcherTypeMatchers(DispatcherType.ERROR)
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, "/error")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
         .formLogin(new LoginCustomizer())
-        .logout(
-            (logout) ->
-                logout.addLogoutHandler(
-                    new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(CACHE, COOKIES))))
+        .logout(logout ->
+            logout.addLogoutHandler(
+                new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(CACHE, COOKIES))))
         .authenticationProvider(userAuthenticationProvider)
-        .sessionManagement(
-            sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+        .sessionManagement(sessionManagement ->
+            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .cors(Customizer.withDefaults())
-        .csrf((csrf) -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
+        .csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
-        .exceptionHandling(
-            exceptionConfig ->
-                exceptionConfig.accessDeniedHandler(
-                    (request, response, accessDeniedException) -> response.sendRedirect("/")))
-        .headers(
-            headers ->
-                headers.contentSecurityPolicy(
-                    csp ->
-                        csp.policyDirectives(
-                            "default-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none';")));
+        .exceptionHandling(exceptionConfig ->
+            exceptionConfig.accessDeniedHandler(
+                (request, response, accessDeniedException) -> response.sendRedirect("/")))
+        .headers(headers ->
+            headers.contentSecurityPolicy(csp ->
+                csp.policyDirectives(
+                    "default-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none';")));
 
     return http.build();
   }

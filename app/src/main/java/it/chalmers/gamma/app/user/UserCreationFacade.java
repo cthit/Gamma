@@ -53,22 +53,21 @@ public class UserCreationFacade extends Facade {
     accessGuard.require(isNotSignedIn());
 
     TimerBlock.minimum(3000)
-        .execute(
-            () -> {
-              Cid cid = new Cid(cidRaw);
-              try {
-                if (throttlingService.canProceed(cidRaw + "-activation", 3)) {
-                  UserActivationToken userActivationToken =
-                      this.userActivationRepository.createActivationToken(cid);
-                  sendEmail(cid, userActivationToken);
-                } else {
-                  LOGGER.info("Throttling an activation and its email...");
-                }
-                LOGGER.info("Cid {} has been activated", cid);
-              } catch (UserActivationRepository.CidNotAllowedException e) {
-                LOGGER.info("Someone tried to activate the cid: {}", cid);
-              }
-            });
+        .execute(() -> {
+          Cid cid = new Cid(cidRaw);
+          try {
+            if (throttlingService.canProceed(cidRaw + "-activation", 3)) {
+              UserActivationToken userActivationToken =
+                  this.userActivationRepository.createActivationToken(cid);
+              sendEmail(cid, userActivationToken);
+            } else {
+              LOGGER.info("Throttling an activation and its email...");
+            }
+            LOGGER.info("Cid {} has been activated", cid);
+          } catch (UserActivationRepository.CidNotAllowedException e) {
+            LOGGER.info("Someone tried to activate the cid: {}", cid);
+          }
+        });
   }
 
   public UUID createUser(NewUser newUser) throws EmailNotUniqueException, CidNotUniqueException {

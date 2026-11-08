@@ -32,26 +32,24 @@ public class UserBootstrap {
 
     this.mockData
         .users()
-        .forEach(
-            mockUser -> {
-              try {
-                this.userRepository.create(
-                    new GammaUser(
-                        new UserId(mockUser.id()),
-                        new Cid(mockUser.cid()),
-                        new Nick(mockUser.nick()),
-                        new FirstName(mockUser.firstName()),
-                        new LastName(mockUser.lastName()),
-                        new AcceptanceYear(mockUser.acceptanceYear()),
-                        Language.EN,
-                        new UserExtended(
-                            new Email(mockUser.cid() + "@example.org"), 0, false, null)),
-                    new UnencryptedPassword("password1337"));
-              } catch (UserRepository.CidAlreadyInUseException
-                  | UserRepository.EmailAlreadyInUseException e) {
-                e.printStackTrace();
-              }
-            });
+        .forEach(mockUser -> {
+          try {
+            this.userRepository.create(
+                new GammaUser(
+                    new UserId(mockUser.id()),
+                    new Cid(mockUser.cid()),
+                    new Nick(mockUser.nick()),
+                    new FirstName(mockUser.firstName()),
+                    new LastName(mockUser.lastName()),
+                    new AcceptanceYear(mockUser.acceptanceYear()),
+                    Language.EN,
+                    new UserExtended(new Email(mockUser.cid() + "@example.org"), 0, false, null)),
+                new UnencryptedPassword("password1337"));
+          } catch (UserRepository.CidAlreadyInUseException
+              | UserRepository.EmailAlreadyInUseException e) {
+            e.printStackTrace();
+          }
+        });
 
     LOGGER.info(
         "Generated the users: "
