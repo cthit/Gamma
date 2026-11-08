@@ -5,6 +5,7 @@ import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,9 @@ public class SignInRequirements {
               this.userRepository.hasPassword(userId),
               this.passkeyRepository.hasAny(userId),
               this.totpRepository.isEnabled(userId),
-              this.userRepository.isEmailRecoveryEnabled(userId));
+              this.userRepository.isEmailRecoveryEnabled(userId),
+              this.userRepository.isLocked(userId),
+              this.userRepository.sessionsRevokedAt(userId).orElse(null));
     } catch (UserRepository.UserNotFoundException e) {
       return Optional.empty();
     }
@@ -81,5 +84,7 @@ public class SignInRequirements {
       boolean hasPassword,
       boolean hasPasskey,
       boolean hasTotp,
-      boolean emailRecovery) {}
+      boolean emailRecovery,
+      boolean locked,
+      Instant sessionsRevokedAt) {}
 }

@@ -3,6 +3,7 @@ package it.chalmers.gamma.security.signin;
 import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInRequirements.UserSignInMethods;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
@@ -96,7 +97,12 @@ public class SignInAuthorizationManagers {
     }
 
     Optional<UserSignInMethods> methods = this.signInRequirements.of(setup.getName());
-    if (methods.isEmpty() || methods.get().admin()) {
+    if (methods.isEmpty() || methods.get().admin() || methods.get().locked()) {
+      return false;
+    }
+
+    Instant revokedAt = methods.get().sessionsRevokedAt();
+    if (revokedAt != null && !setup.getPrincipal().startedAt().isAfter(revokedAt)) {
       return false;
     }
 

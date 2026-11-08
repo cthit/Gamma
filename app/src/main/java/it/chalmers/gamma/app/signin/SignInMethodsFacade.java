@@ -225,6 +225,7 @@ public class SignInMethodsFacade extends Facade {
     this.totpRepository.delete(userId);
     this.recoveryKeyRepository.delete(userId);
     this.userRepository.setEmailRecoveryEnabled(userId, true);
+    this.userRepository.revokeSessions(userId);
 
     LOGGER.warn(
         "Admin {} reset how the user {} signs in", me().id().value(), userIdValue.toString());

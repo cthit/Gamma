@@ -33,6 +33,7 @@ public class RecoveryKeyUse {
     this.userRepository.lockSignInMethods(userId);
 
     if (this.adminRepository.isAdmin(userId)
+        || this.userRepository.isLocked(userId)
         || !key.isWellFormed()
         || !this.recoveryKeyRepository.use(userId, key)) {
       return false;

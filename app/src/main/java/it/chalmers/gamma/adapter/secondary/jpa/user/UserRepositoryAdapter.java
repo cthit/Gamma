@@ -141,6 +141,27 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
+  public boolean isLocked(UserId userId) throws UserNotFoundException {
+    return this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new).locked;
+  }
+
+  @Override
+  public Optional<Instant> sessionsRevokedAt(UserId userId) throws UserNotFoundException {
+    return Optional.ofNullable(
+        this.repository
+            .findById(userId.value())
+            .orElseThrow(UserNotFoundException::new)
+            .sessionsRevokedAt);
+  }
+
+  @Override
+  public void revokeSessions(UserId userId) throws UserNotFoundException {
+    if (this.repository.revokeSessions(userId.value(), Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
   public boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException {
     UserEntity userEntity =
         this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);

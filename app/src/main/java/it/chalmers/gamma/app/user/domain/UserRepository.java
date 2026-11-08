@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.user.domain;
 
 import it.chalmers.gamma.app.common.Email;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +35,12 @@ public interface UserRepository {
   void removePassword(UserId userId) throws UserNotFoundException;
 
   void lockSignInMethods(UserId userId) throws UserNotFoundException;
+
+  boolean isLocked(UserId userId) throws UserNotFoundException;
+
+  Optional<Instant> sessionsRevokedAt(UserId userId) throws UserNotFoundException;
+
+  void revokeSessions(UserId userId) throws UserNotFoundException;
 
   boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException;
 

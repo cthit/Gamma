@@ -6,6 +6,8 @@ import it.chalmers.gamma.app.signin.SignInSetupFacade;
 import it.chalmers.gamma.app.signin.SignInSetupFacade.SignInSetupDTO;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
 import it.chalmers.gamma.app.validation.FailedValidation;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -64,7 +66,7 @@ public class SignInSetupController {
       return redirect("?error=passwords-dont-match");
     }
 
-    session.setAttribute(PASSWORD_SET, true);
+    session.setAttribute(PASSWORD_SET, currentSetupId());
     return redirect("");
   }
 
@@ -155,7 +157,16 @@ public class SignInSetupController {
   }
 
   private static boolean isDone(SignInSetupDTO setup, HttpSession session) {
-    return setup.addedPasskey() || Boolean.TRUE.equals(session.getAttribute(PASSWORD_SET));
+    String setupId = currentSetupId();
+    return setup.addedPasskey()
+        || (setupId != null && setupId.equals(session.getAttribute(PASSWORD_SET)));
+  }
+
+  private static String currentSetupId() {
+    if (AuthenticationExtractor.getAuthentication() instanceof SignInSetupAuthentication setup) {
+      return setup.userId() + "@" + setup.startedAt();
+    }
+    return null;
   }
 
   private static ModelAndView redirect(String path) {

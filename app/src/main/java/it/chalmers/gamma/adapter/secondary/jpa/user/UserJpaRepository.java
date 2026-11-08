@@ -71,4 +71,13 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
       "update UserEntity u set u.locked = false, u.version = u.version + 1, u.updatedAt = :now"
           + " where u.id = :id")
   int unlock(@Param("id") UUID id, @Param("now") Instant now);
+
+  @Transactional
+  @Modifying(flushAutomatically = true, clearAutomatically = true)
+  @Query(
+      "update UserEntity u set"
+          + " u.sessionsRevokedAt = case when u.sessionsRevokedAt is null"
+          + " or u.sessionsRevokedAt < :now then :now else u.sessionsRevokedAt end,"
+          + " u.version = u.version + 1, u.updatedAt = :now where u.id = :id")
+  int revokeSessions(@Param("id") UUID id, @Param("now") Instant now);
 }

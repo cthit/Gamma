@@ -19,6 +19,8 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.authentication.SignInSetupAuthentication.Reason;
 import jakarta.transaction.Transactional;
+import java.time.Instant;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -117,7 +119,10 @@ public class SignInSetupFacade extends Facade {
 
   private void requireStillAllowed(SignInSetupAuthentication setup) {
     UserId userId = new UserId(setup.userId());
+    Optional<Instant> revokedAt = this.userRepository.sessionsRevokedAt(userId);
     if (this.adminRepository.isAdmin(userId)
+        || this.userRepository.isLocked(userId)
+        || (revokedAt.isPresent() && !setup.startedAt().isAfter(revokedAt.get()))
         || (setup.reason() == Reason.EMAIL
             && !this.userRepository.isEmailRecoveryEnabled(userId))) {
       throw new AccessGuard.AccessDeniedException();
