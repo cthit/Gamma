@@ -7,9 +7,12 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.*;
 import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
+import it.chalmers.gamma.app.client.domain.authority.AuthoritySuperGroupPost;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
 import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.common.Text;
+import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -30,6 +33,7 @@ public class ClientBootstrap {
   private final ClientRepository clientRepository;
   private final ClientAuthorityRepository clientAuthorityRepository;
   private final SuperGroupRepository superGroupRepository;
+  private final PostRepository postRepository;
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final BootstrapSettings bootstrapSettings;
@@ -39,6 +43,7 @@ public class ClientBootstrap {
       ClientRepository clientRepository,
       ClientAuthorityRepository clientAuthorityRepository,
       SuperGroupRepository superGroupRepository,
+      PostRepository postRepository,
       UserRepository userRepository,
       PasswordEncoder passwordEncoder,
       BootstrapSettings bootstrapSettings) {
@@ -46,6 +51,7 @@ public class ClientBootstrap {
     this.clientRepository = clientRepository;
     this.clientAuthorityRepository = clientAuthorityRepository;
     this.superGroupRepository = superGroupRepository;
+    this.postRepository = postRepository;
     this.userRepository = userRepository;
     this.passwordEncoder = passwordEncoder;
     this.bootstrapSettings = bootstrapSettings;
@@ -144,11 +150,26 @@ public class ClientBootstrap {
         new Authority(
             client,
             name,
-            mockAuthority.superGroupIds().stream()
+            orEmpty(mockAuthority.superGroupIds()).stream()
                 .map(id -> this.superGroupRepository.get(new SuperGroupId(id)).orElseThrow())
                 .toList(),
-            mockAuthority.userIds().stream()
+            orEmpty(mockAuthority.superGroupPosts()).stream()
+                .map(
+                    superGroupPost ->
+                        new AuthoritySuperGroupPost(
+                            this.superGroupRepository
+                                .get(new SuperGroupId(superGroupPost.superGroupId()))
+                                .orElseThrow(),
+                            this.postRepository
+                                .get(new PostId(superGroupPost.postId()))
+                                .orElseThrow()))
+                .toList(),
+            orEmpty(mockAuthority.userIds()).stream()
                 .map(id -> this.userRepository.get(new UserId(id)).orElseThrow())
                 .toList()));
+  }
+
+  private static <T> List<T> orEmpty(List<T> list) {
+    return list == null ? List.of() : list;
   }
 }
