@@ -6,16 +6,10 @@ import java.security.SecureRandom;
 import java.util.Locale;
 import java.util.Objects;
 
-/**
- * A long, single use key that lets a user back in when they have lost every other way to sign in.
- * It is 64 characters, about 320 bits, shown in groups of four, the same length as Signal's
- * recovery key. Only its hash is stored.
- */
 public record RecoveryKey(String value) implements Serializable {
 
   public static final int LENGTH = 64;
 
-  /** Crockford's base32 alphabet, which leaves out the easily confused I, L, O and U. */
   private static final String ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
   private static final SecureRandom RANDOM = new SecureRandom();
@@ -32,10 +26,6 @@ public record RecoveryKey(String value) implements Serializable {
     return new RecoveryKey(key.toString());
   }
 
-  /**
-   * Reads a key the way a person types it: case and the spaces or dashes between groups don't
-   * matter, and the letters that look like digits are read as those digits.
-   */
   public static RecoveryKey parse(String typed) {
     StringBuilder key = new StringBuilder(LENGTH);
     for (char c : typed.toUpperCase(Locale.ROOT).toCharArray()) {
@@ -56,7 +46,6 @@ public record RecoveryKey(String value) implements Serializable {
     return this.value.length() == LENGTH;
   }
 
-  /** The key in groups of four characters, separated by spaces. */
   public String formatted() {
     StringBuilder formatted = new StringBuilder();
     for (int i = 0; i < this.value.length(); i += 4) {

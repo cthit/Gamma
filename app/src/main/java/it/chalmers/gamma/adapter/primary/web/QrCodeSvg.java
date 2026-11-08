@@ -8,10 +8,6 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import java.util.Map;
 
-/**
- * Draws a QR code, made by ZXing, as inline SVG. Inline, since the content security policy doesn't
- * allow images from data URLs.
- */
 public final class QrCodeSvg {
 
   private QrCodeSvg() {}

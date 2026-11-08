@@ -96,13 +96,6 @@ public class UserCreationFacade extends Facade {
     }
   }
 
-  /**
-   * Creates the account of the user that the activation link was mailed to.
-   *
-   * @param data the user's details. The password is null for a user who signs in with a passkey,
-   *     which they set up next.
-   * @return the id of the new user
-   */
   @Transactional
   public UUID createUserWithCode(
       NewUserByCode data, String token, String confirmPassword, boolean acceptsUserAgreement) {

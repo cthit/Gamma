@@ -5,10 +5,6 @@ import java.io.Serial;
 import java.util.List;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-/**
- * The authentication of a user who may only set up how they sign in. See {@link
- * SignInSetupAuthentication}. It has no factors, so it can't do anything that requires signing in.
- */
 public final class SignInSetupAuthenticationToken extends AbstractAuthenticationToken {
 
   @Serial private static final long serialVersionUID = 1L;

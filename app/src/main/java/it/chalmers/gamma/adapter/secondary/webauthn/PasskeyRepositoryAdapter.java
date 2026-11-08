@@ -12,10 +12,6 @@ import org.springframework.security.web.webauthn.management.PublicKeyCredentialU
 import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 import org.springframework.stereotype.Service;
 
-/**
- * Reads and removes passkeys through the repositories that Spring Security registers and signs in
- * passkeys with. Spring Security knows a user by their name, which in Gamma is the user id.
- */
 @Service
 public class PasskeyRepositoryAdapter implements PasskeyRepository {
 
@@ -76,7 +72,6 @@ public class PasskeyRepositoryAdapter implements PasskeyRepository {
   public void deleteAll(UserId userId) {
     PublicKeyCredentialUserEntity userEntity = this.userEntities.findByUsername(name(userId));
     if (userEntity != null) {
-      // Removes the passkeys too, through the foreign key of user_credentials.
       this.userEntities.delete(userEntity.getId());
     }
   }

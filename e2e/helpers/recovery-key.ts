@@ -1,9 +1,5 @@
 import { expect, type Page } from "@playwright/test";
 
-/**
- * Saves the recovery key shown on the page: reads it, continues to the next
- * page and types it back there.
- */
 export async function saveRecoveryKey(page: Page): Promise<string> {
   await expect(
     page.getByRole("heading", { name: "Save your recovery key" }),

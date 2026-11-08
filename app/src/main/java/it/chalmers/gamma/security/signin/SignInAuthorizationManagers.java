@@ -18,18 +18,6 @@ import org.springframework.security.web.access.intercept.RequestAuthorizationCon
 import org.springframework.security.web.webauthn.authentication.WebAuthnAuthentication;
 import org.springframework.stereotype.Component;
 
-/**
- * Decides which factors a user must have signed in with, using Spring Security's required factors:
- *
- * <ul>
- *   <li>Admins sign in with a passkey.
- *   <li>Everyone else signs in with a passkey, or with their password and, if they have an
- *       authenticator app, a code from it.
- * </ul>
- *
- * When factors are missing, Spring Security sends the user to the page for the first missing
- * factor, which is why the order of the alternatives matters.
- */
 @Component
 public class SignInAuthorizationManagers {
 
@@ -42,28 +30,15 @@ public class SignInAuthorizationManagers {
     this.signInRequirements = signInRequirements;
   }
 
-  /**
-   * Fully signed in. Callers that aren't users, such as OAuth2 clients and bearer tokens, only need
-   * to be authenticated.
-   */
   public <T> AuthorizationManager<T> signedIn() {
     return (authentication, object) -> authorize(authentication, object, null, false);
   }
 
-  /**
-   * Signed in, and recently enough to change how they sign in. See {@link
-   * SignInFactors#CONFIRMATION_VALIDITY}.
-   */
   public <T> AuthorizationManager<T> recentlySignedIn() {
     return (authentication, object) ->
         authorize(authentication, object, SignInFactors.CONFIRMATION_VALIDITY, false);
   }
 
-  /**
-   * Signed in, and for users without a password also recently. Pages where users confirm with their
-   * password that it is them use this, since users without a password confirm it by having recently
-   * signed in with a passkey instead.
-   */
   public <T> AuthorizationManager<T> recentlySignedInIfPasswordless() {
     return (authentication, object) -> {
       Authentication current = authentication.get();
@@ -78,11 +53,6 @@ public class SignInAuthorizationManagers {
     };
   }
 
-  /**
-   * May add a passkey. That needs a recent sign in, except for an admin without passkeys, who can't
-   * get any further until they have added one. They only need to have signed in like everyone else
-   * does.
-   */
   public AuthorizationManager<RequestAuthorizationContext> mayAddPasskey() {
     return (authentication, object) -> {
       if (authentication.get() instanceof SignInSetupAuthenticationToken setup) {
@@ -92,10 +62,6 @@ public class SignInAuthorizationManagers {
     };
   }
 
-  /**
-   * A link mailed to a user with an authenticator app only resets their password, so that the email
-   * can't be used to get around the app.
-   */
   private boolean mayAddPasskeyDuringSetup(SignInSetupAuthenticationToken setup) {
     if (setup.getPrincipal().reason() != SignInSetupAuthentication.Reason.EMAIL) {
       return true;
@@ -106,19 +72,16 @@ public class SignInAuthorizationManagers {
         .orElse(true);
   }
 
-  /** Signed in with some factor, and possibly missing others. */
   public AuthorizationManager<RequestAuthorizationContext> signingIn() {
     return (authentication, object) ->
         new AuthorizationDecision(isUserSession(authentication.get()));
   }
 
-  /** Only allowed to set up how they sign in. See {@link SignInSetupAuthentication}. */
   public AuthorizationManager<RequestAuthorizationContext> settingUpSignIn() {
     return (authentication, object) ->
         new AuthorizationDecision(authentication.get() instanceof SignInSetupAuthenticationToken);
   }
 
-  /** Signed in with a password, and only waiting for the code of their authenticator app. */
   public AuthorizationManager<RequestAuthorizationContext> signingInWithTotp() {
     return (authentication, object) -> {
       Authentication current = authentication.get();
@@ -147,7 +110,6 @@ public class SignInAuthorizationManagers {
     }
 
     if (current instanceof SignInSetupAuthenticationToken) {
-      // Only allowed to set up how they sign in, which their own rules allow.
       return new AuthorizationDecision(false);
     }
 
@@ -185,10 +147,6 @@ public class SignInAuthorizationManagers {
             ? require(validity, SignInFactors.PASSWORD, SignInFactors.TOTP)
             : require(validity, SignInFactors.PASSWORD);
 
-    // Spring Security sends the user to the page of the first missing factor. A user who has
-    // signed in with their password continues with it, for example with the code of their
-    // authenticator app. Otherwise users with passkeys are asked for one, and everyone else for
-    // their password.
     boolean passwordFirst =
         hasFactor(current, SignInFactors.PASSWORD)
             || (!hasFactor(current, SignInFactors.PASSKEY) && !user.hasPasskey());
@@ -217,7 +175,6 @@ public class SignInAuthorizationManagers {
     return builder.build();
   }
 
-  /** Whether the authentication is a user signed in to the web interface. */
   public static boolean isUserSession(@Nullable Authentication authentication) {
     return authentication != null
         && authentication.isAuthenticated()

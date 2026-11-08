@@ -27,20 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-/**
- * How users sign in: their password, passkeys, authenticator app, recovery key and whether they can
- * reset all of that through email.
- *
- * <p>The rules are:
- *
- * <ul>
- *   <li>Admins sign in with a passkey, and can never reset how they sign in through email.
- *   <li>Everyone else signs in with a passkey, or with their password and, if they have set one up,
- *       a code from their authenticator app.
- *   <li>A user with an authenticator app, or who has turned off email recovery, has a recovery key
- *       to get back in with.
- * </ul>
- */
 @Service
 public class SignInMethodsFacade extends Facade {
 
@@ -77,7 +63,6 @@ public class SignInMethodsFacade extends Facade {
     return get(new UserId(userId));
   }
 
-  /** Starts setting up an authenticator app. Nothing is saved until {@link #enableTotp}. */
   public TotpSetupDTO startTotpSetup() {
     this.accessGuard.require(isSignedIn());
 
@@ -88,24 +73,11 @@ public class SignInMethodsFacade extends Facade {
     return new TotpSetupDTO(secret, TotpCodes.otpauthUri(secret, me.cid().value()));
   }
 
-  /**
-   * Checks a code of an authenticator app that is being set up.
-   *
-   * @return the time step of the code, if it is correct
-   */
   public OptionalLong checkTotpCode(TotpSecret secret, String code) {
     this.accessGuard.require(isSignedIn());
     return TotpCodes.matchingTimeStep(secret, code, Instant.now());
   }
 
-  /**
-   * Sets up the authenticator app, together with a new recovery key if the user doesn't have one.
-   *
-   * @param usedTimeStep the time step of the code the user confirmed the app with, so that code
-   *     can't be used to sign in
-   * @param newRecoveryKey the recovery key the user has confirmed that they have saved, or null if
-   *     they already have one
-   */
   @Transactional
   public void enableTotp(TotpSecret secret, long usedTimeStep, RecoveryKey newRecoveryKey)
       throws RecoveryKeyRequiredException {
@@ -125,7 +97,6 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} set up an authenticator app", me.value());
   }
 
-  /** Whether setting up an authenticator app also needs a new recovery key. */
   public boolean totpSetupNeedsRecoveryKey() {
     this.accessGuard.require(isSignedIn());
     return this.recoveryKeyRepository.createdAt(me().id()).isEmpty();
@@ -151,7 +122,6 @@ public class SignInMethodsFacade extends Facade {
         passkeys.size() == 1 && passkeys.getFirst().credentialId().equals(credentialId);
 
     if (removingLast && (userIsAdmin(me) || !this.userRepository.hasPassword(me))) {
-      // Admins must keep a passkey, and a user without a password would have no way to sign in.
       throw new LastSignInMethodException();
     }
 
@@ -160,10 +130,6 @@ public class SignInMethodsFacade extends Facade {
     }
   }
 
-  /**
-   * Removes the password, so the user only signs in with passkeys. Their authenticator app goes
-   * with it, since it is only used together with the password.
-   */
   @Transactional
   public void removePassword() throws LastSignInMethodException {
     this.accessGuard.require(isSignedIn());
@@ -179,7 +145,6 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} removed their password", me.value());
   }
 
-  /** Lets a user who signs in with passkeys sign in with a password too. */
   public void addPassword(String newPassword, String confirmPassword)
       throws PasswordsDontMatchException {
     this.accessGuard.require(isSignedIn());
@@ -196,7 +161,6 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} added a password", me.value());
   }
 
-  /** Replaces the recovery key with one the user has confirmed that they have saved. */
   public void replaceRecoveryKey(RecoveryKey key) {
     this.accessGuard.require(isSignedIn());
 
@@ -206,10 +170,6 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} created a new recovery key", me.value());
   }
 
-  /**
-   * Turns off resetting how the user signs in through email. The user gets back in with their
-   * recovery key instead, so they must have confirmed that they have saved a new one.
-   */
   @Transactional
   public void disableEmailRecovery(RecoveryKey newRecoveryKey) {
     this.accessGuard.require(isSignedIn());
@@ -231,12 +191,6 @@ public class SignInMethodsFacade extends Facade {
     LOGGER.info("User {} turned on email recovery", me.value());
   }
 
-  /**
-   * Lets a user who has lost every way to sign in get back in. Removes their passkeys,
-   * authenticator app and recovery key, and turns email recovery back on, so they can reset how
-   * they sign in through the forgot password page. An admin they reset this way sets up a new
-   * passkey after signing in with their password.
-   */
   @Transactional
   public void resetSignInMethods(UUID userIdValue) {
     this.accessGuard.require(isAdmin());
@@ -267,7 +221,6 @@ public class SignInMethodsFacade extends Facade {
         admin);
   }
 
-  /** The recovery key is only kept while the user has an authenticator app or no email recovery. */
   private void removeRecoveryKeyIfUnneeded(UserId userId) {
     if (!this.totpRepository.isEnabled(userId)
         && this.userRepository.isEmailRecoveryEnabled(userId)) {
@@ -299,11 +252,6 @@ public class SignInMethodsFacade extends Facade {
     throw new IllegalCallerException("Can only be called by signed in sessions");
   }
 
-  /**
-   * @param emailRecovery whether the user can reset how they sign in through email, which admins
-   *     never can
-   * @param recoveryKeyCreatedAt when the user's recovery key was created, or null if they have none
-   */
   public record SignInMethodsDTO(
       boolean hasPassword,
       List<Passkey> passkeys,
@@ -323,7 +271,6 @@ public class SignInMethodsFacade extends Facade {
 
   public record TotpSetupDTO(TotpSecret secret, String otpauthUri) {}
 
-  /** Removing it would leave the user without a way to sign in. */
   public static final class LastSignInMethodException extends Exception {}
 
   public static final class RecoveryKeyRequiredException extends Exception {}

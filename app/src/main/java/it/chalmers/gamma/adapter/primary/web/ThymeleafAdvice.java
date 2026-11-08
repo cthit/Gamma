@@ -55,10 +55,6 @@ public class ThymeleafAdvice {
     }
   }
 
-  /**
-   * Whether the signed in user has a password. Users without one confirm that it is them with a
-   * passkey instead, so forms leave out the password field for them.
-   */
   @ModelAttribute("hasPassword")
   public boolean hasPassword() {
     if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication) {

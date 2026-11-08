@@ -21,10 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-/**
- * Lets a user who has proven who they are, without being able to sign in, set up a passkey or a
- * password. See {@link SignInSetupAuthentication}.
- */
 @Service
 public class SignInSetupFacade extends Facade {
 
@@ -65,8 +61,6 @@ public class SignInSetupFacade extends Facade {
         (hasTotp || !this.userRepository.isEmailRecoveryEnabled(userId))
             && this.recoveryKeyRepository.createdAt(userId).isEmpty();
 
-    // A link mailed to a user with an authenticator app only resets their password, so the email
-    // can't be used to get around the app.
     boolean canAddPasskey = !(setup.reason() == Reason.EMAIL && hasTotp);
 
     return new SignInSetupDTO(
@@ -104,10 +98,6 @@ public class SignInSetupFacade extends Facade {
     return (SignInSetupAuthentication) AuthenticationExtractor.getAuthentication();
   }
 
-  /**
-   * @param addedPasskey whether the user has added a passkey during this setup
-   * @param needsRecoveryKey whether the user must save a new recovery key before they are done
-   */
   public record SignInSetupDTO(
       String cid,
       String nick,

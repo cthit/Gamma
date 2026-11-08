@@ -7,10 +7,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
-/**
- * Handles the denied requests that aren't about a missing factor. A user who may only set up how
- * they sign in is sent back to doing that, everyone else to the start page.
- */
 public class SignInAccessDeniedHandler implements AccessDeniedHandler {
 
   @Override

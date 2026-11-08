@@ -30,7 +30,6 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
           + " where u.id = :id")
   int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
 
-  /** Only touches the password and the version, like {@link #updateEmail}. */
   @Transactional
   @Modifying
   @Query(

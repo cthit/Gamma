@@ -26,10 +26,6 @@ import org.springframework.security.web.webauthn.management.UserCredentialReposi
 import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
 import org.springframework.security.web.webauthn.management.Webauthn4JRelyingPartyOperations;
 
-/**
- * Passkeys, through Spring Security's WebAuthn support. Spring Security stores the passkeys in the
- * user_entities and user_credentials tables, and knows each user by their user id.
- */
 @Configuration
 public class PasskeyConfig {
 
@@ -62,8 +58,6 @@ public class PasskeyConfig {
             passkeyProperties.allowedOriginsOr(baseUrl));
 
     operations.setCustomizeCreationOptions(options -> {
-      // A passkey is a whole sign in on its own, so the authenticator must verify the user, for
-      // example with a fingerprint or PIN, and not only that someone is present.
       options.authenticatorSelection(
           AuthenticatorSelectionCriteria.builder()
               .residentKey(ResidentKeyRequirement.REQUIRED)
@@ -85,11 +79,6 @@ public class PasskeyConfig {
     return operations;
   }
 
-  /**
-   * Spring Security names the passkey after the user id, which password managers would show the
-   * user. The passkey is given the user's cid and name instead. Only the id of the user entity is
-   * stored with the passkey, so this doesn't change how the user is found.
-   */
   private static PublicKeyCredentialUserEntity shownUser(
       PublicKeyCredentialUserEntityRepository userEntities,
       UserJpaRepository userJpaRepository,
@@ -123,10 +112,6 @@ public class PasskeyConfig {
         .orElse(null);
   }
 
-  /**
-   * Finds the user that signed in with a passkey, by their user id. Spring Security doesn't check
-   * whether the account is locked, so this does.
-   */
   public static UserDetailsService passkeyUserDetailsService(UserJpaRepository userJpaRepository) {
     return name -> {
       UUID userId;

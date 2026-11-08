@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.session.ChangeSessionIdAu
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
-/** Signs in a user with their recovery key, so that they can set up a new way to sign in. */
 public class RecoveryKeyAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
   public static final String URL = "/login/recovery";

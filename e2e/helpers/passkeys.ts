@@ -5,11 +5,6 @@ const authenticators = new WeakMap<
   { cdp: CDPSession; authenticatorId: string }
 >();
 
-/**
- * Gives the page a virtual passkey authenticator, like a phone or a security
- * key that always verifies the user. Passkeys added on the page are kept in it,
- * so the same page can sign in with them later.
- */
 export async function useVirtualAuthenticator(page: Page): Promise<string> {
   const existing = authenticators.get(page);
   if (existing) {
@@ -21,11 +16,6 @@ export async function useVirtualAuthenticator(page: Page): Promise<string> {
   return addAuthenticator(page, cdp);
 }
 
-/**
- * Swaps the page's virtual authenticator for a new one, like picking up
- * another phone. An authenticator holds one passkey per user, so a second
- * passkey for the same user needs another authenticator.
- */
 export async function useAnotherVirtualAuthenticator(
   page: Page,
 ): Promise<void> {
@@ -58,7 +48,6 @@ async function addAuthenticator(page: Page, cdp: CDPSession): Promise<string> {
   return authenticatorId;
 }
 
-/** Signs in with a passkey of the page's virtual authenticator. */
 export async function signInWithPasskey(page: Page): Promise<void> {
   await useVirtualAuthenticator(page);
   await Promise.all([
@@ -70,10 +59,6 @@ export async function signInWithPasskey(page: Page): Promise<void> {
   ]);
 }
 
-/**
- * Adds a passkey to the virtual authenticator from a page with a passkey name
- * field and an "Add a passkey" button.
- */
 export async function addPasskey(page: Page, name: string): Promise<void> {
   await useVirtualAuthenticator(page);
   await page
@@ -82,10 +67,6 @@ export async function addPasskey(page: Page, name: string): Promise<void> {
   await page.getByRole("button", { name: "Add a passkey" }).click();
 }
 
-/**
- * Finishes signing in an admin who has signed in with their password: adds a
- * passkey if they have none, and signs in with it.
- */
 export async function finishAdminSignIn(page: Page): Promise<void> {
   await expect(page).toHaveURL(/\/login\/confirm/);
   await useVirtualAuthenticator(page);

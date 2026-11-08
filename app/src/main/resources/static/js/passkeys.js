@@ -1,19 +1,3 @@
-// Passkeys, through Spring Security's WebAuthn endpoints. This only passes
-// data between the browser's WebAuthn API and Spring Security, which creates
-// and checks the challenges and signatures. The JSON matches what Spring
-// Security's own spring-security-webauthn.js sends.
-//
-// Buttons are wired up by their data attributes, since the content security
-// policy doesn't allow inline scripts:
-//   data-passkey-sign-in      signs in with a passkey, then goes to where
-//                             Spring Security says, or data-redirect.
-//   data-passkey-register     adds a passkey named by the input with the id
-//                             in data-label-input, then goes to data-success.
-//                             With data-then-sign-in it signs in with the new
-//                             passkey afterwards.
-//   data-passkey-error        the id of the element that shows errors.
-//   data-csrf-header, data-csrf-token
-//                             the CSRF token to send to Spring Security.
 (function () {
     function base64urlEncode(buffer) {
         var bytes = new Uint8Array(buffer);
@@ -34,8 +18,6 @@
         return bytes.buffer;
     }
 
-    // The CSRF token is read from the button, since htmx swaps in pages without
-    // updating the head, which would keep the token of an earlier session.
     function csrfHeaders(button) {
         var headers = { "Content-Type": "application/json" };
         if (button.dataset.csrfHeader && button.dataset.csrfToken) {
@@ -194,7 +176,6 @@
         }
     });
 
-    // Browsers without passkeys get a message instead of buttons that can't work.
     function markUnsupported() {
         if (window.PublicKeyCredential) return;
         document.querySelectorAll("[data-passkey-sign-in], [data-passkey-register]").forEach(function (button) {

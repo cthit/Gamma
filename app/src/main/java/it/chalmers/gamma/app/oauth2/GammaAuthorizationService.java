@@ -38,8 +38,6 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
   @Override
   public void save(OAuth2Authorization authorization) {
-    // The user who authorized the client, whichever way they signed in: with a password, a
-    // passkey or an authenticator app.
     Authentication authentication = authorization.getAttribute(Principal.class.getName());
 
     if (authentication != null && authentication.isAuthenticated()) {
@@ -59,7 +57,6 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
 
     OAuth2Authorization authorizationToSave = authorization;
     if (authentication != null) {
-      // Only the user and their authorities are kept, not the details of how they signed in.
       UsernamePasswordAuthenticationToken sanitizedAuthenticationToken =
           UsernamePasswordAuthenticationToken.authenticated(
               new User(authentication.getName(), "", authentication.getAuthorities()),

@@ -13,10 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-/**
- * Loads the signed in user on every request, so that changes to the user, such as becoming an
- * admin, apply at once. Works for every way to sign in: password, passkey and authenticator app.
- */
 public class UpdateUserPrincipalFilter implements Filter {
 
   private final TrustedUserDetailsRepository userDetailsRepository;

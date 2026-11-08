@@ -12,7 +12,6 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
-/** Starts and ends the sessions of users who may only set up how they sign in. */
 @Component
 public class SignInSetupSessions {
 
@@ -26,7 +25,6 @@ public class SignInSetupSessions {
       SignInSetupAuthentication.Reason reason,
       HttpServletRequest request,
       HttpServletResponse response) {
-    // A new session id, so that a session id known from before can't be used for this.
     request.getSession(true);
     request.changeSessionId();
 
@@ -38,7 +36,6 @@ public class SignInSetupSessions {
     this.securityContextRepository.saveContext(context, request, response);
   }
 
-  /** Signs out the user, who then signs in with what they have set up. */
   public void end(HttpServletRequest request, HttpServletResponse response) {
     new SecurityContextLogoutHandler()
         .logout(request, response, SecurityContextHolder.getContext().getAuthentication());

@@ -5,12 +5,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.Optional;
 
-/**
- * An authenticator app that the user is setting up. It is saved once the user has entered a code
- * from it, and saved a recovery key if they don't have one.
- *
- * @param usedTimeStep the time step of the code the user entered, or -1 if they haven't yet
- */
 public record PendingTotp(TotpSecret secret, long usedTimeStep) implements Serializable {
 
   private static final String ATTRIBUTE = PendingTotp.class.getName();

@@ -18,11 +18,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- * Where a user who has proven who they are without signing in sets up a passkey or a password: a
- * new user, a user who opened a link mailed to them, or a user who used their recovery key. Once
- * done, they are signed out and sign in with what they set up.
- */
 @Controller
 public class SignInSetupController {
 
@@ -140,7 +135,6 @@ public class SignInSetupController {
     return redirect("");
   }
 
-  /** Signs the user out, so they sign in with what they have set up. */
   @PostMapping(PAGE + "/finish")
   public ModelAndView finish(
       HttpSession session, HttpServletRequest request, HttpServletResponse response) {

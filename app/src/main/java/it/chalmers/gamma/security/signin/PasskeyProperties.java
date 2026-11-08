@@ -6,13 +6,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * Where passkeys can be used. By default they belong to the host of the base url, and can only be
- * used on the base url.
- *
- * @param rpId the relying party id: the domain that passkeys are registered for
- * @param allowedOrigins the origins that passkeys may be used on
- */
 @ConfigurationProperties("application.passkeys")
 public record PasskeyProperties(String rpId, List<String> allowedOrigins) {
 

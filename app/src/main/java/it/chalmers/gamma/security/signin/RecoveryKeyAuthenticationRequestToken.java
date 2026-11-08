@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.util.List;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-/** A cid or email together with a recovery key. Never authenticated. */
 public final class RecoveryKeyAuthenticationRequestToken extends AbstractAuthenticationToken {
 
   @Serial private static final long serialVersionUID = 1L;

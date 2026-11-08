@@ -4,7 +4,6 @@ import java.io.Serial;
 import java.util.List;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
-/** A code from an authenticator app, given by an already signed in user. Never authenticated. */
 public final class TotpAuthenticationRequestToken extends AbstractAuthenticationToken {
 
   @Serial private static final long serialVersionUID = 1L;

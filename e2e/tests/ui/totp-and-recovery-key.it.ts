@@ -48,8 +48,6 @@ test("a user signs in with their password and authenticator app, and gets back i
     .fill(totpCode(secret, setupStep));
   await page.getByRole("button", { name: "Turn on" }).click();
 
-  // The key is shown on one page and typed back on the next, where it isn't
-  // shown, so the user must have saved it.
   const key = (
     await page.getByLabel("Your recovery key", { exact: true }).innerText()
   ).trim();
@@ -71,7 +69,6 @@ test("a user signs in with their password and authenticator app, and gets back i
   await logout(page);
   await signInWithPassword(page, gamma.url, "password1337");
   await expect(page).toHaveURL(/\/login\/totp/);
-  // The code used to set up the app can't be used again.
   await page
     .getByLabel("Six digit code", { exact: true })
     .fill(totpCode(secret, setupStep));
@@ -87,8 +84,6 @@ test("a user signs in with their password and authenticator app, and gets back i
   await expect(page.getByText("Hey, Pam-Pam!")).toBeVisible();
   await logout(page);
 
-  // Lost the phone: the recovery key lets the user set up a new way to sign
-  // in, and removes the authenticator app.
   await page.goto(`${gamma.url}/login`);
   await page.getByRole("link", { name: "Use a recovery key" }).click();
   await page.getByLabel("Cid or email", { exact: true }).fill("pbeesly");
@@ -97,7 +92,6 @@ test("a user signs in with their password and authenticator app, and gets back i
   await expect(page).toHaveURL(/\/sign-in-setup/);
   await expect(page.getByText("Your recovery key has been used")).toBeVisible();
 
-  // Nothing else in Gamma can be used meanwhile.
   await page.goto(`${gamma.url}/users`);
   await expect(page).toHaveURL(/\/sign-in-setup/);
 
@@ -112,7 +106,6 @@ test("a user signs in with their password and authenticator app, and gets back i
   await login(page, gamma.url, "pbeesly", "New-password-1337", "Pam-Pam");
   await logout(page);
 
-  // The key only works once.
   await page.goto(`${gamma.url}/login/recovery`);
   await page.getByLabel("Cid or email", { exact: true }).fill("pbeesly");
   await page.getByLabel("Recovery key", { exact: true }).fill(key);

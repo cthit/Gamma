@@ -16,11 +16,6 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
-/**
- * Takes the code of the authenticator app of a user who has signed in with their password. With
- * multi-factor authentication enabled, Spring Security adds the {@link SignInFactors#TOTP} factor
- * to the password factor the user already has.
- */
 public class TotpAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
   public static final String URL = "/login/totp";

@@ -1,6 +1,6 @@
 package it.chalmers.gamma.security.authentication;
 
-/** The different kinds of callers that Gamma knows. */
+/** These are the different */
 public sealed interface GammaAuthentication
     permits ApiAuthentication,
         UserAuthentication,

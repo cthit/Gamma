@@ -28,7 +28,6 @@ test("a new user who chooses a passkey sets it up right after creating their acc
   await page.getByLabel("Cid", { exact: true }).fill(cid);
 
   await Promise.all([
-    // The form updates this same URL; wait for persistence before logging out.
     expect(rowWithText(page, cid)).toBeVisible({
       timeout: 15000,
     }),
@@ -56,7 +55,6 @@ test("a new user who chooses a passkey sets it up right after creating their acc
     "/register",
   );
 
-  // A new browser, so the admin's passkey isn't in the authenticator.
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const userPage = await context.newPage();
   try {
@@ -73,7 +71,6 @@ test("a new user who chooses a passkey sets it up right after creating their acc
     await userPage.getByLabel("Nick", { exact: true }).fill(nick);
     await userPage.getByLabel("First name", { exact: true }).fill("Register");
     await userPage.getByLabel("Last name", { exact: true }).fill("Tester");
-    // A passkey is recommended, and chosen unless the user picks a password.
     await expect(
       userPage.getByRole("radio", { name: /With a passkey \(recommended\)/ }),
     ).toBeChecked();

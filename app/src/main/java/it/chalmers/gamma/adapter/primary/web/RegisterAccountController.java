@@ -164,7 +164,6 @@ public class RegisterAccountController {
 
     validateObject(form, bindingResult);
 
-    // Users who sign in with a passkey set it up after creating their account.
     boolean withPasskey = !SIGN_IN_WITH_PASSWORD.equals(form.signInMethod);
     if (!withPasskey) {
       validatePassword(form.password, "password", bindingResult);
@@ -227,10 +226,6 @@ public class RegisterAccountController {
 
   public static final String SIGN_IN_WITH_PASSWORD = "password";
 
-  /**
-   * @param signInMethod {@link #SIGN_IN_WITH_PASSKEY}, which is recommended, or {@link
-   *     #SIGN_IN_WITH_PASSWORD}. The password fields are only used with a password.
-   */
   public record CreateAccountForm(
       String code,
       String signInMethod,

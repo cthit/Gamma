@@ -26,7 +26,6 @@ public class LoginCustomizer implements Customizer<FormLoginConfigurer<HttpSecur
         .passwordParameter("password")
         .successHandler(successHandler)
         .failureHandler((request, response, exception) ->
-            // A signed in user confirming that it is them stays on the confirmation page.
             response.sendRedirect(
                 request.getParameter("confirming") != null
                     ? "/login/confirm?error"

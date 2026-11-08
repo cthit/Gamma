@@ -29,11 +29,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- * Where users manage how they sign in: their password, passkeys, authenticator app, recovery key
- * and email recovery. Only reachable shortly after signing in, see {@link
- * SignInFactors#CONFIRMATION_VALIDITY}.
- */
 @Controller
 public class SecurityController {
 
@@ -93,8 +88,6 @@ public class SecurityController {
     mv.addObject("errorMessage", error == null ? null : ERROR_MESSAGES.get(error));
     return mv;
   }
-
-  // Passkeys are added by Spring Security, through /webauthn/register.
 
   @PostMapping(PAGE + "/passkeys/remove")
   public ModelAndView removePasskey(@RequestParam("credentialId") String credentialId) {
@@ -215,7 +208,6 @@ public class SecurityController {
     return redirect("?done=email-recovery-enabled");
   }
 
-  /** The first of two pages: shows the new recovery key. */
   @GetMapping(PAGE + "/recovery-key")
   public ModelAndView getRecoveryKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
@@ -234,10 +226,6 @@ public class SecurityController {
     return mv;
   }
 
-  /**
-   * The second of two pages: the user types the key back, which they can only do if they have saved
-   * it, since it isn't shown here.
-   */
   @GetMapping(PAGE + "/recovery-key/confirm")
   public ModelAndView getConfirmRecoveryKey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
@@ -318,7 +306,6 @@ public class SecurityController {
     }
     PendingTotp.clear(session);
 
-    // The user just entered a code from the app, so they aren't asked for one again at once.
     this.currentSignIn.addFactor(request, response, SignInFactors.TOTP);
     return redirect("?done=totp-enabled");
   }

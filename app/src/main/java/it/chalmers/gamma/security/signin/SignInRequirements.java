@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
-/** Looks up what a user must sign in with. */
 @Component
 public class SignInRequirements {
 
@@ -33,11 +32,6 @@ public class SignInRequirements {
     this.userRepository = userRepository;
   }
 
-  /**
-   * The user's sign in methods, looked up once per request.
-   *
-   * @param name the name of the user's authentication, which is their user id
-   */
   public Optional<UserSignInMethods> of(String name) {
     UserId userId;
     try {

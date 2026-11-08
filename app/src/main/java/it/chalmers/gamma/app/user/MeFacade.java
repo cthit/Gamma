@@ -142,10 +142,6 @@ public class MeFacade extends Facade {
     }
   }
 
-  /**
-   * Confirms that it is the user, with their password or, for users without one, by having recently
-   * signed in with a passkey.
-   */
   private boolean isMe(GammaUser me, String password) {
     if (!this.userRepository.hasPassword(me.id())) {
       return AuthenticationExtractor.recentlySignedInWithPasskey();

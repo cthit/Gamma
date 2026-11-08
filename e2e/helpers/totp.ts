@@ -16,12 +16,10 @@ function base32Decode(value: string): Buffer {
   return Buffer.from(bytes);
 }
 
-/** The current 30 second time step of authenticator apps. */
 export function currentTimeStep(): number {
   return Math.floor(Date.now() / 1000 / 30);
 }
 
-/** The code an authenticator app shows for the secret at the time step (RFC 6238). */
 export function totpCode(secret: string, timeStep: number): string {
   const counter = Buffer.alloc(8);
   counter.writeBigUInt64BE(BigInt(timeStep));

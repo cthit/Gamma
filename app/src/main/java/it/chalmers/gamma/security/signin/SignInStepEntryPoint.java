@@ -7,10 +7,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.savedrequest.RequestCache;
 
-/**
- * Sends a signed in user who is missing a factor to the page where they sign in with it. Spring
- * Security has already saved the page they wanted, for them to return to.
- */
 public class SignInStepEntryPoint implements AuthenticationEntryPoint {
 
   private final String url;

@@ -355,10 +355,6 @@ public class UsersController {
     return mv;
   }
 
-  /**
-   * Lets a user who has lost every way to sign in get back in, see {@link
-   * SignInMethodsFacade#resetSignInMethods}.
-   */
   @PostMapping("/users/{id}/reset-sign-in")
   public ModelAndView resetSignIn(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,

@@ -32,8 +32,6 @@ public class UserRecoveryKeyRepositoryAdapter implements RecoveryKeyRepository {
 
   @Override
   public boolean use(UserId userId, RecoveryKey key) {
-    // Deleting the row is what uses the key, so the same key can't be used twice even by two
-    // requests at the same time.
     return this.repository.deleteByUserIdAndKeyHash(userId.value(), key.hashed()) == 1;
   }
 

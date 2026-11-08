@@ -44,7 +44,6 @@ test("a user who turns off email recovery gets no reset link, until an admin res
     ),
   ).rejects.toThrow();
 
-  // An admin can't hand out a reset link either, only reset how they sign in.
   await login(page, gamma.url, gamma.adminCid!, gamma.adminPassword!, "admin");
   await page.goto(`${gamma.url}/users/${AMARTIN_ID}`);
   const resetLink = articleByHeading(page, "Generate reset password link");
@@ -64,7 +63,6 @@ test("a user who turns off email recovery gets no reset link, until an admin res
   ).toBeVisible();
   await logout(page);
 
-  // Now the reset link arrives, and offers setting up a passkey.
   await requestPasswordReset(page, gamma.url);
   const link = await waitForMailLink(
     env.gotify,
@@ -73,7 +71,6 @@ test("a user who turns off email recovery gets no reset link, until an admin res
     "/forgot-password/finalize",
   );
 
-  // A new browser, so the admin's passkey isn't in the authenticator.
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   const userPage = await context.newPage();
   try {

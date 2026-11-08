@@ -112,7 +112,6 @@ public class AccessGuard {
         AuthenticationExtractor.getAuthentication() instanceof UserAuthentication;
   }
 
-  /** A user who may only set up how they sign in, see {@link SignInSetupAuthentication}. */
   public static AccessChecker isSettingUpSignIn() {
     return (clientRepository, userRepository) ->
         AuthenticationExtractor.getAuthentication() instanceof SignInSetupAuthentication;

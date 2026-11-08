@@ -109,7 +109,6 @@ public class ForgotPasswordController {
     }
 
     mv.addObject("form", form);
-    // Unless the user has an authenticator app, they can set up a passkey instead.
     mv.addObject(
         "canSetUpPasskey",
         this.userResetPasswordFacade
@@ -170,7 +169,6 @@ public class ForgotPasswordController {
     return new ModelAndView("redirect:/login?password-reset");
   }
 
-  /** Uses the link to set up a passkey instead of a password. */
   @PostMapping("/forgot-password/finalize/passkey")
   public ModelAndView finalizeWithPasskey(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,

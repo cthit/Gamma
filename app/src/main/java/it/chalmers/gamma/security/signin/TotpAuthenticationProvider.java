@@ -18,15 +18,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.FactorGrantedAuthority;
 
-/**
- * Checks the code of a user's authenticator app, and grants the {@link SignInFactors#TOTP} factor.
- * Spring Security adds it to the factors the user has already signed in with.
- */
 public class TotpAuthenticationProvider implements AuthenticationProvider {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TotpAuthenticationProvider.class);
 
-  /** A code has a million possible values, so the number of guesses per user is kept low. */
   private static final int MAX_ATTEMPTS_PER_DAY = 30;
 
   private final TotpRepository totpRepository;

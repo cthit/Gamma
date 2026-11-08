@@ -38,8 +38,6 @@ test("a user can add passkeys, sign in with them and remove their password", asy
   await page.getByRole("button", { name: "Remove password" }).click();
   await expect(page.getByText("Your password was removed.")).toBeVisible();
 
-  // Without a password the home page offers no password change, and changing
-  // the email needs no password since the user just signed in with a passkey.
   await page.goto(`${gamma.url}/`);
   await expect(
     page.getByRole("button", { name: "Change password" }),
@@ -50,8 +48,6 @@ test("a user can add passkeys, sign in with them and remove their password", asy
     page.getByLabel("Current password", { exact: true }),
   ).toHaveCount(0);
 
-  // A passkey can be removed, but not the last one of a user without a
-  // password.
   await page.goto(`${gamma.url}/me/security`);
   page.once("dialog", (dialog) => dialog.accept());
   await passkeys

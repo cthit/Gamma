@@ -21,11 +21,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-/**
- * Signs in a user with their recovery key. The key can only be used once, and only lets the user
- * set up a new way to sign in. Since the user is assumed to have lost their authenticator app, it
- * is removed.
- */
 public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider {
 
   private static final Logger LOGGER =
@@ -68,7 +63,6 @@ public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider
     }
 
     if (this.adminRepository.isAdmin(userId)) {
-      // Admins are reset by another admin.
       throw new BadCredentialsException("Wrong cid, email or recovery key");
     }
 

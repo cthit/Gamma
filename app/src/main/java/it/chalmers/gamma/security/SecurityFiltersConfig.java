@@ -67,13 +67,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationFilter;
 
-/**
- * Users sign in with a passkey, or with their password and, if they have one, a code from their
- * authenticator app. Admins sign in with a passkey. See {@link SignInAuthorizationManagers}.
- */
 @Configuration
-// Lets Spring Security add a factor to the factors the user has already signed in with, instead of
-// replacing them, such as the code of an authenticator app after the password.
 @EnableMultiFactorAuthentication(authorities = {})
 public class SecurityFiltersConfig {
 
@@ -103,8 +97,6 @@ public class SecurityFiltersConfig {
                                 providerConfigurationEndpoint.providerConfigurationCustomizer(
                                     AuthorizationServerMetadataCustomizer::customize))
                             .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))))
-        // Authorizing a client also needs every factor the user must sign in with, so for example
-        // an admin can't sign in to a client with only their password.
         .authorizeHttpRequests(authorization ->
             authorization.anyRequest().access(signInAuthorizationManagers.signedIn()))
         .exceptionHandling(exceptions -> {
@@ -202,7 +194,6 @@ public class SecurityFiltersConfig {
 
     HttpSessionRequestCache requestCache = HtmxAwareRedirects.requestCache();
 
-    // Spring Security signs in passkeys of the user with the given user id.
     http.setSharedObject(
         UserDetailsService.class, PasskeyConfig.passkeyUserDetailsService(userJpaRepository));
 
@@ -240,7 +231,6 @@ public class SecurityFiltersConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/login")
                 .permitAll()
-                // Signed in users post their password again to confirm that it is them.
                 .requestMatchers(HttpMethod.POST, "/login")
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, TotpAuthenticationFilter.URL)
@@ -252,8 +242,6 @@ public class SecurityFiltersConfig {
                 .requestMatchers(
                     SignInSetupSessions.SETUP_URL, SignInSetupSessions.SETUP_URL + "/**")
                 .access(signIn.settingUpSignIn())
-                // Spring Security's endpoints for adding and removing passkeys. Passkeys are
-                // removed from the security page instead.
                 .requestMatchers(HttpMethod.POST, "/webauthn/register")
                 .access(signIn.mayAddPasskey())
                 .requestMatchers("/webauthn/register/**")
@@ -300,9 +288,6 @@ public class SecurityFiltersConfig {
                     new ObjectPostProcessor<WebAuthnAuthenticationFilter>() {
                       @Override
                       public <O extends WebAuthnAuthenticationFilter> O postProcess(O filter) {
-                        // A new session id when signing in with a passkey, like when signing in
-                        // with a
-                        // password, so that a session id known from before can't be used.
                         filter.setSessionAuthenticationStrategy(
                             new ChangeSessionIdAuthenticationStrategy());
                         return filter;
@@ -326,10 +311,6 @@ public class SecurityFiltersConfig {
     return http.build();
   }
 
-  /**
-   * Sends a signed in user who is missing a factor to the page where they sign in with it, and back
-   * to where they were going afterwards.
-   */
   private static void signInSteps(
       ExceptionHandlingConfigurer<HttpSecurity> exceptions, RequestCache requestCache) {
     AuthenticationEntryPoint totp =

@@ -29,7 +29,6 @@ public class LoginThrottlingFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     String clientIp = request.getRemoteAddr();
 
-    // Every way of signing in counts towards the same limit.
     if ("POST".equalsIgnoreCase(request.getMethod())
         && SIGN_IN_URLS.contains(request.getRequestURI())
         && !throttlingService.canProceed("login:" + clientIp, 50)) {

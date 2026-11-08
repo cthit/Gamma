@@ -21,13 +21,8 @@ public interface UserRepository {
 
   Optional<GammaUser> get(Email email);
 
-  /**
-   * The id of the user with the cid, case insensitively, whoever is asking. Used to find the user
-   * of someone who isn't signed in yet.
-   */
   Optional<UserId> findId(Cid cid);
 
-  /** The id of the user with the email, whoever is asking. See {@link #findId(Cid)}. */
   Optional<UserId> findId(Email email);
 
   boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException;
@@ -38,10 +33,6 @@ public interface UserRepository {
 
   void removePassword(UserId userId) throws UserNotFoundException;
 
-  /**
-   * Whether the user has allowed resetting how they sign in through a link mailed to them. Admins
-   * can never do that, whatever this returns.
-   */
   boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException;
 
   void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException;

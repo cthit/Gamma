@@ -5,10 +5,8 @@ import java.security.SecureRandom;
 import java.util.Objects;
 import org.apache.commons.codec.binary.Base32;
 
-/** The shared secret of an authenticator app, base32 encoded without padding. */
 public record TotpSecret(String value) implements Serializable {
 
-  /** 160 bits, as recommended by RFC 4226. */
   private static final int SECRET_BYTES = 20;
 
   private static final SecureRandom RANDOM = new SecureRandom();

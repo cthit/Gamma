@@ -81,8 +81,6 @@ public class UserResetPasswordFacade extends Facade {
           try {
             Optional<UserId> userId = findUser(cidOrEmailString);
             if (userId.isPresent() && !canRecoverByEmail(userId.get())) {
-              // Admins and users who have turned off email recovery get back in in other ways,
-              // so nothing is mailed. The page says the same as when a mail is sent.
               LOGGER.info(
                   "Not mailing a password reset link to {}, who can't recover by email",
                   userId.get().value());
@@ -134,10 +132,6 @@ public class UserResetPasswordFacade extends Facade {
     this.userRepository.setPassword(userId, unencryptedPassword);
   }
 
-  /**
-   * What the user can set up with the link: a password, and unless they have an authenticator app,
-   * a passkey. Empty if the link can't be used.
-   */
   public Optional<ResetOptions> getResetOptions(String token) {
     this.accessGuard.require(isNotSignedIn());
 
@@ -147,26 +141,18 @@ public class UserResetPasswordFacade extends Facade {
         .map(userId -> new ResetOptions(!this.totpRepository.isEnabled(userId)));
   }
 
-  /**
-   * Uses the link to let the user set up a passkey instead of a password.
-   *
-   * @return the user that may set up a passkey
-   */
   public UUID useTokenToSetUpPasskey(String inputToken) {
     this.accessGuard.require(isNotSignedIn());
 
     PasswordResetToken token = new PasswordResetToken(inputToken);
     UserId owner = requireRecoverableByEmail(token);
     if (this.totpRepository.isEnabled(owner)) {
-      // The link only resets the password of a user with an authenticator app, so that the email
-      // can't be used to get around the app.
       throw new IllegalArgumentException("Can only reset the password");
     }
 
     return this.passwordResetRepository.useToken(token).value();
   }
 
-  /** Admins never can, and other users can turn it off. */
   private boolean canRecoverByEmail(UserId userId) {
     try {
       return !this.adminRepository.isAdmin(userId)
@@ -196,7 +182,6 @@ public class UserResetPasswordFacade extends Facade {
 
   public record ResetOptions(boolean canSetUpPasskey) {}
 
-  /** The user is an admin, or has turned off resetting how they sign in through email. */
   public static final class EmailRecoveryNotAllowedException extends Exception {}
 
   private String generatePasswordResetLink(PasswordResetToken token) {

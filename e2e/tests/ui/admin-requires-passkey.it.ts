@@ -31,8 +31,6 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   const client = await createUserClientViaUi(page, gamma.url, "Admin gate");
   await logout(page);
 
-  // The bootstrapped admin has no passkey, so after the password only adding
-  // a passkey is possible.
   await signInWithPassword(page, gamma.url, admin, adminPassword);
   await expect(page).toHaveURL(/\/login\/confirm/);
   await expect(
@@ -42,7 +40,6 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   await page.goto(`${gamma.url}/users`);
   await expect(page).toHaveURL(/\/login\/confirm/);
 
-  // Not even signing in to another client works.
   const authorizeUrl = new URL("/oauth2/authorize", gamma.url);
   authorizeUrl.search = new URLSearchParams({
     response_type: "code",
@@ -54,8 +51,6 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   await page.goto(authorizeUrl.toString());
   await expect(page).toHaveURL(/\/login\/confirm/);
 
-  // Once the admin has a passkey and signed in with it, they continue to the
-  // client they were signing in to.
   await finishAdminSignIn(page);
   const authorizeButton = page.getByRole("button", { name: "Authorize" });
   await expect(authorizeButton).toBeVisible();
@@ -69,7 +64,6 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
-  // With a passkey, the password alone no longer gets the admin anywhere.
   await signInWithPassword(page, gamma.url, admin, adminPassword);
   await expect(
     page.getByRole("heading", { name: "Admins sign in with a passkey" }),
@@ -80,13 +74,11 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
-  // The passkey works straight from the login page too.
   await page.goto(`${gamma.url}/login`);
   await signInWithPasskey(page);
   await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
-  // Admins can't reset how they sign in by email.
   await page.goto(`${gamma.url}/forgot-password`);
   await page.getByLabel("Cid or Email", { exact: true }).fill(admin);
   await page.getByRole("button", { name: /reset|send/i }).click();

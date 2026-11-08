@@ -9,10 +9,6 @@ import java.time.Instant;
 import java.util.OptionalLong;
 import javax.crypto.spec.SecretKeySpec;
 
-/**
- * Checks the codes of authenticator apps. The codes themselves are computed by java-otp, using the
- * settings every authenticator app supports: HMAC-SHA1, six digits and 30 second time steps.
- */
 public final class TotpCodes {
 
   public static final String ISSUER = "Gamma";
@@ -22,7 +18,6 @@ public final class TotpCodes {
 
   private static final long TIME_STEP_SECONDS = GENERATOR.getTimeStep().toSeconds();
 
-  /** Accepts the codes of the previous and next time step too, for clocks that are a bit off. */
   private static final int ALLOWED_DRIFT = 1;
 
   private TotpCodes() {}
@@ -31,10 +26,6 @@ public final class TotpCodes {
     return instant.getEpochSecond() / TIME_STEP_SECONDS;
   }
 
-  /**
-   * Finds the time step that the code belongs to, if the code is one of the codes of the time steps
-   * around now.
-   */
   public static OptionalLong matchingTimeStep(TotpSecret secret, String code, Instant now) {
     if (code == null) {
       return OptionalLong.empty();
@@ -45,8 +36,6 @@ public final class TotpCodes {
     long current = timeStep(now);
 
     OptionalLong match = OptionalLong.empty();
-    // Every step is checked, without stopping at a match, so the time taken doesn't reveal which
-    // step matched.
     for (long step = current - ALLOWED_DRIFT; step <= current + ALLOWED_DRIFT; step++) {
       try {
         if (GENERATOR.validateOneTimePassword(
@@ -62,10 +51,6 @@ public final class TotpCodes {
     return match;
   }
 
-  /**
-   * The otpauth URI that authenticator apps read from the QR code, see
-   * https://github.com/google/google-authenticator/wiki/Key-Uri-Format
-   */
   public static String otpauthUri(TotpSecret secret, String accountName) {
     String label = encode(ISSUER) + ":" + encode(accountName);
     return "otpauth://totp/"

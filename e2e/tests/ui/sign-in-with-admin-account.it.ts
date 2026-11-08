@@ -24,7 +24,6 @@ test("login in with admin account", async ({ page, gamma }) => {
     page.getByRole("button", { name: "Login" }).click(),
   ]);
 
-  // The bootstrapped admin has no passkey yet, so they add one first.
   await expect(
     page.getByRole("heading", { name: "Add a passkey to continue" }),
   ).toBeVisible();

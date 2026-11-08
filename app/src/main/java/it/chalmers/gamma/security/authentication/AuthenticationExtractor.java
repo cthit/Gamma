@@ -8,15 +8,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public final class AuthenticationExtractor {
 
-  /** See {@link it.chalmers.gamma.security.signin.SignInFactors#CONFIRMATION_VALIDITY}. */
   private static final Duration CONFIRMATION_VALIDITY = Duration.ofMinutes(10);
 
   private AuthenticationExtractor() {}
 
-  /**
-   * Whether the signed in user signed in with a passkey within the last ten minutes. Users without
-   * a password confirm that it is them this way, instead of with their password.
-   */
   public static boolean recentlySignedInWithPasskey() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {

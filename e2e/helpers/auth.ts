@@ -21,7 +21,6 @@ export async function login(
     page.getByRole("button", { name: "Login" }).click(),
   ]);
 
-  // Admins sign in with a passkey after their password.
   if (new URL(page.url()).pathname === "/login/confirm") {
     await finishAdminSignIn(page);
   }

@@ -13,11 +13,6 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-/**
- * Redirects that also work for htmx requests. Htmx would follow a plain redirect and swap the page
- * it leads to into the part of the page it was updating, so htmx is told to load the whole page
- * instead.
- */
 public final class HtmxAwareRedirects {
 
   private HtmxAwareRedirects() {}
@@ -40,11 +35,6 @@ public final class HtmxAwareRedirects {
     }
   }
 
-  /**
-   * Only page loads are saved to be returned to after signing in: plain GET requests and htmx
-   * boosted links. Saving an htmx request for a part of a page would return the user to only that
-   * part.
-   */
   public static HttpSessionRequestCache requestCache() {
     HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
     requestCache.setMatchingRequestParameterName(null);
@@ -54,10 +44,6 @@ public final class HtmxAwareRedirects {
     return requestCache;
   }
 
-  /**
-   * For an htmx request for a part of a page, saves the page the user is on instead, so that the
-   * user returns to it after signing in.
-   */
   public static void saveCurrentPageOfHtmxRequest(
       HttpServletRequest request, HttpServletResponse response, RequestCache requestCache) {
     if (!isHtmx(request) || isBoosted(request)) {
@@ -76,7 +62,6 @@ public final class HtmxAwareRedirects {
       return;
     }
 
-    // Only the path is used, so the user can't be sent to another site.
     if (uri.getRawPath() == null || !uri.getRawPath().startsWith("/")) {
       return;
     }
@@ -84,7 +69,6 @@ public final class HtmxAwareRedirects {
     requestCache.saveRequest(new PageLoad(request, uri), response);
   }
 
-  /** A plain GET request for the given page, as if the user had loaded it. */
   private static final class PageLoad extends HttpServletRequestWrapper {
 
     private final URI uri;

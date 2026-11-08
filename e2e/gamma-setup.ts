@@ -131,9 +131,6 @@ export async function startGammaInstance(
   const instanceId = instanceCounter++;
   console.log(`Starting Gamma instance ${instanceId}...`);
 
-  // Passkeys only work on a domain, not an IP address, and only on the
-  // origins Gamma allows. So Gamma is published on a port chosen here, and
-  // opened through https://localhost:<port>.
   const hostPort = await findFreePort();
   const browserOrigin = `https://localhost:${hostPort}`;
 

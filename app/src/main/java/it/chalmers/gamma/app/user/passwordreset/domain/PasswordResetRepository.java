@@ -17,7 +17,6 @@ public interface PasswordResetRepository {
 
   boolean isTokenValid(PasswordResetToken token);
 
-  /** The user that a token that is still valid belongs to. */
   Optional<UserId> getUserOfValidToken(PasswordResetToken token);
 
   UserId useToken(PasswordResetToken token);

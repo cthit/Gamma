@@ -1,9 +1,3 @@
--- Passkeys. These two tables are read and written by Spring Security's
--- JdbcPublicKeyCredentialUserEntityRepository and JdbcUserCredentialRepository,
--- so their table and column names are Spring Security's
--- (org/springframework/security/user-entities-schema.sql and
--- user-credentials-schema-postgres.sql in spring-security-web).
--- user_entities.name is the id of the Gamma user that the passkeys belong to.
 CREATE TABLE user_entities
 (
     id           VARCHAR(1000) PRIMARY KEY,
@@ -31,8 +25,6 @@ CREATE TABLE user_credentials
 
 CREATE INDEX user_credentials_user_entity_user_id_idx ON user_credentials (user_entity_user_id);
 
--- Removes the passkeys of a deleted user, since user_entities can't reference
--- g_user directly.
 CREATE FUNCTION g_delete_user_passkeys() RETURNS TRIGGER AS
 $$
 BEGIN
@@ -47,9 +39,6 @@ CREATE TRIGGER g_user_delete_passkeys
     FOR EACH ROW
 EXECUTE FUNCTION g_delete_user_passkeys();
 
--- An authenticator app (TOTP) the user signs in with after their password.
--- last_used_time_step is the 30 second time step of the latest accepted code,
--- so that a code can't be used twice.
 CREATE TABLE g_user_totp
 (
     user_id             UUID PRIMARY KEY REFERENCES g_user ON DELETE CASCADE,
@@ -58,8 +47,6 @@ CREATE TABLE g_user_totp
     created_at          TIMESTAMP   NOT NULL
 );
 
--- The recovery key a user can sign in with when they have lost their other
--- sign in methods. Only a SHA-256 hash of the key is stored.
 CREATE TABLE g_user_recovery_key
 (
     user_id    UUID PRIMARY KEY REFERENCES g_user ON DELETE CASCADE,
@@ -67,7 +54,5 @@ CREATE TABLE g_user_recovery_key
     created_at TIMESTAMP   NOT NULL
 );
 
--- Whether the user can reset how they sign in through a link mailed to them.
--- Admins never can, whatever this says.
 ALTER TABLE g_user
     ADD COLUMN email_recovery BOOLEAN NOT NULL DEFAULT TRUE;

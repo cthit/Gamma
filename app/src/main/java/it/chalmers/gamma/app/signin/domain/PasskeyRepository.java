@@ -9,11 +9,6 @@ public interface PasskeyRepository {
 
   boolean hasAny(UserId userId);
 
-  /**
-   * Removes the passkey if it belongs to the user.
-   *
-   * @return whether a passkey was removed
-   */
   boolean delete(UserId userId, String credentialId);
 
   void deleteAll(UserId userId);

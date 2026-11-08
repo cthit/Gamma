@@ -10,17 +10,12 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
-/** Changes the factors of the signed in user's session. */
 @Component
 public class CurrentSignIn {
 
   private final SecurityContextRepository securityContextRepository =
       new HttpSessionSecurityContextRepository();
 
-  /**
-   * Adds a factor that the user has just proven in another way, such as the code of the
-   * authenticator app they just set up, so they aren't asked for it again at once.
-   */
   public void addFactor(HttpServletRequest request, HttpServletResponse response, String factor) {
     Authentication current = SecurityContextHolder.getContext().getAuthentication();
     if (!SignInAuthorizationManagers.isUserSession(current)) {

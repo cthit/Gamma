@@ -6,7 +6,6 @@
             <h1 class="login__title">Gamma</h1>
         </header>
 
-        <!--/* An admin without a passkey adds one before they can do anything in Gamma. */-->
         <th:block th:if="${methods.isAdmin() and !methods.hasPasskeys()}">
             <h2>Add a passkey to continue</h2>
             <p>

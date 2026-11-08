@@ -19,7 +19,6 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
     this.userJpaRepository = userJpaRepository;
   }
 
-  /** The signed in user, whichever way they signed in. */
   public GammaUser getGammaUser(UUID userId) {
     UserEntity userEntity =
         this.userJpaRepository

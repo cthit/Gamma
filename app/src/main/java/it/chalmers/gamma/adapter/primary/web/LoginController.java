@@ -55,7 +55,6 @@ public class LoginController {
     return mv;
   }
 
-  /** Asks a user who has signed in with their password for the code of their authenticator app. */
   @GetMapping("/login/totp")
   public ModelAndView getTotp(
       @RequestParam(value = "error", required = false) String error,
@@ -66,11 +65,6 @@ public class LoginController {
     return mv;
   }
 
-  /**
-   * Asks a signed in user to sign in again: with a passkey when that is required, such as for
-   * admins, or to confirm that it is them before they change how they sign in. An admin without a
-   * passkey adds one here.
-   */
   @GetMapping("/login/confirm")
   public ModelAndView getConfirm(
       @RequestParam(value = "error", required = false) String error,
@@ -93,7 +87,6 @@ public class LoginController {
     mv.addObject("methods", methods);
     mv.addObject("cid", cid);
     mv.addObject("error", error != null);
-    // An admin who has signed in with their password is here because admins need a passkey.
     mv.addObject("adminNeedsPasskey", methods.isAdmin() && signedInWithPassword);
 
     return mv;

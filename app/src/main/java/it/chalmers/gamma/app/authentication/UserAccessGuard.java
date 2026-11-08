@@ -45,7 +45,6 @@ public class UserAccessGuard {
       return userAuthentication.gammaUser().id().equals(userId);
     }
 
-    // A user setting up how they sign in, see SignInSetupAuthentication.
     if (AuthenticationExtractor.getAuthentication()
         instanceof SignInSetupAuthentication signInSetupAuthentication) {
       return signInSetupAuthentication.userId().equals(userId.value());
