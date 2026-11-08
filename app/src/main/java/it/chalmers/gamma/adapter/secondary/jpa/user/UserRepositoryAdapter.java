@@ -113,10 +113,11 @@ public class UserRepositoryAdapter implements UserRepository {
   @Override
   public void setPassword(UserId userId, UnencryptedPassword newPassword)
       throws UserNotFoundException {
-    UserEntity userEntity =
-        this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
-    userEntity.password = passwordEncoder.encode(newPassword.value());
-    this.save(userEntity);
+    if (this.repository.updatePassword(
+            userId.value(), passwordEncoder.encode(newPassword.value()), Instant.now())
+        == 0) {
+      throw new UserNotFoundException();
+    }
   }
 
   @Override

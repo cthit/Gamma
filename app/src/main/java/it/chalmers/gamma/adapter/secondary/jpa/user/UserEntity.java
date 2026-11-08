@@ -17,7 +17,7 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "cid")
   protected String cid;
 
-  @Column(name = "password", nullable = true)
+  @Column(name = "password", nullable = true, updatable = false)
   protected String password;
 
   @Column(name = "nick")
@@ -45,7 +45,7 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "locked")
   protected boolean locked;
 
-  @Column(name = "email_recovery")
+  @Column(name = "email_recovery", updatable = false)
   protected boolean emailRecovery = true;
 
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
