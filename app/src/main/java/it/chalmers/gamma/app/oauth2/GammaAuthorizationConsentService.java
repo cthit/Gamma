@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.ClientUserOwner;
 import it.chalmers.gamma.app.datadeletion.DataDeletionRecorder;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,15 @@ public class GammaAuthorizationConsentService implements OAuth2AuthorizationCons
   private final Logger LOGGER = LoggerFactory.getLogger(GammaAuthorizationConsentService.class);
   private final ClientRepository clientRepository;
   private final DataDeletionRecorder dataDeletionRecorder;
+  private final UserRepository userRepository;
 
   public GammaAuthorizationConsentService(
-      ClientRepository clientRepository, DataDeletionRecorder dataDeletionRecorder) {
+      ClientRepository clientRepository,
+      DataDeletionRecorder dataDeletionRecorder,
+      UserRepository userRepository) {
     this.clientRepository = clientRepository;
     this.dataDeletionRecorder = dataDeletionRecorder;
+    this.userRepository = userRepository;
   }
 
   @Override
@@ -66,6 +71,7 @@ public class GammaAuthorizationConsentService implements OAuth2AuthorizationCons
     }
 
     UserId userId = UserId.valueOf(authorizationConsent.getPrincipalName());
+    this.userRepository.lockForUpdate(userId);
     this.clientRepository.addClientApproval(userId, client.clientUid());
     this.dataDeletionRecorder.recordReApproval(userId, client.clientUid());
   }

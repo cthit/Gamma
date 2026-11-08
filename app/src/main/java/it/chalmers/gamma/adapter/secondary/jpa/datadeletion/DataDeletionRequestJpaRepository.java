@@ -17,6 +17,8 @@ public interface DataDeletionRequestJpaRepository
 
   List<DataDeletionRequestEntity> findAllByClearedAtIsNotNull();
 
+  List<DataDeletionRequestEntity> findAllByUserIdAndClearedAtIsNull(UUID userId);
+
   @Modifying
   @Query(
       "UPDATE DataDeletionRequestEntity r SET r.cid = NULL, r.clientName = NULL,"

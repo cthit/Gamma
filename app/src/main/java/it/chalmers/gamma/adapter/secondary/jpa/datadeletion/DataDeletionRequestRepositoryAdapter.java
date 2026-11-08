@@ -55,6 +55,13 @@ public class DataDeletionRequestRepositoryAdapter implements DataDeletionRequest
   }
 
   @Override
+  public List<DataDeletionRequest> getOpenFor(UserId userId) {
+    return this.repository.findAllByUserIdAndClearedAtIsNull(userId.value()).stream()
+        .map(DataDeletionRequestEntity::toDomain)
+        .toList();
+  }
+
+  @Override
   public void clear(DataDeletionRequestId id, UserId clearedBy)
       throws RequestNotFoundException, AlreadyClearedException {
     if (this.repository.clearIfOpen(id.value(), clearedBy.value(), Instant.now()) == 1) {

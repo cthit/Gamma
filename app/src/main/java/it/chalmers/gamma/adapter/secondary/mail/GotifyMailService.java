@@ -2,12 +2,14 @@ package it.chalmers.gamma.adapter.secondary.mail;
 
 import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
+import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +23,7 @@ public class GotifyMailService implements MailService {
   private final String gotifyApiKey;
   private final String gotifyURL;
   private final ThrottlingService throttlingService;
+  private final RestTemplate restTemplate;
 
   public GotifyMailService(
       @Value("${application.gotify.key}") String gotifyApiKey,
@@ -29,6 +32,11 @@ public class GotifyMailService implements MailService {
     this.gotifyApiKey = gotifyApiKey;
     this.gotifyURL = gotifyURL;
     this.throttlingService = throttlingService;
+
+    SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    requestFactory.setConnectTimeout(Duration.ofSeconds(5));
+    requestFactory.setReadTimeout(Duration.ofSeconds(15));
+    this.restTemplate = new RestTemplate(requestFactory);
   }
 
   /** Sends mail using Gotify Rest API, see https://github.com/cthit/gotify */
@@ -74,9 +82,8 @@ public class GotifyMailService implements MailService {
     Request request = new Request(email, "no-reply@chalmers.it", subject, body);
 
     HttpEntity<Request> entity = new HttpEntity<>(request, headers);
-    RestTemplate restTemplate = new RestTemplate();
     try {
-      restTemplate.postForEntity(this.gotifyURL + "/mail", entity, String.class);
+      this.restTemplate.postForEntity(this.gotifyURL + "/mail", entity, String.class);
       return true;
     } catch (RestClientException e) {
       LOGGER.error(e.getMessage());

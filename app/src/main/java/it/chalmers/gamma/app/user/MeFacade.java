@@ -10,7 +10,10 @@ import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.ClientUserOwner;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.common.PrettyName;
 import it.chalmers.gamma.app.datadeletion.DataDeletionRecorder;
+import it.chalmers.gamma.app.datadeletion.domain.DataDeletionRequest;
+import it.chalmers.gamma.app.datadeletion.domain.DataDeletionRequestRepository;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.image.domain.Image;
@@ -29,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -43,6 +47,7 @@ public class MeFacade extends Facade {
   private final GroupRepository groupRepository;
   private final ImageService imageService;
   private final DataDeletionRecorder dataDeletionRecorder;
+  private final DataDeletionRequestRepository dataDeletionRequestRepository;
 
   public MeFacade(
       AccessGuard accessGuard,
@@ -50,13 +55,15 @@ public class MeFacade extends Facade {
       ClientRepository clientRepository,
       GroupRepository groupRepository,
       ImageService imageService,
-      DataDeletionRecorder dataDeletionRecorder) {
+      DataDeletionRecorder dataDeletionRecorder,
+      DataDeletionRequestRepository dataDeletionRequestRepository) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
     this.imageService = imageService;
     this.dataDeletionRecorder = dataDeletionRecorder;
+    this.dataDeletionRequestRepository = dataDeletionRequestRepository;
   }
 
   public List<UserApprovedClientDTO> getSignedInUserApprovals() {
@@ -138,7 +145,14 @@ public class MeFacade extends Facade {
         me.id().value(),
         me.cid().value(),
         me.firstName().value(),
-        officialClients.stream().sorted(String::compareToIgnoreCase).toList(),
+        Stream.concat(
+                officialClients.stream(),
+                this.dataDeletionRequestRepository.getOpenFor(me.id()).stream()
+                    .map(DataDeletionRequest::clientName)
+                    .map(PrettyName::value))
+            .distinct()
+            .sorted(String::compareToIgnoreCase)
+            .toList(),
         ownerDTOs);
   }
 

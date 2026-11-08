@@ -30,6 +30,8 @@ public class DataDeletionFacade extends Facade {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DataDeletionFacade.class);
 
+  private static final int MAX_RECIPIENT_LENGTH = 100;
+
   private final DataDeletionRequestRepository dataDeletionRequestRepository;
   private final DataDeletionRecipientRepository dataDeletionRecipientRepository;
   private final UserRepository userRepository;
@@ -92,7 +94,12 @@ public class DataDeletionFacade extends Facade {
       throws DataDeletionRecipientRepository.RecipientAlreadyExistsException {
     this.accessGuard.require(isAdmin());
 
-    this.dataDeletionRecipientRepository.add(new Email(email.trim()));
+    String trimmed = email.trim();
+    if (trimmed.length() > MAX_RECIPIENT_LENGTH) {
+      throw new IllegalArgumentException("Email is too long");
+    }
+
+    this.dataDeletionRecipientRepository.add(new Email(trimmed));
   }
 
   public void removeRecipient(String email)

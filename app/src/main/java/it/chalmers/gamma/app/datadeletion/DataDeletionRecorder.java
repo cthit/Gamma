@@ -32,7 +32,7 @@ public class DataDeletionRecorder {
   }
 
   public void recordAccountDeletion(GammaUser user) {
-    this.userRepository.lockForDeletion(user.id());
+    this.userRepository.lockForUpdate(user.id());
     for (Client client : this.clientRepository.getClientsByUserApproved(user.id())) {
       if (isOfficial(client)) {
         create(user, client, DataDeletionReason.ACCOUNT_DELETED);
@@ -41,7 +41,7 @@ public class DataDeletionRecorder {
   }
 
   public void recordApprovalRevoked(GammaUser user, ClientUid clientUid) {
-    this.userRepository.lockForDeletion(user.id());
+    this.userRepository.lockForUpdate(user.id());
     if (!this.clientRepository.isApprovedByUser(user.id(), clientUid)) {
       return;
     }

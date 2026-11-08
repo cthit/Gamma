@@ -70,7 +70,7 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
-  public void lockForDeletion(UserId userId) {
+  public void lockForUpdate(UserId userId) {
     this.repository.lockForUpdate(userId.value());
   }
 

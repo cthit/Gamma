@@ -110,6 +110,14 @@ test("given a user that approved clients when deleting the account then the admi
   await expect(request).toContainText("Account deleted");
   await expect(rowWithText(openRequests, unofficialName)).toHaveCount(0);
 
+  await page
+    .getByLabel("Email", { exact: true })
+    .fill(`${"a".repeat(95)}@example.org`);
+  await page.getByRole("button", { name: "Add" }).click();
+  await expect(page.getByText("Not a valid email")).toBeVisible({
+    timeout: 10000,
+  });
+
   await page.getByLabel("Email", { exact: true }).fill("dpo@example.org");
   await page.getByRole("button", { name: "Add" }).click();
   await expect(

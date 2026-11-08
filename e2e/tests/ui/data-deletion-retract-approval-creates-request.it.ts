@@ -42,6 +42,14 @@ test("given an approved official client when retracting and approving it again t
     await row.getByRole("button", { name: "Retract approval" }).click();
     await expect(rowWithText(page, name)).toHaveCount(0, { timeout: 10000 });
   }
+
+  await page.goto(`${gamma.url}/delete-your-account`, { timeout: 30000 });
+  await expect(
+    page.getByRole("heading", { name: "Official clients you have approved" }),
+  ).toBeVisible({ timeout: 10000 });
+  await expect(
+    page.getByRole("listitem").filter({ hasText: officialName }),
+  ).toBeVisible();
   await logout(page);
 
   await login(page, gamma.url, gamma.adminCid!, gamma.adminPassword!);
