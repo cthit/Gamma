@@ -112,3 +112,53 @@ test("given an admin when viewing their own user then they cannot lock themselve
     userDetails.getByRole("button", { name: "Lock user", exact: true }),
   ).toHaveCount(0);
 });
+
+test("given a signed in user when an admin locks and unlocks them before their next request then that session is still signed out", async ({
+  page,
+  browser,
+  gamma,
+}) => {
+  const userContext = await browser.newContext({ ignoreHTTPSErrors: true });
+  try {
+    const user = await userContext.newPage();
+    await login(user, gamma.url, "pbeesly", "password1337", "Pam-Pam");
+
+    await login(
+      page,
+      gamma.url,
+      gamma.adminCid ?? "",
+      gamma.adminPassword ?? "",
+      "admin",
+    );
+    await page.goto(`${gamma.url}/users`, { timeout: 30000 });
+    await rowWithText(page, "pbeesly")
+      .getByRole("link", { name: "Details" })
+      .click();
+
+    const userDetails = articleByHeading(page, "User details");
+    page.once("dialog", (dialog) => dialog.accept());
+    await userDetails
+      .getByRole("button", { name: "Lock user", exact: true })
+      .click();
+    await expect(page.getByText("User locked")).toBeVisible({
+      timeout: 10000,
+    });
+    await userDetails
+      .getByRole("button", { name: "Unlock user", exact: true })
+      .click();
+    await expect(page.getByText("User unlocked")).toBeVisible({
+      timeout: 10000,
+    });
+
+    // The session made no request while the user was locked.
+    await user.goto(`${gamma.url}/users`, { timeout: 30000 });
+    await expect(user).toHaveURL(/\/login/);
+    await expect(user.getByLabel("Cid or email", { exact: true })).toBeVisible({
+      timeout: 10000,
+    });
+
+    await login(user, gamma.url, "pbeesly", "password1337", "Pam-Pam");
+  } finally {
+    await userContext.close();
+  }
+});

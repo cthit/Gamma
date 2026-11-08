@@ -45,6 +45,10 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "locked")
   protected boolean locked;
 
+  /** Sessions that signed in at or before this time are no longer valid. */
+  @Column(name = "sessions_revoked_at")
+  protected Instant sessionsRevokedAt;
+
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   protected UserAvatarEntity userAvatar;
 

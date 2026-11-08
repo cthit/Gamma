@@ -108,10 +108,7 @@ public class UserFacade extends Facade {
       throw new CannotLockYourselfException();
     }
 
-    GammaUser user =
-        this.userRepository.get(userId).orElseThrow(UserRepository.UserNotFoundException::new);
-    this.userRepository.save(
-        user.with().extended(user.extended().with().locked(locked).build()).build());
+    this.userRepository.setLocked(userId, locked);
   }
 
   public static class CannotLockYourselfException extends Exception {}

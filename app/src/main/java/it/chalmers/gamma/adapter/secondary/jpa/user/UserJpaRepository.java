@@ -29,4 +29,19 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
       "update UserEntity u set u.email = :email, u.version = u.version + 1, u.updatedAt = :now"
           + " where u.id = :id")
   int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
+
+  /** Locks the user and revokes every session that signed in before now. */
+  @Transactional
+  @Modifying
+  @Query(
+      "update UserEntity u set u.locked = true, u.sessionsRevokedAt = :now,"
+          + " u.version = u.version + 1, u.updatedAt = :now where u.id = :id")
+  int lock(@Param("id") UUID id, @Param("now") Instant now);
+
+  @Transactional
+  @Modifying
+  @Query(
+      "update UserEntity u set u.locked = false, u.version = u.version + 1, u.updatedAt = :now"
+          + " where u.id = :id")
+  int unlock(@Param("id") UUID id, @Param("now") Instant now);
 }

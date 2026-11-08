@@ -5,6 +5,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.*;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -124,6 +125,23 @@ public class UserRepositoryAdapter implements UserRepository {
 
       throw e;
     }
+
+    if (updated == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public void setLocked(UserId userId, boolean locked) throws UserNotFoundException {
+    // Only touches the lock, so it can't overwrite a concurrent change. Because the version goes
+    // up, a save based on a snapshot from before this change is rejected as stale instead of
+    // silently undoing it. Truncated to what the column stores, so that the revocation time read
+    // back is the same as the one used here.
+    Instant now = Instant.now().truncatedTo(ChronoUnit.MICROS);
+    int updated =
+        locked
+            ? this.repository.lock(userId.value(), now)
+            : this.repository.unlock(userId.value(), now);
 
     if (updated == 0) {
       throw new UserNotFoundException();
