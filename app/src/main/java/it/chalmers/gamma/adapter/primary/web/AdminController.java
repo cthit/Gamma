@@ -29,19 +29,18 @@ public class AdminController {
     List<UUID> admins = this.adminFacade.getAllAdmins();
     List<UserFacade.UserDTO> users =
         this.userFacade.getAll().stream()
-            .sorted(
-                (user1, user2) -> {
-                  boolean user1Trained = admins.contains(user1.id());
-                  boolean user2Trained = admins.contains(user2.id());
+            .sorted((user1, user2) -> {
+              boolean user1Trained = admins.contains(user1.id());
+              boolean user2Trained = admins.contains(user2.id());
 
-                  if (user1Trained && !user2Trained) {
-                    return -1;
-                  } else if (!user1Trained && user2Trained) {
-                    return 1;
-                  }
+              if (user1Trained && !user2Trained) {
+                return -1;
+              } else if (!user1Trained && user2Trained) {
+                return 1;
+              }
 
-                  return user1.nick().compareToIgnoreCase(user2.nick());
-                })
+              return user1.nick().compareToIgnoreCase(user2.nick());
+            })
             .toList();
 
     ModelAndView mv = new ModelAndView();

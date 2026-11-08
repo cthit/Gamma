@@ -118,12 +118,11 @@ public class GroupRepositoryAdapter implements GroupRepository {
   @Override
   public List<UserMembership> getAllByUser(UserId userId) {
     return this.membershipJpaRepository.findAllById_User_Id(userId.value()).stream()
-        .map(
-            membershipEntity ->
-                new UserMembership(
-                    this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
-                    this.groupEntityConverter.toDomain(membershipEntity.getId().getGroup()),
-                    new UnofficialPostName(membershipEntity.getUnofficialPostName())))
+        .map(membershipEntity ->
+            new UserMembership(
+                this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
+                this.groupEntityConverter.toDomain(membershipEntity.getId().getGroup()),
+                new UnofficialPostName(membershipEntity.getUnofficialPostName())))
         .toList();
   }
 
@@ -159,14 +158,13 @@ public class GroupRepositoryAdapter implements GroupRepository {
     entity.members.clear();
     entity.members.addAll(
         group.groupMembers().stream()
-            .map(
-                groupMember ->
-                    new MembershipEntity(
-                        new MembershipPK(
-                            this.postJpaRepository.getById(groupMember.post().id().value()),
-                            entity,
-                            this.userJpaRepository.getById(groupMember.user().id().value())),
-                        groupMember.unofficialPostName().value()))
+            .map(groupMember ->
+                new MembershipEntity(
+                    new MembershipPK(
+                        this.postJpaRepository.getById(groupMember.post().id().value()),
+                        entity,
+                        this.userJpaRepository.getById(groupMember.user().id().value())),
+                    groupMember.unofficialPostName().value()))
             .toList());
 
     if (entity.groupImages == null) {

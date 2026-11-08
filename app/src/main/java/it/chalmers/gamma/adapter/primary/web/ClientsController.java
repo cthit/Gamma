@@ -510,32 +510,30 @@ public class ClientsController {
     List<UserFacade.UserDTO> users = new ArrayList<>();
 
     if (form.superGroups != null) {
-      form.superGroups.forEach(
-          superGroup -> {
-            try {
-              this.clientAuthorityFacade.addSuperGroupToClientAuthority(
-                  clientUid, form.authority, superGroup);
-            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-                | ClientAuthorityFacade.SuperGroupNotFoundException e) {
-              throw new RuntimeException(e);
-            }
+      form.superGroups.forEach(superGroup -> {
+        try {
+          this.clientAuthorityFacade.addSuperGroupToClientAuthority(
+              clientUid, form.authority, superGroup);
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
+            | ClientAuthorityFacade.SuperGroupNotFoundException e) {
+          throw new RuntimeException(e);
+        }
 
-            superGroups.add(this.superGroupFacade.get(superGroup).orElseThrow());
-          });
+        superGroups.add(this.superGroupFacade.get(superGroup).orElseThrow());
+      });
     }
 
     if (form.users != null) {
-      form.users.forEach(
-          user -> {
-            try {
-              this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
-            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-                | ClientAuthorityFacade.UserNotFoundException e) {
-              throw new RuntimeException(e);
-            }
+      form.users.forEach(user -> {
+        try {
+          this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
+            | ClientAuthorityFacade.UserNotFoundException e) {
+          throw new RuntimeException(e);
+        }
 
-            users.add(this.userFacade.getWithGroups(user).orElseThrow().user());
-          });
+        users.add(this.userFacade.getWithGroups(user).orElseThrow().user());
+      });
     }
 
     ModelAndView mv = new ModelAndView("client-details/created-client-authority");

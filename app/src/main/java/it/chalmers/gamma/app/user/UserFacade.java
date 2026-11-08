@@ -103,9 +103,8 @@ public class UserFacade extends Facade {
 
   public Optional<UserExtendedWithGroupsDTO> getAsAdmin(UUID id) {
     return getExtendedAsAdmin(id)
-        .map(
-            userExtendedDTO ->
-                new UserExtendedWithGroupsDTO(userExtendedDTO, getUserGroups(new UserId(id))));
+        .map(userExtendedDTO ->
+            new UserExtendedWithGroupsDTO(userExtendedDTO, getUserGroups(new UserId(id))));
   }
 
   public Optional<UserExtendedDTO> getExtendedAsAdmin(UUID id) {

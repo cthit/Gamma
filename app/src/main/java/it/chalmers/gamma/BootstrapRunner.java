@@ -19,7 +19,7 @@ public class BootstrapRunner {
       PostBootstrap postBootstrap,
       SuperGroupBootstrap superGroupBootstrap,
       UserBootstrap userBootstrap) {
-    return (args) -> {
+    return args -> {
       try {
         SecurityContextHolder.createEmptyContext();
         SecurityContextHolder.getContext().setAuthentication(new BootstrapAuthenticated());
