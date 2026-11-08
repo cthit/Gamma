@@ -33,6 +33,11 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
       throw new UsernameNotFoundException("User credentials needs to be created");
     }
 
+    if (userEntity.locked) {
+      // Ends the sessions of a user that was locked after signing in
+      throw new UsernameNotFoundException("User is locked");
+    }
+
     return new GammaUser(
         new UserId(UUID.fromString(user.getUsername())),
         new Cid(userEntity.cid),

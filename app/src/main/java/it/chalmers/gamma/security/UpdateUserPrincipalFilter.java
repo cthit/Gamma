@@ -5,6 +5,8 @@ import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.*;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +41,15 @@ public class UpdateUserPrincipalFilter implements Filter {
         usernamePasswordAuthenticationToken.setDetails(userPrincipal);
       } catch (UsernameNotFoundException ignored) {
         SecurityContextHolder.getContext().setAuthentication(null);
+
+        // Sign the user out for good, so that the session isn't usable again if the user is
+        // unlocked or gets new credentials.
+        if (request instanceof HttpServletRequest httpServletRequest) {
+          HttpSession session = httpServletRequest.getSession(false);
+          if (session != null) {
+            session.invalidate();
+          }
+        }
       }
     }
 
