@@ -24,6 +24,13 @@ async function withEnvironment(
   }
 }
 
+export const testWithEnvironment = base.extend<Pick<GammaFixture, "env">>({
+  env: async ({ browserName }, use) => {
+    void browserName;
+    await withEnvironment(use);
+  },
+});
+
 export const testWithDefaultGamma = base.extend<GammaFixture>({
   env: async ({ browserName }, use) => {
     void browserName;
@@ -61,7 +68,7 @@ export function testWithMockGammaEnv(extraEnv: Record<string, string>) {
       await withEnvironment(use);
     },
     gamma: async ({ env }, use) => {
-      const gamma = await startMockGamma(env, extraEnv);
+      const gamma = await startMockGamma(env, { env: extraEnv });
       try {
         await use(gamma);
       } finally {

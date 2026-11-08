@@ -203,15 +203,11 @@ export interface TokenResponse {
   scope: string;
 }
 
-export async function verifyIdentity(
+export async function verifyTokenSignature(
   request: APIRequestContext,
   baseUrl: string,
-  clientId: string,
-  tokens: TokenResponse,
-  nonce: string,
-  email: string | null,
-) {
-  expect(tokens.token_type).toBe("Bearer");
+  token: string,
+): Promise<{ issuer: string; kid: string; claims: Record<string, unknown> }> {
   const discoveryResponse = await request.get(
     `${baseUrl}/.well-known/openid-configuration`,
   );
@@ -225,7 +221,7 @@ export async function verifyIdentity(
   const { keys } = (await keysResponse.json()) as {
     keys: (JsonWebKey & { kid: string })[];
   };
-  const [headerPart, payloadPart, signature] = tokens.id_token.split(".");
+  const [headerPart, payloadPart, signature] = token.split(".");
   expect(headerPart && payloadPart && signature).toBeTruthy();
   const header = JSON.parse(
     Buffer.from(headerPart!, "base64url").toString(),
@@ -245,7 +241,24 @@ export async function verifyIdentity(
   const claims = JSON.parse(
     Buffer.from(payloadPart!, "base64url").toString(),
   ) as Record<string, unknown>;
-  expect(claims.iss).toBe(discovery.issuer);
+  return { issuer: discovery.issuer, kid: header.kid, claims };
+}
+
+export async function verifyIdentity(
+  request: APIRequestContext,
+  baseUrl: string,
+  clientId: string,
+  tokens: TokenResponse,
+  nonce: string,
+  email: string | null,
+) {
+  expect(tokens.token_type).toBe("Bearer");
+  const { issuer, claims } = await verifyTokenSignature(
+    request,
+    baseUrl,
+    tokens.id_token,
+  );
+  expect(claims.iss).toBe(issuer);
   expect(Array.isArray(claims.aud) ? claims.aud : [claims.aud]).toContain(
     clientId,
   );

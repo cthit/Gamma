@@ -1,0 +1,21 @@
+<form th:object="${form}" th:data-hx-post="@{/me/edit-email}" data-hx-target="this" data-hx-swap="outerHTML">
+    <article>
+        <header>
+            <h2>Changing your email</h2>
+        </header>
+        <p>
+            We will send a confirmation link to the new email.
+            Your email changes once you open that link.
+        </p>
+        <div th:replace="~{common/form-csrf}"></div>
+        <input type="hidden" name="_method" value="put"/>
+        <th:block th:with="autofill=true">
+            <div th:replace="~{common/input :: emailInput2(field='newEmail', label='New email')}"></div>
+        </th:block>
+        <div th:replace="~{common/input :: passwordTextInput2(field='currentPassword', label='Current password')}"></div>
+        <footer>
+            <button data-hx-get="/me/cancel-edit" data-hx-target="closest form" data-hx-swap="outerHTML" class="button button--secondary" type="button" data-loading-disable>Cancel</button>
+            <button class="button" data-loading-disable>Send confirmation link</button>
+        </footer>
+    </article>
+</form>

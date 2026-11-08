@@ -1017,6 +1017,11 @@ article ul:not([class]) li::marker {
     margin: 0;
 }
 
+/* "anywhere" lets a column shrink to one character, splitting words. */
+.table a {
+    overflow-wrap: break-word;
+}
+
 article .table {
     box-shadow: none;
 }

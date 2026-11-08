@@ -4,7 +4,7 @@ import { promisify } from "node:util";
 import type { StartedTestContainer } from "testcontainers";
 
 const execFileAsync = promisify(execFile);
-type MailPath = "/register" | "/forgot-password/finalize";
+type MailPath = "/register" | "/forgot-password/finalize" | "/me/confirm-email";
 
 // Go's %#v uses quoted Go strings, not JSON: \a, \v, \xNN, octal and
 // \UNNNNNNNN escapes are valid too. Decode byte escapes before UTF-8 decoding.
@@ -56,9 +56,13 @@ function unquoteGoString(quoted: string): string {
   return Buffer.from(bytes).toString("utf8");
 }
 
-function mailRecords(logs: string): Map<string, string>[] | undefined {
+type MailRecord = { to?: string; subject?: string; body?: string };
+
+// Returns the complete Gotify mail records in the logs, or undefined when the
+// last record is still being written.
+function mailRecords(logs: string): MailRecord[] | undefined {
   const marker = /Sending mail:\s*gotify\.Mail\{/g;
-  const records: Map<string, string>[] = [];
+  const records: MailRecord[] = [];
   while (marker.exec(logs) !== null) {
     const start = marker.lastIndex;
     let depth = 1;
@@ -82,15 +86,16 @@ function mailRecords(logs: string): Map<string, string>[] | undefined {
     if (depth !== 0) return undefined;
     const record = logs.slice(start, end - 1);
     marker.lastIndex = end;
-    const fields = new Map<string, string>();
+    const fields: MailRecord = {};
     // Match every quoted field, consuming strings whole so field-like text in
     // a subject/body cannot be mistaken for the top-level recipient or body.
     for (const field of record.matchAll(
       /\b(\w+):\s*("(?:[^"\\]|\\[\s\S])*")/g,
     )) {
-      if (field[1] === "To" || field[1] === "Subject" || field[1] === "Body") {
-        fields.set(field[1], unquoteGoString(field[2]!));
-      }
+      if (field[1] === "To") fields.to = unquoteGoString(field[2]!);
+      else if (field[1] === "Subject")
+        fields.subject = unquoteGoString(field[2]!);
+      else if (field[1] === "Body") fields.body = unquoteGoString(field[2]!);
     }
     records.push(fields);
   }
@@ -104,35 +109,15 @@ export function latestMailLink(
   pathname: MailPath,
 ): string | undefined {
   let latest: string | undefined;
-  for (const fields of mailRecords(logs) ?? []) {
-    if (fields.get("To") !== recipient) continue;
-    for (const link of (fields.get("Body") ?? "").matchAll(
-      /https?:\/\/[^\s<>"']+/g,
-    )) {
+  for (const record of mailRecords(logs) ?? []) {
+    if (record.to !== recipient) continue;
+    for (const link of (record.body ?? "").matchAll(/https?:\/\/[^\s<>"']+/g)) {
       const url = new URL(link[0]);
       if (url.pathname === pathname && url.searchParams.get("token")) {
         // Preserve the actual mailed path/query; BASE_URL uses the internal
         // container port, so navigate through Gamma's externally mapped origin.
         latest = `${baseUrl}${url.pathname}${url.search}`;
       }
-    }
-  }
-  return latest;
-}
-
-export interface Mail {
-  subject: string;
-  body: string;
-}
-
-export function latestMail(logs: string, recipient: string): Mail | undefined {
-  let latest: Mail | undefined;
-  for (const fields of mailRecords(logs) ?? []) {
-    if (fields.get("To") === recipient) {
-      latest = {
-        subject: fields.get("Subject") ?? "",
-        body: fields.get("Body") ?? "",
-      };
     }
   }
   return latest;
@@ -154,19 +139,24 @@ async function gotifyLogs(
   return stdout;
 }
 
+/** Waits for a mail to the recipient whose subject matches, and returns its body. */
 export async function waitForMail(
   gotify: Pick<StartedTestContainer, "getId">,
   recipient: string,
+  subject: RegExp,
   timeoutMs = 15000,
-): Promise<Mail> {
+): Promise<string> {
   const deadline = performance.now() + timeoutMs;
   while (performance.now() < deadline) {
-    const mail = latestMail(await gotifyLogs(gotify, deadline), recipient);
-    if (mail) return mail;
+    const records = mailRecords(await gotifyLogs(gotify, deadline));
+    const mail = records
+      ?.filter((r) => r.to === recipient && subject.test(r.subject ?? ""))
+      .at(-1);
+    if (mail) return mail.body ?? "";
     await delay(Math.max(0, Math.min(200, deadline - performance.now())));
   }
   throw new Error(
-    `No mail for ${recipient} in Gotify logs within ${timeoutMs}ms`,
+    `No mail for ${recipient} with subject ${subject} in Gotify logs within ${timeoutMs}ms`,
   );
 }
 

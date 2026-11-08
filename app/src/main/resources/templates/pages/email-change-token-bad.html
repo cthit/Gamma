@@ -1,0 +1,17 @@
+<header th:replace="~{common/header}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header>
+            <h2>Could not change your email</h2>
+        </header>
+        <p th:if="${reason != null}" th:text="${reason}"></p>
+        <p th:if="${reason == null}">
+            The confirmation link is invalid, has expired or has already been used.
+            Make sure you are signed in to the account that asked for the change,
+            or ask for a new link from your account page.
+        </p>
+        <footer>
+            <a class="button" th:href="@{/}">Go to your account</a>
+        </footer>
+    </article>
+</main>

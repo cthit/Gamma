@@ -48,12 +48,16 @@ test("given an open data deletion request when the daily email is sent then the 
     page.getByRole("button", { name: "Delete the account" }).click(),
   ]);
 
-  const mail = await waitForMail(env.gotify, recipient, 30000);
-  expect(mail.subject).toContain("Action required: 1 data deletion request");
-  expect(mail.body).toContain("within one month");
-  expect(mail.body).toMatch(/- \d{4}-\d{2}-\d{2}: 1 request, \d+ days? left/);
-  expect(mail.body).toMatch(/https?:\/\/\S+\/data-deletion/);
-  expect(mail.body).not.toContain("jhalpert");
-  expect(mail.body).not.toContain("bc605869-9a4d-46ec-8a29-d00819d4c195");
-  expect(mail.body).not.toContain(officialName);
+  const body = await waitForMail(
+    env.gotify,
+    recipient,
+    /Action required: 1 data deletion request/,
+    30000,
+  );
+  expect(body).toContain("within one month");
+  expect(body).toMatch(/- \d{4}-\d{2}-\d{2}: 1 request, \d+ days? left/);
+  expect(body).toMatch(/https?:\/\/\S+\/data-deletion/);
+  expect(body).not.toContain("jhalpert");
+  expect(body).not.toContain("bc605869-9a4d-46ec-8a29-d00819d4c195");
+  expect(body).not.toContain(officialName);
 });

@@ -132,6 +132,8 @@ All configuration is environment-variable-driven via `application.yml`.
 | `REDIS_PORT` | `6379` | Redis port |
 | `REDIS_PASSWORD` | *(empty)* | Redis password |
 | `PRODUCTION` | `true` | Production mode (disables Thymeleaf caching, dev services, etc.) |
+| `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Will be required in production from v3, see [OAuth2 signing keys](#oauth2-signing-keys) |
+| `OAUTH2_VERIFICATION_KEYS` | *(empty)* | Comma separated keys that are still published so the tokens they signed can be verified, but that no longer sign tokens |
 | `DEV_SERVICES_ENABLED` | `false` | Auto-start PostgreSQL + Redis via Testcontainers |
 | `IS_MOCKING` | `false` | Load mock data on startup |
 | `MOCK_DATA_RESOURCE` | `classpath:/mock/mock.json` | Path to mock data JSON |
@@ -142,6 +144,28 @@ All configuration is environment-variable-driven via `application.yml`.
 | `SESSION_TIMEOUT` | `43200` | Session timeout in seconds |
 | `ROOT_DEBUG_LEVEL` | `INFO` | Root log level |
 | `SERVER_SSL_ENABLED` | *(varies)* | Enable HTTPS |
+
+
+## OAuth2 signing keys
+
+Gamma signs ID tokens and access tokens with the RSA key in `OAUTH2_SIGNING_KEY` and publishes its public key at `/oauth2/jwks`. Without one, a temporary key is generated on every start, so tokens stop working when Gamma restarts and instances can't verify each other's tokens. Running in production without `OAUTH2_SIGNING_KEY` is deprecated, and Gamma v3 will refuse to start without it ([#1004](https://github.com/cthit/Gamma/issues/1004)).
+
+Both settings take PEM content directly or the location of a PEM file, such as `/run/secrets/gamma-signing-key.pem` or `file:/run/secrets/gamma-signing-key.pem`. Each key gets its [RFC 7638](https://www.rfc-editor.org/rfc/rfc7638) thumbprint as key id (`kid`), so every instance that uses the same key publishes the same key id. Keys must be RSA keys of at least 2048 bits.
+
+Create a key with:
+
+```bash
+openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:3072 -out gamma-signing-key.pem
+```
+
+### Rotating the signing key
+
+1. Create a new key as above.
+2. Add the new key to `OAUTH2_VERIFICATION_KEYS` and deploy that to every instance. Every instance now publishes and accepts the new key before any of them signs with it. Give clients that cache the published keys time to fetch them again.
+3. Set `OAUTH2_SIGNING_KEY` to the new key, remove the new key from `OAUTH2_VERIFICATION_KEYS` and add the previous key there instead, then deploy. The previous key's public key is enough: `openssl pkey -in previous-key.pem -pubout`. Tokens signed by the previous key still verify.
+4. Once the tokens signed by the previous key have expired, remove it from `OAUTH2_VERIFICATION_KEYS` and deploy. ID tokens live for 30 minutes and access tokens for 5 minutes, so waiting a day is plenty.
+
+Gamma refuses to start if the same key is configured twice, for example as both the signing key and a verification key.
 
 
 ## API Keys

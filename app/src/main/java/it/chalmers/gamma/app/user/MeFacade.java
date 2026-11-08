@@ -174,7 +174,6 @@ public class MeFacade extends Facade {
               .firstName(new FirstName(updateMe.firstName))
               .lastName(new LastName(updateMe.lastName))
               .language(Language.valueOf(updateMe.language))
-              .extended(oldMe.extended().with().email(new Email(updateMe.email)).build())
               .build();
 
       this.userRepository.save(newMe);
@@ -305,8 +304,7 @@ public class MeFacade extends Facade {
     }
   }
 
-  public record UpdateMe(
-      String nick, String firstName, String lastName, String email, String language) {}
+  public record UpdateMe(String nick, String firstName, String lastName, String language) {}
 
   public record UpdatePassword(String oldPassword, String newPassword, String confirmNewPassword) {}
 

@@ -1,7 +1,11 @@
 package it.chalmers.gamma.app;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.HexFormat;
 import java.util.stream.Collectors;
 
 public final class Tokens {
@@ -21,6 +25,15 @@ public final class Tokens {
       code.append(characters.charAt(rand.nextInt(characters.length())));
     }
     return code.toString();
+  }
+
+  public static String hash(String token) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-256");
+      return HexFormat.of().formatHex(digest.digest(token.getBytes(StandardCharsets.UTF_8)));
+    } catch (NoSuchAlgorithmException e) {
+      throw new IllegalStateException("SHA-256 is not available", e);
+    }
   }
 
   public enum CharacterTypes {

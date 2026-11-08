@@ -14,6 +14,7 @@ import {
 } from "@testcontainers/postgresql";
 import { RedisContainer, StartedRedisContainer } from "@testcontainers/redis";
 import { waitForLoginReady } from "./helpers/readiness";
+import { getDefaultSigningKey } from "./helpers/signing-keys";
 
 export interface GammaInstance {
   container: StartedTestContainer;
@@ -153,6 +154,7 @@ export async function startGammaInstance(
     IS_MOCKING: "false",
     SERVER_SSL_ENABLED: "true",
     UPLOAD_FOLDER: "/tmp/uploads/",
+    OAUTH2_SIGNING_KEY: getDefaultSigningKey().privateKeyPem,
   };
 
   if (localhostTlsFilesAvailable) {
