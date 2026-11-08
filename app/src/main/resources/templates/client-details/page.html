@@ -77,6 +77,17 @@
                     <a th:href="|/super-groups/${superGroup.id()}|" th:text="${superGroup.prettyName()}"></a>
                 </li>
             </ul>
+            <h3>Posts in super groups</h3>
+            <p th:if="${clientAuthority.superGroupPosts().size() == 0}">
+                No posts
+            </p>
+            <ul th:if="${clientAuthority.superGroupPosts().size() > 0}">
+                <li th:each="superGroupPost : ${clientAuthority.superGroupPosts()}">
+                    <a th:href="|/posts/${superGroupPost.post().id()}|" th:text="${superGroupPost.post().enName()}"></a>
+                    in
+                    <a th:href="|/super-groups/${superGroupPost.superGroup().id()}|" th:text="${superGroupPost.superGroup().prettyName()}"></a>
+                </li>
+            </ul>
             <h3>Users</h3>
             <p th:if="${clientAuthority.users().size() == 0}">
                 No users

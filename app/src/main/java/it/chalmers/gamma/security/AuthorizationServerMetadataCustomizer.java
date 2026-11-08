@@ -49,14 +49,13 @@ final class AuthorizationServerMetadataCustomizer {
   }
 
   static void customize(OidcProviderConfiguration.Builder builder) {
-    builder.claims(
-        claims -> {
-          customizeCommon(claims);
-          claims.remove(OidcProviderMetadataClaimNames.END_SESSION_ENDPOINT);
-          claims.put(
-              "claims_supported",
-              Stream.concat(ID_TOKEN_CLAIMS.stream(), ClaimsMapper.USER_CLAIMS.stream()).toList());
-        });
+    builder.claims(claims -> {
+      customizeCommon(claims);
+      claims.remove(OidcProviderMetadataClaimNames.END_SESSION_ENDPOINT);
+      claims.put(
+          "claims_supported",
+          Stream.concat(ID_TOKEN_CLAIMS.stream(), ClaimsMapper.USER_CLAIMS.stream()).toList());
+    });
   }
 
   /** Applies to both the OAuth 2.0 authorization server metadata and the OpenID configuration. */

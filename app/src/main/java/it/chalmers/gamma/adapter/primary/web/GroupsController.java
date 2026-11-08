@@ -120,20 +120,19 @@ public class GroupsController {
     mv.addObject(
         "members",
         group.get().groupMembers().stream()
-            .map(
-                groupMember -> {
-                  String post = groupMember.post().enName();
+            .map(groupMember -> {
+              String post = groupMember.post().enName();
 
-                  if (groupMember.unofficialPostName() != null) {
-                    post += " - " + groupMember.unofficialPostName();
-                  }
+              if (groupMember.unofficialPostName() != null) {
+                post += " - " + groupMember.unofficialPostName();
+              }
 
-                  return new Member(
-                      groupMember.user().nick(),
-                      post,
-                      groupMember.post().id(),
-                      groupMember.user().id());
-                })
+              return new Member(
+                  groupMember.user().nick(),
+                  post,
+                  groupMember.post().id(),
+                  groupMember.user().id());
+            })
             .toList());
     UUID id = group.get().id();
     mv.addObject("groupAvatarVersion", this.imageFacade.getGroupAvatarVersion(id));
@@ -156,11 +155,9 @@ public class GroupsController {
 
       MyMembershipsForm form = new MyMembershipsForm();
 
-      myGroupMembers.forEach(
-          groupMember -> {
-            form.postNames.put(
-                groupMember.post().id().toString(), groupMember.unofficialPostName());
-          });
+      myGroupMembers.forEach(groupMember -> {
+        form.postNames.put(groupMember.post().id().toString(), groupMember.unofficialPostName());
+      });
 
       mv.addObject("myMembershipsForm", form);
     }
@@ -201,16 +198,15 @@ public class GroupsController {
     mv.addObject(
         "members",
         group.get().groupMembers().stream()
-            .map(
-                groupMember ->
-                    new Member(
-                        groupMember.user().nick(),
-                        " - "
-                            + groupMember.post().enName()
-                            + " - "
-                            + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""),
-                        groupMember.post().id(),
-                        groupMember.user().id()))
+            .map(groupMember ->
+                new Member(
+                    groupMember.user().nick(),
+                    " - "
+                        + groupMember.post().enName()
+                        + " - "
+                        + Objects.requireNonNullElse(groupMember.unofficialPostName(), ""),
+                    groupMember.post().id(),
+                    groupMember.user().id()))
             .toList());
 
     return mv;
@@ -347,12 +343,11 @@ public class GroupsController {
               group.get().prettyName(),
               group.get().superGroup().id(),
               group.get().groupMembers().stream()
-                  .map(
-                      groupMember ->
-                          new GroupForm.Member(
-                              groupMember.user().id(),
-                              groupMember.post().id(),
-                              groupMember.unofficialPostName()))
+                  .map(groupMember ->
+                      new GroupForm.Member(
+                          groupMember.user().id(),
+                          groupMember.post().id(),
+                          groupMember.unofficialPostName()))
                   .toList());
     }
 
@@ -562,11 +557,10 @@ public class GroupsController {
         instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
       UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
 
-      myMembershipsForm.postNames.forEach(
-          (postId, newUnofficialPostName) -> {
-            groupFacade.changeUnofficialPostName(
-                groupId, UUID.fromString(postId), myUserId, newUnofficialPostName);
-          });
+      myMembershipsForm.postNames.forEach((postId, newUnofficialPostName) -> {
+        groupFacade.changeUnofficialPostName(
+            groupId, UUID.fromString(postId), myUserId, newUnofficialPostName);
+      });
     }
 
     return new ModelAndView("redirect:/groups/" + groupId);

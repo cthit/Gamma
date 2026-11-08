@@ -8,7 +8,12 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientUid;
 import it.chalmers.gamma.app.client.domain.authority.Authority;
 import it.chalmers.gamma.app.client.domain.authority.AuthorityName;
+import it.chalmers.gamma.app.client.domain.authority.AuthoritySuperGroupPost;
 import it.chalmers.gamma.app.client.domain.authority.ClientAuthorityRepository;
+import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.post.domain.Post;
+import it.chalmers.gamma.app.post.domain.PostId;
+import it.chalmers.gamma.app.post.domain.PostRepository;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroup;
 import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
@@ -36,16 +41,19 @@ public class ClientAuthorityFacade extends Facade {
   private final ClientAuthorityRepository clientAuthorityRepository;
   private final UserRepository userRepository;
   private final SuperGroupRepository superGroupRepository;
+  private final PostRepository postRepository;
 
   public ClientAuthorityFacade(
       AccessGuard accessGuard,
       ClientAuthorityRepository clientAuthorityRepository,
       UserRepository userRepository,
-      SuperGroupRepository superGroupRepository) {
+      SuperGroupRepository superGroupRepository,
+      PostRepository postRepository) {
     super(accessGuard);
     this.clientAuthorityRepository = clientAuthorityRepository;
     this.userRepository = userRepository;
     this.superGroupRepository = superGroupRepository;
+    this.postRepository = postRepository;
   }
 
   public void create(UUID clientUid, String name)
@@ -98,6 +106,41 @@ public class ClientAuthorityFacade extends Facade {
             .orElseThrow(SuperGroupNotFoundException::new));
 
     this.clientAuthorityRepository.save(authority.withSuperGroups(superGroups));
+  }
+
+  /** Gives the authority to the members of the super group's groups who hold the post. */
+  @Transactional
+  public void addSuperGroupPostToClientAuthority(
+      UUID clientUid, String name, UUID superGroupId, UUID postId)
+      throws ClientAuthorityNotFoundException, SuperGroupNotFoundException, PostNotFoundException {
+    ClientUid uid = new ClientUid(clientUid);
+
+    this.accessGuard.requireEither(isAdmin(), ownerOfClient(uid));
+
+    Authority authority =
+        this.clientAuthorityRepository
+            .get(uid, new AuthorityName(name))
+            .orElseThrow(ClientAuthorityNotFoundException::new);
+
+    SuperGroup superGroup =
+        this.superGroupRepository
+            .get(new SuperGroupId(superGroupId))
+            .orElseThrow(SuperGroupNotFoundException::new);
+    Post post = this.postRepository.get(new PostId(postId)).orElseThrow(PostNotFoundException::new);
+
+    boolean alreadyAdded =
+        authority.superGroupPosts().stream()
+            .anyMatch(superGroupPost ->
+                superGroupPost.superGroup().id().equals(superGroup.id())
+                    && superGroupPost.post().id().equals(post.id()));
+    if (alreadyAdded) {
+      return;
+    }
+
+    List<AuthoritySuperGroupPost> superGroupPosts = new ArrayList<>(authority.superGroupPosts());
+    superGroupPosts.add(new AuthoritySuperGroupPost(superGroup, post));
+
+    this.clientAuthorityRepository.save(authority.withSuperGroupPosts(superGroupPosts));
   }
 
   @Transactional
@@ -238,6 +281,7 @@ public class ClientAuthorityFacade extends Facade {
       UUID clientUid,
       String authorityName,
       List<SuperGroupFacade.SuperGroupDTO> superGroups,
+      List<SuperGroupPostDTO> superGroupPosts,
       List<UserFacade.UserDTO> users) {
 
     public ClientAuthorityDTO(Authority authority) {
@@ -245,13 +289,26 @@ public class ClientAuthorityFacade extends Facade {
           authority.client().clientUid().value(),
           authority.name().value(),
           authority.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::new).toList(),
+          authority.superGroupPosts().stream().map(SuperGroupPostDTO::new).toList(),
           authority.users().stream().map(UserFacade.UserDTO::new).toList());
+    }
+  }
+
+  public record SuperGroupPostDTO(
+      SuperGroupFacade.SuperGroupDTO superGroup, PostFacade.PostDTO post) {
+
+    public SuperGroupPostDTO(AuthoritySuperGroupPost superGroupPost) {
+      this(
+          new SuperGroupFacade.SuperGroupDTO(superGroupPost.superGroup()),
+          new PostFacade.PostDTO(superGroupPost.post()));
     }
   }
 
   public static class ClientAuthorityNotFoundException extends Exception {}
 
   public static class SuperGroupNotFoundException extends Exception {}
+
+  public static class PostNotFoundException extends Exception {}
 
   public static class UserNotFoundException extends Exception {}
 }

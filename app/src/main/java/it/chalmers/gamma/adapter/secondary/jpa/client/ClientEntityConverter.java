@@ -69,15 +69,11 @@ public class ClientEntityConverter {
             : new ClientRestriction(
                 new ClientRestrictionId(clientEntity.clientRestriction.getId()),
                 clientEntity.clientRestriction.getSuperGroupRestrictions().stream()
-                    .map(
-                        clientRestrictionSuperGroupEntity ->
-                            this.superGroupRepository
-                                .get(
-                                    clientRestrictionSuperGroupEntity
-                                        .getId()
-                                        .getValue()
-                                        .superGroupId())
-                                .orElseThrow())
+                    .map(clientRestrictionSuperGroupEntity ->
+                        this.superGroupRepository
+                            .get(
+                                clientRestrictionSuperGroupEntity.getId().getValue().superGroupId())
+                            .orElseThrow())
                     .toList()));
   }
 
@@ -114,51 +110,48 @@ public class ClientEntityConverter {
 
     client
         .clientApiKey()
-        .ifPresent(
-            apiKey -> {
-              ClientApiKeyEntity existing = clientEntity.clientsApiKey;
-              if (existing != null
-                  && existing.getApiKeyEntity() != null
-                  && existing.getApiKeyEntity().getId().equals(apiKey.id().value())) {
-                // Update the loaded entity. Replacing it with a new instance would merge a row
-                // without created_at/updated_at over the existing api key.
-                existing.getApiKeyEntity().apply(apiKey);
-                return;
-              }
+        .ifPresent(apiKey -> {
+          ClientApiKeyEntity existing = clientEntity.clientsApiKey;
+          if (existing != null
+              && existing.getApiKeyEntity() != null
+              && existing.getApiKeyEntity().getId().equals(apiKey.id().value())) {
+            // Update the loaded entity. Replacing it with a new instance would merge a row
+            // without created_at/updated_at over the existing api key.
+            existing.getApiKeyEntity().apply(apiKey);
+            return;
+          }
 
-              ApiKeyEntity apiKeyEntity =
-                  new ApiKeyEntity(
-                      apiKey.id().value(),
-                      apiKey.apiKeyToken().value(),
-                      apiKey.prettyName().value(),
-                      apiKey.keyType(),
-                      new TextEntity(apiKey.description()));
+          ApiKeyEntity apiKeyEntity =
+              new ApiKeyEntity(
+                  apiKey.id().value(),
+                  apiKey.apiKeyToken().value(),
+                  apiKey.prettyName().value(),
+                  apiKey.keyType(),
+                  new TextEntity(apiKey.description()));
 
-              clientEntity.clientsApiKey = new ClientApiKeyEntity(clientEntity, apiKeyEntity);
-            });
+          clientEntity.clientsApiKey = new ClientApiKeyEntity(clientEntity, apiKeyEntity);
+        });
 
     client
         .restrictions()
-        .ifPresent(
-            clientRestriction -> {
-              clientEntity.clientRestriction =
-                  new ClientRestrictionEntity(
-                      clientRestriction.id().value(), client.clientUid().value());
+        .ifPresent(clientRestriction -> {
+          clientEntity.clientRestriction =
+              new ClientRestrictionEntity(
+                  clientRestriction.id().value(), client.clientUid().value());
 
-              List<ClientRestrictionSuperGroupEntity> clientRestrictionSuperGroupEntities =
-                  clientRestriction.superGroups().stream()
-                      .map(
-                          superGroup ->
-                              new ClientRestrictionSuperGroupEntity(
-                                  clientEntity.clientRestriction,
-                                  this.superGroupJpaRepository
-                                      .findById(superGroup.id().value())
-                                      .orElseThrow()))
-                      .toList();
+          List<ClientRestrictionSuperGroupEntity> clientRestrictionSuperGroupEntities =
+              clientRestriction.superGroups().stream()
+                  .map(superGroup ->
+                      new ClientRestrictionSuperGroupEntity(
+                          clientEntity.clientRestriction,
+                          this.superGroupJpaRepository
+                              .findById(superGroup.id().value())
+                              .orElseThrow()))
+                  .toList();
 
-              clientEntity.clientRestriction.setSuperGroupRestrictions(
-                  clientRestrictionSuperGroupEntities);
-            });
+          clientEntity.clientRestriction.setSuperGroupRestrictions(
+              clientRestrictionSuperGroupEntities);
+        });
 
     return clientEntity;
   }

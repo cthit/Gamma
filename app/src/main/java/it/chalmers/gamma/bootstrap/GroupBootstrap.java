@@ -61,49 +61,44 @@ public class GroupBootstrap {
 
     mockData
         .groups()
-        .forEach(
-            mockGroup -> {
-              String type =
-                  mockData.superGroups().stream()
-                      .filter(sg -> sg.id().equals(mockGroup.superGroupId()))
-                      .findFirst()
-                      .orElseThrow()
-                      .type();
+        .forEach(mockGroup -> {
+          String type =
+              mockData.superGroups().stream()
+                  .filter(sg -> sg.id().equals(mockGroup.superGroupId()))
+                  .findFirst()
+                  .orElseThrow()
+                  .type();
 
-              boolean active = !type.equalsIgnoreCase("alumni");
-              int year = active ? activeYear : inactiveYear;
-              Name name = new Name(mockGroup.name() + year);
-              PrettyName prettyName = new PrettyName(mockGroup.prettyName() + year);
+          boolean active = !type.equalsIgnoreCase("alumni");
+          int year = active ? activeYear : inactiveYear;
+          Name name = new Name(mockGroup.name() + year);
+          PrettyName prettyName = new PrettyName(mockGroup.prettyName() + year);
 
-              Group group =
-                  new Group(
-                      new GroupId(mockGroup.id()),
-                      0,
-                      name,
-                      prettyName,
-                      superGroupRepository
-                          .get(new SuperGroupId(mockGroup.superGroupId()))
-                          .orElseThrow(),
-                      mockGroup.members().stream()
-                          .map(
-                              mockMembership ->
-                                  new GroupMember(
-                                      postRepository
-                                          .get(new PostId(mockMembership.postId()))
-                                          .orElseThrow(),
-                                      mockMembership.unofficialPostName() == null
-                                          ? UnofficialPostName.none()
-                                          : new UnofficialPostName(
-                                              mockMembership.unofficialPostName()),
-                                      userRepository
-                                          .get(new UserId(mockMembership.userId()))
-                                          .orElseThrow(IllegalArgumentException::new)))
-                          .toList(),
-                      Optional.empty(),
-                      Optional.empty());
+          Group group =
+              new Group(
+                  new GroupId(mockGroup.id()),
+                  0,
+                  name,
+                  prettyName,
+                  superGroupRepository
+                      .get(new SuperGroupId(mockGroup.superGroupId()))
+                      .orElseThrow(),
+                  mockGroup.members().stream()
+                      .map(mockMembership ->
+                          new GroupMember(
+                              postRepository.get(new PostId(mockMembership.postId())).orElseThrow(),
+                              mockMembership.unofficialPostName() == null
+                                  ? UnofficialPostName.none()
+                                  : new UnofficialPostName(mockMembership.unofficialPostName()),
+                              userRepository
+                                  .get(new UserId(mockMembership.userId()))
+                                  .orElseThrow(IllegalArgumentException::new)))
+                      .toList(),
+                  Optional.empty(),
+                  Optional.empty());
 
-              this.groupRepository.save(group);
-            });
+          this.groupRepository.save(group);
+        });
 
     LOGGER.info("==========                 ==========");
   }

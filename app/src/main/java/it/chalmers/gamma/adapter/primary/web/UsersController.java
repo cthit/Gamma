@@ -107,11 +107,10 @@ public class UsersController {
         mv.addObject(
             "groups",
             u.groups().stream()
-                .map(
-                    userGroup ->
-                        new UserGroup(
-                            userGroup.group().prettyName() + " - " + userGroup.post().enName(),
-                            userGroup.group().id()))
+                .map(userGroup ->
+                    new UserGroup(
+                        userGroup.group().prettyName() + " - " + userGroup.post().enName(),
+                        userGroup.group().id()))
                 .toList());
       } else {
         Optional<UserFacade.UserWithGroupsDTO> user =
@@ -133,11 +132,10 @@ public class UsersController {
         mv.addObject(
             "groups",
             u.groups().stream()
-                .map(
-                    userGroup ->
-                        new UserGroup(
-                            userGroup.group().prettyName() + " - " + userGroup.post().enName(),
-                            userGroup.group().id()))
+                .map(userGroup ->
+                    new UserGroup(
+                        userGroup.group().prettyName() + " - " + userGroup.post().enName(),
+                        userGroup.group().id()))
                 .toList());
       }
     }

@@ -32,11 +32,11 @@ public class ValidationHelper {
               "Cannot have illegal html characters");
 
   public static Function<Integer, Validator<String>> MAX_LENGTH =
-      (maxLength) ->
+      maxLength ->
           value -> result(value.length() <= maxLength, "Must be between 1 and " + maxLength);
 
   public static Function<Integer, Validator<String>> MIN_LENGTH =
-      (minLength) -> value -> result(value.length() >= minLength, "Must be at least " + minLength);
+      minLength -> value -> result(value.length() >= minLength, "Must be at least " + minLength);
 
   public static BiFunction<Integer, Integer, Validator<String>> BETWEEN_LENGTH =
       (min, max) ->
@@ -48,7 +48,7 @@ public class ValidationHelper {
   public record RegexMatcher(Pattern pattern, String message) {}
 
   public static Function<RegexMatcher, Validator<String>> MATCHES_REGEX =
-      (r) -> (value) -> result(r.pattern.matcher(value).matches(), r.message);
+      r -> value -> result(r.pattern.matcher(value).matches(), r.message);
 
   public static ValidationResult result(boolean valid, String message) {
     if (valid) {

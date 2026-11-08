@@ -1,8 +1,9 @@
 package it.chalmers.gamma.bootstrap;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,8 +34,9 @@ public class MiscBootstrap {
   }
 
   private void assureFileExistsInUpload(Resource resource) {
-    File targetFile = new File(String.format("%s/%s", this.targetDir, resource.getFilename()));
-    if (!targetFile.exists()) {
+    Path targetDirPath = Path.of(this.targetDir);
+    Path targetFile = targetDirPath.resolve(resource.getFilename());
+    if (!Files.exists(targetFile)) {
       LOGGER.info(
           "default file: "
               + resource.getFilename()
@@ -42,19 +44,13 @@ public class MiscBootstrap {
               + this.targetDir
               + ", creating a new one");
       try {
-        File defaultFile = resource.getFile();
-        if (defaultFile.isFile()) {
-          File targetDirFile = new File(this.targetDir);
-          if (!targetDirFile.mkdir()) {
-            LOGGER.warn("Could not create target directory");
-          }
-          Files.copy(defaultFile.toPath(), targetFile.toPath());
-        } else {
-          throw new IOException();
+        Files.createDirectories(targetDirPath);
+        // Read through the stream: getFile() fails when the resource is inside a packaged jar.
+        try (InputStream in = resource.getInputStream()) {
+          Files.copy(in, targetFile);
         }
       } catch (IOException e) {
-        LOGGER.warn("Could not copy: " + resource.getFilename());
-        LOGGER.error(e.getMessage());
+        LOGGER.warn("Could not copy: " + resource.getFilename(), e);
       }
     }
   }
