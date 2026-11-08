@@ -8,6 +8,7 @@ import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.signin.domain.Passkey;
 import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
 import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
@@ -37,6 +38,7 @@ public class SignInMethodsFacade extends Facade {
   private final PasskeyRepository passkeyRepository;
   private final TotpRepository totpRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
+  private final RecentSignIn recentSignIn;
 
   public SignInMethodsFacade(
       AccessGuard accessGuard,
@@ -44,8 +46,10 @@ public class SignInMethodsFacade extends Facade {
       AdminRepository adminRepository,
       PasskeyRepository passkeyRepository,
       TotpRepository totpRepository,
-      RecoveryKeyRepository recoveryKeyRepository) {
+      RecoveryKeyRepository recoveryKeyRepository,
+      RecentSignIn recentSignIn) {
     super(accessGuard);
+    this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
     this.adminRepository = adminRepository;
     this.passkeyRepository = passkeyRepository;
@@ -84,7 +88,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     requireNotAdmin(me);
     requireHasPassword(me);
 
@@ -108,7 +112,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     this.totpRepository.delete(me);
     removeRecoveryKeyIfUnneeded(me);
     LOGGER.info("User {} removed their authenticator app", me.value());
@@ -119,7 +123,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     List<Passkey> passkeys = this.passkeyRepository.getAll(me);
     if (passkeys.stream().noneMatch(passkey -> passkey.credentialId().equals(credentialId))) {
       return;
@@ -140,7 +144,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     if (!this.passkeyRepository.hasAny(me)) {
       throw new LastSignInMethodException();
     }
@@ -157,7 +161,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     if (this.userRepository.hasPassword(me)) {
       throw new IllegalStateException("The user already has a password");
     }
@@ -174,7 +178,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     requireNotAdmin(me);
     this.recoveryKeyRepository.save(me, key);
     LOGGER.info("User {} created a new recovery key", me.value());
@@ -185,7 +189,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     requireNotAdmin(me);
     this.recoveryKeyRepository.save(me, newRecoveryKey);
     this.userRepository.setEmailRecoveryEnabled(me, false);
@@ -197,7 +201,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
-    this.userRepository.lockSignInMethods(me);
+    lockAndRecheck(me);
     this.userRepository.setEmailRecoveryEnabled(me, true);
     removeRecoveryKeyIfUnneeded(me);
     LOGGER.info("User {} turned on email recovery", me.value());
@@ -242,6 +246,13 @@ public class SignInMethodsFacade extends Facade {
     if (!this.totpRepository.isEnabled(userId)
         && this.userRepository.isEmailRecoveryEnabled(userId)) {
       this.recoveryKeyRepository.delete(userId);
+    }
+  }
+
+  private void lockAndRecheck(UserId userId) {
+    this.userRepository.lockSignInMethods(userId);
+    if (!this.recentSignIn.isRecent()) {
+      throw new AccessGuard.AccessDeniedException();
     }
   }
 

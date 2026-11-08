@@ -11,7 +11,7 @@ public interface TotpRepository {
 
   void save(UserId userId, TotpSecret secret, long usedTimeStep);
 
-  boolean useTimeStep(UserId userId, long timeStep);
+  boolean useTimeStep(UserId userId, TotpSecret secret, long timeStep);
 
   void delete(UserId userId);
 }

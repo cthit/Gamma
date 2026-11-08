@@ -36,8 +36,8 @@ public class UserTotpRepositoryAdapter implements TotpRepository {
   }
 
   @Override
-  public boolean useTimeStep(UserId userId, long timeStep) {
-    return this.repository.useTimeStep(userId.value(), timeStep) == 1;
+  public boolean useTimeStep(UserId userId, TotpSecret secret, long timeStep) {
+    return this.repository.useTimeStep(userId.value(), secret.value(), timeStep) == 1;
   }
 
   @Override

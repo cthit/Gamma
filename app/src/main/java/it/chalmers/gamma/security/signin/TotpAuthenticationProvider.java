@@ -60,7 +60,7 @@ public class TotpAuthenticationProvider implements AuthenticationProvider {
       throw new BadCredentialsException("Wrong code");
     }
 
-    if (!this.totpRepository.useTimeStep(userId, timeStep.getAsLong())) {
+    if (!this.totpRepository.useTimeStep(userId, totp.secret(), timeStep.getAsLong())) {
       throw new BadCredentialsException("The code has already been used");
     }
 

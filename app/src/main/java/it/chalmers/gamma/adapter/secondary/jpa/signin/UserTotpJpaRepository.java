@@ -11,6 +11,9 @@ public interface UserTotpJpaRepository extends JpaRepository<UserTotpEntity, UUI
   @Modifying
   @Query(
       "update UserTotpEntity t set t.lastUsedTimeStep = :timeStep"
-          + " where t.userId = :userId and t.lastUsedTimeStep < :timeStep")
-  int useTimeStep(@Param("userId") UUID userId, @Param("timeStep") long timeStep);
+          + " where t.userId = :userId and t.secret = :secret and t.lastUsedTimeStep < :timeStep")
+  int useTimeStep(
+      @Param("userId") UUID userId,
+      @Param("secret") String secret,
+      @Param("timeStep") long timeStep);
 }

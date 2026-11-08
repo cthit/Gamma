@@ -81,6 +81,18 @@ public class LoginController {
             && authentication.getAuthorities().stream()
                 .anyMatch(authority -> SignInFactors.PASSWORD.equals(authority.getAuthority()));
 
+    boolean signedInWithTotp =
+        authentication != null
+            && authentication.getAuthorities().stream()
+                .anyMatch(authority -> SignInFactors.TOTP.equals(authority.getAuthority()));
+    if (methods.isAdmin()
+        && !methods.hasPasskeys()
+        && methods.totpEnabled()
+        && signedInWithPassword
+        && !signedInWithTotp) {
+      return new ModelAndView("redirect:/login/totp");
+    }
+
     String cid = null;
     if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication user) {
       cid = user.gammaUser().cid().value();
