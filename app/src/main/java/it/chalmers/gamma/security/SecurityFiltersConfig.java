@@ -110,7 +110,7 @@ public class SecurityFiltersConfig {
           exceptions.defaultAuthenticationEntryPointFor(
               new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
               new MediaTypeRequestMatcher(MediaType.TEXT_HTML));
-          signInSteps(exceptions, new HttpSessionRequestCache());
+          signInSteps(exceptions, new HttpSessionRequestCache(), signInAuthorizationManagers);
         })
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
@@ -311,7 +311,7 @@ public class SecurityFiltersConfig {
         .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
-        .exceptionHandling(exceptions -> signInSteps(exceptions, requestCache))
+        .exceptionHandling(exceptions -> signInSteps(exceptions, requestCache, signIn))
         .headers(headers ->
             headers.contentSecurityPolicy(csp ->
                 csp.policyDirectives(
@@ -321,7 +321,9 @@ public class SecurityFiltersConfig {
   }
 
   private static void signInSteps(
-      ExceptionHandlingConfigurer<HttpSecurity> exceptions, RequestCache requestCache) {
+      ExceptionHandlingConfigurer<HttpSecurity> exceptions,
+      RequestCache requestCache,
+      SignInAuthorizationManagers signIn) {
     AuthenticationEntryPoint totp =
         new SignInStepEntryPoint(TotpAuthenticationFilter.URL, requestCache);
     AuthenticationEntryPoint confirm = new SignInStepEntryPoint("/login/confirm", requestCache);
@@ -336,6 +338,7 @@ public class SecurityFiltersConfig {
         .defaultDeniedHandlerForMissingAuthority(
             entryPoint -> entryPoint.addEntryPointFor(confirm, AnyRequestMatcher.INSTANCE),
             SignInFactors.PASSWORD)
-        .defaultAccessDeniedHandlerFor(new SignInAccessDeniedHandler(), AnyRequestMatcher.INSTANCE);
+        .defaultAccessDeniedHandlerFor(
+            new SignInAccessDeniedHandler(signIn), AnyRequestMatcher.INSTANCE);
   }
 }

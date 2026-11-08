@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.signin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSettingUpSignIn;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.PasswordsDontMatchException;
 import it.chalmers.gamma.app.signin.domain.Passkey;
@@ -27,6 +28,7 @@ public class SignInSetupFacade extends Facade {
   private static final Logger LOGGER = LoggerFactory.getLogger(SignInSetupFacade.class);
 
   private final UserRepository userRepository;
+  private final AdminRepository adminRepository;
   private final PasskeyRepository passkeyRepository;
   private final TotpRepository totpRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
@@ -34,11 +36,13 @@ public class SignInSetupFacade extends Facade {
   public SignInSetupFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
+      AdminRepository adminRepository,
       PasskeyRepository passkeyRepository,
       TotpRepository totpRepository,
       RecoveryKeyRepository recoveryKeyRepository) {
     super(accessGuard);
     this.userRepository = userRepository;
+    this.adminRepository = adminRepository;
     this.passkeyRepository = passkeyRepository;
     this.totpRepository = totpRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
@@ -99,8 +103,16 @@ public class SignInSetupFacade extends Facade {
     LOGGER.info("User {} saved a new recovery key", userId.value());
   }
 
-  private static SignInSetupAuthentication setup() {
-    return (SignInSetupAuthentication) AuthenticationExtractor.getAuthentication();
+  private SignInSetupAuthentication setup() {
+    SignInSetupAuthentication setup =
+        (SignInSetupAuthentication) AuthenticationExtractor.getAuthentication();
+    UserId userId = new UserId(setup.userId());
+    if (this.adminRepository.isAdmin(userId)
+        || (setup.reason() == Reason.EMAIL
+            && !this.userRepository.isEmailRecoveryEnabled(userId))) {
+      throw new AccessGuard.AccessDeniedException();
+    }
+    return setup;
   }
 
   public record SignInSetupDTO(

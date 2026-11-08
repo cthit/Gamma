@@ -119,8 +119,10 @@ public class SignInMethodsFacade extends Facade {
     UserId me = me().id();
     this.userRepository.lockSignInMethods(me);
     List<Passkey> passkeys = this.passkeyRepository.getAll(me);
-    boolean removingLast =
-        passkeys.size() == 1 && passkeys.getFirst().credentialId().equals(credentialId);
+    if (passkeys.stream().noneMatch(passkey -> passkey.credentialId().equals(credentialId))) {
+      return;
+    }
+    boolean removingLast = passkeys.size() == 1;
 
     if (removingLast && (userIsAdmin(me) || !this.userRepository.hasPassword(me))) {
       throw new LastSignInMethodException();
@@ -202,6 +204,7 @@ public class SignInMethodsFacade extends Facade {
       throw new IllegalArgumentException("Admins can't reset how they sign in themselves");
     }
 
+    this.userRepository.lockSignInMethods(userId);
     if (userIsAdmin(userId) && !this.userRepository.hasPassword(userId)) {
       throw new AdminWithoutPasswordException();
     }

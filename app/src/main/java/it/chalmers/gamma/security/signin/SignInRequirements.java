@@ -56,7 +56,8 @@ public class SignInRequirements {
               this.adminRepository.isAdmin(userId),
               this.userRepository.hasPassword(userId),
               this.passkeyRepository.hasAny(userId),
-              this.totpRepository.isEnabled(userId));
+              this.totpRepository.isEnabled(userId),
+              this.userRepository.isEmailRecoveryEnabled(userId));
     } catch (UserRepository.UserNotFoundException e) {
       return Optional.empty();
     }
@@ -68,5 +69,10 @@ public class SignInRequirements {
   }
 
   public record UserSignInMethods(
-      UserId userId, boolean admin, boolean hasPassword, boolean hasPasskey, boolean hasTotp) {}
+      UserId userId,
+      boolean admin,
+      boolean hasPassword,
+      boolean hasPasskey,
+      boolean hasTotp,
+      boolean emailRecovery) {}
 }

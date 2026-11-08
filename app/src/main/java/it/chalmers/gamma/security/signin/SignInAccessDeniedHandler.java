@@ -10,6 +10,12 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 
 public class SignInAccessDeniedHandler implements AccessDeniedHandler {
 
+  private final SignInAuthorizationManagers signInAuthorizationManagers;
+
+  public SignInAccessDeniedHandler(SignInAuthorizationManagers signInAuthorizationManagers) {
+    this.signInAuthorizationManagers = signInAuthorizationManagers;
+  }
+
   @Override
   public void handle(
       HttpServletRequest request,
@@ -18,7 +24,7 @@ public class SignInAccessDeniedHandler implements AccessDeniedHandler {
       throws IOException {
     if (SecurityContextHolder.getContext().getAuthentication()
         instanceof SignInSetupAuthenticationToken setup) {
-      if (setup.getPrincipal().isExpired()) {
+      if (!this.signInAuthorizationManagers.isSetupStillAllowed(setup)) {
         new SecurityContextLogoutHandler()
             .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         HtmxAwareRedirects.redirect(request, response, "/login?sign-in-setup-expired");

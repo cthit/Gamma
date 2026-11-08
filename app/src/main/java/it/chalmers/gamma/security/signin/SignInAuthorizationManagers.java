@@ -73,7 +73,7 @@ public class SignInAuthorizationManagers {
   }
 
   private boolean mayAddPasskeyDuringSetup(SignInSetupAuthenticationToken setup) {
-    if (setup.getPrincipal().isExpired()) {
+    if (!isSetupStillAllowed(setup)) {
       return false;
     }
     if (setup.getPrincipal().reason() != SignInSetupAuthentication.Reason.EMAIL) {
@@ -85,6 +85,20 @@ public class SignInAuthorizationManagers {
         .orElse(true);
   }
 
+  public boolean isSetupStillAllowed(SignInSetupAuthenticationToken setup) {
+    if (setup.getPrincipal().isExpired()) {
+      return false;
+    }
+
+    Optional<UserSignInMethods> methods = this.signInRequirements.of(setup.getName());
+    if (methods.isEmpty() || methods.get().admin()) {
+      return false;
+    }
+
+    return setup.getPrincipal().reason() != SignInSetupAuthentication.Reason.EMAIL
+        || methods.get().emailRecovery();
+  }
+
   public AuthorizationManager<RequestAuthorizationContext> signingIn() {
     return (authentication, object) ->
         new AuthorizationDecision(isUserSession(authentication.get()));
@@ -94,7 +108,7 @@ public class SignInAuthorizationManagers {
     return (authentication, object) ->
         new AuthorizationDecision(
             authentication.get() instanceof SignInSetupAuthenticationToken setup
-                && !setup.getPrincipal().isExpired());
+                && isSetupStillAllowed(setup));
   }
 
   public AuthorizationManager<RequestAuthorizationContext> signingInWithTotp() {
