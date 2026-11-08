@@ -20,7 +20,6 @@ import org.springframework.security.web.webauthn.api.PublicKeyCredentialUserEnti
 import org.springframework.security.web.webauthn.api.ResidentKeyRequirement;
 import org.springframework.security.web.webauthn.api.UserVerificationRequirement;
 import org.springframework.security.web.webauthn.management.JdbcPublicKeyCredentialUserEntityRepository;
-import org.springframework.security.web.webauthn.management.JdbcUserCredentialRepository;
 import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
 import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
@@ -37,7 +36,7 @@ public class PasskeyConfig {
 
   @Bean
   public UserCredentialRepository userCredentialRepository(JdbcOperations jdbcOperations) {
-    return new JdbcUserCredentialRepository(jdbcOperations);
+    return new PasskeyCredentialRepository(jdbcOperations);
   }
 
   @Bean

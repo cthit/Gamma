@@ -33,7 +33,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
   int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
 
   @Transactional
-  @Modifying
+  @Modifying(flushAutomatically = true, clearAutomatically = true)
   @Query(
       "update UserEntity u set u.password = :password, u.version = u.version + 1,"
           + " u.updatedAt = :now where u.id = :id")
@@ -41,7 +41,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
       @Param("id") UUID id, @Param("password") String password, @Param("now") Instant now);
 
   @Transactional
-  @Modifying
+  @Modifying(flushAutomatically = true, clearAutomatically = true)
   @Query(
       "update UserEntity u set u.emailRecovery = :enabled, u.version = u.version + 1,"
           + " u.updatedAt = :now where u.id = :id")
