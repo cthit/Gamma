@@ -172,6 +172,7 @@ public class RegisterAccountController {
     }
 
     UUID userId = null;
+    Instant startedAt = Instant.now();
     try {
       if (!bindingResult.hasErrors()) {
         userId =
@@ -210,7 +211,7 @@ public class RegisterAccountController {
 
     if (withPasskey) {
       this.signInSetupSessions.start(
-          userId, SignInSetupAuthentication.Reason.NEW_ACCOUNT, Instant.now(), request, response);
+          userId, SignInSetupAuthentication.Reason.NEW_ACCOUNT, startedAt, request, response);
       return new ModelAndView("redirect:" + SignInSetupSessions.SETUP_URL);
     }
 
