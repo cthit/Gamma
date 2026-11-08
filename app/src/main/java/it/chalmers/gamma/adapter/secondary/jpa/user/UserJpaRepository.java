@@ -30,11 +30,16 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
           + " where u.id = :id")
   int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
 
-  /** Locks the user and revokes every session that signed in before now. */
+  /**
+   * Locks the user and revokes every session that signed in before now. The revocation time never
+   * moves backwards, so a lock that commits after a later one can't make sessions valid again.
+   */
   @Transactional
   @Modifying
   @Query(
-      "update UserEntity u set u.locked = true, u.sessionsRevokedAt = :now,"
+      "update UserEntity u set u.locked = true,"
+          + " u.sessionsRevokedAt = case when u.sessionsRevokedAt is null"
+          + " or u.sessionsRevokedAt < :now then :now else u.sessionsRevokedAt end,"
           + " u.version = u.version + 1, u.updatedAt = :now where u.id = :id")
   int lock(@Param("id") UUID id, @Param("now") Instant now);
 

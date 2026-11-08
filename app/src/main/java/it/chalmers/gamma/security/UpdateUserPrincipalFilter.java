@@ -47,7 +47,11 @@ public class UpdateUserPrincipalFilter implements Filter {
         if (request instanceof HttpServletRequest httpServletRequest) {
           HttpSession session = httpServletRequest.getSession(false);
           if (session != null) {
-            session.invalidate();
+            try {
+              session.invalidate();
+            } catch (IllegalStateException alreadyInvalidated) {
+              // Another request already signed the session out
+            }
           }
         }
       }
