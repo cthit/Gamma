@@ -66,5 +66,11 @@ public record MockData(
 
   public record MockApiKey(UUID id, String token) {}
 
-  public record MockClientAuthority(String name, List<UUID> superGroupIds, List<UUID> userIds) {}
+  public record MockClientAuthority(
+      String name,
+      List<UUID> superGroupIds,
+      List<MockSuperGroupPost> superGroupPosts,
+      List<UUID> userIds) {}
+
+  public record MockSuperGroupPost(UUID superGroupId, UUID postId) {}
 }

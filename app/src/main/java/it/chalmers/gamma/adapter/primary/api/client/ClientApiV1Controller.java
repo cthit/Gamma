@@ -94,12 +94,24 @@ public class ClientApiV1Controller {
     }
   }
 
+  record ClientV1SuperGroupPost(ClientV1SuperGroup superGroup, ClientV1Post post) {
+    ClientV1SuperGroupPost(ClientAuthorityFacade.SuperGroupPostDTO superGroupPost) {
+      this(
+          new ClientV1SuperGroup(superGroupPost.superGroup()),
+          new ClientV1Post(superGroupPost.post()));
+    }
+  }
+
   record ClientV1Authority(
-      String name, List<ClientV1SuperGroup> superGroups, List<ClientV1User> users) {
+      String name,
+      List<ClientV1SuperGroup> superGroups,
+      List<ClientV1SuperGroupPost> superGroupPosts,
+      List<ClientV1User> users) {
     ClientV1Authority(ClientAuthorityFacade.ClientAuthorityDTO authority) {
       this(
           authority.authorityName(),
           authority.superGroups().stream().map(ClientV1SuperGroup::new).toList(),
+          authority.superGroupPosts().stream().map(ClientV1SuperGroupPost::new).toList(),
           authority.users().stream().map(ClientV1User::new).toList());
     }
   }

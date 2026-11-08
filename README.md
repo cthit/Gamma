@@ -56,6 +56,10 @@ The mock data can also specify OAuth2 clients and their authorities. The default
   "authorities": [ {
     "name": "admin",
     "superGroupIds": [ "aed27030-ad90-4526-855c-1e909b1dcecb" ],
+    "superGroupPosts": [ {
+      "superGroupId": "aed27030-ad90-4526-855c-1e909b1dcecb",
+      "postId": "7bb1db15-730d-4864-bfc3-99abe7c0ccf8"
+    } ],
     "userIds": [ "88eec5c2-5ebb-4e13-9a76-fcc4dac9e74f" ]
   } ]
 } ]
@@ -70,7 +74,7 @@ The mock data can also specify OAuth2 clients and their authorities. The default
 | `emailScope` | Whether the client gets the `email` scope in addition to `openid profile` |
 | `ownerId` | Id of the user that owns the client. Leave it out for an official client |
 | `apiKey` | Optional client API key. Use it with `Authorization: pre-shared <id>:<token>` |
-| `authorities` | Authority names (2-30 lower case letters and digits) with the ids of the super groups and users that have them |
+| `authorities` | Authority names (2-30 lower case letters and digits) with the ids of the super groups and users that have them. `superGroupPosts` gives the authority only to the members of a super group's groups who hold a post, such as the chairman of digIT |
 
 The client IDs, secrets and API keys are also logged on startup. Clients are only created if the database has no clients yet.
 

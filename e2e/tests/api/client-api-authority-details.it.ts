@@ -74,6 +74,7 @@ test("client API exposes the super groups and approving users of the calling cli
   expect(await beforeApproval.json()).toEqual({
     name: "booking",
     superGroups: [DIGIT],
+    superGroupPosts: [],
     users: [],
   });
 
@@ -89,6 +90,7 @@ test("client API exposes the super groups and approving users of the calling cli
   expect(await afterApproval.json()).toEqual({
     name: "booking",
     superGroups: [DIGIT],
+    superGroupPosts: [],
     users: [JHALPERT],
   });
 
