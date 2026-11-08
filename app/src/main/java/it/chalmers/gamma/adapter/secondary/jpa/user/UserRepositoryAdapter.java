@@ -173,6 +173,7 @@ public class UserRepositoryAdapter implements UserRepository {
     e.firstName = d.firstName().value();
     e.lastName = d.lastName().value();
     e.nick = d.nick().value();
+    // Only used when the user is created, see UserEntity.locked
     e.locked = d.extended().locked();
     e.language = d.language();
 
