@@ -39,30 +39,28 @@ public class SuperGroupBootstrap {
     mockData.superGroups().stream()
         .map(MockData.MockSuperGroup::type)
         .distinct()
-        .forEach(
-            type -> {
-              try {
-                this.superGroupTypeRepository.add(new SuperGroupType(type.toLowerCase()));
-              } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
-                LOGGER.error("Error creating supergroup type: " + type + ";");
-              }
-            });
+        .forEach(type -> {
+          try {
+            this.superGroupTypeRepository.add(new SuperGroupType(type.toLowerCase()));
+          } catch (SuperGroupTypeRepository.SuperGroupTypeAlreadyExistsException e) {
+            LOGGER.error("Error creating supergroup type: " + type + ";");
+          }
+        });
 
     LOGGER.info("Supergroup types created");
 
     mockData
         .superGroups()
-        .forEach(
-            mockSuperGroup -> {
-              this.superGroupRepository.save(
-                  new SuperGroup(
-                      new SuperGroupId(mockSuperGroup.id()),
-                      0,
-                      new Name(mockSuperGroup.name()),
-                      new PrettyName(mockSuperGroup.prettyName()),
-                      new SuperGroupType(mockSuperGroup.type().toLowerCase()),
-                      new Text()));
-            });
+        .forEach(mockSuperGroup -> {
+          this.superGroupRepository.save(
+              new SuperGroup(
+                  new SuperGroupId(mockSuperGroup.id()),
+                  0,
+                  new Name(mockSuperGroup.name()),
+                  new PrettyName(mockSuperGroup.prettyName()),
+                  new SuperGroupType(mockSuperGroup.type().toLowerCase()),
+                  new Text()));
+        });
 
     LOGGER.info("Supergroups created");
 

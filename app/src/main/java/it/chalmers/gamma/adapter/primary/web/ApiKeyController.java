@@ -111,9 +111,8 @@ public class ApiKeyController {
         new AccountScaffoldApiKeySettings(
             settings.version(),
             settings.superGroupTypes().stream()
-                .map(
-                    type ->
-                        new AccountScaffoldType(type.type(), type.requiresManaged() ? "on" : "off"))
+                .map(type ->
+                    new AccountScaffoldType(type.type(), type.requiresManaged() ? "on" : "off"))
                 .toList()));
   }
 
@@ -352,11 +351,9 @@ public class ApiKeyController {
         new ApiKeySettingsFacade.ApiKeySettingsAccountScaffoldDTO(
             form.version,
             form.superGroupTypes.stream()
-                .map(
-                    accountScaffoldType ->
-                        new ApiKeySettingsFacade.AccountScaffoldTypeDTO(
-                            accountScaffoldType.type,
-                            "on".equals(accountScaffoldType.requiresManaged)))
+                .map(accountScaffoldType ->
+                    new ApiKeySettingsFacade.AccountScaffoldTypeDTO(
+                        accountScaffoldType.type, "on".equals(accountScaffoldType.requiresManaged)))
                 .toList()));
 
     loadApiKeySettingsAccountScaffold(mv, apiKey.id());

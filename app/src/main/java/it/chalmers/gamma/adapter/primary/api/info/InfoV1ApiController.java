@@ -102,11 +102,10 @@ public class InfoV1ApiController {
   @GetMapping("/blob")
   public List<BlobItem> getGroups() {
     return this.superGroupFacade.getAllTypesWithSuperGroups().stream()
-        .map(
-            item ->
-                new BlobItem(
-                    item.type(),
-                    item.superGroups().stream().map(BlobSuperGroupWithMembers::new).toList()))
+        .map(item ->
+            new BlobItem(
+                item.type(),
+                item.superGroups().stream().map(BlobSuperGroupWithMembers::new).toList()))
         .toList();
   }
 

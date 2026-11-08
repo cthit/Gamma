@@ -57,17 +57,15 @@ public class UserClientsController {
         "clients",
         this.clientFacade.getAll().stream()
             .filter(client -> client.owner() instanceof ClientFacade.ClientDTO.UserOwner)
-            .map(
-                client -> {
-                  UserFacade.UserDTO user =
-                      ((ClientFacade.ClientDTO.UserOwner) client.owner()).user();
-                  String email =
-                      this.userFacade
-                          .getExtendedAsAdmin(user.id())
-                          .map(UserFacade.UserExtendedDTO::email)
-                          .orElse(null);
-                  return new UserClient(client, user, email);
-                })
+            .map(client -> {
+              UserFacade.UserDTO user = ((ClientFacade.ClientDTO.UserOwner) client.owner()).user();
+              String email =
+                  this.userFacade
+                      .getExtendedAsAdmin(user.id())
+                      .map(UserFacade.UserExtendedDTO::email)
+                      .orElse(null);
+              return new UserClient(client, user, email);
+            })
             .toList());
 
     return mv;
