@@ -163,6 +163,10 @@ public class SignInAuthorizationManagers {
     }
 
     UserSignInMethods user = methods.get();
+    if (user.locked() || SignInFactors.isRevoked(current, user.sessionsRevokedAt())) {
+      return new AuthorizationDecision(false);
+    }
+
     boolean adminSettingUpPasskey = addingPasskey && user.admin() && !user.hasPasskey();
     Duration requiredValidity = addingPasskey ? SignInFactors.CONFIRMATION_VALIDITY : validity;
 
