@@ -169,7 +169,7 @@ Users manage this under **Sign in and security** (`/me/security`): add and remov
 ### Getting back in
 
 - **Email recovery**: the forgot password link lets the user set a new password, or set up a passkey instead, which removes the old password. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
-- **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) lets the user set up a new passkey or password once, and removes their authenticator app.
+- **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) removes their password and authenticator app, signs them out everywhere, and lets them set up a new passkey or password once.
 - **Admin reset**: an admin can reset how another user signs in from the user's page. That removes the user's passkeys, authenticator app and recovery key, turns email recovery on and signs the user out everywhere. Admins sign in with passkeys only, so to reset another admin, first remove their admin rights, reset them, and give the rights back once they have set up a new passkey through the forgot password page.
 
 If the last admin loses all their passkeys, remove their passkeys and admin rights and turn email recovery on in the database, let them set up a new passkey through the forgot password page, and give the rights back:

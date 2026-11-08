@@ -8,6 +8,7 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +34,6 @@ public class RecoveryKeyUse {
   @Transactional
   public Optional<Instant> use(UserId userId, RecoveryKey key) {
     this.userRepository.lockSignInMethods(userId);
-    Instant usedAt = Instant.now();
 
     if (this.adminRepository.isAdmin(userId)
         || this.userRepository.isLocked(userId)
@@ -43,6 +43,12 @@ public class RecoveryKeyUse {
     }
 
     this.totpRepository.delete(userId);
-    return Optional.of(usedAt);
+    if (this.userRepository.hasPassword(userId)) {
+      this.userRepository.removePassword(userId);
+    }
+    this.userRepository.revokeSessions(userId);
+
+    Instant revokedAt = this.userRepository.sessionsRevokedAt(userId).orElseThrow();
+    return Optional.of(revokedAt.plus(1, ChronoUnit.MILLIS));
   }
 }
