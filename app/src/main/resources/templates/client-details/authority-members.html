@@ -1,0 +1,79 @@
+<!--/* Who has a client authority, shared by the create and edit authority forms.
+     Rows rendered with an index get their names here, rows added later are named by updateAuthorityNames. */-->
+<th:block th:fragment="fields">
+    <h3 class="authority-form__heading">Super groups</h3>
+    <div class="authority-rows">
+        <th:block th:each="selectedSuperGroup, stat : ${selectedSuperGroups}">
+            <div th:replace="~{client-details/authority-members :: super-group-row(selected=${selectedSuperGroup}, index=${stat.index})}"></div>
+        </th:block>
+    </div>
+    <button class="button button--secondary" data-hx-get="/clients/authority/new-super-group"
+            data-hx-target="previous .authority-rows" data-hx-swap="beforeend" type="button">
+        <span class="icon icon--plus" aria-hidden="true"></span>
+        Add super group authority
+    </button>
+    <h3 class="authority-form__heading">Posts in super groups</h3>
+    <p class="authority-form__hint">Members of the super group's groups who hold the post.</p>
+    <div class="authority-rows">
+        <th:block th:each="selectedSuperGroupPost, stat : ${selectedSuperGroupPosts}">
+            <div th:replace="~{client-details/authority-members :: super-group-post-row(selectedSuperGroup=${selectedSuperGroupPost.superGroupId}, selectedPost=${selectedSuperGroupPost.postId}, index=${stat.index})}"></div>
+        </th:block>
+    </div>
+    <button class="button button--secondary" data-hx-get="/clients/authority/new-super-group-post"
+            data-hx-target="previous .authority-rows" data-hx-swap="beforeend" type="button">
+        <span class="icon icon--plus" aria-hidden="true"></span>
+        Add post authority
+    </button>
+    <h3 class="authority-form__heading">Users</h3>
+    <div class="authority-rows">
+        <th:block th:each="selectedUser, stat : ${selectedUsers}">
+            <div th:replace="~{client-details/authority-members :: user-row(selected=${selectedUser}, index=${stat.index})}"></div>
+        </th:block>
+    </div>
+    <button class="button button--secondary" data-hx-get="/clients/authority/new-user"
+            data-hx-target="previous .authority-rows" data-hx-swap="beforeend" type="button">
+        <span class="icon icon--plus" aria-hidden="true"></span>
+        Add user authority
+    </button>
+</th:block>
+
+<div th:fragment="super-group-row(selected, index)" class="authority-row">
+    <select class="input input--select authority-super-group" required aria-label="Super group"
+            th:name="${index != null} ? |superGroups[${index}]| : null">
+        <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"
+                th:selected="${superGroup.key == selected}"></option>
+    </select>
+    <button th:replace="~{client-details/authority-members :: delete-row-button(label='Delete super group')}"></button>
+</div>
+
+<div th:fragment="super-group-post-row(selectedSuperGroup, selectedPost, index)"
+     class="authority-row authority-super-group-post-row">
+    <select class="input input--select superGroupId" required aria-label="Super group of post"
+            th:name="${index != null} ? |superGroupPosts[${index}].superGroupId| : null">
+        <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"
+                th:selected="${superGroup.key == selectedSuperGroup}"></option>
+    </select>
+    <select class="input input--select postId" required aria-label="Post"
+            th:name="${index != null} ? |superGroupPosts[${index}].postId| : null">
+        <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"
+                th:selected="${post.key == selectedPost}"></option>
+    </select>
+    <button th:replace="~{client-details/authority-members :: delete-row-button(label='Delete post')}"></button>
+</div>
+
+<div th:fragment="user-row(selected, index)" class="authority-row">
+    <select class="input input--select authority-user" required aria-label="User"
+            th:name="${index != null} ? |users[${index}]| : null">
+        <option th:each="user : ${users}" th:value="${user.key}" th:text="${user.value}"
+                th:selected="${user.key == selected}"></option>
+    </select>
+    <button th:replace="~{client-details/authority-members :: delete-row-button(label='Delete user')}"></button>
+</div>
+
+<button th:fragment="delete-row-button(label)"
+        class="button button--secondary button--small authority-row__remove"
+        type="button"
+        th:aria-label="${label}"
+        _="on click set authorityForm to closest <form/> then remove closest .authority-row then call updateAuthorityNames(authorityForm)">
+    Delete
+</button>

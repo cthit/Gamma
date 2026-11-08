@@ -439,12 +439,18 @@ public class ClientsController {
 
     mv.setViewName("client-details/add-user-authority-to-client");
 
-    mv.addObject(
-        "users",
-        this.userFacade.getAll().stream()
-            .collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
+    mv.addObject("users", userNames());
 
     return mv;
+  }
+
+  /** User nicks by id, in alphabetical order. */
+  private Map<UUID, String> userNames() {
+    return this.userFacade.getAll().stream()
+        .sorted(Comparator.comparing(user -> user.nick().toLowerCase(Locale.ROOT)))
+        .collect(
+            Collectors.toMap(
+                UserFacade.UserDTO::id, UserFacade.UserDTO::nick, (a, b) -> a, LinkedHashMap::new));
   }
 
   public static final class SuperGroupPostForm {
@@ -468,13 +474,11 @@ public class ClientsController {
     }
   }
 
-  public static final class CreateAuthority {
+  /** Who should have an authority. */
+  public static class AuthorityMembersForm {
     private List<UUID> superGroups;
     private List<SuperGroupPostForm> superGroupPosts;
     private List<UUID> users;
-
-    @ValidatedWith(AuthorityNameValidator.class)
-    private String authority;
 
     public List<UUID> getSuperGroups() {
       return superGroups;
@@ -512,6 +516,32 @@ public class ClientsController {
       this.users = users;
     }
 
+    private List<UUID> selectedSuperGroups() {
+      return superGroups == null
+          ? List.of()
+          : superGroups.stream().filter(Objects::nonNull).toList();
+    }
+
+    private List<UUID> selectedUsers() {
+      return users == null ? List.of() : users.stream().filter(Objects::nonNull).toList();
+    }
+
+    private ClientAuthorityFacade.AuthorityMembers toMembers() {
+      return new ClientAuthorityFacade.AuthorityMembers(
+          selectedSuperGroups(),
+          selectedSuperGroupPosts().stream()
+              .map(superGroupPost ->
+                  new ClientAuthorityFacade.SuperGroupPostIds(
+                      superGroupPost.superGroupId, superGroupPost.postId))
+              .toList(),
+          selectedUsers());
+    }
+  }
+
+  public static final class CreateAuthority extends AuthorityMembersForm {
+    @ValidatedWith(AuthorityNameValidator.class)
+    private String authority;
+
     public String getAuthority() {
       return authority;
     }
@@ -525,17 +555,20 @@ public class ClientsController {
       UUID clientUid, CreateAuthority form, String errorMessage) {
     ModelAndView mv = new ModelAndView("client-details/add-authority-to-client");
 
-    List<UUID> selectedSuperGroups =
-        form.superGroups == null
-            ? List.of()
-            : form.superGroups.stream().filter(Objects::nonNull).toList();
-    List<SuperGroupPostForm> selectedSuperGroupPosts = form.selectedSuperGroupPosts();
-    List<UUID> selectedUsers =
-        form.users == null ? List.of() : form.users.stream().filter(Objects::nonNull).toList();
-
     mv.addObject("clientUid", clientUid);
     mv.addObject("authorityValue", form.authority);
     mv.addObject("authorityErrorMessage", errorMessage);
+    addAuthorityMembers(mv, form);
+
+    return mv;
+  }
+
+  /** Adds the selected rows of the form, and the options the rows need, to the model. */
+  private void addAuthorityMembers(ModelAndView mv, AuthorityMembersForm form) {
+    List<UUID> selectedSuperGroups = form.selectedSuperGroups();
+    List<SuperGroupPostForm> selectedSuperGroupPosts = form.selectedSuperGroupPosts();
+    List<UUID> selectedUsers = form.selectedUsers();
+
     mv.addObject("selectedSuperGroups", selectedSuperGroups);
     mv.addObject("selectedSuperGroupPosts", selectedSuperGroupPosts);
     mv.addObject("selectedUsers", selectedUsers);
@@ -549,11 +582,28 @@ public class ClientsController {
     }
 
     if (!selectedUsers.isEmpty()) {
-      mv.addObject(
-          "users",
-          this.userFacade.getAll().stream()
-              .collect(Collectors.toMap(UserFacade.UserDTO::id, UserFacade.UserDTO::nick)));
+      mv.addObject("users", userNames());
     }
+  }
+
+  private void setAuthorityMembers(UUID clientUid, String name, AuthorityMembersForm form)
+      throws ClientAuthorityFacade.ClientAuthorityNotFoundException {
+    try {
+      this.clientAuthorityFacade.setMembers(clientUid, name, form.toMembers());
+    } catch (ClientAuthorityFacade.SuperGroupNotFoundException
+        | ClientAuthorityFacade.PostNotFoundException
+        | ClientAuthorityFacade.UserNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private ModelAndView createClientAuthorityArticle(String viewName, UUID clientUid, String name) {
+    ModelAndView mv = new ModelAndView(viewName);
+
+    mv.addObject("clientUid", clientUid);
+    mv.addObject(
+        "clientAuthority",
+        this.clientAuthorityFacade.get(clientUid, name).orElseThrow(RuntimeException::new));
 
     return mv;
   }
@@ -577,70 +627,74 @@ public class ClientsController {
 
     try {
       this.clientAuthorityFacade.create(clientUid, form.authority);
+      setAuthorityMembers(clientUid, form.authority, form);
     } catch (ClientAuthorityRepository.ClientAuthorityAlreadyExistsException e) {
       return createAuthorityForm(
           clientUid,
           form,
           "An authority with the name '" + form.authority + "' already exists for this client");
+    } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+      throw new RuntimeException(e);
     }
 
-    List<SuperGroupFacade.SuperGroupDTO> superGroups = new ArrayList<>();
-    List<ClientAuthorityFacade.SuperGroupPostDTO> superGroupPosts = new ArrayList<>();
-    List<UserFacade.UserDTO> users = new ArrayList<>();
+    return createClientAuthorityArticle(
+        "client-details/created-client-authority", clientUid, form.authority);
+  }
 
-    if (form.superGroups != null) {
-      form.superGroups.forEach(superGroup -> {
-        try {
-          this.clientAuthorityFacade.addSuperGroupToClientAuthority(
-              clientUid, form.authority, superGroup);
-        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-            | ClientAuthorityFacade.SuperGroupNotFoundException e) {
-          throw new RuntimeException(e);
-        }
+  @GetMapping("/clients/{id}/authority/{name}")
+  public ModelAndView getClientAuthority(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID clientUid,
+      @PathVariable("name") String authorityName) {
+    return createClientAuthorityArticle(
+        "client-details/page :: client-authority-article", clientUid, authorityName);
+  }
 
-        superGroups.add(this.superGroupFacade.get(superGroup).orElseThrow());
-      });
-    }
+  @GetMapping("/clients/{id}/authority/{name}/edit")
+  public ModelAndView getEditClientAuthority(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID clientUid,
+      @PathVariable("name") String authorityName) {
+    ClientAuthorityFacade.ClientAuthorityDTO authority =
+        this.clientAuthorityFacade.get(clientUid, authorityName).orElseThrow(RuntimeException::new);
 
-    for (SuperGroupPostForm superGroupPost : form.selectedSuperGroupPosts()) {
-      try {
-        this.clientAuthorityFacade.addSuperGroupPostToClientAuthority(
-            clientUid, form.authority, superGroupPost.superGroupId, superGroupPost.postId);
-      } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-          | ClientAuthorityFacade.SuperGroupNotFoundException
-          | ClientAuthorityFacade.PostNotFoundException e) {
-        throw new RuntimeException(e);
-      }
-    }
+    AuthorityMembersForm form = new AuthorityMembersForm();
+    form.superGroups =
+        authority.superGroups().stream().map(SuperGroupFacade.SuperGroupDTO::id).toList();
+    form.superGroupPosts =
+        authority.superGroupPosts().stream()
+            .map(superGroupPost -> {
+              SuperGroupPostForm row = new SuperGroupPostForm();
+              row.superGroupId = superGroupPost.superGroup().id();
+              row.postId = superGroupPost.post().id();
+              return row;
+            })
+            .toList();
+    form.users = authority.users().stream().map(UserFacade.UserDTO::id).toList();
 
-    if (form.users != null) {
-      form.users.forEach(user -> {
-        try {
-          this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
-        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-            | ClientAuthorityFacade.UserNotFoundException e) {
-          throw new RuntimeException(e);
-        }
-
-        users.add(this.userFacade.getWithGroups(user).orElseThrow().user());
-      });
-    }
-
-    // Read back so that duplicate rows are only shown once, in the same order as on the page.
-    this.clientAuthorityFacade
-        .get(clientUid, form.authority)
-        .map(ClientAuthorityFacade.ClientAuthorityDTO::superGroupPosts)
-        .ifPresent(superGroupPosts::addAll);
-
-    ModelAndView mv = new ModelAndView("client-details/created-client-authority");
+    ModelAndView mv = new ModelAndView("client-details/edit-client-authority");
 
     mv.addObject("clientUid", clientUid);
-    mv.addObject(
-        "clientAuthority",
-        new ClientAuthorityFacade.ClientAuthorityDTO(
-            clientUid, form.authority, superGroups, superGroupPosts, users));
+    mv.addObject("authorityName", authority.authorityName());
+    addAuthorityMembers(mv, form);
 
     return mv;
+  }
+
+  @PutMapping("/clients/{id}/authority/{name}")
+  public ModelAndView updateClientAuthority(
+      @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
+      @PathVariable("id") UUID clientUid,
+      @PathVariable("name") String authorityName,
+      AuthorityMembersForm form) {
+    try {
+      setAuthorityMembers(clientUid, authorityName, form);
+    } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+
+    return createClientAuthorityArticle(
+        "client-details/updated-client-authority", clientUid, authorityName);
   }
 
   @DeleteMapping("/clients/{id}")
