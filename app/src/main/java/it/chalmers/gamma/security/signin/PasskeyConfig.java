@@ -2,7 +2,9 @@ package it.chalmers.gamma.security.signin;
 
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
+import java.net.URI;
 import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,17 +48,14 @@ public class PasskeyConfig {
       PublicKeyCredentialUserEntityRepository userEntities,
       UserCredentialRepository userCredentials,
       UserJpaRepository userJpaRepository,
-      PasskeyProperties passkeyProperties,
       @Value("${application.base-url}") String baseUrl) {
+    URI base = URI.create(baseUrl);
     Webauthn4JRelyingPartyOperations operations =
         new Webauthn4JRelyingPartyOperations(
             userEntities,
             userCredentials,
-            PublicKeyCredentialRpEntity.builder()
-                .id(passkeyProperties.rpIdOr(baseUrl))
-                .name("Gamma")
-                .build(),
-            passkeyProperties.allowedOriginsOr(baseUrl));
+            PublicKeyCredentialRpEntity.builder().id(base.getHost()).name("Gamma").build(),
+            Set.of(base.getScheme() + "://" + base.getRawAuthority()));
 
     operations.setCustomizeCreationOptions(options -> {
       options.authenticatorSelection(

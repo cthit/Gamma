@@ -67,9 +67,6 @@ application:
   cookie:
     validity-time: 2628000
   admin-setup: "${ADMIN_SETUP:true}"
-  passkeys:
-    rp-id: "${PASSKEYS_RP_ID:}"
-    allowed-origins: "${PASSKEYS_ALLOWED_ORIGINS:}"
   oauth2:
     signing-key: "${OAUTH2_SIGNING_KEY:}"
     verification-keys: "${OAUTH2_VERIFICATION_KEYS:}"

@@ -126,7 +126,7 @@ All configuration is environment-variable-driven via `application.yml`.
 | Variable | Default | Description |
 |---|---|---|
 | `SERVER_PORT` | `8081` | HTTP port |
-| `BASE_URL` | `http://localhost:8081` | Public base URL (used for redirect URIs, etc.) |
+| `BASE_URL` | `http://localhost:8081` | Public base URL (used for redirect URIs, passkeys, etc.) |
 | `DB_HOST` | `db` | PostgreSQL host |
 | `DB_PORT` | `5432` | PostgreSQL port |
 | `DB_NAME` | `postgres` | Database name |
@@ -138,8 +138,6 @@ All configuration is environment-variable-driven via `application.yml`.
 | `PRODUCTION` | `true` | Production mode (disables Thymeleaf caching, dev services, etc.) |
 | `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Will be required in production from v3, see [OAuth2 signing keys](#oauth2-signing-keys) |
 | `OAUTH2_VERIFICATION_KEYS` | *(empty)* | Comma separated keys that are still published so the tokens they signed can be verified, but that no longer sign tokens |
-| `PASSKEYS_RP_ID` | host of `BASE_URL` | The domain passkeys are registered for, see [Signing in](#signing-in). Changing it makes every registered passkey stop working |
-| `PASSKEYS_ALLOWED_ORIGINS` | origin of `BASE_URL` | Comma separated origins that passkeys may be used on |
 | `DEV_SERVICES_ENABLED` | `false` | Auto-start PostgreSQL + Redis via Testcontainers |
 | `IS_MOCKING` | `false` | Load mock data on startup |
 | `MOCK_DATA_RESOURCE` | `classpath:/mock/mock.json` | Path to mock data JSON |
@@ -158,7 +156,7 @@ Users sign in with a **passkey**, or with their **password** and, if they have s
 
 Everything is built on Spring Security:
 
-- Passkeys use Spring Security's WebAuthn support (`http.webAuthn()`), which stores them in the `user_entities` and `user_credentials` tables. Passkeys must verify the user, for example with a fingerprint or PIN.
+- Passkeys use Spring Security's WebAuthn support (`http.webAuthn()`), which stores them in the `user_entities` and `user_credentials` tables. Passkeys must verify the user, for example with a fingerprint or PIN. They belong to the domain of `BASE_URL` and only work on it, so `BASE_URL` must be the address users open. Changing its domain makes every passkey stop working.
 - Each way of signing in is a Spring Security factor (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN` and Gamma's `FACTOR_TOTP`), and the factors each user needs are required factors (`AllRequiredFactorsAuthorizationManager`). Changing how you sign in needs a sign in from the last 10 minutes.
 - Authenticator app codes are checked with [java-otp](https://github.com/jchambers/java-otp) (HMAC-SHA1, six digits, 30 second steps), and each code can only be used once.
 

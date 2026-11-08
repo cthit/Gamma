@@ -153,13 +153,12 @@ export async function startGammaInstance(
     GOTIFY_KEY: "123abc",
     GOTIFY_BASE_URL: "http://gotify:80",
     ADMIN_SETUP: "true",
-    BASE_URL: `https://localhost:8080`,
+    BASE_URL: browserOrigin,
     PRODUCTION: "true",
     IS_MOCKING: "false",
     SERVER_SSL_ENABLED: "true",
     UPLOAD_FOLDER: "/tmp/uploads/",
     OAUTH2_SIGNING_KEY: getDefaultSigningKey().privateKeyPem,
-    PASSKEYS_ALLOWED_ORIGINS: browserOrigin,
   };
 
   if (localhostTlsFilesAvailable) {
