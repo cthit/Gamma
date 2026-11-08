@@ -3,12 +3,9 @@ package it.chalmers.gamma.adapter.primary.web;
 import it.chalmers.gamma.adapter.primary.web.PendingRecoveryKey.Purpose;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.LastSignInMethodException;
-import it.chalmers.gamma.app.signin.SignInMethodsFacade.PasswordsDontMatchException;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.RecoveryKeyRequiredException;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.TotpSetupDTO;
 import it.chalmers.gamma.app.signin.TotpCodes;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
-import it.chalmers.gamma.app.validation.FailedValidation;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import it.chalmers.gamma.security.signin.CurrentSignIn;
@@ -36,9 +33,8 @@ public class SecurityController {
 
   private static final Map<String, String> DONE_MESSAGES =
       Map.ofEntries(
-          Map.entry("passkey-added", "The passkey was added."),
+          Map.entry("passkey-added", "The passkey was added. You sign in with passkeys only."),
           Map.entry("passkey-removed", "The passkey was removed."),
-          Map.entry("password-added", "You can now sign in with your password too."),
           Map.entry("password-removed", "Your password was removed. You sign in with a passkey."),
           Map.entry("totp-enabled", "Your authenticator app is set up."),
           Map.entry("totp-disabled", "Your authenticator app was removed."),
@@ -53,9 +49,7 @@ public class SecurityController {
           Map.entry(
               "last-passkey",
               "You can't remove your only passkey, since you would have no way to sign in."),
-          Map.entry("no-passkey", "Add a passkey before removing your password."),
-          Map.entry("passwords-dont-match", "The passwords were not the same."),
-          Map.entry("password-invalid", "The password must be at least 12 characters long."));
+          Map.entry("no-passkey", "Add a passkey before removing your password."));
 
   private final SignInMethodsFacade signInMethodsFacade;
   private final CurrentSignIn currentSignIn;
@@ -97,22 +91,6 @@ public class SecurityController {
       return redirect("?error=last-passkey");
     }
     return redirect("?done=passkey-removed");
-  }
-
-  @PostMapping(PAGE + "/password")
-  public ModelAndView addPassword(
-      @RequestParam("newPassword") String newPassword,
-      @RequestParam("confirmPassword") String confirmPassword) {
-    if (new UnencryptedPasswordValidator().validate(newPassword) instanceof FailedValidation) {
-      return redirect("?error=password-invalid");
-    }
-
-    try {
-      this.signInMethodsFacade.addPassword(newPassword, confirmPassword);
-    } catch (PasswordsDontMatchException e) {
-      return redirect("?error=passwords-dont-match");
-    }
-    return redirect("?done=password-added");
   }
 
   @PostMapping(PAGE + "/password/remove")

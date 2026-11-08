@@ -162,13 +162,16 @@
         var registerButton = evt.target.closest("[data-passkey-register]");
         if (registerButton) {
             evt.preventDefault();
+            if (registerButton.dataset.passkeyConfirm && !window.confirm(registerButton.dataset.passkeyConfirm)) {
+                return;
+            }
             run(registerButton, async function () {
                 var input = document.getElementById(registerButton.dataset.labelInput);
                 var label = input && input.value.trim() ? input.value.trim() : "Passkey";
                 await register(registerButton, label);
                 if (registerButton.hasAttribute("data-then-sign-in")) {
                     var redirectUrl = await signIn(registerButton);
-                    window.location.href = redirectUrl || "/";
+                    window.location.href = registerButton.dataset.success || redirectUrl || "/";
                 } else {
                     window.location.href = registerButton.dataset.success || window.location.href;
                 }

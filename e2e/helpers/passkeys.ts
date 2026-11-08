@@ -67,7 +67,81 @@ export async function addPasskey(page: Page, name: string): Promise<void> {
   await page.getByRole("button", { name: "Add a passkey" }).click();
 }
 
-export async function finishAdminSignIn(page: Page): Promise<void> {
+async function credentialsOf(cdp: CDPSession, authenticatorId: string) {
+  return (await cdp.send("WebAuthn.getCredentials", { authenticatorId }))
+    .credentials;
+}
+
+type Credentials = Awaited<ReturnType<typeof credentialsOf>>;
+
+const savedPasskeys = new Map<string, Credentials>();
+
+function passkeyKey(baseUrl: string, username: string): string {
+  return `${new URL(baseUrl).origin}|${username.toLowerCase()}`;
+}
+
+/**
+ * Remembers the passkeys in the page's virtual authenticator for the user, so
+ * that later sign ins, also in other pages, can use them. Adding a passkey
+ * removes the password, so they can't sign in with it any more.
+ */
+async function rememberPasskeys(
+  page: Page,
+  baseUrl: string,
+  username: string,
+): Promise<void> {
+  const authenticator = authenticators.get(page);
+  if (!authenticator) return;
+  savedPasskeys.set(
+    passkeyKey(baseUrl, username),
+    await credentialsOf(authenticator.cdp, authenticator.authenticatorId),
+  );
+}
+
+/**
+ * Signs in with a passkey that was added for the user earlier in the test,
+ * copying it into the page's virtual authenticator first.
+ *
+ * @returns whether the user had a saved passkey
+ */
+export async function signInWithSavedPasskey(
+  page: Page,
+  baseUrl: string,
+  username: string,
+): Promise<boolean> {
+  const saved = savedPasskeys.get(passkeyKey(baseUrl, username));
+  if (!saved || saved.length === 0) return false;
+
+  await useVirtualAuthenticator(page);
+  const authenticator = authenticators.get(page)!;
+  const existing = await credentialsOf(
+    authenticator.cdp,
+    authenticator.authenticatorId,
+  );
+  for (const credential of saved) {
+    if (!existing.some((e) => e.credentialId === credential.credentialId)) {
+      await authenticator.cdp.send("WebAuthn.addCredential", {
+        authenticatorId: authenticator.authenticatorId,
+        credential,
+      });
+    }
+  }
+
+  await page.goto(`${baseUrl}/login`, { timeout: 60000 });
+  await signInWithPasskey(page);
+  return true;
+}
+
+/**
+ * Finishes signing in an admin who has signed in with their password: adds a
+ * passkey if they have none, and signs in with it. The passkey replaces the
+ * admin's password, so it is remembered for their later sign ins.
+ */
+export async function finishAdminSignIn(
+  page: Page,
+  baseUrl?: string,
+  username?: string,
+): Promise<void> {
   await expect(page).toHaveURL(/\/login\/confirm/);
   await useVirtualAuthenticator(page);
 
@@ -82,6 +156,9 @@ export async function finishAdminSignIn(page: Page): Promise<void> {
       }),
       page.getByRole("button", { name: "Add a passkey" }).click(),
     ]);
+    if (baseUrl && username) {
+      await rememberPasskeys(page, baseUrl, username);
+    }
   } else {
     await signInWithPasskey(page);
   }

@@ -14,7 +14,6 @@ import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.signin.domain.TotpSecret;
 import it.chalmers.gamma.app.user.domain.GammaUser;
-import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -153,24 +152,6 @@ public class SignInMethodsFacade extends Facade {
     this.totpRepository.delete(me);
     removeRecoveryKeyIfUnneeded(me);
     LOGGER.info("User {} removed their password", me.value());
-  }
-
-  @Transactional
-  public void addPassword(String newPassword, String confirmPassword)
-      throws PasswordsDontMatchException {
-    this.accessGuard.require(isSignedIn());
-
-    UserId me = me().id();
-    lockAndRecheck(me);
-    if (this.userRepository.hasPassword(me)) {
-      throw new IllegalStateException("The user already has a password");
-    }
-    if (!newPassword.equals(confirmPassword)) {
-      throw new PasswordsDontMatchException();
-    }
-
-    this.userRepository.setPassword(me, new UnencryptedPassword(newPassword));
-    LOGGER.info("User {} added a password", me.value());
   }
 
   @Transactional

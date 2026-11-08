@@ -12,6 +12,7 @@
                 Admins sign in with a passkey. Add one now, for example with your phone, a security key
                 or your computer's fingerprint reader, and then sign in with it.
             </p>
+            <p><strong>Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.</strong></p>
             <div class="field">
                 <label class="field__label" for="passkey-label">Name of the passkey</label>
                 <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">

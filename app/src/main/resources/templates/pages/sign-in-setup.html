@@ -13,6 +13,7 @@
             <p>
                 Sign in with your phone, a security key or your computer's fingerprint reader or PIN, without a password.
             </p>
+            <p th:if="${setup.hasPassword()}"><strong>Adding a passkey removes your current password.</strong></p>
             <div class="field">
                 <label class="field__label" for="passkey-label">Name of the passkey</label>
                 <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">

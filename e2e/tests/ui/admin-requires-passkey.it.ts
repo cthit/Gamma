@@ -64,23 +64,18 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
-  await signInWithPassword(page, gamma.url, admin, adminPassword);
-  await expect(
-    page.getByRole("heading", { name: "Admins sign in with a passkey" }),
-  ).toBeVisible();
-  await page.goto(`${gamma.url}/`);
-  await expect(page).toHaveURL(/\/login\/confirm/);
-  await page.goto(authorizeUrl.toString());
-  await expect(page).toHaveURL(/\/login\/confirm/);
+  // The passkey replaced the admin's password.
+  await page.goto(`${gamma.url}/login`);
+  await page.getByLabel("Cid or email", { exact: true }).fill(admin);
+  await page.getByLabel("Password", { exact: true }).fill(adminPassword);
+  await page.getByRole("button", { name: "Login" }).click();
+  await expect(page).toHaveURL(/\/login\?error/);
+
   await signInWithPasskey(page);
+  await expect(page.getByText("Hey, admin!")).toBeVisible();
+  await page.goto(authorizeUrl.toString());
   await expect(page).toHaveURL(/\/oauth2\/callback\?code=/);
   await page.goto(`${gamma.url}/`);
-  await expect(page.getByText("Hey, admin!")).toBeVisible();
-  await logout(page);
-
-  await page.goto(`${gamma.url}/login`);
-  await signInWithPasskey(page);
-  await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
   await page.goto(`${gamma.url}/forgot-password`);

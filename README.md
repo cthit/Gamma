@@ -162,21 +162,25 @@ Everything is built on Spring Security:
 - Each way of signing in is a Spring Security factor (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN` and Gamma's `FACTOR_TOTP`), and the factors each user needs are required factors (`AllRequiredFactorsAuthorizationManager`). Changing how you sign in needs a sign in from the last 10 minutes.
 - Authenticator app codes are checked with [java-otp](https://github.com/jchambers/java-otp) (HMAC-SHA1, six digits, 30 second steps), and each code can only be used once.
 
-Users manage this under **Sign in and security** (`/me/security`): add and remove passkeys, add or remove their password once they have a passkey, set up an authenticator app (QR code, or the key typed in by hand), and turn email recovery off.
+Choosing passkeys replaces the password: adding a passkey removes the user's password and authenticator app, wherever it is added. Users then sign in with passkeys only.
+
+Users manage this under **Sign in and security** (`/me/security`): add and remove passkeys, set up an authenticator app (QR code, or the key typed in by hand) while they use a password, and turn email recovery off.
 
 ### Getting back in
 
-- **Email recovery**: the forgot password link lets the user set a new password, or set up a passkey instead. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
+- **Email recovery**: the forgot password link lets the user set a new password, or set up a passkey instead, which removes the old password. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
 - **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) lets the user set up a new passkey or password once, and removes their authenticator app.
-- **Admin reset**: an admin can reset how another user signs in from the user's page. That removes the user's passkeys, authenticator app and recovery key and turns email recovery on. A reset admin signs in with their password and adds a new passkey.
+- **Admin reset**: an admin can reset how another user signs in from the user's page. That removes the user's passkeys, authenticator app and recovery key, turns email recovery on and signs the user out everywhere. Admins sign in with passkeys only, so to reset another admin, first remove their admin rights, reset them, and give the rights back once they have set up a new passkey through the forgot password page.
 
-If the last admin loses all their passkeys, remove them in the database, so the admin can sign in with their password and add a new one:
+If the last admin loses all their passkeys, remove their passkeys and admin rights and turn email recovery on in the database, let them set up a new passkey through the forgot password page, and give the rights back:
 
 ```sql
-DELETE FROM user_entities WHERE name = '<user id of the admin>';
+DELETE FROM user_entities WHERE name = '<user id>';
+DELETE FROM g_admin_user WHERE user_id = '<user id>';
+UPDATE g_user SET email_recovery = true WHERE user_id = '<user id>';
+-- after they have set up a new passkey:
+INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());
 ```
-
-If they have forgotten their password too, remove their admin rights and turn email recovery on (`DELETE FROM g_admin_user WHERE user_id = '<user id>'; UPDATE g_user SET email_recovery = true WHERE user_id = '<user id>';`), let them reset their password through the forgot password page, and give the rights back (`INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());`).
 
 ## OAuth2 signing keys
 

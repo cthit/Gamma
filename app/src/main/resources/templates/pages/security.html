@@ -22,6 +22,10 @@
             without a password. It is the safest way to sign in.
         </p>
         <p th:if="${!methods.hasPasskeys()}">You have no passkeys yet.</p>
+        <p th:if="${methods.hasPasskeys() and !methods.hasPassword()}">You sign in with passkeys only.</p>
+        <p th:if="${methods.hasPassword()}">
+            <strong>Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.</strong>
+        </p>
         <table class="table" th:if="${methods.hasPasskeys()}" aria-label="Your passkeys">
             <thead>
             <tr>
@@ -53,7 +57,8 @@
         <p class="field__error" id="passkey-error" role="alert" hidden></p>
         <footer>
             <button class="button" type="button"
-                    data-passkey-register th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
+                    data-passkey-register
+                    th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token},data-then-sign-in=${methods.hasPassword() ? 'true' : null},data-passkey-confirm=${methods.hasPassword() ? 'Adding a passkey removes your password. You will sign in with passkeys only. Continue?' : null}"
                     data-label-input="passkey-label"
                     data-passkey-error="passkey-error" data-success="/me/security?done=passkey-added">
                 Add a passkey
@@ -61,36 +66,19 @@
         </footer>
     </article>
 
-    <article th:if="${!methods.isAdmin() or methods.hasPassword()}">
+    <article th:if="${methods.hasPassword()}">
         <header><h2>Password</h2></header>
-        <th:block th:if="${methods.hasPassword()}">
-            <p>You can sign in with your password<th:block th:if="${methods.totpEnabled()}"> and a code from your authenticator app</th:block>.</p>
-            <p th:if="${!methods.hasPasskeys()}">Add a passkey if you want to stop using a password.</p>
-            <p th:if="${methods.hasPasskeys()}">
-                Since you have a passkey, you can remove your password and only sign in with passkeys.
-                <th:block th:if="${methods.totpEnabled()}">Your authenticator app is removed with it.</th:block>
-            </p>
-            <footer>
-                <form th:if="${methods.hasPasskeys()}" th:action="@{/me/security/password/remove}" th:method="post"
-                      data-hx-confirm="Remove your password? You will only be able to sign in with your passkeys.">
-                    <button class="button button--danger" data-loading-disable>Remove password</button>
-                </form>
-            </footer>
-        </th:block>
-        <form th:if="${!methods.hasPassword()}" th:action="@{/me/security/password}" th:method="post">
-            <p>You sign in with passkeys only. You can add a password too.</p>
-            <div class="field">
-                <label class="field__label" for="newPassword">New password</label>
-                <input class="input" id="newPassword" type="password" name="newPassword" autocomplete="new-password" minlength="12" required>
-            </div>
-            <div class="field">
-                <label class="field__label" for="confirmPassword">Confirm the new password</label>
-                <input class="input" id="confirmPassword" type="password" name="confirmPassword" autocomplete="new-password" minlength="12" required>
-            </div>
-            <footer>
-                <button class="button" data-loading-disable>Add password</button>
-            </footer>
-        </form>
+        <p>You sign in with your password<th:block th:if="${methods.totpEnabled()}"> and a code from your authenticator app</th:block>.</p>
+        <p>
+            Adding a passkey replaces your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.
+            You then sign in with passkeys only.
+        </p>
+        <footer th:if="${methods.hasPasskeys()}">
+            <form th:action="@{/me/security/password/remove}" th:method="post"
+                  data-hx-confirm="Remove your password? You will only be able to sign in with your passkeys.">
+                <button class="button button--danger" data-loading-disable>Remove password</button>
+            </form>
+        </footer>
     </article>
 
     <article th:if="${!methods.isAdmin() and methods.hasPassword()}">
