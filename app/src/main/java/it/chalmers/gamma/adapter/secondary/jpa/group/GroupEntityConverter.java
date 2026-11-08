@@ -35,19 +35,18 @@ public class GroupEntityConverter {
   public Group toDomain(GroupEntity entity) {
     List<GroupMember> members =
         entity.getMembers().stream()
-            .map(
-                membershipEntity -> {
-                  GammaUser user =
-                      this.userEntityConverter.toDomain(membershipEntity.getId().getUser());
-                  if (user == null) {
-                    return null;
-                  }
+            .map(membershipEntity -> {
+              GammaUser user =
+                  this.userEntityConverter.toDomain(membershipEntity.getId().getUser());
+              if (user == null) {
+                return null;
+              }
 
-                  return new GroupMember(
-                      this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
-                      new UnofficialPostName(membershipEntity.getUnofficialPostName()),
-                      user);
-                })
+              return new GroupMember(
+                  this.postEntityConverter.toDomain(membershipEntity.getId().getPost()),
+                  new UnofficialPostName(membershipEntity.getUnofficialPostName()),
+                  user);
+            })
             .filter(Objects::nonNull)
             .sorted(Comparator.comparingInt(member -> member.post().order().value()))
             .toList();

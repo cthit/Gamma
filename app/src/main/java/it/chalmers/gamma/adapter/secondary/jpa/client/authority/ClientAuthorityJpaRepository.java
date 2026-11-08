@@ -35,7 +35,7 @@ public interface ClientAuthorityJpaRepository
               INNER JOIN g_group g ON g.super_group_id = sgpa.super_group_id
               INNER JOIN g_membership m ON m.group_id = g.group_id AND m.post_id = sgpa.post_id
           WHERE m.user_id = :userId AND ap.client_uid = :clientUid
-                  """,
+          """,
       nativeQuery = true)
   List<ClientAuthorityEntity> findAllClientAuthoritiesByUser(
       @Param("clientUid") UUID clientUid, @Param("userId") UUID userId);

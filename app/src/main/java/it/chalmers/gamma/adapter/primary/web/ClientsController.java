@@ -496,11 +496,10 @@ public class ClientsController {
       return superGroupPosts == null
           ? List.of()
           : superGroupPosts.stream()
-              .filter(
-                  superGroupPost ->
-                      superGroupPost != null
-                          && superGroupPost.superGroupId != null
-                          && superGroupPost.postId != null)
+              .filter(superGroupPost ->
+                  superGroupPost != null
+                      && superGroupPost.superGroupId != null
+                      && superGroupPost.postId != null)
               .toList();
     }
 
@@ -589,18 +588,17 @@ public class ClientsController {
     List<UserFacade.UserDTO> users = new ArrayList<>();
 
     if (form.superGroups != null) {
-      form.superGroups.forEach(
-          superGroup -> {
-            try {
-              this.clientAuthorityFacade.addSuperGroupToClientAuthority(
-                  clientUid, form.authority, superGroup);
-            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-                | ClientAuthorityFacade.SuperGroupNotFoundException e) {
-              throw new RuntimeException(e);
-            }
+      form.superGroups.forEach(superGroup -> {
+        try {
+          this.clientAuthorityFacade.addSuperGroupToClientAuthority(
+              clientUid, form.authority, superGroup);
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
+            | ClientAuthorityFacade.SuperGroupNotFoundException e) {
+          throw new RuntimeException(e);
+        }
 
-            superGroups.add(this.superGroupFacade.get(superGroup).orElseThrow());
-          });
+        superGroups.add(this.superGroupFacade.get(superGroup).orElseThrow());
+      });
     }
 
     for (SuperGroupPostForm superGroupPost : form.selectedSuperGroupPosts()) {
@@ -615,17 +613,16 @@ public class ClientsController {
     }
 
     if (form.users != null) {
-      form.users.forEach(
-          user -> {
-            try {
-              this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
-            } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
-                | ClientAuthorityFacade.UserNotFoundException e) {
-              throw new RuntimeException(e);
-            }
+      form.users.forEach(user -> {
+        try {
+          this.clientAuthorityFacade.addUserToClientAuthority(clientUid, form.authority, user);
+        } catch (ClientAuthorityFacade.ClientAuthorityNotFoundException
+            | ClientAuthorityFacade.UserNotFoundException e) {
+          throw new RuntimeException(e);
+        }
 
-            users.add(this.userFacade.getWithGroups(user).orElseThrow().user());
-          });
+        users.add(this.userFacade.getWithGroups(user).orElseThrow().user());
+      });
     }
 
     // Read back so that duplicate rows are only shown once, in the same order as on the page.

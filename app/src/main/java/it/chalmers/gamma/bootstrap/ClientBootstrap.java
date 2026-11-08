@@ -154,15 +154,12 @@ public class ClientBootstrap {
                 .map(id -> this.superGroupRepository.get(new SuperGroupId(id)).orElseThrow())
                 .toList(),
             orEmpty(mockAuthority.superGroupPosts()).stream()
-                .map(
-                    superGroupPost ->
-                        new AuthoritySuperGroupPost(
-                            this.superGroupRepository
-                                .get(new SuperGroupId(superGroupPost.superGroupId()))
-                                .orElseThrow(),
-                            this.postRepository
-                                .get(new PostId(superGroupPost.postId()))
-                                .orElseThrow()))
+                .map(superGroupPost ->
+                    new AuthoritySuperGroupPost(
+                        this.superGroupRepository
+                            .get(new SuperGroupId(superGroupPost.superGroupId()))
+                            .orElseThrow(),
+                        this.postRepository.get(new PostId(superGroupPost.postId())).orElseThrow()))
                 .toList(),
             orEmpty(mockAuthority.userIds()).stream()
                 .map(id -> this.userRepository.get(new UserId(id)).orElseThrow())

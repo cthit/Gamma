@@ -130,10 +130,9 @@ public class ClientAuthorityFacade extends Facade {
 
     boolean alreadyAdded =
         authority.superGroupPosts().stream()
-            .anyMatch(
-                superGroupPost ->
-                    superGroupPost.superGroup().id().equals(superGroup.id())
-                        && superGroupPost.post().id().equals(post.id()));
+            .anyMatch(superGroupPost ->
+                superGroupPost.superGroup().id().equals(superGroup.id())
+                    && superGroupPost.post().id().equals(post.id()));
     if (alreadyAdded) {
       return;
     }

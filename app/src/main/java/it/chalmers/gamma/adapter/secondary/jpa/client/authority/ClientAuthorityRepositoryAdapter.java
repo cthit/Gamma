@@ -137,19 +137,16 @@ public class ClientAuthorityRepositoryAdapter implements ClientAuthorityReposito
             .toList();
     List<ClientAuthoritySuperGroupEntity> superGroups =
         authority.superGroups().stream()
-            .map(
-                superGroup ->
-                    new ClientAuthoritySuperGroupEntity(
-                        toEntity(superGroup), clientAuthorityEntity))
+            .map(superGroup ->
+                new ClientAuthoritySuperGroupEntity(toEntity(superGroup), clientAuthorityEntity))
             .toList();
     List<ClientAuthoritySuperGroupPostEntity> superGroupPosts =
         authority.superGroupPosts().stream()
-            .map(
-                superGroupPost ->
-                    new ClientAuthoritySuperGroupPostEntity(
-                        toEntity(superGroupPost.superGroup()),
-                        toEntity(superGroupPost.post()),
-                        clientAuthorityEntity))
+            .map(superGroupPost ->
+                new ClientAuthoritySuperGroupPostEntity(
+                    toEntity(superGroupPost.superGroup()),
+                    toEntity(superGroupPost.post()),
+                    clientAuthorityEntity))
             .toList();
 
     clientAuthorityEntity.userEntityList.clear();

@@ -43,15 +43,13 @@ public class ClientAuthorityEntityConverter {
             .map(this.superGroupEntityConverter::toDomain)
             .toList(),
         clientAuthorityEntity.getSuperGroupPosts().stream()
-            .map(
-                superGroupPost ->
-                    new AuthoritySuperGroupPost(
-                        this.superGroupEntityConverter.toDomain(superGroupPost.getSuperGroup()),
-                        this.postEntityConverter.toDomain(superGroupPost.getPost())))
+            .map(superGroupPost ->
+                new AuthoritySuperGroupPost(
+                    this.superGroupEntityConverter.toDomain(superGroupPost.getSuperGroup()),
+                    this.postEntityConverter.toDomain(superGroupPost.getPost())))
             .sorted(
-                Comparator.comparing(
-                        (AuthoritySuperGroupPost superGroupPost) ->
-                            superGroupPost.superGroup().prettyName().value())
+                Comparator.comparing((AuthoritySuperGroupPost superGroupPost) ->
+                        superGroupPost.superGroup().prettyName().value())
                     .thenComparing(superGroupPost -> superGroupPost.post().order().value()))
             .toList(),
         clientAuthorityEntity.getUsers().stream()

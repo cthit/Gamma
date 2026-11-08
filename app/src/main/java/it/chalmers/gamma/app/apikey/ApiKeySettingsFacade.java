@@ -76,10 +76,9 @@ public class ApiKeySettingsFacade extends Facade {
         new ApiKeyAccountScaffoldSettings(
             settings.version,
             settings.superGroupTypes.stream()
-                .map(
-                    row ->
-                        new ApiKeyAccountScaffoldSettings.Row(
-                            new SuperGroupType(row.type), row.requiresManaged))
+                .map(row ->
+                    new ApiKeyAccountScaffoldSettings.Row(
+                        new SuperGroupType(row.type), row.requiresManaged))
                 .toList()));
   }
 }

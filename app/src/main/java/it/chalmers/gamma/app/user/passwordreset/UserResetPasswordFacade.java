@@ -64,35 +64,34 @@ public class UserResetPasswordFacade extends Facade {
     this.accessGuard.require(isNotSignedIn());
 
     TimerBlock.minimum(3000)
-        .execute(
-            () -> {
-              try {
-                PasswordResetRepository.PasswordReset passwordReset;
-                if (new Email.EmailValidator().validate(cidOrEmailString)
-                    instanceof SuccessfulValidation) {
-                  passwordReset =
-                      this.passwordResetRepository.createNewToken(new Email(cidOrEmailString));
-                } else if (new Cid.CidValidator().validate(cidOrEmailString.toLowerCase())
-                    instanceof SuccessfulValidation) {
-                  passwordReset =
-                      this.passwordResetRepository.createNewToken(
-                          new Cid(cidOrEmailString.toLowerCase()));
-                } else {
-                  throw new IllegalArgumentException("Neither an email nor a cid.");
-                }
+        .execute(() -> {
+          try {
+            PasswordResetRepository.PasswordReset passwordReset;
+            if (new Email.EmailValidator().validate(cidOrEmailString)
+                instanceof SuccessfulValidation) {
+              passwordReset =
+                  this.passwordResetRepository.createNewToken(new Email(cidOrEmailString));
+            } else if (new Cid.CidValidator().validate(cidOrEmailString.toLowerCase())
+                instanceof SuccessfulValidation) {
+              passwordReset =
+                  this.passwordResetRepository.createNewToken(
+                      new Cid(cidOrEmailString.toLowerCase()));
+            } else {
+              throw new IllegalArgumentException("Neither an email nor a cid.");
+            }
 
-                if (throttlingService.canProceed(
-                    passwordReset.email().value() + "-password-reset", 3)) {
-                  sendPasswordResetTokenMail(passwordReset.email(), passwordReset.token());
-                } else {
-                  LOGGER.info("Throttling password reset process triggered.");
-                }
-              } catch (PasswordResetRepository.UserNotFoundException e) {
-                LOGGER.debug(
-                    "Someone tried to reset the password for the email {} that doesn't exist",
-                    cidOrEmailString);
-              }
-            });
+            if (throttlingService.canProceed(
+                passwordReset.email().value() + "-password-reset", 3)) {
+              sendPasswordResetTokenMail(passwordReset.email(), passwordReset.token());
+            } else {
+              LOGGER.info("Throttling password reset process triggered.");
+            }
+          } catch (PasswordResetRepository.UserNotFoundException e) {
+            LOGGER.debug(
+                "Someone tried to reset the password for the email {} that doesn't exist",
+                cidOrEmailString);
+          }
+        });
   }
 
   public void finishResetPasswordProcess(

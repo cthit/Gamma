@@ -109,11 +109,8 @@ public class ClientFacade extends Facade {
           new ClientRestriction(
               ClientRestrictionId.generate(),
               newClient.restrictions.superGroups.stream()
-                  .map(
-                      superGroupId ->
-                          this.superGroupRepository
-                              .get(new SuperGroupId(superGroupId))
-                              .orElseThrow())
+                  .map(superGroupId ->
+                      this.superGroupRepository.get(new SuperGroupId(superGroupId)).orElseThrow())
                   .toList());
     }
 
@@ -228,12 +225,11 @@ public class ClientFacade extends Facade {
         client.clientApiKey().map(ApiKeyFacade.ApiKeyDTO::new),
         client
             .restrictions()
-            .map(
-                clientRestriction ->
-                    new ClientDTO.ClientRestrictionDTO(
-                        clientRestriction.superGroups().stream()
-                            .map(SuperGroupFacade.SuperGroupDTO::new)
-                            .toList()))
+            .map(clientRestriction ->
+                new ClientDTO.ClientRestrictionDTO(
+                    clientRestriction.superGroups().stream()
+                        .map(SuperGroupFacade.SuperGroupDTO::new)
+                        .toList()))
             .orElse(null),
         convert(client.owner()));
   }
