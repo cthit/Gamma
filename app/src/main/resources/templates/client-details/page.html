@@ -98,6 +98,13 @@
                 </li>
             </ul>
             <footer>
+                <button type="button"
+                        class="button button--secondary"
+                        th:data-hx-get="@{/clients/{id}/authority/{name}/edit(id=${clientUid},name=${clientAuthority.authorityName()})}"
+                        data-hx-target="closest article"
+                        data-hx-swap="outerHTML"
+                        data-loading-disable>Edit
+                </button>
                 <form data-hx-confirm="Are you sure you want to delete this authority?" th:data-hx-post="|/clients/${clientUid}/authority/${clientAuthority.authorityName()}|"
                       data-hx-target="closest article"
                       data-hx-swap="delete">

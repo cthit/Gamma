@@ -41,6 +41,9 @@ public class ClientAuthorityEntityConverter {
         clientAuthorityEntity.getSuperGroups().stream()
             .map(ClientAuthoritySuperGroupEntity::getSuperGroup)
             .map(this.superGroupEntityConverter::toDomain)
+            .sorted(
+                Comparator.comparing(
+                    superGroup -> superGroup.prettyName().value(), String.CASE_INSENSITIVE_ORDER))
             .toList(),
         clientAuthorityEntity.getSuperGroupPosts().stream()
             .map(superGroupPost ->
@@ -56,6 +59,8 @@ public class ClientAuthorityEntityConverter {
             .map(ClientAuthorityUserEntity::getUserEntity)
             .map(this.userEntityConverter::toDomain)
             .filter(Objects::nonNull)
+            .sorted(
+                Comparator.comparing(user -> user.nick().value(), String.CASE_INSENSITIVE_ORDER))
             .toList());
   }
 }
