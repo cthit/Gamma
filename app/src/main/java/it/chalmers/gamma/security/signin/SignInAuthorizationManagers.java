@@ -34,6 +34,16 @@ public class SignInAuthorizationManagers {
     return (authentication, object) -> authorize(authentication, object, null, false);
   }
 
+  public <T> AuthorizationManager<T> signedInUser() {
+    return (authentication, object) -> {
+      Authentication current = authentication.get();
+      if (current != null && TRUST_RESOLVER.isAuthenticated(current) && !isUserSession(current)) {
+        return new AuthorizationDecision(false);
+      }
+      return authorize(authentication, object, null, false);
+    };
+  }
+
   public <T> AuthorizationManager<T> recentlySignedIn() {
     return (authentication, object) ->
         authorize(authentication, object, SignInFactors.CONFIRMATION_VALIDITY, false);
@@ -63,6 +73,9 @@ public class SignInAuthorizationManagers {
   }
 
   private boolean mayAddPasskeyDuringSetup(SignInSetupAuthenticationToken setup) {
+    if (setup.getPrincipal().isExpired()) {
+      return false;
+    }
     if (setup.getPrincipal().reason() != SignInSetupAuthentication.Reason.EMAIL) {
       return true;
     }
@@ -79,7 +92,9 @@ public class SignInAuthorizationManagers {
 
   public AuthorizationManager<RequestAuthorizationContext> settingUpSignIn() {
     return (authentication, object) ->
-        new AuthorizationDecision(authentication.get() instanceof SignInSetupAuthenticationToken);
+        new AuthorizationDecision(
+            authentication.get() instanceof SignInSetupAuthenticationToken setup
+                && !setup.getPrincipal().isExpired());
   }
 
   public AuthorizationManager<RequestAuthorizationContext> signingInWithTotp() {

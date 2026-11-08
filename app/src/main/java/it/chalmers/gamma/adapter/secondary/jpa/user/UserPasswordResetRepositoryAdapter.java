@@ -75,14 +75,6 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
   }
 
   @Override
-  public boolean isTokenValid(PasswordResetToken token) {
-    return this.userPasswordResetJpaRepository
-        .findByTokenHash(token.hashed())
-        .map(this::isStillValid)
-        .orElse(false);
-  }
-
-  @Override
   public Optional<UserId> getUserOfValidToken(PasswordResetToken token) {
     return this.userPasswordResetJpaRepository
         .findByTokenHash(token.hashed())

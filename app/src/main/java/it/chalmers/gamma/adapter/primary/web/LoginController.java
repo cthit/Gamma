@@ -32,6 +32,7 @@ public class LoginController {
       @RequestParam(value = "account-created", required = false) String accountCreated,
       @RequestParam(value = "password-reset", required = false) String passwordReset,
       @RequestParam(value = "sign-in-ready", required = false) String signInReady,
+      @RequestParam(value = "sign-in-setup-expired", required = false) String setupExpired,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       @RequestParam(value = "throttle", required = false) String throttle,
       HttpServletResponse response) {
@@ -51,6 +52,7 @@ public class LoginController {
     mv.addObject("accountCreated", accountCreated != null);
     mv.addObject("passwordReset", passwordReset != null);
     mv.addObject("signInReady", signInReady != null);
+    mv.addObject("setupExpired", setupExpired != null);
 
     return mv;
   }

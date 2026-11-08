@@ -28,6 +28,7 @@ import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import it.chalmers.gamma.security.signin.SignInStepEntryPoint;
 import it.chalmers.gamma.security.signin.TotpAuthenticationFilter;
 import it.chalmers.gamma.security.signin.TotpAuthenticationProvider;
+import it.chalmers.gamma.security.signin.UserBoundCreationOptionsRepository;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -66,6 +67,7 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationFilter;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
 
 @Configuration
 @EnableMultiFactorAuthentication(authorities = {})
@@ -76,7 +78,8 @@ public class SecurityFiltersConfig {
   public SecurityFilterChain authorizationServerSecurityFilterChain(
       HttpSecurity http,
       UserInfoMapper userInfoMapper,
-      SignInAuthorizationManagers signInAuthorizationManagers)
+      SignInAuthorizationManagers signInAuthorizationManagers,
+      AuthorizationServerSettings authorizationServerSettings)
       throws Exception {
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
         new OAuth2AuthorizationServerConfigurer();
@@ -98,7 +101,11 @@ public class SecurityFiltersConfig {
                                     AuthorizationServerMetadataCustomizer::customize))
                             .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))))
         .authorizeHttpRequests(authorization ->
-            authorization.anyRequest().access(signInAuthorizationManagers.signedIn()))
+            authorization
+                .requestMatchers(authorizationServerSettings.getAuthorizationEndpoint())
+                .access(signInAuthorizationManagers.signedInUser())
+                .anyRequest()
+                .access(signInAuthorizationManagers.signedIn()))
         .exceptionHandling(exceptions -> {
           exceptions.defaultAuthenticationEntryPointFor(
               new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
@@ -182,7 +189,8 @@ public class SecurityFiltersConfig {
       TotpRepository totpRepository,
       RecoveryKeyRepository recoveryKeyRepository,
       ThrottlingService throttlingService,
-      SignInAuthorizationManagers signIn)
+      SignInAuthorizationManagers signIn,
+      PublicKeyCredentialUserEntityRepository passkeyUsers)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
@@ -284,6 +292,7 @@ public class SecurityFiltersConfig {
         .webAuthn(webAuthn ->
             webAuthn
                 .disableDefaultRegistrationPage(true)
+                .creationOptionsRepository(new UserBoundCreationOptionsRepository(passkeyUsers))
                 .withObjectPostProcessor(
                     new ObjectPostProcessor<WebAuthnAuthenticationFilter>() {
                       @Override

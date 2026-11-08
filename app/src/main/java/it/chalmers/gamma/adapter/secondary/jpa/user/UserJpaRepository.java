@@ -1,9 +1,11 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import jakarta.persistence.LockModeType;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,4 +47,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
           + " u.updatedAt = :now where u.id = :id")
   int updateEmailRecovery(
       @Param("id") UUID id, @Param("enabled") boolean enabled, @Param("now") Instant now);
+
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("select u from UserEntity u where u.id = :id")
+  Optional<UserEntity> lockById(@Param("id") UUID id);
 }

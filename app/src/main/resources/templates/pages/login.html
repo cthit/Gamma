@@ -54,6 +54,10 @@
                     Your password was reset.
                 </p>
 
+                <p class="callout callout--danger" th:if="${setupExpired}">
+                    Setting up how you sign in took too long. Start over through the link mailed to you, or with your recovery key.
+                </p>
+
                 <p class="callout callout--success" th:if="${signInReady}">
                     You're all set. Sign in with what you just set up.
                 </p>

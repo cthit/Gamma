@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 public class SignInAccessDeniedHandler implements AccessDeniedHandler {
 
@@ -16,7 +17,13 @@ public class SignInAccessDeniedHandler implements AccessDeniedHandler {
       AccessDeniedException accessDeniedException)
       throws IOException {
     if (SecurityContextHolder.getContext().getAuthentication()
-        instanceof SignInSetupAuthenticationToken) {
+        instanceof SignInSetupAuthenticationToken setup) {
+      if (setup.getPrincipal().isExpired()) {
+        new SecurityContextLogoutHandler()
+            .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        HtmxAwareRedirects.redirect(request, response, "/login?sign-in-setup-expired");
+        return;
+      }
       HtmxAwareRedirects.redirect(request, response, SignInSetupSessions.SETUP_URL);
     } else {
       response.sendRedirect("/");

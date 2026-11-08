@@ -203,10 +203,4 @@ public class UserResetPasswordFacade extends Facade {
 
     this.mailService.sendMail(email.value(), subject, message);
   }
-
-  public boolean isValidToken(String token) {
-    this.accessGuard.require(isNotSignedIn());
-
-    return this.passwordResetRepository.isTokenValid(new PasswordResetToken(token));
-  }
 }

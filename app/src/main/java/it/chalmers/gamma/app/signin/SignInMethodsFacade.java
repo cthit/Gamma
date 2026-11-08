@@ -117,6 +117,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     List<Passkey> passkeys = this.passkeyRepository.getAll(me);
     boolean removingLast =
         passkeys.size() == 1 && passkeys.getFirst().credentialId().equals(credentialId);
@@ -135,6 +136,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    this.userRepository.lockSignInMethods(me);
     if (!this.passkeyRepository.hasAny(me)) {
       throw new LastSignInMethodException();
     }
@@ -192,12 +194,16 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public void resetSignInMethods(UUID userIdValue) {
+  public void resetSignInMethods(UUID userIdValue) throws AdminWithoutPasswordException {
     this.accessGuard.require(isAdmin());
 
     UserId userId = new UserId(userIdValue);
     if (userId.equals(me().id())) {
       throw new IllegalArgumentException("Admins can't reset how they sign in themselves");
+    }
+
+    if (userIsAdmin(userId) && !this.userRepository.hasPassword(userId)) {
+      throw new AdminWithoutPasswordException();
     }
 
     this.passkeyRepository.deleteAll(userId);
@@ -272,6 +278,8 @@ public class SignInMethodsFacade extends Facade {
   public record TotpSetupDTO(TotpSecret secret, String otpauthUri) {}
 
   public static final class LastSignInMethodException extends Exception {}
+
+  public static final class AdminWithoutPasswordException extends Exception {}
 
   public static final class RecoveryKeyRequiredException extends Exception {}
 

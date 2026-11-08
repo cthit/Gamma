@@ -71,6 +71,10 @@
         <p th:if="${signInReset}" class="callout callout--success" role="status">
             The user's passkeys, authenticator app and recovery key were removed, and email recovery is on.
         </p>
+        <p th:if="${adminWithoutPassword}" class="callout callout--danger" role="alert">
+            This admin signs in with passkeys only, so after a reset they would have no way to sign in.
+            Remove their admin rights first, reset how they sign in, and give the rights back once they have set up a new passkey.
+        </p>
         <dl class="key-value">
             <div class="key-value__row">
                 <dt class="key-value__key">Password</dt>

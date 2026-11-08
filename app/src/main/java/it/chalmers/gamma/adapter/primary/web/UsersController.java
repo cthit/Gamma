@@ -359,14 +359,18 @@ public class UsersController {
   public ModelAndView resetSignIn(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       @PathVariable("id") UUID userId) {
-    this.signInMethodsFacade.resetSignInMethods(userId);
-
     ModelAndView mv = new ModelAndView();
+    try {
+      this.signInMethodsFacade.resetSignInMethods(userId);
+      mv.addObject("signInReset", true);
+    } catch (SignInMethodsFacade.AdminWithoutPasswordException e) {
+      mv.addObject("adminWithoutPassword", true);
+    }
+
     mv.setViewName("user-details/page :: sign-in-methods");
     mv.addObject("userId", userId);
     mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(userId));
     mv.addObject("isMe", false);
-    mv.addObject("signInReset", true);
 
     return mv;
   }

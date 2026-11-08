@@ -33,6 +33,8 @@ public interface UserRepository {
 
   void removePassword(UserId userId) throws UserNotFoundException;
 
+  void lockSignInMethods(UserId userId) throws UserNotFoundException;
+
   boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException;
 
   void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException;

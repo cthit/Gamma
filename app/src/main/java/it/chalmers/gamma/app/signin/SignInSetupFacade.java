@@ -86,10 +86,15 @@ public class SignInSetupFacade extends Facade {
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
 
-  public void saveRecoveryKey(RecoveryKey key) {
+  public void saveRecoveryKey(RecoveryKey key) throws RecoveryKeyNotNeededException {
     this.accessGuard.require(isSettingUpSignIn());
 
-    UserId userId = new UserId(setup().userId());
+    SignInSetupAuthentication setup = setup();
+    if (setup.reason() == Reason.EMAIL || !getSetup().needsRecoveryKey()) {
+      throw new RecoveryKeyNotNeededException();
+    }
+
+    UserId userId = new UserId(setup.userId());
     this.recoveryKeyRepository.save(userId, key);
     LOGGER.info("User {} saved a new recovery key", userId.value());
   }
@@ -106,4 +111,6 @@ public class SignInSetupFacade extends Facade {
       boolean addedPasskey,
       boolean canAddPasskey,
       boolean needsRecoveryKey) {}
+
+  public static final class RecoveryKeyNotNeededException extends Exception {}
 }

@@ -114,7 +114,8 @@ public class AccessGuard {
 
   public static AccessChecker isSettingUpSignIn() {
     return (clientRepository, userRepository) ->
-        AuthenticationExtractor.getAuthentication() instanceof SignInSetupAuthentication;
+        AuthenticationExtractor.getAuthentication() instanceof SignInSetupAuthentication setup
+            && !setup.isExpired();
   }
 
   public static AccessChecker isNotSignedIn() {

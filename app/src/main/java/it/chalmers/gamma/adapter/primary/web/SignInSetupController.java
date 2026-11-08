@@ -70,6 +70,9 @@ public class SignInSetupController {
 
   @PostMapping(PAGE + "/recovery-key")
   public ModelAndView newRecoveryKey(HttpSession session) {
+    if (!this.signInSetupFacade.getSetup().needsRecoveryKey()) {
+      return redirect("");
+    }
     PendingRecoveryKey.start(session, Purpose.SIGN_IN_SETUP);
     return redirect("/recovery-key");
   }
@@ -124,8 +127,12 @@ public class SignInSetupController {
       return redirect("/recovery-key/confirm?error");
     }
 
-    this.signInSetupFacade.saveRecoveryKey(pending.get().key());
     PendingRecoveryKey.clear(session);
+    try {
+      this.signInSetupFacade.saveRecoveryKey(pending.get().key());
+    } catch (SignInSetupFacade.RecoveryKeyNotNeededException e) {
+      return redirect("");
+    }
     return redirect("");
   }
 

@@ -134,6 +134,11 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
+  public void lockSignInMethods(UserId userId) throws UserNotFoundException {
+    this.repository.lockById(userId.value()).orElseThrow(UserNotFoundException::new);
+  }
+
+  @Override
   public boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException {
     UserEntity userEntity =
         this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
