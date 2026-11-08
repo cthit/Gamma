@@ -64,6 +64,8 @@ public class SignInSetupController {
       this.signInSetupFacade.setPassword(newPassword, confirmPassword);
     } catch (PasswordsDontMatchException e) {
       return redirect("?error=passwords-dont-match");
+    } catch (SignInSetupFacade.PasskeyChosenException e) {
+      return redirect("");
     }
 
     session.setAttribute(PASSWORD_SET, currentSetupId());

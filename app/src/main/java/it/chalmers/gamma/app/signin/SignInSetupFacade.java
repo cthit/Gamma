@@ -83,7 +83,7 @@ public class SignInSetupFacade extends Facade {
 
   @Transactional
   public void setPassword(String newPassword, String confirmPassword)
-      throws PasswordsDontMatchException {
+      throws PasswordsDontMatchException, PasskeyChosenException {
     this.accessGuard.require(isSettingUpSignIn());
 
     if (!newPassword.equals(confirmPassword)) {
@@ -94,6 +94,9 @@ public class SignInSetupFacade extends Facade {
     UserId userId = new UserId(setup.userId());
     this.userRepository.lockSignInMethods(userId);
     requireStillAllowed(setup);
+    if (getSetup().addedPasskey()) {
+      throw new PasskeyChosenException();
+    }
     this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
@@ -139,4 +142,6 @@ public class SignInSetupFacade extends Facade {
       boolean needsRecoveryKey) {}
 
   public static final class RecoveryKeyNotNeededException extends Exception {}
+
+  public static final class PasskeyChosenException extends Exception {}
 }
