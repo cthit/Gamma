@@ -32,7 +32,7 @@ public class SignInAccessDeniedHandler implements AccessDeniedHandler {
       }
       HtmxAwareRedirects.redirect(request, response, SignInSetupSessions.SETUP_URL);
     } else {
-      response.sendRedirect("/");
+      HtmxAwareRedirects.redirect(request, response, "/");
     }
   }
 }

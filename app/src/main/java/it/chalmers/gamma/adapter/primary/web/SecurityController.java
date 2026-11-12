@@ -4,7 +4,6 @@ import it.chalmers.gamma.adapter.primary.web.PendingRecoveryKey.Purpose;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.LastSignInMethodException;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.RecoveryKeyRequiredException;
-import it.chalmers.gamma.app.signin.SignInMethodsFacade.TotpSetupDTO;
 import it.chalmers.gamma.app.signin.TotpCodes;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
@@ -105,8 +104,7 @@ public class SecurityController {
 
   @PostMapping(PAGE + "/totp/start")
   public ModelAndView startTotp(HttpSession session) {
-    TotpSetupDTO setup = this.signInMethodsFacade.startTotpSetup();
-    PendingTotp.save(session, new PendingTotp(setup.secret(), -1));
+    PendingTotp.save(session, new PendingTotp(this.signInMethodsFacade.startTotpSetup(), -1));
     PendingRecoveryKey.clear(session);
     return new ModelAndView("redirect:" + PAGE + "/totp");
   }

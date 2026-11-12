@@ -33,6 +33,10 @@
             body: body === undefined ? undefined : JSON.stringify(body),
             credentials: "same-origin"
         });
+        if (response.redirected) {
+            window.location.href = response.url;
+            return new Promise(function () {});
+        }
         if (!response.ok) {
             throw new Error("The server answered " + response.status);
         }
@@ -170,7 +174,14 @@
                 var label = input && input.value.trim() ? input.value.trim() : "Passkey";
                 await register(registerButton, label);
                 if (registerButton.hasAttribute("data-then-sign-in")) {
-                    var redirectUrl = await signIn(registerButton);
+                    var redirectUrl;
+                    try {
+                        redirectUrl = await signIn(registerButton);
+                    } catch (err) {
+                        console.error(err);
+                        window.location.reload();
+                        return;
+                    }
                     window.location.href = registerButton.dataset.success || redirectUrl || "/";
                 } else {
                     window.location.href = registerButton.dataset.success || window.location.href;

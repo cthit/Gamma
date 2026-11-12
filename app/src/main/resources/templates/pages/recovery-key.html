@@ -9,7 +9,7 @@
             Save this recovery key. It lets you back in if you lose the phone with your authenticator app.
         </p>
         <p th:if="${purpose.name() == 'REPLACE'}">
-            This is your new recovery key. Your old one stops working once you have saved this one.
+            This is your new recovery key. If you had one before, it stops working once you have saved this one.
         </p>
         <p th:if="${purpose.name() == 'SIGN_IN_SETUP'}">
             Save this recovery key. It is how you get back in if you can't sign in, since email recovery is off.

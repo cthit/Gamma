@@ -1,8 +1,8 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.adapter.primary.web.PendingRecoveryKey.Purpose;
-import it.chalmers.gamma.app.signin.SignInMethodsFacade.PasswordsDontMatchException;
 import it.chalmers.gamma.app.signin.SignInSetupFacade;
+import it.chalmers.gamma.app.signin.SignInSetupFacade.PasswordsDontMatchException;
 import it.chalmers.gamma.app.signin.SignInSetupFacade.SignInSetupDTO;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
 import it.chalmers.gamma.app.validation.FailedValidation;

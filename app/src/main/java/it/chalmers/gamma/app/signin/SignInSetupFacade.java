@@ -5,7 +5,6 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSettingUpSignIn
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.signin.SignInMethodsFacade.PasswordsDontMatchException;
 import it.chalmers.gamma.app.signin.domain.Passkey;
 import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
@@ -144,4 +143,6 @@ public class SignInSetupFacade extends Facade {
   public static final class RecoveryKeyNotNeededException extends Exception {}
 
   public static final class PasskeyChosenException extends Exception {}
+
+  public static final class PasswordsDontMatchException extends Exception {}
 }

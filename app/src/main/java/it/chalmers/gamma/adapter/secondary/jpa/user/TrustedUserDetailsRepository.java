@@ -30,6 +30,7 @@ public class TrustedUserDetailsRepository implements UserDetailsService {
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
     if (userEntity.locked || isRevoked(authentication, userEntity.sessionsRevokedAt)) {
+      // Ends the sessions of a user that was locked after signing in
       throw new UsernameNotFoundException("Session is no longer valid");
     }
 

@@ -64,7 +64,6 @@ test("an admin can't use Gamma or sign in to clients until they have signed in w
   await expect(page.getByText("Hey, admin!")).toBeVisible();
   await logout(page);
 
-  // The passkey replaced the admin's password.
   await page.goto(`${gamma.url}/login`);
   await page.getByLabel("Cid or email", { exact: true }).fill(admin);
   await page.getByLabel("Password", { exact: true }).fill(adminPassword);

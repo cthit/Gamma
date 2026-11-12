@@ -132,17 +132,22 @@
         </th:block>
     </article>
 
-    <article th:if="${!methods.isAdmin() and methods.hasRecoveryKey()}">
+    <article th:if="${!methods.isAdmin() and (methods.hasRecoveryKey() or !methods.emailRecovery())}">
         <header><h2>Recovery key</h2></header>
-        <p>
+        <p th:if="${methods.hasRecoveryKey()}">
             You have a recovery key, created
             <th:block th:text="${recoveryKeyCreated}"></th:block>.
             It lets you set up a new way to sign in if you lose your passkeys or authenticator app.
             If you have lost it, create a new one. The old one then stops working.
         </p>
+        <p class="callout callout--warning" role="alert" th:if="${!methods.hasRecoveryKey()}">
+            You have no recovery key, and email recovery is off. Create a recovery key now, or only an admin can
+            let you back in if you can't sign in.
+        </p>
         <footer>
             <form th:action="@{/me/security/recovery-key}" th:method="post">
-                <button class="button button--secondary" data-loading-disable>Create a new recovery key</button>
+                <button class="button button--secondary" data-loading-disable
+                        th:text="${methods.hasRecoveryKey()} ? 'Create a new recovery key' : 'Create a recovery key'"></button>
             </form>
         </footer>
     </article>

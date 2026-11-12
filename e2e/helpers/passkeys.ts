@@ -80,11 +80,6 @@ function passkeyKey(baseUrl: string, username: string): string {
   return `${new URL(baseUrl).origin}|${username.toLowerCase()}`;
 }
 
-/**
- * Remembers the passkeys in the page's virtual authenticator for the user, so
- * that later sign ins, also in other pages, can use them. Adding a passkey
- * removes the password, so they can't sign in with it any more.
- */
 async function rememberPasskeys(
   page: Page,
   baseUrl: string,
@@ -98,12 +93,6 @@ async function rememberPasskeys(
   );
 }
 
-/**
- * Signs in with a passkey that was added for the user earlier in the test,
- * copying it into the page's virtual authenticator first.
- *
- * @returns whether the user had a saved passkey
- */
 export async function signInWithSavedPasskey(
   page: Page,
   baseUrl: string,
@@ -132,11 +121,6 @@ export async function signInWithSavedPasskey(
   return true;
 }
 
-/**
- * Finishes signing in an admin who has signed in with their password: adds a
- * passkey if they have none, and signs in with it. The passkey replaces the
- * admin's password, so it is remembered for their later sign ins.
- */
 export async function finishAdminSignIn(
   page: Page,
   baseUrl?: string,

@@ -66,14 +66,11 @@ public class SignInMethodsFacade extends Facade {
     return get(new UserId(userId));
   }
 
-  public TotpSetupDTO startTotpSetup() {
+  public TotpSecret startTotpSetup() {
     this.accessGuard.require(isSignedIn());
 
-    GammaUser me = me();
-    requireNotAdmin(me.id());
-
-    TotpSecret secret = TotpSecret.generate();
-    return new TotpSetupDTO(secret, TotpCodes.otpauthUri(secret, me.cid().value()));
+    requireNotAdmin(me().id());
+    return TotpSecret.generate();
   }
 
   public OptionalLong checkTotpCode(TotpSecret secret, String code) {
@@ -282,13 +279,9 @@ public class SignInMethodsFacade extends Facade {
     }
   }
 
-  public record TotpSetupDTO(TotpSecret secret, String otpauthUri) {}
-
   public static final class LastSignInMethodException extends Exception {}
 
   public static final class AdminWithoutPasswordException extends Exception {}
 
   public static final class RecoveryKeyRequiredException extends Exception {}
-
-  public static final class PasswordsDontMatchException extends Exception {}
 }
