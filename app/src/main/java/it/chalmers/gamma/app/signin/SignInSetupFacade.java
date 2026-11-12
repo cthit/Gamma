@@ -97,6 +97,9 @@ public class SignInSetupFacade extends Facade {
       throw new PasskeyChosenException();
     }
     this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
+    if (setup.reason() == Reason.RECOVERY_KEY) {
+      this.recoveryKeyRepository.delete(userId);
+    }
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
 

@@ -17,6 +17,17 @@ async function signInWithPassword(
   ]);
 }
 
+async function useRecoveryKey(
+  page: import("@playwright/test").Page,
+  url: string,
+  key: string,
+) {
+  await page.goto(`${url}/login/recovery`);
+  await page.getByLabel("Cid or email", { exact: true }).fill("pbeesly");
+  await page.getByLabel("Recovery key", { exact: true }).fill(key);
+  await page.getByRole("button", { name: "Continue" }).click();
+}
+
 test("a user signs in with their password and authenticator app, and gets back in with their recovery key", async ({
   page,
   gamma,
@@ -90,7 +101,13 @@ test("a user signs in with their password and authenticator app, and gets back i
   await page.getByLabel("Recovery key", { exact: true }).fill(key);
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/sign-in-setup/);
-  await expect(page.getByText("Your recovery key has been used")).toBeVisible();
+  await expect(
+    page.getByText("Your recovery key keeps working until you have."),
+  ).toBeVisible();
+
+  await page.context().clearCookies();
+  await useRecoveryKey(page, gamma.url, key);
+  await expect(page).toHaveURL(/\/sign-in-setup/);
 
   await page.goto(`${gamma.url}/users`);
   await expect(page).toHaveURL(/\/sign-in-setup/);
@@ -106,9 +123,6 @@ test("a user signs in with their password and authenticator app, and gets back i
   await login(page, gamma.url, "pbeesly", "New-password-1337", "Pam-Pam");
   await logout(page);
 
-  await page.goto(`${gamma.url}/login/recovery`);
-  await page.getByLabel("Cid or email", { exact: true }).fill("pbeesly");
-  await page.getByLabel("Recovery key", { exact: true }).fill(key);
-  await page.getByRole("button", { name: "Continue" }).click();
+  await useRecoveryKey(page, gamma.url, key);
   await expect(page).toHaveURL(/\/login\/recovery\?error/);
 });

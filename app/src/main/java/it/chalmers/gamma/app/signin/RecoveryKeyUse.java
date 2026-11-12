@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.signin;
 
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
+import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
 import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
@@ -19,16 +20,19 @@ public class RecoveryKeyUse {
   private final AdminRepository adminRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
   private final TotpRepository totpRepository;
+  private final PasskeyRepository passkeyRepository;
 
   public RecoveryKeyUse(
       UserRepository userRepository,
       AdminRepository adminRepository,
       RecoveryKeyRepository recoveryKeyRepository,
-      TotpRepository totpRepository) {
+      TotpRepository totpRepository,
+      PasskeyRepository passkeyRepository) {
     this.userRepository = userRepository;
     this.adminRepository = adminRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
     this.totpRepository = totpRepository;
+    this.passkeyRepository = passkeyRepository;
   }
 
   @Transactional
@@ -41,11 +45,12 @@ public class RecoveryKeyUse {
 
     if (this.adminRepository.isAdmin(userId)
         || this.userRepository.isLocked(userId)
-        || !this.recoveryKeyRepository.use(userId, key)) {
+        || !this.recoveryKeyRepository.matches(userId, key)) {
       return Optional.empty();
     }
 
     this.totpRepository.delete(userId);
+    this.passkeyRepository.deleteAll(userId);
     if (this.userRepository.hasPassword(userId)) {
       this.userRepository.removePassword(userId);
     }

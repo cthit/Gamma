@@ -31,8 +31,8 @@ public class UserRecoveryKeyRepositoryAdapter implements RecoveryKeyRepository {
   }
 
   @Override
-  public boolean use(UserId userId, RecoveryKey key) {
-    return this.repository.deleteByUserIdAndKeyHash(userId.value(), key.hashed()) == 1;
+  public boolean matches(UserId userId, RecoveryKey key) {
+    return this.repository.existsByUserIdAndKeyHash(userId.value(), key.hashed());
   }
 
   @Override

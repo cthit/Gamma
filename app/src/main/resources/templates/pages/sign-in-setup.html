@@ -5,8 +5,8 @@
         <p th:if="${setup.reason().name() == 'NEW_ACCOUNT'}">Your account has been created. Now choose how you sign in.</p>
         <p th:if="${setup.reason().name() == 'EMAIL'}">Choose a new way to sign in.</p>
         <p th:if="${setup.reason().name() == 'RECOVERY_KEY'}">
-            Your recovery key has been used. Your password and authenticator app were removed, and you were signed out
-            everywhere else. Choose a new way to sign in.
+            Your passkeys, password and authenticator app were removed, and you were signed out everywhere.
+            Choose a new way to sign in. Your recovery key keeps working until you have.
         </p>
 
         <th:block th:if="${setup.canAddPasskey()}">

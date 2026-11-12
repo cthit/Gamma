@@ -8,7 +8,7 @@ import {
 import { currentTimeStep, totpCode } from "../../helpers/totp";
 import { saveRecoveryKey } from "../../helpers/recovery-key";
 
-test("adding a passkey replaces the password and authenticator app", async ({
+test("adding a passkey replaces the password and authenticator app, and a recovery key removes the passkeys", async ({
   page,
   gamma,
 }) => {
@@ -92,4 +92,30 @@ test("adding a passkey replaces the password and authenticator app", async ({
 
   await signInWithPasskey(page);
   await expect(page.getByText("Hey, Big Tuna!")).toBeVisible();
+
+  await page.goto(`${gamma.url}/me/security`);
+  await page.getByRole("button", { name: "Turn off email recovery" }).click();
+  const key = await saveRecoveryKey(page);
+  await logout(page);
+
+  await page.goto(`${gamma.url}/login/recovery`);
+  await page.getByLabel("Cid or email", { exact: true }).fill("jhalpert");
+  await page.getByLabel("Recovery key", { exact: true }).fill(key);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page).toHaveURL(/\/sign-in-setup/);
+  await page.getByLabel("Password", { exact: true }).fill("New-password-1337");
+  await page
+    .getByLabel("Confirm password", { exact: true })
+    .fill("New-password-1337");
+  await page.getByRole("button", { name: "Use a password" }).click();
+  await page.getByRole("button", { name: "Create a recovery key" }).click();
+  await saveRecoveryKey(page);
+  await page.getByRole("button", { name: "Continue to signing in" }).click();
+
+  await login(page, gamma.url, "jhalpert", "New-password-1337", "Big Tuna");
+  await page.goto(`${gamma.url}/me/security`);
+  await expect(page.getByText("You have no passkeys yet.")).toBeVisible();
+  await expect(
+    page.getByText("You have a recovery key, created"),
+  ).toBeVisible();
 });

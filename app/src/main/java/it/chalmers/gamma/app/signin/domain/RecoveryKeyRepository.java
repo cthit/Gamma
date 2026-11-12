@@ -10,7 +10,7 @@ public interface RecoveryKeyRepository {
 
   Optional<Instant> createdAt(UserId userId);
 
-  boolean use(UserId userId, RecoveryKey key);
+  boolean matches(UserId userId, RecoveryKey key);
 
   void delete(UserId userId);
 }
