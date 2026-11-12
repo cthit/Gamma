@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
@@ -36,6 +37,7 @@ public class UserEmailChangeFacade extends Facade {
   private final EmailChangeRepository emailChangeRepository;
   private final MailService mailService;
   private final ThrottlingService throttlingService;
+  private final RecentSignIn recentSignIn;
   private final String baseUrl;
 
   public UserEmailChangeFacade(
@@ -44,8 +46,10 @@ public class UserEmailChangeFacade extends Facade {
       EmailChangeRepository emailChangeRepository,
       MailService mailService,
       ThrottlingService throttlingService,
+      RecentSignIn recentSignIn,
       @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
+    this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
     this.emailChangeRepository = emailChangeRepository;
     this.mailService = mailService;
@@ -138,7 +142,7 @@ public class UserEmailChangeFacade extends Facade {
 
   private boolean isCurrentPassword(GammaUser me, String candidate) {
     if (!this.userRepository.hasPassword(me.id())) {
-      return AuthenticationExtractor.recentlySignedInWithPasskey();
+      return this.recentSignIn.isRecent();
     }
 
     UnencryptedPassword password;

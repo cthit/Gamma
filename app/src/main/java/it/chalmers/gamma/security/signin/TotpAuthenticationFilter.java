@@ -11,7 +11,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
@@ -26,7 +25,7 @@ public class TotpAuthenticationFilter extends AbstractAuthenticationProcessingFi
     setAuthenticationManager(authenticationManager);
     setMfaEnabled(true);
     setSecurityContextRepository(new HttpSessionSecurityContextRepository());
-    setSessionAuthenticationStrategy(new ChangeSessionIdAuthenticationStrategy());
+    setSessionAuthenticationStrategy(SignInSessionStrategy.create());
 
     SavedRequestAwareAuthenticationSuccessHandler successHandler =
         new SavedRequestAwareAuthenticationSuccessHandler();

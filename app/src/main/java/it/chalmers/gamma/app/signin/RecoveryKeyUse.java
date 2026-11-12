@@ -33,11 +33,14 @@ public class RecoveryKeyUse {
 
   @Transactional
   public Optional<Instant> use(UserId userId, RecoveryKey key) {
+    if (!key.isWellFormed()) {
+      return Optional.empty();
+    }
+
     this.userRepository.lockSignInMethods(userId);
 
     if (this.adminRepository.isAdmin(userId)
         || this.userRepository.isLocked(userId)
-        || !key.isWellFormed()
         || !this.recoveryKeyRepository.use(userId, key)) {
       return Optional.empty();
     }

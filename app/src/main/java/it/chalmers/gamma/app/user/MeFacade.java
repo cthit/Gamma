@@ -155,7 +155,7 @@ public class MeFacade extends Facade {
 
   private boolean isMe(GammaUser me, String password) {
     if (!this.userRepository.hasPassword(me.id())) {
-      return AuthenticationExtractor.recentlySignedInWithPasskey();
+      return this.recentSignIn.isRecent();
     }
 
     UnencryptedPassword unencryptedPassword;

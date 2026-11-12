@@ -9,13 +9,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 @Component
 public class SignInRequirements {
-
-  private static final String REQUEST_ATTRIBUTE = SignInRequirements.class.getName();
 
   private final AdminRepository adminRepository;
   private final PasskeyRepository passkeyRepository;
@@ -41,17 +37,8 @@ public class SignInRequirements {
       return Optional.empty();
     }
 
-    RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-    String key = REQUEST_ATTRIBUTE + "." + name;
-    if (attributes != null
-        && attributes.getAttribute(key, RequestAttributes.SCOPE_REQUEST)
-            instanceof UserSignInMethods cached) {
-      return Optional.of(cached);
-    }
-
-    UserSignInMethods methods;
     try {
-      methods =
+      return Optional.of(
           new UserSignInMethods(
               userId,
               this.adminRepository.isAdmin(userId),
@@ -60,21 +47,9 @@ public class SignInRequirements {
               this.totpRepository.isEnabled(userId),
               this.userRepository.isEmailRecoveryEnabled(userId),
               this.userRepository.isLocked(userId),
-              this.userRepository.sessionsRevokedAt(userId).orElse(null));
+              this.userRepository.sessionsRevokedAt(userId).orElse(null)));
     } catch (UserRepository.UserNotFoundException e) {
       return Optional.empty();
-    }
-
-    if (attributes != null) {
-      attributes.setAttribute(key, methods, RequestAttributes.SCOPE_REQUEST);
-    }
-    return Optional.of(methods);
-  }
-
-  public static void forget(String name) {
-    RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
-    if (attributes != null) {
-      attributes.removeAttribute(REQUEST_ATTRIBUTE + "." + name, RequestAttributes.SCOPE_REQUEST);
     }
   }
 

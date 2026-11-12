@@ -34,7 +34,6 @@ public class PasskeyRegistrationGuard {
 
     UserId userId = new UserId(UUID.fromString(authentication.getName()));
     this.userRepository.lockSignInMethods(userId);
-    SignInRequirements.forget(authentication.getName());
     if (!this.signInAuthorizationManagers.mayAddPasskeyNow(authentication)) {
       throw new IllegalStateException("Not allowed to add a passkey");
     }

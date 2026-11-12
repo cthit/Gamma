@@ -25,6 +25,7 @@ import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
 import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
 import it.chalmers.gamma.security.signin.SignInAuthorizationManagers;
 import it.chalmers.gamma.security.signin.SignInFactors;
+import it.chalmers.gamma.security.signin.SignInSessionStrategy;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import it.chalmers.gamma.security.signin.SignInStepEntryPoint;
 import it.chalmers.gamma.security.signin.TotpAuthenticationFilter;
@@ -58,7 +59,6 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
@@ -230,8 +230,7 @@ public class SecurityFiltersConfig {
         .addFilterAfter(
             new RecoveryKeyAuthenticationFilter(
                 new ProviderManager(
-                    new RecoveryKeyAuthenticationProvider(
-                        userRepository, recoveryKeyUse, throttlingService))),
+                    new RecoveryKeyAuthenticationProvider(userRepository, recoveryKeyUse))),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
@@ -308,8 +307,7 @@ public class SecurityFiltersConfig {
                     new ObjectPostProcessor<WebAuthnAuthenticationFilter>() {
                       @Override
                       public <O extends WebAuthnAuthenticationFilter> O postProcess(O filter) {
-                        filter.setSessionAuthenticationStrategy(
-                            new ChangeSessionIdAuthenticationStrategy());
+                        filter.setSessionAuthenticationStrategy(SignInSessionStrategy.create());
                         filter.setAuthenticationManager(
                             new ProviderManager(
                                 new FactorCheckedAtStartProvider(

@@ -9,7 +9,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 
@@ -21,7 +20,7 @@ public class RecoveryKeyAuthenticationFilter extends AbstractAuthenticationProce
     super(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, URL));
     setAuthenticationManager(authenticationManager);
     setSecurityContextRepository(new HttpSessionSecurityContextRepository());
-    setSessionAuthenticationStrategy(new ChangeSessionIdAuthenticationStrategy());
+    setSessionAuthenticationStrategy(SignInSessionStrategy.create());
 
     SimpleUrlAuthenticationSuccessHandler successHandler =
         new SimpleUrlAuthenticationSuccessHandler(SignInSetupSessions.SETUP_URL);

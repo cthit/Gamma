@@ -3,7 +3,6 @@ package it.chalmers.gamma.security.signin;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.signin.RecoveryKeyUse;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
-import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
@@ -24,19 +23,13 @@ public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider
   private static final Logger LOGGER =
       LoggerFactory.getLogger(RecoveryKeyAuthenticationProvider.class);
 
-  private static final int MAX_ATTEMPTS_PER_DAY = 10;
-
   private final UserRepository userRepository;
   private final RecoveryKeyUse recoveryKeyUse;
-  private final ThrottlingService throttlingService;
 
   public RecoveryKeyAuthenticationProvider(
-      UserRepository userRepository,
-      RecoveryKeyUse recoveryKeyUse,
-      ThrottlingService throttlingService) {
+      UserRepository userRepository, RecoveryKeyUse recoveryKeyUse) {
     this.userRepository = userRepository;
     this.recoveryKeyUse = recoveryKeyUse;
-    this.throttlingService = throttlingService;
   }
 
   @Override
@@ -47,12 +40,6 @@ public class RecoveryKeyAuthenticationProvider implements AuthenticationProvider
     UserId userId =
         find(request.getPrincipal())
             .orElseThrow(() -> new BadCredentialsException("Wrong cid, email or recovery key"));
-
-    if (!this.throttlingService.canProceed(
-        "recovery-key:" + userId.value(), MAX_ATTEMPTS_PER_DAY)) {
-      LOGGER.info("Throttled the recovery key sign ins of user {}", userId.value());
-      throw new BadCredentialsException("Too many attempts");
-    }
 
     Instant usedAt =
         this.recoveryKeyUse

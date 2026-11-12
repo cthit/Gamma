@@ -22,7 +22,6 @@ public class RecentSignInCheck implements RecentSignIn {
       return false;
     }
 
-    SignInRequirements.forget(authentication.getName());
     AuthorizationResult result =
         this.signInAuthorizationManagers.recentlySignedIn().authorize(() -> authentication, null);
     return result != null && result.isGranted();
