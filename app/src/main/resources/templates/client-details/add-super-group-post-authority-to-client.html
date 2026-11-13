@@ -1,8 +1,1 @@
-<div class="authority-super-group-post-row">
-    <select class="input input--select superGroupId" required aria-label="Super group of post">
-        <option th:each="superGroup : ${superGroups}" th:value="${superGroup.key}" th:text="${superGroup.value}"></option>
-    </select>
-    <select class="input input--select postId" required aria-label="Post">
-        <option th:each="post : ${posts}" th:value="${post.key}" th:text="${post.value}"></option>
-    </select>
-</div>
+<div th:replace="~{client-details/authority-members :: super-group-post-row(selectedSuperGroup=null, selectedPost=null, index=null)}"></div>

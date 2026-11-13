@@ -8,6 +8,8 @@ import {
 import { uniqueLabel } from "../../helpers/strings";
 import { articleByHeading, csrfTokenOf } from "../../helpers/a11y";
 
+const PBEESLY_ID = "ec8987d7-4087-461d-bed5-9365086b6e3b";
+
 test("another user cannot read, reset, delete, or change authorities on another user's client", async ({
   page,
   browser,
@@ -50,6 +52,16 @@ test("another user cannot read, reset, delete, or change authorities on another 
         path: `/clients/${client.clientUid}/authority`,
         method: "POST",
         form: { authority: "intruder" },
+      },
+      {
+        path: `/clients/${client.clientUid}/authority/${authorityName}/edit`,
+        method: "GET",
+        form: {},
+      },
+      {
+        path: `/clients/${client.clientUid}/authority/${authorityName}`,
+        method: "POST",
+        form: { _method: "put", "users[0]": PBEESLY_ID },
       },
       {
         path: `/clients/${client.clientUid}/authority/${authorityName}`,
@@ -95,6 +107,11 @@ test("another user cannot read, reset, delete, or change authorities on another 
   await expect(
     page.getByRole("heading", { level: 2, name: "intruder", exact: true }),
   ).toHaveCount(0);
+  await expect(
+    articleByHeading(page, authorityName).getByText("No users", {
+      exact: true,
+    }),
+  ).toBeVisible();
   // The original secret still authenticates, proving a denied reset did not mutate it.
   const grant = await authorizeClientWithPkce(
     page,
