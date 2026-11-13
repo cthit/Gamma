@@ -153,6 +153,7 @@ public class MeFacade extends Facade {
             .distinct()
             .sorted(String::compareToIgnoreCase)
             .toList(),
+        this.dataDeletionRequestRepository.hasClearedFor(me.id()),
         ownerDTOs);
   }
 
@@ -274,6 +275,7 @@ public class MeFacade extends Facade {
       String cid,
       String firstName,
       List<String> officialClients,
+      boolean hasClearedDeletionRecords,
       List<UnofficialClientOwnerDTO> unofficialClientOwners) {}
 
   private record OwnerContact(GammaUser owner, Email email, List<String> clients) {}

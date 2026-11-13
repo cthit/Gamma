@@ -67,6 +67,7 @@ public class DeleteYourAccountController {
     MeFacade.AccountDeletionOverviewDTO overview = this.meFacade.getAccountDeletionOverview();
 
     mv.addObject("officialClients", overview.officialClients());
+    mv.addObject("hasClearedDeletionRecords", overview.hasClearedDeletionRecords());
     mv.addObject(
         "clientOwners",
         overview.unofficialClientOwners().stream()

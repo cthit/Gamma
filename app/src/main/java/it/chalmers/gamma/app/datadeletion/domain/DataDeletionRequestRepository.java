@@ -22,6 +22,8 @@ public interface DataDeletionRequestRepository {
 
   List<DataDeletionRequest> getOpenFor(UserId userId);
 
+  boolean hasClearedFor(UserId userId);
+
   void clear(DataDeletionRequestId id, UserId clearedBy)
       throws RequestNotFoundException, AlreadyClearedException;
 

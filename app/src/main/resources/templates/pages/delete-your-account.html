@@ -20,6 +20,14 @@
                 Your user id and the id of the client are then kept for one year, as a record that your data was deleted.
             </p>
         </section>
+        <section th:if="${hasClearedDeletionRecords}" aria-labelledby="deletion-records-heading">
+            <h3 id="deletion-records-heading">Records of deleted data</h3>
+            <p>
+                Gamma's administrators have already confirmed that some official clients deleted the data they had about you.
+                As a record of that, Gamma keeps your user id and the id of each of those clients for one year after it was confirmed.
+                These records are kept even if you delete your account.
+            </p>
+        </section>
         <section th:if="${!clientOwners.isEmpty()}" aria-labelledby="unofficial-clients-heading">
             <h3 id="unofficial-clients-heading">Clients made by other users</h3>
             <p>
