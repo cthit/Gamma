@@ -13,19 +13,22 @@
                 <li th:each="client : ${officialClients}" th:text="${client}"></li>
             </ul>
             <p>
-                Gamma's administrators will make sure that these clients delete the data they have about you.
-                Until they have confirmed that for a client, Gamma keeps your user id, your cid and the name of that client.
-                The deadline for this is one month after you delete your account.
-                When they have confirmed it, your cid and the client name are removed.
-                Your user id and the id of the client are then kept for one year, as a record that your data was deleted.
+                When you delete your account, Gamma's administrators make sure that these clients delete the data they have about you.
+                They have one month to do this.
             </p>
         </section>
-        <section th:if="${hasClearedDeletionRecords}" aria-labelledby="deletion-records-heading">
-            <h3 id="deletion-records-heading">Records of deleted data</h3>
-            <p>
-                Gamma's administrators have already confirmed that some official clients deleted the data they had about you.
-                As a record of that, Gamma keeps your user id and the id of each of those clients for one year after it was confirmed.
-                These records are kept even if you delete your account.
+        <section th:if="${!officialClients.isEmpty() or hasClearedDeletionRecords}" aria-labelledby="kept-data-heading">
+            <h3 id="kept-data-heading">What Gamma keeps after you delete your account</h3>
+            <p th:if="${!officialClients.isEmpty()}">
+                Until a client above has deleted your data, Gamma keeps your user id, your cid and the name of the client.
+                After that, Gamma keeps a record that your data was deleted, for one year.
+                The record has your user id, the id of the client, why your data had to be deleted and the dates of what happened.
+                It doesn't have your cid or the name of the client.
+            </p>
+            <p th:if="${hasClearedDeletionRecords}">
+                You have retracted your approval of official clients before, and those clients have deleted the data they had about you.
+                Gamma keeps a record that your data was deleted for each of them, for one year after it was confirmed.
+                The record has your user id, the id of the client, why your data had to be deleted and the dates of what happened.
             </p>
         </section>
         <section th:if="${!clientOwners.isEmpty()}" aria-labelledby="unofficial-clients-heading">

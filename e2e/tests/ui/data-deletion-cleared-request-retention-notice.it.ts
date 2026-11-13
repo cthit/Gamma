@@ -37,7 +37,7 @@ test("given a cleared data deletion request when visiting the delete account pag
 
   await page.goto(`${gamma.url}/delete-your-account`, { timeout: 30000 });
   await expect(
-    page.getByRole("heading", { name: "Records of deleted data" }),
+    page.getByText("You have retracted your approval of official clients"),
   ).toHaveCount(0);
   await logout(page);
 
@@ -63,9 +63,11 @@ test("given a cleared data deletion request when visiting the delete account pag
     page.getByRole("heading", { name: "Official clients you have approved" }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole("heading", { name: "Records of deleted data" }),
+    page.getByRole("heading", {
+      name: "What Gamma keeps after you delete your account",
+    }),
   ).toBeVisible({ timeout: 10000 });
   await expect(
-    page.getByText("These records are kept even if you delete your account."),
+    page.getByText("You have retracted your approval of official clients"),
   ).toBeVisible();
 });
