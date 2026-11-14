@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import java.lang.reflect.Proxy;
@@ -80,7 +81,17 @@ class AdminRecoveryAuthorizationTest {
         null,
         null,
         null,
-        () -> recent,
+        new RecentSignIn() {
+          @Override
+          public boolean isRecent() {
+            return recent;
+          }
+
+          @Override
+          public boolean isCurrent() {
+            throw new AssertionError("Recovery must require recent confirmation");
+          }
+        },
         null,
         null,
         null,

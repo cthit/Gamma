@@ -51,7 +51,7 @@ public class PasskeyConfig {
       @Value("${application.base-url}") String baseUrl) {
     URI base = URI.create(baseUrl);
     Webauthn4JRelyingPartyOperations operations =
-        new Webauthn4JRelyingPartyOperations(
+        new UserBoundRelyingPartyOperations(
             userEntities,
             userCredentials,
             PublicKeyCredentialRpEntity.builder().id(base.getHost()).name("Gamma").build(),

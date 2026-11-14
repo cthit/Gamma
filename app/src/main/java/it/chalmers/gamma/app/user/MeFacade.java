@@ -277,8 +277,13 @@ public class MeFacade extends Facade {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
+      // Recovery may finish while this request waits. Refresh and check credentials only
+      // after acquiring the same lock used by recovery and credential changes.
+      this.userRepository.lockSignInMethods(me.id());
+      if (!this.recentSignIn.isCurrent()) {
+        throw new AccessGuard.AccessDeniedException();
+      }
       if (isMe(me, password)) {
-        this.userRepository.lockForUpdate(me.id());
         if (!this.clientRepository.getAllUserClients(me.id()).isEmpty() && !clientDataDeleted) {
           throw new ClientDataAcknowledgementRequiredException();
         }

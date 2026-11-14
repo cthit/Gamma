@@ -16,6 +16,14 @@ public class RecentSignInCheck implements RecentSignIn {
   }
 
   @Override
+  public boolean isCurrent() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    AuthorizationResult result =
+        this.signInAuthorizationManagers.signedInUser().authorize(() -> authentication, null);
+    return result != null && result.isGranted();
+  }
+
+  @Override
   public boolean isRecent() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null) {
