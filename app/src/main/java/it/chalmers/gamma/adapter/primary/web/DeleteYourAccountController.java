@@ -19,7 +19,7 @@ public class DeleteYourAccountController {
     this.meFacade = meFacade;
   }
 
-  public record DeleteYourAccountForm(String password) {}
+  public record DeleteYourAccountForm(String password, boolean clientDataDeleted) {}
 
   public record ClientOwnerContact(
       String name, String email, List<String> clients, String mailto) {}
@@ -36,7 +36,7 @@ public class DeleteYourAccountController {
       mv.addObject("page", "pages/delete-your-account");
     }
 
-    mv.addObject("form", new DeleteYourAccountForm(""));
+    mv.addObject("form", new DeleteYourAccountForm("", false));
     addClients(mv);
 
     return mv;
@@ -46,39 +46,50 @@ public class DeleteYourAccountController {
   public ModelAndView deleteYourAccount(
       DeleteYourAccountForm form, final BindingResult bindingResult) {
     try {
-      this.meFacade.deleteMe(form.password);
+      this.meFacade.deleteMe(form.password, form.clientDataDeleted);
+    } catch (MeFacade.ClientDataAcknowledgementRequiredException e) {
+      bindingResult.addError(
+          new FieldError(
+              "form",
+              "clientDataDeleted",
+              "Confirm that you have deleted the personal data collected through your clients."));
+      return invalidForm(bindingResult);
     } catch (IllegalArgumentException e) {
       bindingResult.addError(new FieldError("form", "password", "Incorrect password"));
 
-      ModelAndView mv = new ModelAndView();
-
-      mv.setViewName("pages/delete-your-account");
-      mv.addObject("form", new DeleteYourAccountForm(""));
-      mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
-      addClients(mv);
-
-      return mv;
+      return invalidForm(bindingResult);
     }
 
     return new ModelAndView("redirect:/login?deleted");
   }
 
+  private ModelAndView invalidForm(BindingResult bindingResult) {
+    ModelAndView mv = new ModelAndView("pages/delete-your-account");
+    mv.addObject("form", new DeleteYourAccountForm("", false));
+    mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
+    addClients(mv);
+    return mv;
+  }
+
   private void addClients(ModelAndView mv) {
     MeFacade.AccountDeletionOverviewDTO overview = this.meFacade.getAccountDeletionOverview();
 
+    mv.addObject("ownedClients", overview.ownedClients());
     mv.addObject("officialClients", overview.officialClients());
     mv.addObject("hasClearedDeletionRecords", overview.hasClearedDeletionRecords());
-    mv.addObject(
-        "clientOwners",
-        overview.unofficialClientOwners().stream()
-            .map(owner ->
-                new ClientOwnerContact(
-                    owner.name(),
-                    owner.email(),
-                    owner.clients(),
-                    MailtoLink.href(
-                        owner.email(), subject(owner.clients()), body(overview, owner))))
-            .toList());
+    mv.addObject("clientOwners", clientOwnerContacts(overview));
+  }
+
+  static List<ClientOwnerContact> clientOwnerContacts(
+      MeFacade.AccountDeletionOverviewDTO overview) {
+    return overview.unofficialClientOwners().stream()
+        .map(owner ->
+            new ClientOwnerContact(
+                owner.name(),
+                owner.email(),
+                owner.clients(),
+                MailtoLink.href(owner.email(), subject(owner.clients()), body(overview, owner))))
+        .toList();
   }
 
   private static String subject(List<String> clients) {
@@ -91,7 +102,7 @@ public class DeleteYourAccountController {
     return """
     %s
 
-    I am deleting my Gamma account. Please delete all data you have about me in %s.
+    Please delete all personal data you have about me in %s.
 
     My Gamma user id is %s and my cid is %s.
 

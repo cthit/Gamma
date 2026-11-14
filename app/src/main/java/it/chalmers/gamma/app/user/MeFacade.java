@@ -19,6 +19,7 @@ import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -46,6 +47,7 @@ public class MeFacade extends Facade {
   private final ClientRepository clientRepository;
   private final GroupRepository groupRepository;
   private final ImageService imageService;
+  private final GammaAuthorizationRepository authorizations;
   private final DataDeletionRecorder dataDeletionRecorder;
   private final DataDeletionRequestRepository dataDeletionRequestRepository;
 
@@ -55,6 +57,7 @@ public class MeFacade extends Facade {
       ClientRepository clientRepository,
       GroupRepository groupRepository,
       ImageService imageService,
+      GammaAuthorizationRepository authorizations,
       DataDeletionRecorder dataDeletionRecorder,
       DataDeletionRequestRepository dataDeletionRequestRepository) {
     super(accessGuard);
@@ -62,6 +65,7 @@ public class MeFacade extends Facade {
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
     this.imageService = imageService;
+    this.authorizations = authorizations;
     this.dataDeletionRecorder = dataDeletionRecorder;
     this.dataDeletionRequestRepository = dataDeletionRequestRepository;
   }
@@ -88,7 +92,33 @@ public class MeFacade extends Facade {
         instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
       this.dataDeletionRecorder.recordApprovalRevoked(me, new ClientUid(clientUid));
+      if (this.clientRepository.isApprovedByUser(me.id(), new ClientUid(clientUid))) {
+        this.clientRepository
+            .get(new ClientUid(clientUid))
+            .filter(client -> client.owner() instanceof ClientUserOwner)
+            .ifPresent(client ->
+                this.clientRepository.rememberWithdrawnContact(me.id(), client.clientUid()));
+      }
       this.clientRepository.deleteUserApproval(new ClientUid(clientUid), me.id());
+      this.authorizations.revokeForUser(me.id().value().toString(), clientUid.toString());
+    }
+  }
+
+  public List<UserApprovedClientDTO> getWithdrawnContacts() {
+    this.accessGuard.require(isSignedIn());
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn) {
+      return this.clientRepository.getWithdrawnContacts(signedIn.gammaUser().id()).stream()
+          .map(UserApprovedClientDTO::new)
+          .toList();
+    }
+    throw new IllegalCallerException();
+  }
+
+  public void dismissWithdrawnContact(UUID clientUid) {
+    this.accessGuard.require(isSignedIn());
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn) {
+      this.clientRepository.dismissWithdrawnContact(
+          signedIn.gammaUser().id(), new ClientUid(clientUid));
     }
   }
 
@@ -104,7 +134,12 @@ public class MeFacade extends Facade {
     List<String> officialClients = new ArrayList<>();
     Map<UserId, OwnerContact> owners = new LinkedHashMap<>();
 
-    for (Client client : this.clientRepository.getClientsByUserApproved(me.id())) {
+    for (Client client :
+        Stream.concat(
+                this.clientRepository.getClientsByUserApproved(me.id()).stream(),
+                this.clientRepository.getWithdrawnContacts(me.id()).stream())
+            .distinct()
+            .toList()) {
       if (client.owner() instanceof ClientOwnerOfficial) {
         officialClients.add(client.prettyName().value());
       } else if (client.owner() instanceof ClientUserOwner(UserId ownerId)) {
@@ -154,7 +189,11 @@ public class MeFacade extends Facade {
             .sorted(String::compareToIgnoreCase)
             .toList(),
         this.dataDeletionRequestRepository.hasClearedFor(me.id()),
-        ownerDTOs);
+        ownerDTOs,
+        this.clientRepository.getAllUserClients(me.id()).stream()
+            .map(client -> client.prettyName().value())
+            .sorted(String::compareToIgnoreCase)
+            .toList());
   }
 
   public MeDTO getMe() {
@@ -214,11 +253,15 @@ public class MeFacade extends Facade {
   }
 
   @Transactional
-  public void deleteMe(String password) {
+  public void deleteMe(String password, boolean clientDataDeleted) {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
       if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
+        this.userRepository.lockForUpdate(me.id());
+        if (!this.clientRepository.getAllUserClients(me.id()).isEmpty() && !clientDataDeleted) {
+          throw new ClientDataAcknowledgementRequiredException();
+        }
         try {
           this.dataDeletionRecorder.recordAccountDeletion(me);
           this.userRepository.delete(me.id());
@@ -231,6 +274,7 @@ public class MeFacade extends Facade {
     }
   }
 
+  @Transactional
   public void setAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
@@ -245,14 +289,17 @@ public class MeFacade extends Facade {
     }
   }
 
+  @Transactional
   public void deleteAvatar() throws ImageService.ImageCouldNotBeRemovedException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser user = userAuthentication.gammaUser();
       this.userRepository.save(user.withExtended(user.extended().withAvatarUri(null)));
-      this.imageService.removeImage(user.extended().avatarUri());
+      // Physical removal is queued transactionally by the avatar-row trigger.
     }
   }
+
+  public static class ClientDataAcknowledgementRequiredException extends RuntimeException {}
 
   public record UserApprovedClientDTO(
       UUID clientUid,
@@ -276,7 +323,8 @@ public class MeFacade extends Facade {
       String firstName,
       List<String> officialClients,
       boolean hasClearedDeletionRecords,
-      List<UnofficialClientOwnerDTO> unofficialClientOwners) {}
+      List<UnofficialClientOwnerDTO> unofficialClientOwners,
+      List<String> ownedClients) {}
 
   private record OwnerContact(GammaUser owner, Email email, List<String> clients) {}
 

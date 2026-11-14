@@ -39,8 +39,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-oauth2-authorization-server",
 
             // Spring session
-            "org.springframework.session:spring-session-core",
-            "org.springframework.session:spring-session-data-redis",
+            "org.springframework.boot:spring-boot-starter-session-data-redis",
 
             // Redis
             "org.springframework.data:spring-data-redis",

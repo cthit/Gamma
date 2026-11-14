@@ -9,14 +9,10 @@ import it.chalmers.gamma.app.datadeletion.domain.DataDeletionRequestRepository;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DataDeletionRecorder {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataDeletionRecorder.class);
 
   private final DataDeletionRequestRepository dataDeletionRequestRepository;
   private final ClientRepository clientRepository;
@@ -59,11 +55,6 @@ public class DataDeletionRecorder {
   private void create(GammaUser user, Client client, DataDeletionReason reason) {
     this.dataDeletionRequestRepository.create(
         user.id(), user.cid(), client.clientUid(), client.prettyName(), reason);
-    LOGGER.info(
-        "Created a data deletion request for the user {} and the official client {} ({})",
-        user.id().value(),
-        client.clientUid().value(),
-        reason);
   }
 
   private static boolean isOfficial(Client client) {

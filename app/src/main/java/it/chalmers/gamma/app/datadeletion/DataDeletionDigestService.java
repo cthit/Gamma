@@ -113,9 +113,11 @@ public class DataDeletionDigestService {
     body.append(
         """
         A user has deleted their account, or retracted their approval of an official client. \
-        Each request must be handled within one month, as required by the GDPR. Make sure the \
-        official client has deleted the data it has about the user, then mark the request as \
-        cleared in Gamma.
+        Erase data without undue delay where erasure applies. Respond to the user within one month. \
+        The dates below are internal response targets, not permission to delay erasure. Escalate \
+        exceptions or extensions to ita@chalmers.it before the response deadline. Verify erasure \
+        with the official client before clearing a request. Reapproval does not cancel the request. \
+        Do not clear a request just because it is old, or because a client cannot be reached.
 
         Deadlines:
         """);

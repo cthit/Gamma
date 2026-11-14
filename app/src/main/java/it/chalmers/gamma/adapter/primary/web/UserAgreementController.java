@@ -8,7 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class UserAgreementController {
 
-  @GetMapping("/user-agreement")
+  @GetMapping({"/user-agreement", "/privacy"})
   public ModelAndView getUserAgreement(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest) {
     ModelAndView mv = new ModelAndView();

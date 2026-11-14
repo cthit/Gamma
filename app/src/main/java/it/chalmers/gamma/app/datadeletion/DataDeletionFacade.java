@@ -21,14 +21,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DataDeletionFacade extends Facade {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(DataDeletionFacade.class);
 
   private static final int MAX_RECIPIENT_LENGTH = 100;
 
@@ -80,7 +76,8 @@ public class DataDeletionFacade extends Facade {
     if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication admin) {
       UserId adminId = admin.gammaUser().id();
       this.dataDeletionRequestRepository.clear(new DataDeletionRequestId(requestId), adminId);
-      LOGGER.info("The admin {} cleared the data deletion request {}", adminId.value(), requestId);
+      // The transactional request row is the audit record; do not duplicate user/request
+      // associations in logs with a separate, potentially longer retention period.
     }
   }
 

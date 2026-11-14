@@ -73,6 +73,7 @@ public class GammaAuthorizationConsentService implements OAuth2AuthorizationCons
     UserId userId = UserId.valueOf(authorizationConsent.getPrincipalName());
     this.userRepository.lockForUpdate(userId);
     this.clientRepository.addClientApproval(userId, client.clientUid());
+    this.clientRepository.dismissWithdrawnContact(userId, client.clientUid());
     this.dataDeletionRecorder.recordReApproval(userId, client.clientUid());
   }
 

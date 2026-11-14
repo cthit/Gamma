@@ -40,8 +40,10 @@ spring:
         enabled: false
       path: "/error"
   session:
-    store-type: "redis"
     timeout: "${SESSION_TIMEOUT:43200}"
+    data:
+      redis:
+        repository-type: "indexed"
   mvc:
     hiddenmethod:
       filter:

@@ -34,6 +34,11 @@ public class MyAcceptedClientsController {
     }
 
     mv.addObject("acceptedClients", acceptedClients);
+    mv.addObject("withdrawnContacts", this.meFacade.getWithdrawnContacts());
+    mv.addObject(
+        "clientOwners",
+        DeleteYourAccountController.clientOwnerContacts(
+            this.meFacade.getAccountDeletionOverview()));
 
     return mv;
   }
@@ -44,6 +49,18 @@ public class MyAcceptedClientsController {
       @PathVariable("uid") UUID clientUid) {
     this.meFacade.deleteUserApproval(clientUid);
 
-    return new ModelAndView("partial/retracted-accepted-client");
+    return refreshedPage();
+  }
+
+  @DeleteMapping("/me/withdrawn-contacts/{uid}")
+  public ModelAndView dismissContact(@PathVariable("uid") UUID clientUid) {
+    this.meFacade.dismissWithdrawnContact(clientUid);
+    return refreshedPage();
+  }
+
+  private ModelAndView refreshedPage() {
+    ModelAndView mv = getMyAcceptedClients(true);
+    mv.setViewName("pages/my-accepted-clients :: main");
+    return mv;
   }
 }

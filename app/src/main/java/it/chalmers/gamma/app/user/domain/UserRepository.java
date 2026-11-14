@@ -6,6 +6,9 @@ import java.util.Optional;
 
 public interface UserRepository {
 
+  /** Authentication-state check without loading a profile or applying profile read permissions. */
+  boolean isActive(UserId userId);
+
   void create(GammaUser user, UnencryptedPassword password)
       throws UserAlreadyExistsException, CidAlreadyInUseException, EmailAlreadyInUseException;
 

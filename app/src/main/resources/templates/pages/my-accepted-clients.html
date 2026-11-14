@@ -1,13 +1,28 @@
 <header th:replace="~{common/header}"></header>
-<main id="main" class="app__main">
+<main th:fragment="main" id="main" class="app__main">
     <div class="toolbar">
         <h2 class="toolbar__title" id="page-title">Your accepted clients</h2>
     </div>
     <p>
-        Here are the clients that you have agreed to shared your data from Gamma with.
+        Here are the clients that you have agreed to share your data from Gamma with.
         You have the right to retract that approval at any time.
         If you have any questions, please do not hesitate to contact <a href="mailto:ita@chalmers.it">ita@chalmers.it</a>.
     </p>
+    <p>Retracting approval stops further access through that approval and asks Gamma's admins to follow up on erasure at official clients. It does not erase copies a client already holds. Erasure, where applicable, must happen without undue delay. Reapproving a client does not cancel an outstanding erasure request.</p>
+    <p>For official clients, Gamma keeps your CID, user ID, client name and ID, reason and request dates until admins resolve the request. On clearance it removes your CID and the client name, and keeps the remaining identifiers, dates and clearing admin for 365 days to track the handling of your request. These records are personal data. <a href="/privacy">Read the privacy information</a>.</p>
+    <section th:if="${!clientOwners.isEmpty()}" aria-labelledby="client-contacts-heading">
+        <h3 id="client-contacts-heading">Contact client owners about your data</h3>
+        <p>For clients made by other users, email the owner to request erasure of previously shared data. Gamma cannot verify that they have erased it. Save these contact details before deleting your account.</p>
+        <ul><li th:each="owner : ${clientOwners}"><strong th:text="${#strings.listJoin(owner.clients(), ', ')}"></strong>: <a th:href="${owner.mailto()}" th:text="|Email ${owner.email()}|"></a></li></ul>
+        <p>After withdrawal, Gamma keeps a contact reminder until you dismiss it, reapprove the client, or your account or the client is deleted. Dismissing the reminder does not send an erasure request or confirm erasure.</p>
+        <ul><li th:each="contact : ${withdrawnContacts}">
+            <span th:text="${contact.name()}"></span>
+            <form th:data-hx-post="|/me/withdrawn-contacts/${contact.clientUid()}|" data-hx-target="#main" data-hx-swap="outerHTML">
+                <div th:replace="~{common/form-csrf}"></div><input type="hidden" name="_method" value="delete" />
+                <button th:text="|Dismiss contact reminder for ${contact.name()}|" data-loading-disable></button>
+            </form>
+        </li></ul>
+    </section>
     <table class="table" aria-labelledby="page-title">
         <thead>
         <tr>
@@ -21,7 +36,7 @@
             <td th:text="${acceptedClient.name()}"></td>
             <td th:text="${acceptedClient.enDescription()}"></td>
             <td class="table__cell table__cell--end">
-                <form th:data-hx-post="|/me/accepted-clients/${acceptedClient.clientUid()}|" data-hx-target="closest tr" data-hx-swap="delete">
+                <form th:data-hx-post="|/me/accepted-clients/${acceptedClient.clientUid()}|" data-hx-target="#main" data-hx-swap="outerHTML">
                     <div th:replace="~{common/form-csrf}"></div>
                     <input type="hidden" name="_method" value="delete" />
                     <button class="button button--danger" data-loading-disable>Retract approval</button>

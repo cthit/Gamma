@@ -73,9 +73,22 @@ public class LocalImageService implements ImageService {
   }
 
   public void removeImage(ImageUri imageUri) throws ImageCouldNotBeRemovedException {
-    File f = new File(relativePath + imageUri.value());
-    if (!f.delete()) {
-      LOGGER.error("Could not delete the file: " + imageUri);
+    Path directory = Path.of(this.relativePath).toAbsolutePath().normalize();
+    Path file = directory.resolve(imageUri.value()).normalize();
+    if (!file.startsWith(directory) || file.equals(directory)) {
+      throw new ImageCouldNotBeRemovedException();
+    }
+    try {
+      Files.deleteIfExists(file);
+      // The UUID directory is private to this upload. Keep it if it is not empty.
+      if (!file.getParent().equals(directory)) {
+        try {
+          Files.deleteIfExists(file.getParent());
+        } catch (java.nio.file.DirectoryNotEmptyException ignored) {
+          // Another file still uses this directory.
+        }
+      }
+    } catch (IOException e) {
       throw new ImageCouldNotBeRemovedException();
     }
   }
