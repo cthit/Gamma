@@ -53,6 +53,9 @@
                 <p class="callout callout--success" th:if="${passwordReset}">
                     Your password was reset.
                 </p>
+                <p class="callout callout--success" th:if="${securityChanged}">
+                    Your sign-in settings changed and your previous Gamma sessions were revoked. Sign in again to continue.
+                </p>
 
                 <p class="callout callout--danger" th:if="${setupExpired}">
                     Setting up how you sign in has ended, since it took too long or your account changed. Start over through the forgot password page or with your recovery key.

@@ -25,6 +25,7 @@ import java.util.OptionalLong;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,6 +39,7 @@ public class SignInMethodsFacade extends Facade {
   private final TotpRepository totpRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
   private final RecentSignIn recentSignIn;
+  private final ApplicationEventPublisher events;
 
   public SignInMethodsFacade(
       AccessGuard accessGuard,
@@ -46,7 +48,8 @@ public class SignInMethodsFacade extends Facade {
       PasskeyRepository passkeyRepository,
       TotpRepository totpRepository,
       RecoveryKeyRepository recoveryKeyRepository,
-      RecentSignIn recentSignIn) {
+      RecentSignIn recentSignIn,
+      ApplicationEventPublisher events) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
@@ -54,6 +57,7 @@ public class SignInMethodsFacade extends Facade {
     this.passkeyRepository = passkeyRepository;
     this.totpRepository = totpRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
+    this.events = events;
   }
 
   public SignInMethodsDTO getMine() {
@@ -79,7 +83,7 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public void enableTotp(TotpSecret secret, long usedTimeStep, RecoveryKey newRecoveryKey)
+  public boolean enableTotp(TotpSecret secret, long usedTimeStep, RecoveryKey newRecoveryKey)
       throws RecoveryKeyRequiredException {
     this.accessGuard.require(isSignedIn());
 
@@ -94,8 +98,14 @@ public class SignInMethodsFacade extends Facade {
       throw new RecoveryKeyRequiredException();
     }
 
+    boolean replacing = this.totpRepository.isEnabled(me);
     this.totpRepository.save(me, secret, usedTimeStep);
+    if (replacing) {
+      this.userRepository.revokeSessions(me);
+    }
+    changed(me, "Your authenticator app was set up or replaced.");
     LOGGER.info("User {} set up an authenticator app", me.value());
+    return replacing;
   }
 
   public boolean totpSetupNeedsRecoveryKey() {
@@ -111,6 +121,8 @@ public class SignInMethodsFacade extends Facade {
     lockAndRecheck(me);
     this.totpRepository.delete(me);
     removeRecoveryKeyIfUnneeded(me);
+    this.userRepository.revokeSessions(me);
+    changed(me, "Your authenticator app was removed.");
     LOGGER.info("User {} removed their authenticator app", me.value());
   }
 
@@ -131,6 +143,8 @@ public class SignInMethodsFacade extends Facade {
     }
 
     if (this.passkeyRepository.delete(me, credentialId)) {
+      this.userRepository.revokeSessions(me);
+      changed(me, "A passkey was removed from your account.");
       LOGGER.info("User {} removed a passkey", me.value());
     }
   }
@@ -148,6 +162,8 @@ public class SignInMethodsFacade extends Facade {
     this.userRepository.removePassword(me);
     this.totpRepository.delete(me);
     removeRecoveryKeyIfUnneeded(me);
+    this.userRepository.revokeSessions(me);
+    changed(me, "Your password was removed.");
     LOGGER.info("User {} removed their password", me.value());
   }
 
@@ -159,6 +175,7 @@ public class SignInMethodsFacade extends Facade {
     lockAndRecheck(me);
     requireNotAdmin(me);
     this.recoveryKeyRepository.save(me, key);
+    changed(me, "Your recovery key was replaced.");
     LOGGER.info("User {} created a new recovery key", me.value());
   }
 
@@ -171,6 +188,7 @@ public class SignInMethodsFacade extends Facade {
     requireNotAdmin(me);
     this.recoveryKeyRepository.save(me, newRecoveryKey);
     this.userRepository.setEmailRecoveryEnabled(me, false);
+    changed(me, "Email recovery was turned off and a new recovery key was saved.");
     LOGGER.info("User {} turned off email recovery", me.value());
   }
 
@@ -182,6 +200,7 @@ public class SignInMethodsFacade extends Facade {
     lockAndRecheck(me);
     this.userRepository.setEmailRecoveryEnabled(me, true);
     removeRecoveryKeyIfUnneeded(me);
+    changed(me, "Email recovery was turned on.");
     LOGGER.info("User {} turned on email recovery", me.value());
   }
 
@@ -207,6 +226,9 @@ public class SignInMethodsFacade extends Facade {
     this.recoveryKeyRepository.delete(userId);
     this.userRepository.setEmailRecoveryEnabled(userId, true);
     this.userRepository.revokeSessions(userId);
+    changed(
+        userId,
+        "An admin reset how you sign in. Your sessions were revoked and email recovery is on.");
 
     LOGGER.warn(
         "Admin {} reset how the user {} signs in", me().id().value(), userIdValue.toString());
@@ -236,6 +258,10 @@ public class SignInMethodsFacade extends Facade {
     if (!this.recentSignIn.isRecent()) {
       throw new AccessGuard.AccessDeniedException();
     }
+  }
+
+  private void changed(UserId userId, String description) {
+    this.events.publishEvent(new SignInChanged(userId, description));
   }
 
   private boolean userIsAdmin(UserId userId) {

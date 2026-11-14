@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,18 +22,21 @@ public class RecoveryKeyUse {
   private final RecoveryKeyRepository recoveryKeyRepository;
   private final TotpRepository totpRepository;
   private final PasskeyRepository passkeyRepository;
+  private final ApplicationEventPublisher events;
 
   public RecoveryKeyUse(
       UserRepository userRepository,
       AdminRepository adminRepository,
       RecoveryKeyRepository recoveryKeyRepository,
       TotpRepository totpRepository,
-      PasskeyRepository passkeyRepository) {
+      PasskeyRepository passkeyRepository,
+      ApplicationEventPublisher events) {
     this.userRepository = userRepository;
     this.adminRepository = adminRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
     this.totpRepository = totpRepository;
     this.passkeyRepository = passkeyRepository;
+    this.events = events;
   }
 
   @Transactional
@@ -55,6 +59,10 @@ public class RecoveryKeyUse {
       this.userRepository.removePassword(userId);
     }
     this.userRepository.revokeSessions(userId);
+    this.events.publishEvent(
+        new SignInChanged(
+            userId,
+            "Your recovery key was used. Your sign-in credentials and sessions were revoked."));
 
     Instant revokedAt = this.userRepository.sessionsRevokedAt(userId).orElseThrow();
     return Optional.of(revokedAt.plus(1, ChronoUnit.MILLIS));

@@ -13,6 +13,7 @@ import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.signin.SignInChanged;
 import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,6 +37,7 @@ public class MeFacade extends Facade {
   private final GroupRepository groupRepository;
   private final ImageService imageService;
   private final RecentSignIn recentSignIn;
+  private final ApplicationEventPublisher events;
 
   public MeFacade(
       AccessGuard accessGuard,
@@ -42,9 +45,11 @@ public class MeFacade extends Facade {
       ClientRepository clientRepository,
       GroupRepository groupRepository,
       ImageService imageService,
-      RecentSignIn recentSignIn) {
+      RecentSignIn recentSignIn,
+      ApplicationEventPublisher events) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
+    this.events = events;
     this.userRepository = userRepository;
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
@@ -131,6 +136,10 @@ public class MeFacade extends Facade {
               me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
         this.userRepository.setPassword(
             me.id(), new UnencryptedPassword(updatePassword.newPassword));
+        this.userRepository.revokeSessions(me.id());
+        this.events.publishEvent(
+            new SignInChanged(
+                me.id(), "Your password was changed and your previous sessions were revoked."));
       } else {
         throw new PasswordIncorrectException();
       }

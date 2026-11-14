@@ -118,6 +118,11 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
 
   public boolean isStillValid(UserPasswordResetEntity userPasswordResetEntity) {
     Instant createdAt = userPasswordResetEntity.toDomain().createdAt();
-    return Duration.between(createdAt, Instant.now()).toMinutes() < 15;
+    return Duration.between(createdAt, Instant.now()).toMinutes() < 15
+        && this.userJpaRepository
+            .findById(userPasswordResetEntity.userId)
+            .filter(
+                user -> user.sessionsRevokedAt == null || createdAt.isAfter(user.sessionsRevokedAt))
+            .isPresent();
   }
 }

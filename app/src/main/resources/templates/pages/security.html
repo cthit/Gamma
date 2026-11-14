@@ -23,6 +23,7 @@
         </p>
         <p th:if="${!methods.hasPasskeys()}">You have no passkeys yet.</p>
         <p th:if="${methods.hasPasskeys() and !methods.hasPassword()}">You sign in with passkeys only.</p>
+        <p th:if="${methods.hasPasskeys()}">Keep a second passkey on another device or security key, so losing one does not lock you out. Removing a passkey signs you out of your existing Gamma sessions.</p>
         <p th:if="${methods.hasPassword()}">
             <strong>Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.</strong>
         </p>
@@ -42,7 +43,7 @@
                 <td th:text="${passkey.lastUsed()}"></td>
                 <td class="table__cell table__cell--end">
                     <form th:action="@{/me/security/passkeys/remove}" th:method="post"
-                          th:data-hx-confirm="|Remove the passkey ${passkey.label()}?|">
+                          th:data-hx-confirm="|Remove the passkey ${passkey.label()} and sign out of your existing Gamma sessions?|">
                         <input type="hidden" name="credentialId" th:value="${passkey.credentialId()}">
                         <button class="button button--danger button--small" data-loading-disable>Remove</button>
                     </form>

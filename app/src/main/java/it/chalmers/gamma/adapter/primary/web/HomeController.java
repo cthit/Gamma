@@ -11,6 +11,8 @@ import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
+import it.chalmers.gamma.security.signin.CurrentSignIn;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -29,12 +31,17 @@ public class HomeController {
   private final MeFacade meFacade;
   private final UserGdprTrainingFacade userGdprTrainingFacade;
   private final ImageFacade imageFacade;
+  private final CurrentSignIn currentSignIn;
 
   public HomeController(
-      MeFacade meFacade, UserGdprTrainingFacade userGdprTrainingFacade, ImageFacade imageFacade) {
+      MeFacade meFacade,
+      UserGdprTrainingFacade userGdprTrainingFacade,
+      ImageFacade imageFacade,
+      CurrentSignIn currentSignIn) {
     this.meFacade = meFacade;
     this.userGdprTrainingFacade = userGdprTrainingFacade;
     this.imageFacade = imageFacade;
+    this.currentSignIn = currentSignIn;
   }
 
   @GetMapping("/")
@@ -157,7 +164,9 @@ public class HomeController {
   public ModelAndView editPassword(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       EditPasswordForm form,
-      final BindingResult bindingResult) {
+      final BindingResult bindingResult,
+      HttpServletRequest request,
+      HttpServletResponse response) {
     ModelAndView mv = new ModelAndView();
 
     validateObject(form, bindingResult);
@@ -185,13 +194,12 @@ public class HomeController {
       return mv;
     }
 
-    MeFacade.MeDTO me = this.meFacade.getMe();
-
-    mv.setViewName("home/edited-me-password");
-    mv.addObject("me", me);
-    mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
-
-    return mv;
+    this.currentSignIn.end(request, response);
+    if (it.chalmers.gamma.security.signin.HtmxAwareRedirects.isHtmx(request)) {
+      response.setHeader("HX-Redirect", "/login?security-changed");
+      return null;
+    }
+    return new ModelAndView("redirect:/login?security-changed");
   }
 
   @PutMapping("/me/avatar")

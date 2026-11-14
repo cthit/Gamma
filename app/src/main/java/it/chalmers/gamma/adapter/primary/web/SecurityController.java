@@ -83,23 +83,26 @@ public class SecurityController {
   }
 
   @PostMapping(PAGE + "/passkeys/remove")
-  public ModelAndView removePasskey(@RequestParam("credentialId") String credentialId) {
+  public ModelAndView removePasskey(
+      @RequestParam("credentialId") String credentialId,
+      HttpServletRequest request,
+      HttpServletResponse response) {
     try {
       this.signInMethodsFacade.removePasskey(credentialId);
     } catch (LastSignInMethodException e) {
       return redirect("?error=last-passkey");
     }
-    return redirect("?done=passkey-removed");
+    return signedOutAfterChange(request, response);
   }
 
   @PostMapping(PAGE + "/password/remove")
-  public ModelAndView removePassword() {
+  public ModelAndView removePassword(HttpServletRequest request, HttpServletResponse response) {
     try {
       this.signInMethodsFacade.removePassword();
     } catch (LastSignInMethodException e) {
       return redirect("?error=no-passkey");
     }
-    return redirect("?done=password-removed");
+    return signedOutAfterChange(request, response);
   }
 
   @PostMapping(PAGE + "/totp/start")
@@ -161,9 +164,9 @@ public class SecurityController {
   }
 
   @PostMapping(PAGE + "/totp/disable")
-  public ModelAndView disableTotp() {
+  public ModelAndView disableTotp(HttpServletRequest request, HttpServletResponse response) {
     this.signInMethodsFacade.disableTotp();
-    return redirect("?done=totp-disabled");
+    return signedOutAfterChange(request, response);
   }
 
   @PostMapping(PAGE + "/recovery-key")
@@ -272,9 +275,11 @@ public class SecurityController {
       HttpSession session,
       HttpServletRequest request,
       HttpServletResponse response) {
+    boolean replaced;
     try {
-      this.signInMethodsFacade.enableTotp(
-          totp.secret(), totp.usedTimeStep(), key == null ? null : key.key());
+      replaced =
+          this.signInMethodsFacade.enableTotp(
+              totp.secret(), totp.usedTimeStep(), key == null ? null : key.key());
     } catch (RecoveryKeyRequiredException e) {
       PendingTotp.save(session, totp);
       PendingRecoveryKey.start(session, Purpose.ENABLE_TOTP);
@@ -282,11 +287,21 @@ public class SecurityController {
     }
     PendingTotp.clear(session);
 
+    if (replaced) {
+      return signedOutAfterChange(request, response);
+    }
+
     this.currentSignIn.addFactor(request, response, SignInFactors.TOTP);
     return redirect("?done=totp-enabled");
   }
 
   private static final ZoneId ZONE = ZoneId.of("Europe/Stockholm");
+
+  private ModelAndView signedOutAfterChange(
+      HttpServletRequest request, HttpServletResponse response) {
+    this.currentSignIn.end(request, response);
+    return new ModelAndView("redirect:/login?security-changed");
+  }
 
   private static final DateTimeFormatter DATE = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

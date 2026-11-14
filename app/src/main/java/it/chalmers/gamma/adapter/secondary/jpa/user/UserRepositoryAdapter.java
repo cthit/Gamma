@@ -4,6 +4,8 @@ import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -20,6 +22,7 @@ public class UserRepositoryAdapter implements UserRepository {
   private final UserEntityConverter converter;
   private final UserAvatarJpaRepository userAvatarJpaRepository;
   private final PasswordEncoder passwordEncoder;
+  private final EntityManager entityManager;
 
   private final PersistenceErrorState cidNotUnique =
       new PersistenceErrorState("g_user_cid_key", PersistenceErrorState.Type.NOT_UNIQUE);
@@ -31,11 +34,13 @@ public class UserRepositoryAdapter implements UserRepository {
       UserJpaRepository repository,
       UserEntityConverter converter,
       UserAvatarJpaRepository userAvatarJpaRepository,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      EntityManager entityManager) {
     this.repository = repository;
     this.converter = converter;
     this.userAvatarJpaRepository = userAvatarJpaRepository;
     this.passwordEncoder = passwordEncoder;
+    this.entityManager = entityManager;
   }
 
   @Override
@@ -137,7 +142,11 @@ public class UserRepositoryAdapter implements UserRepository {
 
   @Override
   public void lockSignInMethods(UserId userId) throws UserNotFoundException {
-    this.repository.lockById(userId.value()).orElseThrow(UserNotFoundException::new);
+    UserEntity entity =
+        this.repository.lockById(userId.value()).orElseThrow(UserNotFoundException::new);
+    // The user may have been read before waiting for this lock. Refresh the managed snapshot
+    // so checks made after acquiring it see the transaction that released the lock.
+    this.entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
   }
 
   @Override

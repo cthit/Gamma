@@ -71,6 +71,10 @@ public class UserEntity extends MutableEntity<UUID> {
     return this.cid;
   }
 
+  public String email() {
+    return this.email;
+  }
+
   public String nick() {
     return this.nick;
   }

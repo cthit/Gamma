@@ -264,7 +264,7 @@ public class SecurityFiltersConfig {
                 .denyAll()
                 .requestMatchers("/me/security", "/me/security/**")
                 .access(signIn.recentlySignedIn())
-                .requestMatchers("/me/edit-password", "/users/*/reset-sign-in")
+                .requestMatchers("/me/edit-password", "/users/*/reset-sign-in", "/admins")
                 .access(signIn.recentlySignedIn())
                 .requestMatchers("/me/edit-email", "/delete-your-account")
                 .access(signIn.recentlySignedInIfPasswordless())

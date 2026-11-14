@@ -1,8 +1,6 @@
 package it.chalmers.gamma.adapter.secondary.jpa.signin;
 
 import it.chalmers.gamma.adapter.secondary.jpa.util.ImmutableEntity;
-import it.chalmers.gamma.app.signin.domain.Totp;
-import it.chalmers.gamma.app.signin.domain.TotpSecret;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,9 +32,5 @@ public class UserTotpEntity extends ImmutableEntity<UUID> {
   @Override
   public UUID getId() {
     return this.userId;
-  }
-
-  public Totp toDomain() {
-    return new Totp(new TotpSecret(this.secret), this.lastUsedTimeStep);
   }
 }

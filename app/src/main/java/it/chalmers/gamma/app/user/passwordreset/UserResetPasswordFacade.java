@@ -8,6 +8,8 @@ import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.signin.SignInChanged;
+import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.Cid;
@@ -25,6 +27,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,6 +40,8 @@ public class UserResetPasswordFacade extends Facade {
   private final ThrottlingService throttlingService;
   private final AdminRepository adminRepository;
   private final TotpRepository totpRepository;
+  private final PasskeyRepository passkeyRepository;
+  private final ApplicationEventPublisher events;
   private final String baseUrl;
 
   public UserResetPasswordFacade(
@@ -47,10 +52,14 @@ public class UserResetPasswordFacade extends Facade {
       ThrottlingService throttlingService,
       AdminRepository adminRepository,
       TotpRepository totpRepository,
+      PasskeyRepository passkeyRepository,
+      ApplicationEventPublisher events,
       @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
     this.adminRepository = adminRepository;
     this.totpRepository = totpRepository;
+    this.passkeyRepository = passkeyRepository;
+    this.events = events;
     this.mailService = mailService;
     this.userRepository = userRepository;
     this.passwordResetRepository = passwordResetRepository;
@@ -133,6 +142,12 @@ public class UserResetPasswordFacade extends Facade {
     this.passwordResetRepository.useToken(token);
 
     this.userRepository.setPassword(userId, unencryptedPassword);
+    this.passkeyRepository.deleteAll(userId);
+    this.userRepository.revokeSessions(userId);
+    this.events.publishEvent(
+        new SignInChanged(
+            userId,
+            "Your password was reset through email. Old passkeys and sessions were revoked. An existing authenticator app is still required."));
   }
 
   public Optional<ResetOptions> getResetOptions(String token) {
@@ -150,12 +165,19 @@ public class UserResetPasswordFacade extends Facade {
 
     PasswordResetToken token = new PasswordResetToken(inputToken);
     UserId owner = lockRecoverableOwner(token);
-    Instant startedAt = Instant.now();
     if (this.totpRepository.isEnabled(owner)) {
       throw new IllegalArgumentException("Can only reset the password");
     }
 
     this.passwordResetRepository.useToken(token);
+    this.passkeyRepository.deleteAll(owner);
+    this.userRepository.removePassword(owner);
+    this.userRepository.revokeSessions(owner);
+    this.events.publishEvent(
+        new SignInChanged(
+            owner,
+            "Email recovery was used to set up a new sign-in method. Your old credentials and sessions were revoked."));
+    Instant startedAt = this.userRepository.sessionsRevokedAt(owner).orElseThrow().plusMillis(1);
     return new PasskeySetup(owner.value(), startedAt);
   }
 

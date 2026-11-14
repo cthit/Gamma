@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,14 +18,17 @@ public class PasskeyReplacesPassword {
   private final UserRepository userRepository;
   private final TotpRepository totpRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
+  private final ApplicationEventPublisher events;
 
   public PasskeyReplacesPassword(
       UserRepository userRepository,
       TotpRepository totpRepository,
-      RecoveryKeyRepository recoveryKeyRepository) {
+      RecoveryKeyRepository recoveryKeyRepository,
+      ApplicationEventPublisher events) {
     this.userRepository = userRepository;
     this.totpRepository = totpRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
+    this.events = events;
   }
 
   @Transactional(Transactional.TxType.MANDATORY)
@@ -38,5 +42,6 @@ public class PasskeyReplacesPassword {
     if (this.userRepository.isEmailRecoveryEnabled(userId)) {
       this.recoveryKeyRepository.delete(userId);
     }
+    this.events.publishEvent(new SignInChanged(userId, "A passkey was added to your account."));
   }
 }

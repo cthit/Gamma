@@ -8,6 +8,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserTotpJpaRepository extends JpaRepository<UserTotpEntity, UUID> {
 
+  @org.springframework.transaction.annotation.Transactional
+  @Modifying
+  @Query(
+      "update UserTotpEntity t set t.secret = :encrypted where t.userId = :userId and t.secret = :plaintext")
+  int encryptLegacySecret(
+      @Param("userId") UUID userId,
+      @Param("plaintext") String plaintext,
+      @Param("encrypted") String encrypted);
+
   @Modifying
   @Query(
       "update UserTotpEntity t set t.lastUsedTimeStep = :timeStep"

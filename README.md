@@ -24,6 +24,8 @@ Gamma is a **membership and identity management system** built for [Chalmers IT 
 In bash:
 
 ```bash
+# Generate once per database, and keep the same key when restarting with existing data.
+export TOTP_ENCRYPTION_KEY="$(openssl rand -base64 32)"
 # Starts Spring Boot with auto-started PostgreSQL and Redis via Testcontainers
 DEV_SERVICES_ENABLED=true PRODUCTION=false ./gradlew bootRun
 ```
@@ -31,6 +33,7 @@ DEV_SERVICES_ENABLED=true PRODUCTION=false ./gradlew bootRun
 In PowerShell:
 
 ```powershell
+$env:TOTP_ENCRYPTION_KEY=[Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
 $env:DEV_SERVICES_ENABLED="true"; $env:PRODUCTION="false"; ./gradlew bootRun
 ```
 
@@ -79,6 +82,8 @@ The mock data can also specify OAuth2 clients and their authorities. The default
 The client IDs, secrets and API keys are also logged on startup. Clients are only created if the database has no clients yet.
 
 ### Run with custom services
+
+Set the persistent `TOTP_ENCRYPTION_KEY` for this database first (see [Signing in](#signing-in)).
 
 ```bash
 export DB_HOST=localhost DB_PORT=5432 DB_NAME=gamma \
@@ -138,6 +143,7 @@ All configuration is environment-variable-driven via `application.yml`.
 | `PRODUCTION` | `true` | Production mode (disables Thymeleaf caching, dev services, etc.) |
 | `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Will be required in production from v3, see [OAuth2 signing keys](#oauth2-signing-keys) |
 | `OAUTH2_VERIFICATION_KEYS` | *(empty)* | Comma separated keys that are still published so the tokens they signed can be verified, but that no longer sign tokens |
+| `TOTP_ENCRYPTION_KEY` | **required** | Base64-encoded random 32-byte key encrypting authenticator app secrets. Keep it outside database backups and identical on every instance. |
 | `DEV_SERVICES_ENABLED` | `false` | Auto-start PostgreSQL + Redis via Testcontainers |
 | `IS_MOCKING` | `false` | Load mock data on startup |
 | `MOCK_DATA_RESOURCE` | `classpath:/mock/mock.json` | Path to mock data JSON |
@@ -160,25 +166,45 @@ Everything is built on Spring Security:
 - Each way of signing in is a Spring Security factor (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN` and Gamma's `FACTOR_TOTP`), and the factors each user needs are required factors (`AllRequiredFactorsAuthorizationManager`). Changing how you sign in needs a sign in from the last 10 minutes.
 - Authenticator app codes are checked with [java-otp](https://github.com/jchambers/java-otp) (HMAC-SHA1, six digits, 30 second steps), and each code can only be used once.
 
+Before deploying, generate `TOTP_ENCRYPTION_KEY` with `openssl rand -base64 32` and store it in your secret manager. Keep a secure backup separate from the database. Gamma uses AES-256-GCM with a fresh nonce and binds each encrypted secret to its user. Startup encrypts plaintext TOTP secrets from earlier revisions and refuses to start with a missing, invalid, or incorrect key. Do not replace this key without migrating the encrypted secrets or having users enroll their authenticator apps again.
+
+Removing a passkey or password, changing a password, and replacing or removing an authenticator app revoke previous Gamma sessions. Adding an authenticator app for the first time makes existing password sessions require its code. Credential changes and recovery send a notification to the account's email after the change commits. Changing admin membership also requires a sign-in from the last 10 minutes.
+
+Keep at least two passkeys on independently accessible devices or security keys, especially for admins. An admin loses password access as soon as their first passkey is added.
+
 Choosing passkeys replaces the password: adding a passkey removes the user's password and authenticator app, wherever it is added. Users then sign in with passkeys only.
 
 Users manage this under **Sign in and security** (`/me/security`): add and remove passkeys, set up an authenticator app (QR code, or the key typed in by hand) while they use a password, and turn email recovery off.
 
 ### Getting back in
 
-- **Email recovery**: the forgot password link lets the user set a new password, or set up a passkey instead, which removes the old password. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
+- **Email recovery**: the forgot password link lets the user set a new password, or start setting up a passkey instead. Both paths remove old passkeys and revoke previous Gamma sessions and OAuth authorization. Starting passkey setup also removes the old password immediately. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
 - **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) removes their passkeys, password and authenticator app, signs them out everywhere, and lets them set up a new passkey or password. The key stops working once they have, so a setup that is left half way can be started again with the same key.
 - **Admin reset**: an admin can reset how another user signs in from the user's page. That removes the user's passkeys, authenticator app and recovery key, turns email recovery on and signs the user out everywhere. Admins sign in with passkeys only, so to reset another admin, first remove their admin rights, reset them, and give the rights back once they have set up a new passkey through the forgot password page.
 
 If the last admin loses all their passkeys, remove their passkeys and admin rights and turn email recovery on in the database, let them set up a new passkey through the forgot password page, and give the rights back:
 
 ```sql
+BEGIN;
+SELECT user_id FROM g_user WHERE user_id = '<user id>' FOR UPDATE;
 DELETE FROM user_entities WHERE name = '<user id>';
 DELETE FROM g_admin_user WHERE user_id = '<user id>';
-UPDATE g_user SET email_recovery = true WHERE user_id = '<user id>';
+DELETE FROM g_user_totp WHERE user_id = '<user id>';
+DELETE FROM g_user_recovery_key WHERE user_id = '<user id>';
+DELETE FROM g_password_reset WHERE user_id = '<user id>';
+UPDATE g_user
+SET password = NULL,
+    email_recovery = true,
+    sessions_revoked_at = greatest(coalesce(sessions_revoked_at, clock_timestamp()), clock_timestamp()),
+    version = version + 1,
+    updated_at = clock_timestamp()
+WHERE user_id = '<user id>';
+COMMIT;
 -- after they have set up a new passkey:
 INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());
 ```
+
+Revocation is checked when Gamma exchanges authorization codes, serves UserInfo, or looks up an OAuth authorization. Already issued JWTs verified offline by other services remain valid until their expiry, and those services manage their own sessions. Gamma cannot end those external sessions by deleting its browser session.
 
 ## OAuth2 signing keys
 

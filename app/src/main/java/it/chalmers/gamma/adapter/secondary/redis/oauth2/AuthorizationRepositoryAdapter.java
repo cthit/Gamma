@@ -56,7 +56,7 @@ public class AuthorizationRepositoryAdapter implements GammaAuthorizationReposit
 
   @Override
   public void remove(OAuth2Authorization authorization) {
-    this.authorizationRedisRepository.save(new AuthorizationValue(authorization));
+    this.authorizationRedisRepository.deleteById(authorization.getId());
   }
 
   @Override

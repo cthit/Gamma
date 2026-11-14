@@ -74,7 +74,9 @@ test("adding a passkey replaces the password and authenticator app, and a recove
     .getByRole("row", { name: /Laptop/ })
     .getByRole("button", { name: "Remove" })
     .click();
-  await expect(page.getByText("The passkey was removed.")).toBeVisible();
+  await expect(page).toHaveURL(/\/login\?security-changed/);
+  await signInWithPasskey(page);
+  await page.goto(`${gamma.url}/me/security`);
   page.once("dialog", (dialog) => dialog.accept());
   await passkeys
     .getByRole("row", { name: /Phone/ })
@@ -111,6 +113,7 @@ test("adding a passkey replaces the password and authenticator app, and a recove
   await page.getByRole("button", { name: "Create a recovery key" }).click();
   await saveRecoveryKey(page);
   await page.getByRole("button", { name: "Continue to signing in" }).click();
+  await expect(page).toHaveURL(/\/login\?sign-in-ready/);
 
   await login(page, gamma.url, "jhalpert", "New-password-1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);

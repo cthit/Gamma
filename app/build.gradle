@@ -18,6 +18,8 @@ java {
 group = "it.chalmers"
 
 dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     annotationProcessor(
             // Used to generate Record Builder classes
             "io.soabase.record-builder:record-builder-processor:53",
@@ -80,6 +82,10 @@ dependencies {
             "org.webjars.npm:hyperscript.org:0.9.93",
             "org.webjars.npm:sortablejs:1.15.7"
     )
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
 }
 
 tasks.named("bootBuildImage") {

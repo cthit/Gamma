@@ -58,6 +58,8 @@ logging:
   level:
     root: "${ROOT_DEBUG_LEVEL:INFO}"
 application:
+  totp:
+    encryption-key: "${TOTP_ENCRYPTION_KEY}"
   base-url: "${BASE_URL:http://localhost:8081}"
   production: "${PRODUCTION:true}"
   mocking: "${IS_MOCKING:false}"

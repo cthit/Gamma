@@ -6,12 +6,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.FactorGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CurrentSignIn {
+
+  public void end(HttpServletRequest request, HttpServletResponse response) {
+    new SecurityContextLogoutHandler()
+        .logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+  }
 
   private final SecurityContextRepository securityContextRepository =
       new HttpSessionSecurityContextRepository();
