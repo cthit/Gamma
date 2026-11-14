@@ -1,0 +1,32 @@
+<img class="login-backdrop" th:src="@{/img/bg.webp}" alt="" _="on load add .login-backdrop--loaded to me"/>
+<main id="main" class="app__main login" hx-boost:inherited="false">
+    <article class="login__card">
+        <header class="login__header">
+            <img class="login__logo" src="/img/itlogo.svg" alt="" width="56" height="56"/>
+            <h1 class="login__title">Gamma</h1>
+        </header>
+        <form class="login__form" th:action="@{/login/totp}" th:method="post">
+            <h2>Enter the code from your authenticator app</h2>
+            <div class="field">
+                <label class="field__label" for="code">Six digit code</label>
+                <input class="input input--code" id="code" type="text" name="code"
+                       inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*"
+                       maxlength="7" required autofocus
+                       th:attr="aria-invalid=${error ? 'true' : null},
+                               aria-describedby=${error ? 'code-error' : null}">
+                <small class="field__error" id="code-error" th:if="${error}">
+                    That code wasn't right, or has already been used. Wait for a new code and try again.
+                </small>
+            </div>
+            <button class="button button--block" data-loading-disable>Continue</button>
+        </form>
+        <footer class="login__footer">
+            <nav class="login__links" aria-label="Account">
+                <a href="/login/recovery">Lost your phone? Use your recovery key</a>
+            </nav>
+            <form th:action="@{/logout}" th:method="post">
+                <button class="button button--secondary button--small">Cancel and sign out</button>
+            </form>
+        </footer>
+    </article>
+</main>

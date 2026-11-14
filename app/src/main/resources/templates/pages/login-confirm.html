@@ -1,0 +1,68 @@
+<img class="login-backdrop" th:src="@{/img/bg.webp}" alt="" _="on load add .login-backdrop--loaded to me"/>
+<main id="main" class="app__main login" hx-boost:inherited="false">
+    <article class="login__card">
+        <header class="login__header">
+            <img class="login__logo" src="/img/itlogo.svg" alt="" width="56" height="56"/>
+            <h1 class="login__title">Gamma</h1>
+        </header>
+
+        <th:block th:if="${methods.isAdmin() and !methods.hasPasskeys() and !adminConfirmsPassword}">
+            <h2>Add a passkey to continue</h2>
+            <p>
+                Admins sign in with a passkey. Add one now, for example with your phone, a security key
+                or your computer's fingerprint reader, and then sign in with it.
+            </p>
+            <p><strong>Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.</strong></p>
+            <p>After signing in, add a second passkey on another device or security key from Sign in and security.</p>
+            <div class="field">
+                <label class="field__label" for="passkey-label">Name of the passkey</label>
+                <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">
+            </div>
+            <button class="button button--block" type="button"
+                    data-passkey-register th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
+                    data-then-sign-in
+                    data-label-input="passkey-label" data-passkey-error="passkey-error">
+                Add a passkey
+            </button>
+            <p class="field__error" id="passkey-error" role="alert" hidden></p>
+        </th:block>
+
+        <th:block th:if="${methods.hasPasskeys()}">
+            <h2 th:text="${adminNeedsPasskey} ? 'Admins sign in with a passkey' : 'Confirm that it is you'"></h2>
+            <p th:if="${!adminNeedsPasskey}">Sign in again to continue.</p>
+            <button class="button button--block" type="button"
+                    data-passkey-sign-in th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
+                    data-passkey-error="passkey-error">
+                Sign in with a passkey
+            </button>
+            <p class="field__error" id="passkey-error" role="alert" hidden></p>
+        </th:block>
+
+        <th:block th:if="${(!methods.isAdmin() or adminConfirmsPassword) and methods.hasPassword()}">
+            <p class="login__divider" th:if="${methods.hasPasskeys()}"><span>or with your password</span></p>
+            <h2 th:if="${!methods.hasPasskeys()}">Confirm that it is you</h2>
+            <p th:if="${adminConfirmsPassword}">Enter your password again before adding a passkey.</p>
+            <form class="login__form" th:action="@{/login}" th:method="post">
+                <input type="hidden" name="confirming" value="true">
+                <input type="hidden" name="username" th:value="${cid}" autocomplete="username">
+                <div class="field">
+                    <label class="field__label" for="password">Password</label>
+                    <input class="input" id="password" type="password" name="password"
+                           autocomplete="current-password" required
+                           th:attr="aria-invalid=${error ? 'true' : null},
+                                   aria-describedby=${error ? 'password-error' : null}">
+                    <small class="field__error" id="password-error" th:if="${error}">
+                        The password wasn't right.
+                    </small>
+                </div>
+                <button class="button button--secondary button--block" data-loading-disable>Continue</button>
+            </form>
+        </th:block>
+
+        <footer class="login__footer">
+            <form th:action="@{/logout}" th:method="post">
+                <button class="button button--secondary button--small">Cancel and sign out</button>
+            </form>
+        </footer>
+    </article>
+</main>

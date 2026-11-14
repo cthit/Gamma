@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.user.passwordreset.domain;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UserId;
+import java.util.Optional;
 
 public interface PasswordResetRepository {
 
@@ -14,7 +15,13 @@ public interface PasswordResetRepository {
 
   PasswordReset createNewToken(UserId userId) throws UserNotFoundException;
 
-  boolean isTokenValid(PasswordResetToken token);
+  PasswordReset createAdminRecoveryToken(UserId userId) throws UserNotFoundException;
+
+  Optional<UserId> getUserOfValidAdminRecoveryToken(PasswordResetToken token);
+
+  UserId useAdminRecoveryToken(PasswordResetToken token);
+
+  Optional<UserId> getUserOfValidToken(PasswordResetToken token);
 
   UserId useToken(PasswordResetToken token);
 

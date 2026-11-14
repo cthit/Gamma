@@ -21,6 +21,8 @@ import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.signin.SignInChanged;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.GammaAuthentication;
@@ -36,6 +38,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,6 +50,8 @@ public class MeFacade extends Facade {
   private final ClientRepository clientRepository;
   private final GroupRepository groupRepository;
   private final ImageService imageService;
+  private final RecentSignIn recentSignIn;
+  private final ApplicationEventPublisher events;
   private final GammaAuthorizationRepository authorizations;
   private final DataDeletionRecorder dataDeletionRecorder;
   private final DataDeletionRequestRepository dataDeletionRequestRepository;
@@ -57,10 +62,14 @@ public class MeFacade extends Facade {
       ClientRepository clientRepository,
       GroupRepository groupRepository,
       ImageService imageService,
+      RecentSignIn recentSignIn,
+      ApplicationEventPublisher events,
       GammaAuthorizationRepository authorizations,
       DataDeletionRecorder dataDeletionRecorder,
       DataDeletionRequestRepository dataDeletionRequestRepository) {
     super(accessGuard);
+    this.recentSignIn = recentSignIn;
+    this.events = events;
     this.userRepository = userRepository;
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
@@ -213,7 +222,8 @@ public class MeFacade extends Facade {
     List<MyMembership> groups =
         this.groupRepository.getAllByUser(user.id()).stream().map(MyMembership::new).toList();
 
-    return new MeDTO(user, groups, isAdmin);
+    return new MeDTO(
+        user, groups, isAdmin, this.userRepository.emailRecoveryRequiresVerification(user.id()));
   }
 
   public void updateMe(UpdateMe updateMe) {
@@ -233,6 +243,7 @@ public class MeFacade extends Facade {
     }
   }
 
+  @Transactional
   public void updatePassword(UpdatePassword updatePassword)
       throws NewPasswordNotConfirmedException, PasswordIncorrectException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
@@ -242,10 +253,19 @@ public class MeFacade extends Facade {
       }
 
       GammaUser me = userAuthentication.gammaUser();
-      if (this.userRepository.checkPassword(
-          me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
+      this.userRepository.lockSignInMethods(me.id());
+      if (!this.recentSignIn.isRecent()) {
+        throw new AccessGuard.AccessDeniedException();
+      }
+      if (this.userRepository.hasPassword(me.id())
+          && this.userRepository.checkPassword(
+              me.id(), new UnencryptedPassword(updatePassword.oldPassword))) {
         this.userRepository.setPassword(
             me.id(), new UnencryptedPassword(updatePassword.newPassword));
+        this.userRepository.revokeSessions(me.id());
+        this.events.publishEvent(
+            new SignInChanged(
+                me.id(), "Your password was changed and your previous sessions were revoked."));
       } else {
         throw new PasswordIncorrectException();
       }
@@ -257,8 +277,13 @@ public class MeFacade extends Facade {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
-      if (this.userRepository.checkPassword(me.id(), new UnencryptedPassword(password))) {
-        this.userRepository.lockForUpdate(me.id());
+      // Recovery may finish while this request waits. Refresh and check credentials only
+      // after acquiring the same lock used by recovery and credential changes.
+      this.userRepository.lockSignInMethods(me.id());
+      if (!this.recentSignIn.isCurrent()) {
+        throw new AccessGuard.AccessDeniedException();
+      }
+      if (isMe(me, password)) {
         if (!this.clientRepository.getAllUserClients(me.id()).isEmpty() && !clientDataDeleted) {
           throw new ClientDataAcknowledgementRequiredException();
         }
@@ -272,6 +297,30 @@ public class MeFacade extends Facade {
         throw new IllegalArgumentException();
       }
     }
+  }
+
+  private boolean isMe(GammaUser me, String password) {
+    if (!this.userRepository.hasPassword(me.id())) {
+      return this.recentSignIn.isRecent();
+    }
+
+    UnencryptedPassword unencryptedPassword;
+    try {
+      unencryptedPassword = new UnencryptedPassword(password);
+    } catch (IllegalArgumentException e) {
+      return false;
+    }
+    return this.userRepository.checkPassword(me.id(), unencryptedPassword);
+  }
+
+  public boolean hasPassword() {
+    this.accessGuard.require(isSignedIn());
+
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthentication) {
+      return this.userRepository.hasPassword(userAuthentication.gammaUser().id());
+    }
+    return false;
   }
 
   @Transactional
@@ -351,8 +400,13 @@ public class MeFacade extends Facade {
       int acceptanceYear,
       List<MyMembership> groups,
       String language,
-      boolean isAdmin) {
-    public MeDTO(GammaUser user, List<MyMembership> groups, boolean isAdmin) {
+      boolean isAdmin,
+      boolean recoveryEmailUnverified) {
+    public MeDTO(
+        GammaUser user,
+        List<MyMembership> groups,
+        boolean isAdmin,
+        boolean recoveryEmailUnverified) {
       this(
           user.nick().value(),
           user.firstName().value(),
@@ -363,7 +417,8 @@ public class MeFacade extends Facade {
           user.acceptanceYear().value(),
           groups,
           user.language().name(),
-          isAdmin);
+          isAdmin,
+          recoveryEmailUnverified);
     }
   }
 

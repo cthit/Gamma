@@ -10,10 +10,28 @@ import it.chalmers.gamma.app.apikey.domain.ApiKeyRepository;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
+import it.chalmers.gamma.app.signin.RecoveryKeyUse;
+import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.security.api.ApiAuthenticationFilter;
 import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
+import it.chalmers.gamma.security.signin.FactorCheckedAtStartProvider;
+import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
+import it.chalmers.gamma.security.signin.PasskeyConfig;
+import it.chalmers.gamma.security.signin.PasskeyRegistrationOptionsGuardFilter;
+import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationFilter;
+import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
+import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
+import it.chalmers.gamma.security.signin.SignInAuthorizationManagers;
+import it.chalmers.gamma.security.signin.SignInFactors;
+import it.chalmers.gamma.security.signin.SignInSessionStrategy;
+import it.chalmers.gamma.security.signin.SignInSetupSessions;
+import it.chalmers.gamma.security.signin.SignInStepEntryPoint;
+import it.chalmers.gamma.security.signin.TotpAuthenticationFilter;
+import it.chalmers.gamma.security.signin.TotpAuthenticationProvider;
+import it.chalmers.gamma.security.signin.UserBoundCreationOptionsRepository;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,15 +42,21 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.ObjectPostProcessor;
+import org.springframework.security.config.annotation.authorization.EnableMultiFactorAuthentication;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.ExceptionHandlingConfigurer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -42,10 +66,19 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationFilter;
+import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationProvider;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.WebAuthnRelyingPartyOperations;
 
 @Configuration
+@EnableMultiFactorAuthentication(authorities = {})
 public class SecurityFiltersConfig {
 
   @Order(1)
@@ -53,6 +86,8 @@ public class SecurityFiltersConfig {
   public SecurityFilterChain authorizationServerSecurityFilterChain(
       HttpSecurity http,
       UserInfoMapper userInfoMapper,
+      SignInAuthorizationManagers signInAuthorizationManagers,
+      AuthorizationServerSettings authorizationServerSettings,
       UserJpaRepository userJpaRepository,
       AdminRepository adminRepository)
       throws Exception {
@@ -81,11 +116,18 @@ public class SecurityFiltersConfig {
                                 providerConfigurationEndpoint.providerConfigurationCustomizer(
                                     AuthorizationServerMetadataCustomizer::customize))
                             .userInfoEndpoint(userInfo -> userInfo.userInfoMapper(userInfoMapper))))
-        .authorizeHttpRequests(authorization -> authorization.anyRequest().authenticated())
-        .exceptionHandling(exceptions ->
-            exceptions.defaultAuthenticationEntryPointFor(
-                new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
-                new MediaTypeRequestMatcher(MediaType.TEXT_HTML)))
+        .authorizeHttpRequests(authorization ->
+            authorization
+                .requestMatchers(authorizationServerSettings.getAuthorizationEndpoint())
+                .access(signInAuthorizationManagers.signedInUser())
+                .anyRequest()
+                .access(signInAuthorizationManagers.signedIn()))
+        .exceptionHandling(exceptions -> {
+          exceptions.defaultAuthenticationEntryPointFor(
+              new LoginUrlAuthenticationEntryPoint("/login?authorizing"),
+              new MediaTypeRequestMatcher(MediaType.TEXT_HTML));
+          signInSteps(exceptions, new HttpSessionRequestCache(), signInAuthorizationManagers);
+        })
         .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 
     return http.build();
@@ -158,8 +200,14 @@ public class SecurityFiltersConfig {
       HttpSecurity http,
       PasswordEncoder passwordEncoder,
       UserJpaRepository userJpaRepository,
+      UserRepository userRepository,
       AdminRepository adminRepository,
-      ThrottlingService throttlingService)
+      TotpRepository totpRepository,
+      RecoveryKeyUse recoveryKeyUse,
+      ThrottlingService throttlingService,
+      SignInAuthorizationManagers signIn,
+      PublicKeyCredentialUserEntityRepository passkeyUsers,
+      WebAuthnRelyingPartyOperations relyingPartyOperations)
       throws Exception {
 
     TrustedUserDetailsRepository trustedUserDetails =
@@ -169,15 +217,31 @@ public class SecurityFiltersConfig {
         new DaoAuthenticationProvider(trustedUserDetails);
     userAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 
-    HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-    requestCache.setMatchingRequestParameterName(null);
+    HttpSessionRequestCache requestCache = HtmxAwareRedirects.requestCache();
+
+    http.setSharedObject(
+        UserDetailsService.class, PasskeyConfig.passkeyUserDetailsService(userJpaRepository));
 
     http.addFilterBefore(
             new LoginThrottlingFilter(throttlingService),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
+            new TotpAuthenticationFilter(
+                new ProviderManager(
+                    new TotpAuthenticationProvider(totpRepository, throttlingService)),
+                requestCache),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(
+            new RecoveryKeyAuthenticationFilter(
+                new ProviderManager(
+                    new RecoveryKeyAuthenticationProvider(userRepository, recoveryKeyUse))),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
             UsernamePasswordAuthenticationFilter.class)
+        // Runs inside ExceptionTranslationFilter, before Spring Security serves the options.
+        .addFilterAfter(
+            new PasskeyRegistrationOptionsGuardFilter(signIn), ExceptionTranslationFilter.class)
         .authorizeHttpRequests(authorize ->
             authorize
                 .requestMatchers(HttpMethod.GET, "/img/**")
@@ -193,7 +257,30 @@ public class SecurityFiltersConfig {
                 .requestMatchers(HttpMethod.GET, "/login")
                 .permitAll()
                 .requestMatchers(HttpMethod.POST, "/login")
-                .anonymous()
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, TotpAuthenticationFilter.URL)
+                .access(signIn.signingInWithTotp())
+                .requestMatchers(HttpMethod.GET, "/login/confirm")
+                .access(signIn.signingIn())
+                .requestMatchers(HttpMethod.GET, RecoveryKeyAuthenticationFilter.URL)
+                .permitAll()
+                .requestMatchers(
+                    SignInSetupSessions.SETUP_URL, SignInSetupSessions.SETUP_URL + "/**")
+                .access(signIn.settingUpSignIn())
+                .requestMatchers(HttpMethod.POST, "/webauthn/register")
+                .access(signIn.mayAddPasskey())
+                .requestMatchers("/webauthn/register/**")
+                .denyAll()
+                .requestMatchers("/me/security", "/me/security/**")
+                .access(signIn.recentlySignedIn())
+                .requestMatchers("/me/edit-password", "/users/*/reset-sign-in", "/admins")
+                .access(signIn.recentlySignedIn())
+                .requestMatchers(HttpMethod.GET, "/users/*/edit")
+                .access(signIn.recentlySignedIn())
+                .requestMatchers(savesUserEdit())
+                .access(signIn.recentlySignedIn())
+                .requestMatchers("/me/edit-email", "/delete-your-account")
+                .access(signIn.recentlySignedInIfPasswordless())
                 .requestMatchers(HttpMethod.GET, "/activate-cid")
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/activate-cid")
@@ -204,6 +291,8 @@ public class SecurityFiltersConfig {
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/register")
                 .anonymous()
+                .requestMatchers("/admin-recovery")
+                .anonymous()
                 .requestMatchers(HttpMethod.GET, "/forgot-password")
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/forgot-password")
@@ -211,6 +300,8 @@ public class SecurityFiltersConfig {
                 .requestMatchers(HttpMethod.GET, "/forgot-password/finalize")
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/forgot-password/finalize")
+                .anonymous()
+                .requestMatchers(HttpMethod.POST, "/forgot-password/finalize/passkey")
                 .anonymous()
                 .requestMatchers(HttpMethod.GET, "/robots.txt")
                 .permitAll()
@@ -221,25 +312,78 @@ public class SecurityFiltersConfig {
                 .requestMatchers(HttpMethod.GET, "/error")
                 .permitAll()
                 .anyRequest()
-                .authenticated())
-        .formLogin(new LoginCustomizer())
+                .access(signIn.signedIn()))
+        .formLogin(new LoginCustomizer(requestCache))
+        .webAuthn(webAuthn ->
+            webAuthn
+                .disableDefaultRegistrationPage(true)
+                .creationOptionsRepository(new UserBoundCreationOptionsRepository(passkeyUsers))
+                .withObjectPostProcessor(
+                    new ObjectPostProcessor<WebAuthnAuthenticationFilter>() {
+                      @Override
+                      public <O extends WebAuthnAuthenticationFilter> O postProcess(O filter) {
+                        filter.setSessionAuthenticationStrategy(SignInSessionStrategy.create());
+                        filter.setAuthenticationManager(
+                            new ProviderManager(
+                                new FactorCheckedAtStartProvider(
+                                    new WebAuthnAuthenticationProvider(
+                                        relyingPartyOperations,
+                                        PasskeyConfig.passkeyUserDetailsService(userJpaRepository)),
+                                    SignInFactors.PASSKEY)));
+                        return filter;
+                      }
+                    }))
         .logout(logout ->
             logout.addLogoutHandler(
                 new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(CACHE, COOKIES))))
-        .authenticationProvider(userAuthenticationProvider)
+        .authenticationProvider(
+            new FactorCheckedAtStartProvider(userAuthenticationProvider, SignInFactors.PASSWORD))
         .sessionManagement(sessionManagement ->
             sessionManagement.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
         .cors(Customizer.withDefaults())
         .csrf(csrf -> csrf.csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
         .requestCache(cacheConfig -> cacheConfig.requestCache(requestCache))
-        .exceptionHandling(exceptionConfig ->
-            exceptionConfig.accessDeniedHandler(
-                (request, response, accessDeniedException) -> response.sendRedirect("/")))
+        .exceptionHandling(exceptions -> signInSteps(exceptions, requestCache, signIn))
         .headers(headers ->
             headers.contentSecurityPolicy(csp ->
                 csp.policyDirectives(
                     "default-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none';")));
 
     return http.build();
+  }
+
+  /**
+   * The edit user form posts with a hidden {@code _method=put}. That is only turned into a PUT
+   * after this filter chain, so a rule for PUT alone would never match the form.
+   */
+  private static RequestMatcher savesUserEdit() {
+    PathPatternRequestMatcher.Builder paths = PathPatternRequestMatcher.withDefaults();
+    RequestMatcher put = paths.matcher(HttpMethod.PUT, "/users/{id}");
+    RequestMatcher post = paths.matcher(HttpMethod.POST, "/users/{id}");
+    return request ->
+        put.matches(request)
+            || (post.matches(request) && "put".equalsIgnoreCase(request.getParameter("_method")));
+  }
+
+  private static void signInSteps(
+      ExceptionHandlingConfigurer<HttpSecurity> exceptions,
+      RequestCache requestCache,
+      SignInAuthorizationManagers signIn) {
+    AuthenticationEntryPoint totp =
+        new SignInStepEntryPoint(TotpAuthenticationFilter.URL, requestCache);
+    AuthenticationEntryPoint confirm = new SignInStepEntryPoint("/login/confirm", requestCache);
+
+    exceptions
+        .defaultDeniedHandlerForMissingAuthority(
+            entryPoint -> entryPoint.addEntryPointFor(totp, AnyRequestMatcher.INSTANCE),
+            SignInFactors.TOTP)
+        .defaultDeniedHandlerForMissingAuthority(
+            entryPoint -> entryPoint.addEntryPointFor(confirm, AnyRequestMatcher.INSTANCE),
+            SignInFactors.PASSKEY)
+        .defaultDeniedHandlerForMissingAuthority(
+            entryPoint -> entryPoint.addEntryPointFor(confirm, AnyRequestMatcher.INSTANCE),
+            SignInFactors.PASSWORD)
+        .defaultAccessDeniedHandlerFor(
+            new SignInAccessDeniedHandler(signIn), AnyRequestMatcher.INSTANCE);
   }
 }

@@ -6,8 +6,10 @@ import {
   Wait,
 } from "testcontainers";
 import path from "node:path";
+import { randomBytes } from "node:crypto";
 import { access, mkdir, rename, rm } from "node:fs/promises";
 import { execFile } from "node:child_process";
+import { createServer } from "node:net";
 import {
   PostgreSqlContainer,
   StartedPostgreSqlContainer,
@@ -53,6 +55,7 @@ export type GammaBootstrapApiKeyType =
   "INFO" | "ACCOUNT_SCAFFOLD" | "ALLOW_LIST";
 
 let instanceCounter = 0;
+const testTotpEncryptionKey = randomBytes(32).toString("base64");
 const generatedTlsDir = path.resolve(__dirname, ".generated", "tls");
 const tlsFilePrefix = `localhost-${process.pid}`;
 const generatedTlsCertificatePath = path.join(
@@ -130,6 +133,9 @@ export async function startGammaInstance(
   const instanceId = instanceCounter++;
   console.log(`Starting Gamma instance ${instanceId}...`);
 
+  const hostPort = await findFreePort();
+  const browserOrigin = `https://localhost:${hostPort}`;
+
   let adminCid: string | undefined;
   let adminPassword: string | undefined;
   let credentialsFound = false;
@@ -149,12 +155,13 @@ export async function startGammaInstance(
     GOTIFY_KEY: "123abc",
     GOTIFY_BASE_URL: "http://gotify:80",
     ADMIN_SETUP: "true",
-    BASE_URL: `https://localhost:8080`,
+    BASE_URL: browserOrigin,
     PRODUCTION: "true",
     IS_MOCKING: "false",
     SERVER_SSL_ENABLED: "true",
     UPLOAD_FOLDER: "/tmp/uploads/",
     OAUTH2_SIGNING_KEY: getDefaultSigningKey().privateKeyPem,
+    TOTP_ENCRYPTION_KEY: testTotpEncryptionKey,
   };
 
   if (localhostTlsFilesAvailable) {
@@ -190,7 +197,7 @@ export async function startGammaInstance(
       ...options.env,
     })
     .withTmpFs({ "/tmp/uploads": "rw,noexec,nosuid,size=100m" })
-    .withExposedPorts(8080);
+    .withExposedPorts({ container: 8080, host: hostPort });
 
   if (filesToCopy.length > 0) {
     gammaContainerBuilder =
@@ -253,8 +260,7 @@ export async function startGammaInstance(
     )
     .start();
 
-  const port = gammaContainer.getMappedPort(8080);
-  const url = `https://127.0.0.1:${port}`;
+  const url = browserOrigin;
 
   console.log(`Gamma instance ${instanceId} started at ${url}`);
 
@@ -308,6 +314,24 @@ export async function startGammaInstance(
     ...(adminPassword !== undefined ? { adminPassword } : {}),
     ...(Object.keys(apiKeys).length > 0 ? { apiKeys } : {}),
   };
+}
+
+async function findFreePort(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const server = createServer();
+    server.unref();
+    server.on("error", reject);
+    server.listen(0, () => {
+      const address = server.address();
+      if (address === null || typeof address === "string") {
+        server.close();
+        reject(new Error("Could not find a free port"));
+        return;
+      }
+      const { port } = address;
+      server.close(() => resolve(port));
+    });
+  });
 }
 
 export async function stopGammaInstance(

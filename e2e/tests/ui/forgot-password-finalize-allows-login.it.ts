@@ -1,69 +1,74 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
-import { uniqueCid } from "../../helpers/strings";
-import { rowWithText, articleByHeading } from "../../helpers/a11y";
+import {
+  issueAdminRecoveryLink,
+  startAdminRecovery,
+} from "../../helpers/admin-recovery";
+import { waitForMailLink } from "../../helpers/mail";
+import { saveRecoveryKey } from "../../helpers/recovery-key";
 
-test("given a generated password reset link when finalizing reset then the user can login with new password", async ({
+test("admin recovery lets a user choose a password and requires saving a recovery key", async ({
   page,
   gamma,
+  env,
 }) => {
-  await login(
-    page,
-    gamma.url,
-    gamma.adminCid ?? "",
-    gamma.adminPassword ?? "",
-    "admin",
-  );
-
-  await page.goto(`${gamma.url}/users`, { timeout: 30000 });
-  await rowWithText(page, "jhalpert")
-    .getByRole("link", { name: "Details" })
-    .click();
-
-  const passwordLinkArticle = articleByHeading(
-    page,
-    "Generate reset password link",
-  );
-
-  await Promise.all([
-    page.waitForResponse(
-      (response) =>
-        response.request().method() === "POST" &&
-        response.url().includes("/generate-password-link") &&
-        response.status() >= 200 &&
-        response.status() < 400,
-    ),
-    passwordLinkArticle.getByRole("button", { name: "Generate" }).click(),
-  ]);
-
-  const resetLink = (
-    await passwordLinkArticle.getByRole("code").innerText()
-  ).trim();
-  const resetUrl = new URL(resetLink);
-  const reachableResetLink = `${gamma.url}${resetUrl.pathname}${resetUrl.search}`;
-
-  expect(resetLink).toContain("/forgot-password/finalize?token=");
-
-  const newPassword = `${uniqueCid("reset")}-password`;
-
+  const link = await issueAdminRecoveryLink(page, gamma, "jhalpert");
   await logout(page);
-
-  await page.goto(reachableResetLink, { timeout: 30000 });
-  await expect(page.getByText("Finalize resetting password")).toBeVisible({
-    timeout: 10000,
-  });
-
+  await startAdminRecovery(page, link);
+  const newPassword = "recovered-password-1337";
   await page.getByLabel("Password", { exact: true }).fill(newPassword);
   await page.getByLabel("Confirm password", { exact: true }).fill(newPassword);
-
-  await Promise.all([
-    page.waitForURL("**/login?password-reset", { timeout: 15000 }),
-    page.getByRole("button", { name: "Reset password" }).click(),
-  ]);
-
-  await expect(page.getByText("Your password was reset.")).toBeVisible({
-    timeout: 10000,
+  await page.getByRole("button", { name: "Use a password" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Save a new recovery key" }),
+  ).toBeVisible();
+  const emailReminder = page.getByRole("heading", {
+    name: "Check your email address",
   });
-
+  await expect(emailReminder).toBeVisible();
+  await page.getByRole("button", { name: "Create a recovery key" }).click();
+  await saveRecoveryKey(page);
+  await expect(emailReminder).toBeVisible();
+  await page.getByRole("button", { name: "Continue to signing in" }).click();
+  await expect(page).toHaveURL(/\/login\?sign-in-ready/);
+  await page.goto(link);
+  await expect(
+    page.getByRole("button", { name: "Set up new sign-in credentials" }),
+  ).toHaveCount(0);
   await login(page, gamma.url, "jhalpert", newPassword, "Big Tuna");
+  await expect(emailReminder).toBeVisible();
+  await page.reload();
+  await expect(emailReminder).toBeVisible();
+  await page.goto(`${gamma.url}/me/security`);
+  await expect(
+    page.getByText("Verify a current email address", { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Turn on email recovery" }),
+  ).toHaveCount(0);
+  await page.goto(gamma.url);
+  await expect(emailReminder).toBeVisible();
+  await page.getByRole("button", { name: "Change email" }).click();
+  await page
+    .getByLabel("New email", { exact: true })
+    .fill("jhalpert@example.org");
+  await page.getByLabel("Current password", { exact: true }).fill(newPassword);
+  await page.getByRole("button", { name: "Send confirmation link" }).click();
+  await expect(page.getByText("We sent a confirmation link")).toBeVisible();
+  await page.goto(
+    await waitForMailLink(
+      env.gotify,
+      gamma.url,
+      "jhalpert@example.org",
+      "/me/confirm-email",
+    ),
+  );
+  await page.getByRole("button", { name: "Confirm new email" }).click();
+  await expect(page.getByText("Your email has been changed")).toBeVisible();
+  await page.goto(gamma.url);
+  await expect(emailReminder).toHaveCount(0);
+  await page.goto(`${gamma.url}/me/security`);
+  await expect(
+    page.getByRole("button", { name: "Turn on email recovery" }),
+  ).toBeVisible();
 });

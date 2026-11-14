@@ -58,19 +58,54 @@
         </footer>
     </article>
 
-    <article th:if="${isAdmin}" th:fragment="password-link-generated">
+    <article th:if="${isAdmin and signInMethods != null}" th:fragment="sign-in-methods">
         <header>
-            <h2>Generate reset password link</h2>
+            <h2>How the user signs in</h2>
         </header>
-        <p th:if="${passwordLink == null}">Password link will appear here</p>
-        <th:block th:if="${passwordLink != null}">
-            <p>Link valid for 15 minutes.</p>
-            <p><code th:text="${passwordLink}"></code></p>
+        <p th:if="${signInReset}" class="callout callout--success" role="status">
+            The user's old credentials and sessions were revoked. Email recovery is off. Give the recovery link directly to the person whose identity you verified.
+        </p>
+        <p th:if="${adminRecoveryRequiresDemotion}" class="callout callout--danger" role="alert">
+            Remove this user's admin rights first, recover their account, and give the rights back once they have set up a new passkey.
+        </p>
+        <th:block th:if="${adminRecoveryLink != null}">
+            <p>Single-use recovery link, valid for 15 minutes. Anyone with this link can recover this account.</p>
+            <p><code th:text="${adminRecoveryLink}"></code></p>
         </th:block>
-        <footer>
-            <form th:data-hx-post="|/users/${userId}/generate-password-link|" data-hx-target="closest article" data-hx-swap="outerHTML">
+        <dl class="key-value">
+            <div class="key-value__row">
+                <dt class="key-value__key">Password</dt>
+                <dd class="key-value__value" th:text="${signInMethods.hasPassword()} ? 'Yes' : 'No'"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Passkeys</dt>
+                <dd class="key-value__value" th:text="${signInMethods.passkeys().size()}"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Authenticator app</dt>
+                <dd class="key-value__value" th:text="${signInMethods.totpEnabled()} ? 'Yes' : 'No'"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Recovery key</dt>
+                <dd class="key-value__value" th:text="${signInMethods.hasRecoveryKey()} ? 'Yes' : 'No'"></dd>
+            </div>
+            <div class="key-value__row">
+                <dt class="key-value__key">Email recovery</dt>
+                <dd class="key-value__value"
+                    th:text="${signInMethods.isAdmin()} ? 'No, admins can never recover by email' : (${signInMethods.emailRecovery()} ? 'Yes' : 'No')"></dd>
+            </div>
+        </dl>
+        <p>
+            Verify the person's identity before recovering their account. This removes their password, passkeys,
+            authenticator app and recovery key, revokes their sessions, and creates a single-use recovery link.
+            Give the link directly to them through a trusted channel. They do not need access to their old email.
+            Email recovery stays off until they verify a current address.
+        </p>
+        <footer th:if="${!isMe}">
+            <form th:data-hx-post="|/users/${userId}/reset-sign-in|" data-hx-target="closest article" data-hx-swap="outerHTML"
+                  data-hx-confirm="Revoke this user's credentials and sessions and generate a recovery link?">
                 <div th:replace="~{common/form-csrf}"></div>
-                <button class="button" data-loading-disable>Generate</button>
+                <button class="button button--danger" data-loading-disable>Reset sign-in and generate recovery link</button>
             </form>
         </footer>
     </article>

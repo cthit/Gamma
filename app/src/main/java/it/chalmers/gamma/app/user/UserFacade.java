@@ -12,7 +12,9 @@ import it.chalmers.gamma.app.datadeletion.DataDeletionRecorder;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.post.PostFacade;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeRepository;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
@@ -21,27 +23,41 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserFacade extends Facade {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserFacade.class);
+
   private final UserRepository userRepository;
   private final GroupRepository groupRepository;
   private final ClientApprovalsRepository clientApprovalsRepository;
   private final DataDeletionRecorder dataDeletionRecorder;
+  private final EmailChangeRepository emailChangeRepository;
+  private final RecentSignIn recentSignIn;
+  private final ApplicationEventPublisher events;
 
   public UserFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
       GroupRepository groupRepository,
       ClientApprovalsRepository clientApprovalsRepository,
-      DataDeletionRecorder dataDeletionRecorder) {
+      DataDeletionRecorder dataDeletionRecorder,
+      EmailChangeRepository emailChangeRepository,
+      RecentSignIn recentSignIn,
+      ApplicationEventPublisher events) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
     this.clientApprovalsRepository = clientApprovalsRepository;
     this.dataDeletionRecorder = dataDeletionRecorder;
+    this.emailChangeRepository = emailChangeRepository;
+    this.recentSignIn = recentSignIn;
+    this.events = events;
   }
 
   public Optional<UserDTO> get(UUID id) {
@@ -81,11 +97,6 @@ public class UserFacade extends Facade {
     }
 
     return Collections.emptyList();
-  }
-
-  public void setUserPassword(UUID id, String newPassword) {
-    accessGuard.require(isAdmin());
-    this.userRepository.setPassword(new UserId(id), new UnencryptedPassword(newPassword));
   }
 
   @Transactional
@@ -134,10 +145,24 @@ public class UserFacade extends Facade {
     return this.userRepository.get(new UserId(id)).map(UserExtendedDTO::new);
   }
 
+  @Transactional
   public void updateUser(UpdateUser updateUser) {
     accessGuard.require(isAdmin());
 
-    GammaUser oldUser = this.userRepository.get(new UserId(updateUser.id)).orElseThrow();
+    UserId userId = new UserId(updateUser.id);
+    // Serializes with recovery and credential changes, so the email can't change under them.
+    this.userRepository.lockSignInMethods(userId);
+    GammaUser oldUser = this.userRepository.get(userId).orElseThrow();
+    Email previousEmail = oldUser.extended().email();
+    Email newEmail = new Email(updateUser.email);
+    boolean emailChanged = !newEmail.value().equalsIgnoreCase(previousEmail.value());
+
+    // A new email would let the forgot password flow mail a reset link to it, so it needs the same
+    // recent confirmation as admin recovery.
+    if (emailChanged && !this.recentSignIn.isRecent()) {
+      throw new AccessGuard.AccessDeniedException();
+    }
+
     this.userRepository.save(
         oldUser
             .with()
@@ -146,8 +171,25 @@ public class UserFacade extends Facade {
             .lastName(new LastName(updateUser.lastName))
             .language(Language.valueOf(updateUser.language))
             .acceptanceYear(new AcceptanceYear(updateUser.acceptanceYear))
-            .extended(oldUser.extended().with().email(new Email(updateUser.email)).build())
+            .extended(oldUser.extended().with().email(newEmail).build())
             .build());
+
+    if (emailChanged) {
+      this.userRepository.requireEmailRecoveryVerification(userId);
+      this.emailChangeRepository.delete(userId);
+      LOGGER.warn(
+          "Admin {} changed the email of the user {}; email recovery is off until it is verified",
+          actingUserId(),
+          userId.value());
+      this.events.publishEvent(new EmailChangedByAdmin(userId, previousEmail));
+    }
+  }
+
+  private static UUID actingUserId() {
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn) {
+      return signedIn.gammaUser().id().value();
+    }
+    return null;
   }
 
   public record UserDTO(

@@ -8,6 +8,15 @@
         <p th:if="${authorizing}">
             Before deciding on authorizing the client, please verify your identity
         </p>
+        <div class="login__passkey">
+            <button class="button button--block" type="button"
+                    data-passkey-sign-in th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
+                    data-passkey-error="passkey-sign-in-error">
+                Sign in with a passkey
+            </button>
+            <p class="field__error" id="passkey-sign-in-error" role="alert" hidden></p>
+        </div>
+        <p class="login__divider"><span>or with your password</span></p>
         <form class="login__form" th:action="@{/login}" th:method="post">
             <div class="field">
                 <label class="field__label" for="username">Cid or email</label>
@@ -17,7 +26,7 @@
                 <label class="field__label" for="password">Password</label>
                 <input class="input" id="password" type="password" name="password" autocomplete="current-password">
             </div>
-            <button class="button button--block" data-loading-disable>Login</button>
+            <button class="button button--secondary button--block" data-loading-disable>Login</button>
         </form>
         <footer class="login__footer">
             <div class="login__messages" role="status">
@@ -44,10 +53,22 @@
                 <p class="callout callout--success" th:if="${passwordReset}">
                     Your password was reset.
                 </p>
+                <p class="callout callout--success" th:if="${securityChanged}">
+                    Your sign-in settings changed and your previous Gamma sessions were revoked. Sign in again to continue.
+                </p>
+
+                <p class="callout callout--danger" th:if="${setupExpired}">
+                    Setting up how you sign in has ended, since it took too long or your account changed. Start over through the forgot password page or with your recovery key.
+                </p>
+
+                <p class="callout callout--success" th:if="${signInReady}">
+                    You're all set. Sign in with what you just set up.
+                </p>
             </div>
             <nav class="login__links" aria-label="Account">
                 <a href="/activate-cid">Register</a>
                 <a href="/forgot-password">Forgot password</a>
+                <a href="/login/recovery">Use a recovery key</a>
             </nav>
         </footer>
     </article>

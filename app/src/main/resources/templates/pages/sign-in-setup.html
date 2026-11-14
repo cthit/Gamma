@@ -1,0 +1,97 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main id="main" class="app__main">
+    <article th:if="${!done}">
+        <header><h2 th:text="|Set up how you sign in, ${setup.nick()}|"></h2></header>
+        <p th:if="${setup.reason().name() == 'NEW_ACCOUNT'}">Your account has been created. Now choose how you sign in.</p>
+        <p th:if="${setup.reason().name() == 'EMAIL'}">Choose a new way to sign in.</p>
+        <p th:if="${setup.reason().name() == 'ADMIN_RECOVERY'}">
+            An admin helped you recover this account. Choose a new way to sign in and save your recovery key.
+            Email recovery stays off until you verify a current email address from your profile after signing in.
+        </p>
+        <p th:if="${setup.reason().name() == 'RECOVERY_KEY'}">
+            Your passkeys, password and authenticator app were removed, and you were signed out everywhere.
+            Choose a new way to sign in. Your recovery key keeps working until you have.
+        </p>
+
+        <th:block th:if="${setup.canAddPasskey()}">
+            <h3>Passkey (recommended)</h3>
+            <p>
+                Sign in with your phone, a security key or your computer's fingerprint reader or PIN, without a password.
+            </p>
+            <p th:if="${setup.hasPassword()}"><strong>Adding a passkey removes your current password.</strong></p>
+            <div class="field">
+                <label class="field__label" for="passkey-label">Name of the passkey</label>
+                <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">
+            </div>
+            <p class="field__error" id="passkey-error" role="alert" hidden></p>
+            <button class="button" type="button"
+                    data-passkey-register th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
+                    data-label-input="passkey-label"
+                    data-passkey-error="passkey-error" data-success="/sign-in-setup">
+                Add a passkey
+            </button>
+        </th:block>
+
+        <h3 th:text="${setup.canAddPasskey()} ? 'Or a password' : 'Password'"></h3>
+        <form th:action="@{/sign-in-setup/password}" th:method="post" id="setup-password">
+            <input type="hidden" name="username" th:value="${setup.cid()}" autocomplete="username">
+            <div class="field">
+                <label class="field__label" for="newPassword">Password</label>
+                <input class="input" id="newPassword" type="password" name="newPassword" autocomplete="new-password"
+                       minlength="12" required
+                       th:attr="aria-invalid=${passwordInvalid ? 'true' : null},
+                               aria-describedby=${passwordInvalid ? 'new-password-error' : null}">
+                <small class="field__error" id="new-password-error" th:if="${passwordInvalid}">
+                    The password must be at least 12 characters long.
+                </small>
+            </div>
+            <div class="field">
+                <label class="field__label" for="confirmPassword">Confirm password</label>
+                <input class="input" id="confirmPassword" type="password" name="confirmPassword" autocomplete="new-password"
+                       minlength="12" required
+                       th:attr="aria-invalid=${passwordsDontMatch ? 'true' : null},
+                               aria-describedby=${passwordsDontMatch ? 'confirm-password-error' : null}">
+                <small class="field__error" id="confirm-password-error" th:if="${passwordsDontMatch}">
+                    The passwords were not the same.
+                </small>
+            </div>
+        </form>
+        <footer>
+            <button class="button button--secondary" form="setup-password" data-loading-disable>Use a password</button>
+        </footer>
+    </article>
+
+    <article th:if="${done and setup.reason().name() == 'ADMIN_RECOVERY'}">
+        <header><h2>Check your email address</h2></header>
+        <p>
+            After signing in, choose Change email on your profile to verify an address you can access.
+            You can confirm your current address or enter a new one if your old student email no longer works.
+        </p>
+        <p>Email recovery stays off until you verify an address and choose to turn it on.</p>
+    </article>
+
+    <article th:if="${done and setup.needsRecoveryKey()}">
+        <header><h2>Save a new recovery key</h2></header>
+        <p>Email recovery is off for your account, so you need a new recovery key to get back in with.</p>
+        <footer>
+            <form th:action="@{/sign-in-setup/recovery-key}" th:method="post">
+                <button class="button" data-loading-disable>Create a recovery key</button>
+            </form>
+        </footer>
+    </article>
+
+    <article th:if="${done and !setup.needsRecoveryKey()}">
+        <header><h2>You're all set</h2></header>
+        <p>Sign in with what you just set up.</p>
+        <footer>
+            <form th:action="@{/sign-in-setup/finish}" th:method="post">
+                <button class="button" data-loading-disable>Continue to signing in</button>
+            </form>
+        </footer>
+    </article>
+    <div>
+        <form th:action="@{/logout}" th:method="post">
+            <button class="button button--secondary button--small">Cancel and sign out</button>
+        </form>
+    </div>
+</main>

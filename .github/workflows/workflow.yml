@@ -73,7 +73,7 @@ jobs:
 
   e2e-tests:
     needs: build-and-publish
-    timeout-minutes: 60
+    timeout-minutes: 75
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -125,9 +125,9 @@ jobs:
 
       - name: Run E2E tests
         run: make test-e2e GAMMA_VERSION=${{ steps.gamma-version.outputs.version }}
-        # Each test boots fresh Postgres, Redis and Gamma containers (~13-20 s per
-        # test depending on the runner), so 60+ tests can exceed 20 minutes.
-        timeout-minutes: 40
+        # Keep one worker: Docker interface churn interrupts Chromium on Linux.
+        # The 149 isolated tests need about 47 minutes on hosted CI, plus retry headroom.
+        timeout-minutes: 60
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7

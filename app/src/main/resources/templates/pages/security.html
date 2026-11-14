@@ -1,0 +1,159 @@
+<header th:replace="~{common/header}"></header>
+<main id="main" class="app__main">
+    <div class="toolbar">
+        <h2 class="toolbar__title">Sign in and security</h2>
+    </div>
+
+    <p class="callout callout--success" role="status" th:if="${doneMessage}" th:text="${doneMessage}"></p>
+    <p class="callout callout--danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+
+    <article th:if="${methods.isAdmin()}">
+        <header><h2>You are an admin</h2></header>
+        <p>
+            Admins sign in with a passkey. They can't reset how they sign in by email or with a recovery key.
+            If you lose all your passkeys, ask another admin to reset how you sign in.
+        </p>
+    </article>
+
+    <article>
+        <header><h2>Passkeys</h2></header>
+        <p>
+            A passkey lets you sign in with your phone, a security key or your computer's fingerprint reader or PIN,
+            without a password. It is the safest way to sign in.
+        </p>
+        <p th:if="${!methods.hasPasskeys()}">You have no passkeys yet.</p>
+        <p th:if="${methods.hasPasskeys() and !methods.hasPassword()}">You sign in with passkeys only.</p>
+        <p th:if="${methods.hasPasskeys()}">Keep a second passkey on another device or security key, so losing one does not lock you out. Removing a passkey signs you out of your existing Gamma sessions.</p>
+        <p th:if="${methods.hasPassword()}">
+            <strong>Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.</strong>
+        </p>
+        <table class="table" th:if="${methods.hasPasskeys()}" aria-label="Your passkeys">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Added</th>
+                <th>Last used</th>
+                <th><span class="visually-hidden">Actions</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="passkey : ${passkeys}">
+                <td th:text="${passkey.label()}"></td>
+                <td th:text="${passkey.added()}"></td>
+                <td th:text="${passkey.lastUsed()}"></td>
+                <td class="table__cell table__cell--end">
+                    <form th:action="@{/me/security/passkeys/remove}" th:method="post"
+                          th:data-hx-confirm="|Remove the passkey ${passkey.label()} and sign out of your existing Gamma sessions?|">
+                        <input type="hidden" name="credentialId" th:value="${passkey.credentialId()}">
+                        <button class="button button--danger button--small" data-loading-disable>Remove</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="field">
+            <label class="field__label" for="passkey-label">Name of the new passkey</label>
+            <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">
+        </div>
+        <p class="field__error" id="passkey-error" role="alert" hidden></p>
+        <footer>
+            <button class="button" type="button"
+                    data-passkey-register
+                    th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token},data-then-sign-in=${methods.hasPassword() ? 'true' : null},data-passkey-confirm=${methods.hasPassword() ? 'Adding a passkey removes your password. You will sign in with passkeys only. Continue?' : null}"
+                    data-label-input="passkey-label"
+                    data-passkey-error="passkey-error" data-success="/me/security?done=passkey-added">
+                Add a passkey
+            </button>
+        </footer>
+    </article>
+
+    <article th:if="${methods.hasPassword()}">
+        <header><h2>Password</h2></header>
+        <p>You sign in with your password<th:block th:if="${methods.totpEnabled()}"> and a code from your authenticator app</th:block>.</p>
+        <p>
+            Adding a passkey replaces your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.
+            You then sign in with passkeys only.
+        </p>
+        <footer th:if="${methods.hasPasskeys()}">
+            <form th:action="@{/me/security/password/remove}" th:method="post"
+                  data-hx-confirm="Remove your password? You will only be able to sign in with your passkeys.">
+                <button class="button button--danger" data-loading-disable>Remove password</button>
+            </form>
+        </footer>
+    </article>
+
+    <article th:if="${!methods.isAdmin() and methods.hasPassword()}">
+        <header><h2>Authenticator app</h2></header>
+        <th:block th:if="${methods.totpEnabled()}">
+            <p>When you sign in with your password, you also enter a code from your authenticator app.</p>
+            <footer>
+                <form th:action="@{/me/security/totp/disable}" th:method="post"
+                      data-hx-confirm="Remove your authenticator app? You will sign in with only your password.">
+                    <button class="button button--danger" data-loading-disable>Remove authenticator app</button>
+                </form>
+            </footer>
+        </th:block>
+        <th:block th:if="${!methods.totpEnabled()}">
+            <p>
+                Make signing in with your password safer by also asking for a code from an authenticator app,
+                such as the ones built into iOS and many password managers.
+            </p>
+            <footer>
+                <form th:action="@{/me/security/totp/start}" th:method="post">
+                    <button class="button" data-loading-disable>Set up an authenticator app</button>
+                </form>
+            </footer>
+        </th:block>
+    </article>
+
+    <article th:if="${!methods.isAdmin()}">
+        <header><h2>Email recovery</h2></header>
+        <th:block th:if="${methods.emailRecovery()}">
+            <p>
+                If you forget your password or lose your passkeys, you can set up a new way to sign in through a link
+                mailed to you. Anyone who can read your email can do that too.
+            </p>
+            <p>
+                You can turn email recovery off. You then get a recovery key to get back in with instead, which you
+                must keep safe. If you lose it too, only an admin can let you back in.
+            </p>
+            <footer>
+                <form th:action="@{/me/security/email-recovery/disable}" th:method="post">
+                    <button class="button button--secondary" data-loading-disable>Turn off email recovery</button>
+                </form>
+            </footer>
+        </th:block>
+        <th:block th:if="${!methods.emailRecovery()}">
+            <p>Email recovery is off. If you can't sign in, you get back in with your recovery key.</p>
+            <p th:if="${methods.recoveryEmailUnverified()}">
+                An admin recovered your account. Verify a current email address from your profile before turning email recovery on.
+                <a th:href="@{/}">Go to your profile</a> and choose Change email. You can also verify your existing address if you still control it.
+            </p>
+            <footer th:if="${!methods.recoveryEmailUnverified()}">
+                <form th:action="@{/me/security/email-recovery/enable}" th:method="post">
+                    <button class="button button--secondary" data-loading-disable>Turn on email recovery</button>
+                </form>
+            </footer>
+        </th:block>
+    </article>
+
+    <article th:if="${!methods.isAdmin() and (methods.hasRecoveryKey() or !methods.emailRecovery())}">
+        <header><h2>Recovery key</h2></header>
+        <p th:if="${methods.hasRecoveryKey()}">
+            You have a recovery key, created
+            <th:block th:text="${recoveryKeyCreated}"></th:block>.
+            It lets you set up a new way to sign in if you lose your passkeys or authenticator app.
+            If you have lost it, create a new one. The old one then stops working.
+        </p>
+        <p class="callout callout--warning" role="alert" th:if="${!methods.hasRecoveryKey()}">
+            You have no recovery key, and email recovery is off. Create a recovery key now, or only an admin can
+            let you back in if you can't sign in.
+        </p>
+        <footer>
+            <form th:action="@{/me/security/recovery-key}" th:method="post">
+                <button class="button button--secondary" data-loading-disable
+                        th:text="${methods.hasRecoveryKey()} ? 'Create a new recovery key' : 'Create a recovery key'"></button>
+            </form>
+        </footer>
+    </article>
+</main>

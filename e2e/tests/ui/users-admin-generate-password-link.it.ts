@@ -1,44 +1,38 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
-import { login } from "../../helpers/auth";
-import { rowWithText, articleByHeading } from "../../helpers/a11y";
+import { issueAdminRecoveryLink } from "../../helpers/admin-recovery";
 
-test("given an admin user when generating a password reset link then a link is shown", async ({
+test("an admin issues a recovery link while revoking old credentials and leaving email recovery off", async ({
   page,
   gamma,
+  env,
 }) => {
-  await login(
-    page,
-    gamma.url,
-    gamma.adminCid ?? "",
-    gamma.adminPassword ?? "",
-    "admin",
-  );
-
-  await page.goto(`${gamma.url}/users`, { timeout: 30000 });
-  await rowWithText(page, "jhalpert")
-    .getByRole("link", { name: "Details" })
-    .click();
-
-  const passwordLinkArticle = articleByHeading(
-    page,
-    "Generate reset password link",
-  );
-
-  await Promise.all([
-    page.waitForResponse(
-      (response) =>
-        response.request().method() === "POST" &&
-        response.url().includes("/generate-password-link") &&
-        response.status() >= 200 &&
-        response.status() < 400,
-    ),
-    passwordLinkArticle.getByRole("button", { name: "Generate" }).click(),
+  const link = await issueAdminRecoveryLink(page, gamma, "jhalpert");
+  expect(link).toContain("/admin-recovery?token=");
+  const result = await env.postgres.exec([
+    "psql",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "-At",
+    "-c",
+    "SELECT (password IS NULL), email_recovery, email_recovery_requires_verification, (sessions_revoked_at IS NOT NULL) FROM g_user WHERE cid='jhalpert'",
   ]);
-
-  await expect(passwordLinkArticle.getByRole("code")).toBeVisible({
-    timeout: 10000,
-  });
-  await expect(passwordLinkArticle.getByRole("code")).toContainText(
-    "forgot-password",
-  );
+  expect(result.exitCode).toBe(0);
+  expect(result.stdout.trim()).toBe("t|f|t|t");
+  const token = new URL(link).searchParams.get("token")!;
+  const stored = await env.postgres.exec([
+    "psql",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "-At",
+    "-c",
+    "SELECT token, admin_recovery FROM g_password_reset JOIN g_user USING (user_id) WHERE cid='jhalpert'",
+  ]);
+  expect(stored.exitCode).toBe(0);
+  expect(stored.stdout.trim()).toMatch(/\|t$/);
+  // Inspecting the stored hash also proves the bearer link is not persisted in plaintext.
+  expect(stored.stdout).not.toContain(token);
 });

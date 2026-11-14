@@ -7,6 +7,7 @@ import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.SessionRevocationService;
+import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserRepositoryAdapter implements UserRepository {
   private final UserEntityConverter converter;
   private final UserAvatarJpaRepository userAvatarJpaRepository;
   private final PasswordEncoder passwordEncoder;
+  private final EntityManager entityManager;
   private final ClientJpaRepository ownedClients;
   private final GammaAuthorizationRepository authorizations;
   private final SessionRevocationService sessions;
@@ -39,6 +41,7 @@ public class UserRepositoryAdapter implements UserRepository {
       UserEntityConverter converter,
       UserAvatarJpaRepository userAvatarJpaRepository,
       PasswordEncoder passwordEncoder,
+      EntityManager entityManager,
       ClientJpaRepository ownedClients,
       GammaAuthorizationRepository authorizations,
       SessionRevocationService sessions) {
@@ -46,6 +49,7 @@ public class UserRepositoryAdapter implements UserRepository {
     this.converter = converter;
     this.userAvatarJpaRepository = userAvatarJpaRepository;
     this.passwordEncoder = passwordEncoder;
+    this.entityManager = entityManager;
     this.ownedClients = ownedClients;
     this.authorizations = authorizations;
     this.sessions = sessions;
@@ -129,6 +133,16 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
+  public Optional<UserId> findId(Cid cid) {
+    return this.repository.findByCidIgnoreCase(cid.getValue()).map(user -> new UserId(user.id));
+  }
+
+  @Override
+  public Optional<UserId> findId(Email email) {
+    return this.repository.findByEmailIgnoreCase(email.value()).map(user -> new UserId(user.id));
+  }
+
+  @Override
   public boolean checkPassword(UserId userId, UnencryptedPassword password)
       throws UserNotFoundException {
     UserEntity entity =
@@ -139,10 +153,95 @@ public class UserRepositoryAdapter implements UserRepository {
   @Override
   public void setPassword(UserId userId, UnencryptedPassword newPassword)
       throws UserNotFoundException {
+    if (this.repository.updatePassword(
+            userId.value(), passwordEncoder.encode(newPassword.value()), Instant.now())
+        == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public boolean hasPassword(UserId userId) throws UserNotFoundException {
     UserEntity userEntity =
         this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
-    userEntity.password = passwordEncoder.encode(newPassword.value());
-    this.save(userEntity);
+    return userEntity.password != null;
+  }
+
+  @Override
+  public void removePassword(UserId userId) throws UserNotFoundException {
+    if (this.repository.updatePassword(userId.value(), null, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public void lockSignInMethods(UserId userId) throws UserNotFoundException {
+    UserEntity entity =
+        this.repository.lockById(userId.value()).orElseThrow(UserNotFoundException::new);
+    // The user may have been read before waiting for this lock. Reload the managed snapshot
+    // so checks made after acquiring it see the transaction that released the lock. Detach
+    // also removes its cascading avatar graph; Hibernate's refresh path crashes on that
+    // bidirectional association. The database row lock remains held until transaction end.
+    this.entityManager.detach(entity);
+    this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
+  }
+
+  @Override
+  public boolean isLocked(UserId userId) throws UserNotFoundException {
+    return this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new).locked;
+  }
+
+  @Override
+  public Optional<Instant> sessionsRevokedAt(UserId userId) throws UserNotFoundException {
+    return Optional.ofNullable(
+        this.repository
+            .findById(userId.value())
+            .orElseThrow(UserNotFoundException::new)
+            .sessionsRevokedAt);
+  }
+
+  @Override
+  public void revokeSessions(UserId userId) throws UserNotFoundException {
+    if (this.repository.revokeSessions(userId.value(), Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException {
+    UserEntity userEntity =
+        this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
+    return userEntity.emailRecovery && !userEntity.emailRecoveryRequiresVerification;
+  }
+
+  @Override
+  public void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException {
+    if (this.repository.updateEmailRecovery(userId.value(), enabled, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public boolean emailRecoveryRequiresVerification(UserId userId) {
+    return this.repository
+        .findById(userId.value())
+        .orElseThrow(UserNotFoundException::new)
+        .emailRecoveryRequiresVerification;
+  }
+
+  @Override
+  public void requireEmailRecoveryVerification(UserId userId) {
+    if (this.repository.updateRecoveryEmailVerification(userId.value(), true, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public void confirmRecoveryEmail(UserId userId) {
+    if (this.repository.updateRecoveryEmailVerification(userId.value(), false, Instant.now())
+        == 0) {
+      throw new UserNotFoundException();
+    }
   }
 
   @Override
