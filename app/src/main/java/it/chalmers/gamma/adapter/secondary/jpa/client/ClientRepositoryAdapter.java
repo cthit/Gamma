@@ -13,11 +13,15 @@ import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientId;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,18 +42,24 @@ public class ClientRepositoryAdapter implements ClientRepository {
   private final ClientEntityConverter clientEntityConverter;
   private final UserApprovalJpaRepository userApprovalJpaRepository;
   private final UserJpaRepository userJpaRepository;
+  private final JdbcTemplate jdbc;
+  private final GammaAuthorizationRepository authorizations;
 
   public ClientRepositoryAdapter(
       ClientJpaRepository clientJpaRepository,
       ClientApiKeyJpaRepository clientApiKeyJpaRepository,
       ClientEntityConverter clientEntityConverter,
       UserApprovalJpaRepository userApprovalJpaRepository,
-      UserJpaRepository userJpaRepository) {
+      UserJpaRepository userJpaRepository,
+      JdbcTemplate jdbc,
+      GammaAuthorizationRepository authorizations) {
     this.clientJpaRepository = clientJpaRepository;
     this.clientApiKeyJpaRepository = clientApiKeyJpaRepository;
     this.clientEntityConverter = clientEntityConverter;
     this.userApprovalJpaRepository = userApprovalJpaRepository;
     this.userJpaRepository = userJpaRepository;
+    this.jdbc = jdbc;
+    this.authorizations = authorizations;
   }
 
   @Override
@@ -75,6 +85,8 @@ public class ClientRepositoryAdapter implements ClientRepository {
   public void delete(ClientUid clientUid) throws ClientNotFoundException {
     try {
       this.clientJpaRepository.deleteById(clientUid.value());
+      this.clientJpaRepository.flush();
+      this.authorizations.revokeForClient(clientUid.value().toString());
     } catch (EmptyResultDataAccessException e) {
       throw new ClientNotFoundException();
     }
@@ -135,6 +147,59 @@ public class ClientRepositoryAdapter implements ClientRepository {
   public void deleteUserApproval(ClientUid clientUid, UserId userId) {
     this.userApprovalJpaRepository.deleteById_Client_ClientUidAndId_User_Id(
         clientUid.value(), userId.value());
+  }
+
+  @Override
+  public void rememberWithdrawnContact(UserId userId, ClientUid clientUid) {
+    this.jdbc.update(
+        "INSERT INTO g_withdrawn_client_contact (user_id, client_uid) VALUES (?, ?) ON CONFLICT DO NOTHING",
+        userId.value(),
+        clientUid.value());
+  }
+
+  @Override
+  public void dismissWithdrawnContact(UserId userId, ClientUid clientUid) {
+    this.jdbc.update(
+        "DELETE FROM g_withdrawn_client_contact WHERE user_id = ? AND client_uid = ?",
+        userId.value(),
+        clientUid.value());
+  }
+
+  @Override
+  public List<Client> getWithdrawnContacts(UserId userId) {
+    return this.jdbc
+        .queryForList(
+            "SELECT client_uid FROM g_withdrawn_client_contact WHERE user_id = ?",
+            UUID.class,
+            userId.value())
+        .stream()
+        .map(ClientUid::new)
+        .map(this::get)
+        .flatMap(Optional::stream)
+        .toList();
+  }
+
+  @Override
+  public Optional<Email> getUserOwnerEmail(ClientUid clientUid) {
+    return this.clientJpaRepository
+        .findById(clientUid.value())
+        .map(client -> client.createdBy)
+        .flatMap(this.userJpaRepository::findEmailById)
+        .map(Email::new);
+  }
+
+  @Override
+  public boolean isUserOwnerLocked(ClientUid clientUid) {
+    return this.clientJpaRepository
+        .findById(clientUid.value())
+        .map(client -> client.createdBy)
+        .flatMap(this.userJpaRepository::findLockedById)
+        .orElse(false);
+  }
+
+  @Override
+  public boolean lockForAuthorization(ClientUid clientUid) {
+    return this.clientJpaRepository.lockForAuthorization(clientUid.value()).isPresent();
   }
 
   @Override

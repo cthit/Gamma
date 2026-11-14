@@ -19,6 +19,17 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
 
   Optional<UserEntity> findByEmailIgnoreCase(String email);
 
+  @Query(
+      value = "SELECT CAST(user_id AS VARCHAR) FROM g_user WHERE user_id = :id FOR UPDATE",
+      nativeQuery = true)
+  Optional<String> lockForUpdate(@Param("id") UUID id);
+
+  @Query("SELECT u.locked FROM UserEntity u WHERE u.id = :id")
+  Optional<Boolean> findLockedById(@Param("id") UUID id);
+
+  @Query("SELECT u.email FROM UserEntity u WHERE u.id = :id")
+  Optional<String> findEmailById(@Param("id") UUID id);
+
   /**
    * Only touches the email and the version, so it can't overwrite a concurrent change to any other
    * column, such as the password.

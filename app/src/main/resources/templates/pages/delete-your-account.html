@@ -7,7 +7,57 @@
         <p>
             Deleting your account can't be reversed.
         </p>
+        <p>Gamma removes your profile, owned clients, approvals and credentials when deletion succeeds. Uploaded avatars are queued for file removal, with retries if storage is unavailable. <a href="/privacy">Read the privacy information</a> for retained request records and contact details. You can contact <a href="mailto:ita@chalmers.it">ita@chalmers.it</a> after your account is deleted.</p>
+        <section th:if="${!officialClients.isEmpty()}" aria-labelledby="official-clients-heading">
+            <h3 id="official-clients-heading">Official clients you have approved</h3>
+            <ul>
+                <li th:each="client : ${officialClients}" th:text="${client}"></li>
+            </ul>
+            <p>
+                When you delete your account, Gamma's administrators follow up on erasure with these clients.
+                Erasure, where applicable, must happen without undue delay. Admins must respond to your request within one month.
+            </p>
+        </section>
+        <section th:if="${!officialClients.isEmpty() or hasClearedDeletionRecords}" aria-labelledby="kept-data-heading">
+            <h3 id="kept-data-heading">What Gamma keeps after you delete your account</h3>
+            <p th:if="${!officialClients.isEmpty()}">
+                Until a client above has deleted your data, Gamma keeps your user id, your cid and the name of the client.
+                After an admin confirms erasure, Gamma keeps a record of that confirmation for 365 days.
+                The record has your user id, the id of the client, why your data had to be deleted and the dates of what happened.
+                It also identifies the clearing admin. It doesn't have your cid or the name of the client. These identifiers are still personal data.
+            </p>
+            <p th:if="${hasClearedDeletionRecords}">
+                You have retracted your approval of official clients before, and admins have recorded that those erasure requests were completed.
+                Gamma keeps a record that your data was deleted for each of them, for one year after it was confirmed.
+                The record has your user id, the id of the client, why your data had to be deleted and the dates of what happened.
+            </p>
+        </section>
+        <section th:if="${!clientOwners.isEmpty()}" aria-labelledby="unofficial-clients-heading">
+            <h3 id="unofficial-clients-heading">Clients made by other users</h3>
+            <p>
+                These clients are not official, so Gamma can't make sure they delete your data.
+                If you want them to, email their owners before you delete your account.
+            </p>
+            <ul>
+                <li th:each="owner : ${clientOwners}">
+                    <strong th:text="${owner.name()}"></strong>
+                    <span th:text="|owns ${#strings.listJoin(owner.clients(), ', ')}|"></span>
+                    <br/>
+                    <a th:href="${owner.mailto()}" th:text="|Email ${owner.email()}|"></a>
+                </li>
+            </ul>
+        </section>
+        <section th:if="${!ownedClients.isEmpty()}" aria-labelledby="owned-clients-heading">
+            <h3 id="owned-clients-heading">Clients you own</h3>
+            <p>Deleting your account also deletes these clients and their credentials from Gamma:</p>
+            <ul><li th:each="client : ${ownedClients}" th:text="${client}"></li></ul>
+            <p>Gamma cannot delete the data stored in your applications, exports or backups for you. Delete all personal information you collected about users through these clients before continuing. If you must retain particular data by law, contact <a href="mailto:ita@chalmers.it">ita@chalmers.it</a> to resolve that before deleting your account.</p>
+        </section>
         <form th:object="${form}" id="delete-account" th:action="@{/delete-your-account}" th:method="delete">
+            <div th:if="${!ownedClients.isEmpty()}">
+                <label><input type="checkbox" th:field="*{clientDataDeleted}" required /> I confirm that I have deleted all personal information about users collected through my clients.</label>
+                <p th:if="${#fields.hasErrors('clientDataDeleted')}" th:errors="*{clientDataDeleted}" role="alert"></p>
+            </div>
             <th:block th:with="passwordPurpose='current-password'">
                 <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Confirm password')}"></div>
             </th:block>

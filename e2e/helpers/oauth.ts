@@ -100,6 +100,7 @@ export async function authorizeClientWithPkce(
     pkce?: boolean;
     scopes?: string;
     consent?: "required" | "none";
+    beforeAuthorize?: (page: Page) => Promise<void>;
   } = {},
 ): Promise<{
   code: string;
@@ -132,6 +133,9 @@ export async function authorizeClientWithPkce(
   const authorizeButton = page.getByRole("button", { name: "Authorize" });
   if (options.consent === "required") {
     await expect(authorizeButton).toBeVisible();
+  }
+  if (options.beforeAuthorize) {
+    await options.beforeAuthorize(page);
   }
   if (options.consent === "none") {
     await page.waitForURL("**/oauth2/callback**");

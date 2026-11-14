@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.StaleDomainObjectException;
+import it.chalmers.gamma.app.datadeletion.DataDeletionFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,10 +27,13 @@ public class ThymeleafAdvice {
   private static final Logger LOGGER = LoggerFactory.getLogger(ThymeleafAdvice.class);
 
   private final ImageUploadLimit imageUploadLimit;
+  private final DataDeletionFacade dataDeletionFacade;
 
   public ThymeleafAdvice(
-      @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize) {
+      @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize,
+      DataDeletionFacade dataDeletionFacade) {
     this.imageUploadLimit = new ImageUploadLimit(maxImageSize);
+    this.dataDeletionFacade = dataDeletionFacade;
   }
 
   /**
@@ -49,6 +53,15 @@ public class ThymeleafAdvice {
     } else {
       return false;
     }
+  }
+
+  @ModelAttribute("dataDeletionActionRequired")
+  public DataDeletionFacade.ActionRequiredDTO dataDeletionActionRequired() {
+    if (!isAdmin()) {
+      return null;
+    }
+
+    return this.dataDeletionFacade.getActionRequired().orElse(null);
   }
 
   @ExceptionHandler(IllegalArgumentException.class)

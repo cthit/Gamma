@@ -27,7 +27,7 @@ public class ConsentController {
     this.clientFacade = clientFacade;
   }
 
-  public record UserOwner(String name) {}
+  public record UserOwner(String name, String email, String mailto) {}
 
   public ModelAndView createClientIssuesModelAndView(
       boolean htmxRequest, String title, String description) {
@@ -86,6 +86,15 @@ public class ConsentController {
           "There is a mismatch between registered client scopes, and the scopes specified for this authorization.");
     }
 
+    boolean isOfficial = client.getClientSettings().getSetting(IS_OFFICIAL);
+
+    if (!isOfficial && this.clientFacade.isClientOwnerLocked(client.getClientId())) {
+      return createClientIssuesModelAndView(
+          htmxRequest,
+          "Client can't be approved",
+          "This client can't be approved right now, because the account of its owner is locked.");
+    }
+
     if (htmxRequest) {
       mv.setViewName("pages/authorize");
     } else {
@@ -99,15 +108,18 @@ public class ConsentController {
     mv.addObject("hasEmailScope", scope.contains("email"));
     mv.addObject("scopes", scope.split(" "));
 
-    boolean isOfficial = client.getClientSettings().getSetting(IS_OFFICIAL);
-
     if (!isOfficial) {
       UserFacade.UserDTO owner =
           this.clientFacade.getClientOwner(client.getClientId()).orElseThrow();
 
+      String ownerEmail = this.clientFacade.getClientOwnerEmail(client.getClientId()).orElse(null);
+
       mv.addObject(
           "userOwner",
-          new UserOwner("%s '%s' %s".formatted(owner.firstName(), owner.nick(), owner.lastName())));
+          new UserOwner(
+              "%s '%s' %s".formatted(owner.firstName(), owner.nick(), owner.lastName()),
+              ownerEmail,
+              ownerEmail == null ? null : MailtoLink.href(ownerEmail)));
     }
 
     return mv;

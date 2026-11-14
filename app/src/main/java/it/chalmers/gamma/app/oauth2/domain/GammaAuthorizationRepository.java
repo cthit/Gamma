@@ -5,6 +5,11 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 
 public interface GammaAuthorizationRepository {
 
+  /** Removes pending grants and issued tokens, including their token lookup entries. */
+  void revokeForUser(String principalName, String registeredClientId);
+
+  void revokeForClient(String registeredClientId);
+
   void save(OAuth2Authorization authorization);
 
   void remove(OAuth2Authorization authorization);

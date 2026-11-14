@@ -40,8 +40,10 @@ spring:
         enabled: false
       path: "/error"
   session:
-    store-type: "redis"
     timeout: "${SESSION_TIMEOUT:43200}"
+    data:
+      redis:
+        repository-type: "indexed"
   mvc:
     hiddenmethod:
       filter:
@@ -73,6 +75,9 @@ application:
   gotify:
     key: "${GOTIFY_KEY:123abc}"
     url: "${GOTIFY_BASE_URL:http://gotify:80}"
+  data-deletion:
+    digest-cron: "${DATA_DELETION_DIGEST_CRON:0 0 8 * * *}"
+    digest-zone: "${DATA_DELETION_DIGEST_ZONE:Europe/Stockholm}"
 gamma:
   dev-services:
     enabled: "${DEV_SERVICES_ENABLED:false}"

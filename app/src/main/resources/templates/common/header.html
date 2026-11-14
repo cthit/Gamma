@@ -87,6 +87,9 @@
                 <a class="app-nav__link" th:href="@{/gdpr}">Gdpr trained</a>
             </li>
             <li class="app-nav__item">
+                <a class="app-nav__link" th:href="@{/data-deletion}">Data deletion</a>
+            </li>
+            <li class="app-nav__item">
                 <a class="app-nav__link" th:href="@{/allow-list}">Allow lists</a>
             </li>
             <li class="app-nav__item">
@@ -106,3 +109,20 @@
         <img class="app-nav__mascot" src="/img/digit18.svg" alt="digit18 smurf"/>
     </div>
 </nav>
+<section class="action-required"
+         aria-labelledby="action-required-title"
+         th:if="${dataDeletionActionRequired != null}"
+         th:with="required=${dataDeletionActionRequired}">
+    <span class="icon icon--warning action-required__icon" aria-hidden="true"></span>
+    <div class="action-required__content">
+        <h2 class="action-required__title" id="action-required-title">Action required</h2>
+        <p th:if="${required.overdue() > 0}"
+           th:text="|${required.overdue()} data deletion ${required.overdue() == 1 ? 'request is' : 'requests are'} past the one month deadline.|"></p>
+        <p th:if="${required.noRecipients()}">
+            No one gets the daily email about data deletion requests.
+            <th:block th:if="${required.open() > 0}"
+                      th:text="|There ${required.open() == 1 ? 'is 1 open request' : 'are ' + required.open() + ' open requests'}.|"></th:block>
+        </p>
+        <a class="button button--danger" th:href="@{/data-deletion}">Go to data deletion requests</a>
+    </div>
+</section>
