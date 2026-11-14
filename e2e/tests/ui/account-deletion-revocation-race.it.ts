@@ -34,6 +34,24 @@ for (const { method, clearPassword, scenario } of [
       return result.stdout.trim();
     };
     await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
+    if (!clearPassword) {
+      await page
+        .getByLabel("Choose a new avatar", { exact: true })
+        .setInputFiles({
+          name: "avatar.png",
+          mimeType: "image/png",
+          buffer: Buffer.from(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9l8AAAAASUVORK5CYII=",
+            "base64",
+          ),
+        });
+      await page
+        .getByRole("button", { name: "Upload avatar", exact: true })
+        .click();
+      await expect(
+        page.getByText("You have uploaded a new avatar", { exact: true }),
+      ).toBeVisible();
+    }
     if (method === "passkey") {
       await page.goto(`${gamma.url}/me/security`);
       page.once("dialog", (dialog) => dialog.accept());

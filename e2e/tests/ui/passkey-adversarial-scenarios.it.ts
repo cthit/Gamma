@@ -178,9 +178,14 @@ for (const scenario of invalidAssertions) {
           .update(Buffer.from(response.clientDataJSON, "base64url"))
           .digest(),
       ]);
-      const signature = sign("sha256", signedData, privateKey);
+      const algorithm =
+        privateKey.asymmetricKeyType === "ed25519" ||
+        privateKey.asymmetricKeyType === "ed448"
+          ? null
+          : "sha256";
+      const signature = sign(algorithm, signedData, privateKey);
       expect(
-        verify("sha256", signedData, createPublicKey(privateKey), signature),
+        verify(algorithm, signedData, createPublicKey(privateKey), signature),
       ).toBe(true);
       response.signature = signature.toString("base64url");
     }

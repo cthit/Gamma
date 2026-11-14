@@ -8,7 +8,6 @@ import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.SessionRevocationService;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -179,9 +178,12 @@ public class UserRepositoryAdapter implements UserRepository {
   public void lockSignInMethods(UserId userId) throws UserNotFoundException {
     UserEntity entity =
         this.repository.lockById(userId.value()).orElseThrow(UserNotFoundException::new);
-    // The user may have been read before waiting for this lock. Refresh the managed snapshot
-    // so checks made after acquiring it see the transaction that released the lock.
-    this.entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
+    // The user may have been read before waiting for this lock. Reload the managed snapshot
+    // so checks made after acquiring it see the transaction that released the lock. Detach
+    // also removes its cascading avatar graph; Hibernate's refresh path crashes on that
+    // bidirectional association. The database row lock remains held until transaction end.
+    this.entityManager.detach(entity);
+    this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
   }
 
   @Override
