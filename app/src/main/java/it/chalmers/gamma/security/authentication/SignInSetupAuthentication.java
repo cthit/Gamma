@@ -23,6 +23,7 @@ public record SignInSetupAuthentication(UUID userId, Reason reason, Instant star
 
   public enum Reason {
     NEW_ACCOUNT,
+    ADMIN_RECOVERY,
     EMAIL,
     RECOVERY_KEY
   }

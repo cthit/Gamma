@@ -15,6 +15,12 @@ public interface PasswordResetRepository {
 
   PasswordReset createNewToken(UserId userId) throws UserNotFoundException;
 
+  PasswordReset createAdminRecoveryToken(UserId userId) throws UserNotFoundException;
+
+  Optional<UserId> getUserOfValidAdminRecoveryToken(PasswordResetToken token);
+
+  UserId useAdminRecoveryToken(PasswordResetToken token);
+
   Optional<UserId> getUserOfValidToken(PasswordResetToken token);
 
   UserId useToken(PasswordResetToken token);

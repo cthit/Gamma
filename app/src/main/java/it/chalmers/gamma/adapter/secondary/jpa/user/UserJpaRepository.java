@@ -48,6 +48,14 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
   int updateEmailRecovery(
       @Param("id") UUID id, @Param("enabled") boolean enabled, @Param("now") Instant now);
 
+  @Transactional
+  @Modifying(flushAutomatically = true, clearAutomatically = true)
+  @Query(
+      "update UserEntity u set u.emailRecoveryRequiresVerification = :required,"
+          + " u.version = u.version + 1, u.updatedAt = :now where u.id = :id")
+  int updateRecoveryEmailVerification(
+      @Param("id") UUID id, @Param("required") boolean required, @Param("now") Instant now);
+
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("select u from UserEntity u where u.id = :id")
   Optional<UserEntity> lockById(@Param("id") UUID id);

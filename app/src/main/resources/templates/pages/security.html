@@ -125,7 +125,11 @@
         </th:block>
         <th:block th:if="${!methods.emailRecovery()}">
             <p>Email recovery is off. If you can't sign in, you get back in with your recovery key.</p>
-            <footer>
+            <p th:if="${methods.recoveryEmailUnverified()}">
+                An admin recovered your account. Verify a current email address from your profile before turning email recovery on.
+                <a th:href="@{/}">Go to your profile</a> and choose Change email. You can also verify your existing address if you still control it.
+            </p>
+            <footer th:if="${!methods.recoveryEmailUnverified()}">
                 <form th:action="@{/me/security/email-recovery/enable}" th:method="post">
                     <button class="button button--secondary" data-loading-disable>Turn on email recovery</button>
                 </form>

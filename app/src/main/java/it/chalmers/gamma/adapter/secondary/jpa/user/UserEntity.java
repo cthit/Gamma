@@ -57,6 +57,9 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "email_recovery", updatable = false)
   protected boolean emailRecovery = true;
 
+  @Column(name = "email_recovery_requires_verification", nullable = false, updatable = false)
+  protected boolean emailRecoveryRequiresVerification;
+
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   protected UserAvatarEntity userAvatar;
 

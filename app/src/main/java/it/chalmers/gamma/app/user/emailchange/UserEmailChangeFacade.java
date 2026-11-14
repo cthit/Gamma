@@ -16,10 +16,13 @@ import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeRepository.Email
 import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeToken;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import it.chalmers.gamma.security.signin.SignInFactors;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -58,12 +61,13 @@ public class UserEmailChangeFacade extends Facade {
   }
 
   /** Mails a confirmation link to the new email. The email is not changed yet. */
+  @Transactional
   public void requestEmailChange(String newEmailString, String currentPassword)
       throws PasswordIncorrectException,
           EmailUnchangedException,
           EmailAlreadyInUseException,
           TooManyRequestsException {
-    GammaUser me = signedInUser();
+    GammaUser me = lockSignedInUser();
 
     // Counts every attempt, so a stolen session can't be used to guess the password or to probe
     // which emails are registered.
@@ -79,11 +83,12 @@ public class UserEmailChangeFacade extends Facade {
 
     Email newEmail = new Email(newEmailString);
 
-    if (newEmail.value().equalsIgnoreCase(me.extended().email().value())) {
+    if (newEmail.value().equalsIgnoreCase(me.extended().email().value())
+        && !this.userRepository.emailRecoveryRequiresVerification(me.id())) {
       throw new EmailUnchangedException();
     }
 
-    if (this.userRepository.get(newEmail).isPresent()) {
+    if (this.userRepository.get(newEmail).filter(user -> !user.id().equals(me.id())).isPresent()) {
       throw new EmailAlreadyInUseException();
     }
 
@@ -108,9 +113,10 @@ public class UserEmailChangeFacade extends Facade {
   }
 
   /** Changes the email of the signed in user and returns the new email. */
+  @Transactional
   public String confirmEmailChange(String token)
       throws InvalidTokenException, EmailAlreadyInUseException {
-    GammaUser me = signedInUser();
+    GammaUser me = lockSignedInUser();
     Email oldEmail = me.extended().email();
 
     EmailChange change =
@@ -129,6 +135,7 @@ public class UserEmailChangeFacade extends Facade {
 
     try {
       this.userRepository.setEmail(me.id(), change.newEmail());
+      this.userRepository.confirmRecoveryEmail(me.id());
     } catch (UserRepository.EmailAlreadyInUseException e) {
       throw new EmailAlreadyInUseException();
     }
@@ -154,6 +161,18 @@ public class UserEmailChangeFacade extends Facade {
     }
 
     return this.userRepository.checkPassword(me.id(), password);
+  }
+
+  private GammaUser lockSignedInUser() {
+    GammaUser me = signedInUser();
+    this.userRepository.lockSignInMethods(me.id());
+    if (this.userRepository.isLocked(me.id())
+        || SignInFactors.isRevoked(
+            SecurityContextHolder.getContext().getAuthentication(),
+            this.userRepository.sessionsRevokedAt(me.id()).orElse(null))) {
+      throw new AccessGuard.AccessDeniedException();
+    }
+    return me;
   }
 
   private GammaUser signedInUser() {

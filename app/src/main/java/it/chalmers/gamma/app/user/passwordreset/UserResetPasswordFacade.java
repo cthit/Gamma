@@ -1,6 +1,5 @@
 package it.chalmers.gamma.app.user.passwordreset;
 
-import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 
 import it.chalmers.gamma.app.Facade;
@@ -65,23 +64,6 @@ public class UserResetPasswordFacade extends Facade {
     this.passwordResetRepository = passwordResetRepository;
     this.throttlingService = throttlingService;
     this.baseUrl = baseUrl;
-  }
-
-  public String generatePasswordLink(UUID userId) throws EmailRecoveryNotAllowedException {
-    super.accessGuard.require(isAdmin());
-
-    if (!canRecoverByEmail(new UserId(userId))) {
-      throw new EmailRecoveryNotAllowedException();
-    }
-
-    try {
-      PasswordResetRepository.PasswordReset passwordReset =
-          this.passwordResetRepository.createNewToken(new UserId(userId));
-
-      return generatePasswordResetLink(passwordReset.token());
-    } catch (PasswordResetRepository.UserNotFoundException e) {
-      throw new IllegalStateException();
-    }
   }
 
   public void startResetPasswordProcess(String cidOrEmailString) {
@@ -216,8 +198,6 @@ public class UserResetPasswordFacade extends Facade {
   public record ResetOptions(boolean canSetUpPasskey) {}
 
   public record PasskeySetup(UUID userId, Instant startedAt) {}
-
-  public static final class EmailRecoveryNotAllowedException extends Exception {}
 
   private String generatePasswordResetLink(PasswordResetToken token) {
     return this.baseUrl + "/forgot-password/finalize?token=" + token.value();

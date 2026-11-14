@@ -4,6 +4,10 @@
         <header><h2 th:text="|Set up how you sign in, ${setup.nick()}|"></h2></header>
         <p th:if="${setup.reason().name() == 'NEW_ACCOUNT'}">Your account has been created. Now choose how you sign in.</p>
         <p th:if="${setup.reason().name() == 'EMAIL'}">Choose a new way to sign in.</p>
+        <p th:if="${setup.reason().name() == 'ADMIN_RECOVERY'}">
+            An admin helped you recover this account. Choose a new way to sign in and save your recovery key.
+            Email recovery stays off until you verify a current email address from your profile after signing in.
+        </p>
         <p th:if="${setup.reason().name() == 'RECOVERY_KEY'}">
             Your passkeys, password and authenticator app were removed, and you were signed out everywhere.
             Choose a new way to sign in. Your recovery key keeps working until you have.

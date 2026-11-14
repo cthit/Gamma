@@ -1,0 +1,13 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header><h2>Recover your account</h2></header>
+        <p>An admin gave you this single-use link after verifying your identity. Continue to set up a new passkey or password.</p>
+        <p>Email recovery stays off. Once you can sign in, verify a current email address from your profile before turning email recovery on.</p>
+        <p>You will also save a recovery key, so you can get back in without access to your old email.</p>
+        <form th:action="@{/admin-recovery}" th:method="post">
+            <input type="hidden" name="token" th:value="${token}">
+            <button class="button" data-loading-disable>Set up new sign-in credentials</button>
+        </form>
+    </article>
+</main>

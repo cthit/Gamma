@@ -48,7 +48,10 @@ public class SecurityController {
           Map.entry(
               "last-passkey",
               "You can't remove your only passkey, since you would have no way to sign in."),
-          Map.entry("no-passkey", "Add a passkey before removing your password."));
+          Map.entry("no-passkey", "Add a passkey before removing your password."),
+          Map.entry(
+              "recovery-email-unverified",
+              "Verify a current email address from your profile before turning email recovery on."));
 
   private final SignInMethodsFacade signInMethodsFacade;
   private final CurrentSignIn currentSignIn;
@@ -183,7 +186,11 @@ public class SecurityController {
 
   @PostMapping(PAGE + "/email-recovery/enable")
   public ModelAndView enableEmailRecovery() {
-    this.signInMethodsFacade.enableEmailRecovery();
+    try {
+      this.signInMethodsFacade.enableEmailRecovery();
+    } catch (SignInMethodsFacade.RecoveryEmailUnverifiedException e) {
+      return redirect("?error=recovery-email-unverified");
+    }
     return redirect("?done=email-recovery-enabled");
   }
 

@@ -62,6 +62,11 @@ public class UserEmailChangeRepositoryAdapter implements EmailChangeRepository {
   }
 
   @Override
+  public void delete(UserId userId) {
+    this.repository.deleteById(userId.value());
+  }
+
+  @Override
   public int removeExpired() {
     return this.repository.deleteExpired(cutoff());
   }

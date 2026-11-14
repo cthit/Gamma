@@ -518,6 +518,17 @@ test("the documented last-admin recovery invalidates old sessions even after adm
   ]);
   expect(owner.exitCode).toBe(0);
   const userId = owner.stdout.trim();
+  const verification = await env.postgres.exec([
+    "psql",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "-c",
+    `UPDATE g_user SET email_recovery=FALSE, email_recovery_requires_verification=TRUE WHERE user_id='${userId}'`,
+  ]);
+  expect(verification.exitCode).toBe(0);
+
   const readme = await readFile(
     path.resolve(__dirname, "../../../README.md"),
     "utf8",
@@ -540,6 +551,19 @@ test("the documented last-admin recovery invalidates old sessions even after adm
     resetSql!,
   ]);
   expect(removed.exitCode).toBe(0);
+  const recoveredEmail = await env.postgres.exec([
+    "psql",
+    "-U",
+    "postgres",
+    "-d",
+    "postgres",
+    "-At",
+    "-c",
+    `SELECT email_recovery, email_recovery_requires_verification FROM g_user WHERE user_id='${userId}'`,
+  ]);
+  expect(recoveredEmail.exitCode).toBe(0);
+  expect(recoveredEmail.stdout.trim()).toBe("t|f");
+
   await page.goto(`${gamma.url}/`);
   await expect(page).toHaveURL(/\/login/);
   const restored = await env.postgres.exec([

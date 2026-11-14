@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.signin;
 
 import static it.chalmers.gamma.app.authentication.AccessGuard.isAdmin;
+import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 
 import it.chalmers.gamma.app.Facade;
@@ -16,6 +17,9 @@ import it.chalmers.gamma.app.signin.domain.TotpSecret;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeRepository;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
+import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.transaction.Transactional;
@@ -25,6 +29,7 @@ import java.util.OptionalLong;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +45,9 @@ public class SignInMethodsFacade extends Facade {
   private final RecoveryKeyRepository recoveryKeyRepository;
   private final RecentSignIn recentSignIn;
   private final ApplicationEventPublisher events;
+  private final PasswordResetRepository passwordResetRepository;
+  private final EmailChangeRepository emailChangeRepository;
+  private final String baseUrl;
 
   public SignInMethodsFacade(
       AccessGuard accessGuard,
@@ -49,7 +57,10 @@ public class SignInMethodsFacade extends Facade {
       TotpRepository totpRepository,
       RecoveryKeyRepository recoveryKeyRepository,
       RecentSignIn recentSignIn,
-      ApplicationEventPublisher events) {
+      ApplicationEventPublisher events,
+      PasswordResetRepository passwordResetRepository,
+      EmailChangeRepository emailChangeRepository,
+      @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
@@ -58,6 +69,9 @@ public class SignInMethodsFacade extends Facade {
     this.totpRepository = totpRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
     this.events = events;
+    this.passwordResetRepository = passwordResetRepository;
+    this.emailChangeRepository = emailChangeRepository;
+    this.baseUrl = baseUrl;
   }
 
   public SignInMethodsDTO getMine() {
@@ -193,11 +207,14 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public void enableEmailRecovery() {
+  public void enableEmailRecovery() throws RecoveryEmailUnverifiedException {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
     lockAndRecheck(me);
+    if (this.userRepository.emailRecoveryRequiresVerification(me)) {
+      throw new RecoveryEmailUnverifiedException();
+    }
     this.userRepository.setEmailRecoveryEnabled(me, true);
     removeRecoveryKeyIfUnneeded(me);
     changed(me, "Email recovery was turned on.");
@@ -205,34 +222,81 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public void resetSignInMethods(UUID userIdValue) throws AdminWithoutPasswordException {
+  public String resetSignInMethods(UUID userIdValue) throws AdminRecoveryRequiresDemotionException {
     this.accessGuard.require(isAdmin());
-
     UserId userId = new UserId(userIdValue);
     if (userId.equals(me().id())) {
       throw new IllegalArgumentException("Admins can't reset how they sign in themselves");
     }
-
     this.userRepository.lockSignInMethods(userId);
     if (!userIsAdmin(me().id()) || !this.recentSignIn.isRecent()) {
       throw new AccessGuard.AccessDeniedException();
     }
-    if (userIsAdmin(userId) && !this.userRepository.hasPassword(userId)) {
-      throw new AdminWithoutPasswordException();
+    if (userIsAdmin(userId)) {
+      throw new AdminRecoveryRequiresDemotionException();
+    }
+    if (this.userRepository.isLocked(userId)) {
+      throw new AccessGuard.AccessDeniedException();
     }
 
+    resetForAdminRecovery(userId);
+    PasswordResetRepository.PasswordReset reset;
+    try {
+      reset = this.passwordResetRepository.createAdminRecoveryToken(userId);
+    } catch (PasswordResetRepository.UserNotFoundException e) {
+      throw new IllegalStateException(e);
+    }
+    changed(
+        userId,
+        "An admin reset how you sign in. Your old credentials and sessions were revoked. Email recovery is off until you verify a current email address.");
+    LOGGER.warn(
+        "Admin {} reset how the user {} signs in and issued a recovery link",
+        me().id().value(),
+        userIdValue);
+    return this.baseUrl + "/admin-recovery?token=" + reset.token().value();
+  }
+
+  public boolean isAdminRecoveryAllowed(String inputToken) {
+    this.accessGuard.require(isNotSignedIn());
+    return this.passwordResetRepository
+        .getUserOfValidAdminRecoveryToken(new PasswordResetToken(inputToken))
+        .filter(userId -> !userIsAdmin(userId) && !this.userRepository.isLocked(userId))
+        .isPresent();
+  }
+
+  @Transactional
+  public AdminRecoverySetup useAdminRecoveryLink(String inputToken) {
+    this.accessGuard.require(isNotSignedIn());
+    PasswordResetToken token = new PasswordResetToken(inputToken);
+    UserId userId =
+        this.passwordResetRepository
+            .getUserOfValidAdminRecoveryToken(token)
+            .orElseThrow(PasswordResetRepository.TokenNotFoundRuntimeException::new);
+    this.userRepository.lockSignInMethods(userId);
+    if (userIsAdmin(userId) || this.userRepository.isLocked(userId)) {
+      throw new PasswordResetRepository.TokenNotFoundRuntimeException();
+    }
+    this.passwordResetRepository.useAdminRecoveryToken(token);
+    resetForAdminRecovery(userId);
+    changed(
+        userId,
+        "An admin-issued recovery link was used to set up new sign-in credentials. Email recovery remains off.");
+    return new AdminRecoverySetup(
+        userId.value(), this.userRepository.sessionsRevokedAt(userId).orElseThrow().plusMillis(1));
+  }
+
+  private void resetForAdminRecovery(UserId userId) {
     this.passkeyRepository.deleteAll(userId);
     this.totpRepository.delete(userId);
     this.recoveryKeyRepository.delete(userId);
-    this.userRepository.setEmailRecoveryEnabled(userId, true);
+    this.emailChangeRepository.delete(userId);
+    this.userRepository.removePassword(userId);
+    this.userRepository.setEmailRecoveryEnabled(userId, false);
+    this.userRepository.requireEmailRecoveryVerification(userId);
     this.userRepository.revokeSessions(userId);
-    changed(
-        userId,
-        "An admin reset how you sign in. Your sessions were revoked and email recovery is on.");
-
-    LOGGER.warn(
-        "Admin {} reset how the user {} signs in", me().id().value(), userIdValue.toString());
   }
+
+  public record AdminRecoverySetup(UUID userId, Instant startedAt) {}
 
   private SignInMethodsDTO get(UserId userId) {
     boolean admin = userIsAdmin(userId);
@@ -242,6 +306,7 @@ public class SignInMethodsFacade extends Facade {
         this.passkeyRepository.getAll(userId),
         this.totpRepository.isEnabled(userId),
         !admin && emailRecoverySetting,
+        this.userRepository.emailRecoveryRequiresVerification(userId),
         this.recoveryKeyRepository.createdAt(userId).orElse(null),
         admin);
   }
@@ -293,6 +358,7 @@ public class SignInMethodsFacade extends Facade {
       List<Passkey> passkeys,
       boolean totpEnabled,
       boolean emailRecovery,
+      boolean recoveryEmailUnverified,
       Instant recoveryKeyCreatedAt,
       boolean isAdmin) {
 
@@ -307,7 +373,9 @@ public class SignInMethodsFacade extends Facade {
 
   public static final class LastSignInMethodException extends Exception {}
 
-  public static final class AdminWithoutPasswordException extends Exception {}
+  public static final class AdminRecoveryRequiresDemotionException extends Exception {}
+
+  public static final class RecoveryEmailUnverifiedException extends Exception {}
 
   public static final class RecoveryKeyRequiredException extends Exception {}
 }

@@ -20,6 +20,9 @@ public class UserPasswordResetEntity extends ImmutableEntity<UUID> {
   @Column(name = "token")
   protected String tokenHash;
 
+  @Column(name = "admin_recovery", nullable = false)
+  protected boolean adminRecovery;
+
   protected UserPasswordResetEntity() {}
 
   @Override

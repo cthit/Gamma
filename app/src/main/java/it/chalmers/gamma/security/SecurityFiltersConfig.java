@@ -278,6 +278,8 @@ public class SecurityFiltersConfig {
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/register")
                 .anonymous()
+                .requestMatchers("/admin-recovery")
+                .anonymous()
                 .requestMatchers(HttpMethod.GET, "/forgot-password")
                 .anonymous()
                 .requestMatchers(HttpMethod.POST, "/forgot-password")

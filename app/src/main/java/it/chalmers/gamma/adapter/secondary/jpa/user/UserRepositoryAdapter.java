@@ -174,12 +174,35 @@ public class UserRepositoryAdapter implements UserRepository {
   public boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException {
     UserEntity userEntity =
         this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
-    return userEntity.emailRecovery;
+    return userEntity.emailRecovery && !userEntity.emailRecoveryRequiresVerification;
   }
 
   @Override
   public void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException {
     if (this.repository.updateEmailRecovery(userId.value(), enabled, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public boolean emailRecoveryRequiresVerification(UserId userId) {
+    return this.repository
+        .findById(userId.value())
+        .orElseThrow(UserNotFoundException::new)
+        .emailRecoveryRequiresVerification;
+  }
+
+  @Override
+  public void requireEmailRecoveryVerification(UserId userId) {
+    if (this.repository.updateRecoveryEmailVerification(userId.value(), true, Instant.now()) == 0) {
+      throw new UserNotFoundException();
+    }
+  }
+
+  @Override
+  public void confirmRecoveryEmail(UserId userId) {
+    if (this.repository.updateRecoveryEmailVerification(userId.value(), false, Instant.now())
+        == 0) {
       throw new UserNotFoundException();
     }
   }

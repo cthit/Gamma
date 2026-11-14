@@ -180,9 +180,9 @@ Users manage this under **Sign in and security** (`/me/security`): add and remov
 
 - **Email recovery**: the forgot password link lets the user set a new password, or start setting up a passkey instead. Both paths remove old passkeys and revoke previous Gamma sessions and OAuth authorization. Starting passkey setup also removes the old password immediately. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
 - **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) removes their passkeys, password and authenticator app, signs them out everywhere, and lets them set up a new passkey or password. The key stops working once they have, so a setup that is left half way can be started again with the same key.
-- **Admin reset**: an admin can reset how another user signs in from the user's page. That removes the user's passkeys, authenticator app and recovery key, turns email recovery on and signs the user out everywhere. Admins sign in with passkeys only, so to reset another admin, first remove their admin rights, reset them, and give the rights back once they have set up a new passkey through the forgot password page.
+- **Admin recovery**: after verifying the person's identity, an admin can reset their account from the user's page with recent passkey confirmation. This revokes old passwords, passkeys, authenticator apps, recovery keys and Gamma sessions, and displays a single-use recovery link valid for 15 minutes. Give the link directly to the verified person through a trusted channel; access to the old email address is not needed. The link opens restricted credential setup, including saving a recovery key. Email recovery stays off until the user verifies a current address through Change email in their profile, then explicitly turns it on. Existing pending email changes are invalidated. To recover another admin, first remove their admin rights, recover them, and restore their rights after they enroll a new passkey. Admins are trusted to recover other accounts; the acting admin cannot recover their own account this way.
 
-If the last admin loses all their passkeys, remove their passkeys and admin rights and turn email recovery on in the database, let them set up a new passkey through the forgot password page, and give the rights back:
+If the last admin loses all their passkeys, a database operator must verify their identity and establish an email address they can currently access. Update the stored email first if it is outdated. Then remove their passkeys and admin rights and enable recovery for that address using the transaction below, let them enroll a new passkey through the forgot password page, and restore their rights:
 
 ```sql
 BEGIN;
@@ -192,9 +192,11 @@ DELETE FROM g_admin_user WHERE user_id = '<user id>';
 DELETE FROM g_user_totp WHERE user_id = '<user id>';
 DELETE FROM g_user_recovery_key WHERE user_id = '<user id>';
 DELETE FROM g_password_reset WHERE user_id = '<user id>';
+DELETE FROM g_email_change WHERE user_id = '<user id>';
 UPDATE g_user
 SET password = NULL,
     email_recovery = true,
+    email_recovery_requires_verification = false,
     sessions_revoked_at = greatest(coalesce(sessions_revoked_at, clock_timestamp()), clock_timestamp()),
     version = version + 1,
     updated_at = clock_timestamp()

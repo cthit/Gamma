@@ -46,6 +46,12 @@ public interface UserRepository {
 
   void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException;
 
+  boolean emailRecoveryRequiresVerification(UserId userId) throws UserNotFoundException;
+
+  void requireEmailRecoveryVerification(UserId userId) throws UserNotFoundException;
+
+  void confirmRecoveryEmail(UserId userId) throws UserNotFoundException;
+
   void acceptUserAgreement(UserId userId) throws UserNotFoundException;
 
   /**
