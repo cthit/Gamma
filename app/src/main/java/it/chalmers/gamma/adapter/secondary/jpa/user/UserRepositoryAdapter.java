@@ -1,9 +1,12 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user;
 
+import it.chalmers.gamma.adapter.secondary.jpa.client.ClientJpaRepository;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorHelper;
 import it.chalmers.gamma.adapter.secondary.jpa.util.PersistenceErrorState;
 import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.user.domain.*;
+import it.chalmers.gamma.security.SessionRevocationService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import java.time.Instant;
@@ -14,6 +17,7 @@ import java.util.Optional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserRepositoryAdapter implements UserRepository {
@@ -23,6 +27,9 @@ public class UserRepositoryAdapter implements UserRepository {
   private final UserAvatarJpaRepository userAvatarJpaRepository;
   private final PasswordEncoder passwordEncoder;
   private final EntityManager entityManager;
+  private final ClientJpaRepository ownedClients;
+  private final GammaAuthorizationRepository authorizations;
+  private final SessionRevocationService sessions;
 
   private final PersistenceErrorState cidNotUnique =
       new PersistenceErrorState("g_user_cid_key", PersistenceErrorState.Type.NOT_UNIQUE);
@@ -35,12 +42,18 @@ public class UserRepositoryAdapter implements UserRepository {
       UserEntityConverter converter,
       UserAvatarJpaRepository userAvatarJpaRepository,
       PasswordEncoder passwordEncoder,
-      EntityManager entityManager) {
+      EntityManager entityManager,
+      ClientJpaRepository ownedClients,
+      GammaAuthorizationRepository authorizations,
+      SessionRevocationService sessions) {
     this.repository = repository;
     this.converter = converter;
     this.userAvatarJpaRepository = userAvatarJpaRepository;
     this.passwordEncoder = passwordEncoder;
     this.entityManager = entityManager;
+    this.ownedClients = ownedClients;
+    this.authorizations = authorizations;
+    this.sessions = sessions;
   }
 
   @Override
@@ -71,8 +84,30 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
+  @Transactional
   public void delete(UserId userId) {
+    lockForUpdate(userId);
+    var clients =
+        this.ownedClients.findAllByCreatedBy(userId.value()).stream()
+            .map(client -> client.getId().toString())
+            .toList();
     this.repository.deleteById(userId.value());
+    this.repository.flush();
+    // Flush first: client-row locks wait for any in-flight issuance to finish. A later
+    // issuance cannot find the deleted user/client, and all earlier grants are now visible.
+    this.authorizations.revokeForUser(userId.value().toString(), null);
+    clients.forEach(this.authorizations::revokeForClient);
+    this.sessions.revokeAll(userId);
+  }
+
+  @Override
+  public boolean isActive(UserId userId) {
+    return this.repository.findLockedById(userId.value()).map(locked -> !locked).orElse(false);
+  }
+
+  @Override
+  public void lockForUpdate(UserId userId) {
+    this.repository.lockForUpdate(userId.value());
   }
 
   @Override
@@ -284,6 +319,9 @@ public class UserRepositoryAdapter implements UserRepository {
       e.userAvatar.userId = e.id;
       e.userAvatar.user = e;
       e.userAvatar.avatarUri = d.extended().avatarUri().value();
+    } else if (e.userAvatar != null) {
+      this.userAvatarJpaRepository.delete(e.userAvatar);
+      e.userAvatar = null;
     }
 
     return e;

@@ -52,7 +52,7 @@
                 <div th:replace="~{common/form-csrf}"></div>
                 <button class="button button--secondary" data-loading-disable>Unlock user</button>
             </form>
-            <form th:data-hx-confirm="|Are you sure you wish to delete ${name}?|" th:action="|/users/${userId}|" th:method="delete">
+            <form th:data-hx-confirm="|Are you sure you wish to delete ${name}? If they own clients, first arrange deletion of the user data those clients collected. Gamma cannot erase their external applications or backups.|" th:action="|/users/${userId}|" th:method="delete">
                 <button class="button button--danger" data-loading-disable>Delete user</button>
             </form>
         </footer>

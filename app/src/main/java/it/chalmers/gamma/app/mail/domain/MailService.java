@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.mail.domain;
 
 public interface MailService {
+
   void sendMail(String email, String subject, String body);
 
   /**
@@ -9,4 +10,6 @@ public interface MailService {
    * Callers must limit how often it can be triggered themselves.
    */
   void sendSecurityNotification(String email, String subject, String body);
+
+  boolean sendSystemMail(String email, String subject, String body);
 }

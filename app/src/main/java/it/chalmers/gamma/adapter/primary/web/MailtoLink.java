@@ -13,23 +13,38 @@ import java.nio.charset.StandardCharsets;
 public final class MailtoLink {
 
   private static final String ALLOWED = "-._~!$'()*+:@";
+
+  private static final String ALLOWED_IN_HEADER_VALUE = "-._~!$'()*:@";
+
   private static final char[] HEX = "0123456789ABCDEF".toCharArray();
 
   private MailtoLink() {}
 
   public static String href(String email) {
-    StringBuilder href = new StringBuilder("mailto:");
-    for (byte b : email.getBytes(StandardCharsets.UTF_8)) {
+    return "mailto:" + encode(email, ALLOWED);
+  }
+
+  public static String href(String email, String subject, String body) {
+    return href(email)
+        + "?subject="
+        + encode(subject, ALLOWED_IN_HEADER_VALUE)
+        + "&body="
+        + encode(body.replace("\r\n", "\n").replace("\n", "\r\n"), ALLOWED_IN_HEADER_VALUE);
+  }
+
+  private static String encode(String value, String allowed) {
+    StringBuilder encoded = new StringBuilder();
+    for (byte b : value.getBytes(StandardCharsets.UTF_8)) {
       char c = (char) (b & 0xff);
       if ((c >= 'a' && c <= 'z')
           || (c >= 'A' && c <= 'Z')
           || (c >= '0' && c <= '9')
-          || ALLOWED.indexOf(c) >= 0) {
-        href.append(c);
+          || allowed.indexOf(c) >= 0) {
+        encoded.append(c);
       } else {
-        href.append('%').append(HEX[(c >> 4) & 0xf]).append(HEX[c & 0xf]);
+        encoded.append('%').append(HEX[(c >> 4) & 0xf]).append(HEX[c & 0xf]);
       }
     }
-    return href.toString();
+    return encoded.toString();
   }
 }

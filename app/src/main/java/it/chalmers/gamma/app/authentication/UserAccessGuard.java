@@ -3,6 +3,8 @@ package it.chalmers.gamma.app.authentication;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
+import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationToken;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.bootstrap.BootstrapAuthenticated;
 import it.chalmers.gamma.security.authentication.ApiAuthentication;
@@ -12,6 +14,7 @@ import it.chalmers.gamma.security.authentication.UserAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -26,9 +29,12 @@ public class UserAccessGuard {
   private static final Logger LOGGER = LoggerFactory.getLogger(UserAccessGuard.class);
 
   private final ClientRepository clientRepository;
+  private final GammaAuthorizationRepository authorizations;
 
-  public UserAccessGuard(ClientRepository clientRepository) {
+  public UserAccessGuard(
+      ClientRepository clientRepository, GammaAuthorizationRepository authorizations) {
     this.clientRepository = clientRepository;
+    this.authorizations = authorizations;
   }
 
   public boolean accessToExtended(UserId userId) {
@@ -52,7 +58,17 @@ public class UserAccessGuard {
 
     if (SecurityContextHolder.getContext().getAuthentication()
         instanceof JwtAuthenticationToken jwtAuthenticationToken) {
-      return UserId.valueOf(jwtAuthenticationToken.getName()).equals(userId);
+      return UserId.valueOf(jwtAuthenticationToken.getName()).equals(userId)
+          && this.authorizations
+              .findByToken(
+                  GammaAuthorizationToken.valueOf(
+                      jwtAuthenticationToken.getToken().getTokenValue(),
+                      OAuth2TokenType.ACCESS_TOKEN))
+              .filter(grant -> grant.getAccessToken() != null && grant.getAccessToken().isActive())
+              .filter(grant ->
+                  this.clientRepository.isApprovedByUser(
+                      userId, ClientUid.valueOf(grant.getRegisteredClientId())))
+              .isPresent();
     }
 
     return false;

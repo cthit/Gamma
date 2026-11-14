@@ -8,6 +8,12 @@
             This client will be created in your name, and will be shown everytime
             a user attempts to authenticate with gamma to your client.
         </p>
+        <p>
+            Your email is shown to users who are asked to approve your client, so that they can ask you questions,
+            and to users who have approved it, on the page for deleting their account, so that they can ask you to
+            delete the data your client has about them. It is only shown to users who are signed in to Gamma,
+            never to anyone who is not.
+        </p>
         <form id="create-my-client" th:object="${form}" th:action="@{/my-clients}" th:method="post">
             <div th:replace="~{common/input :: textInput2(field='prettyName', label='Pretty name')}"></div>
             <div th:replace="~{common/input :: textInput2(field='svDescription', label='Swedish description')}"></div>

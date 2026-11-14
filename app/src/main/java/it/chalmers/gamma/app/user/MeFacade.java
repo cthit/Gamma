@@ -5,13 +5,21 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
+import it.chalmers.gamma.app.client.domain.ClientOwnerOfficial;
 import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.client.domain.ClientUid;
+import it.chalmers.gamma.app.client.domain.ClientUserOwner;
+import it.chalmers.gamma.app.common.Email;
+import it.chalmers.gamma.app.common.PrettyName;
+import it.chalmers.gamma.app.datadeletion.DataDeletionRecorder;
+import it.chalmers.gamma.app.datadeletion.domain.DataDeletionRequest;
+import it.chalmers.gamma.app.datadeletion.domain.DataDeletionRequestRepository;
 import it.chalmers.gamma.app.group.GroupFacade;
 import it.chalmers.gamma.app.group.domain.GroupRepository;
 import it.chalmers.gamma.app.image.domain.Image;
 import it.chalmers.gamma.app.image.domain.ImageService;
 import it.chalmers.gamma.app.image.domain.ImageUri;
+import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.signin.SignInChanged;
 import it.chalmers.gamma.app.signin.domain.RecentSignIn;
@@ -20,8 +28,14 @@ import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.GammaAuthentication;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,6 +52,9 @@ public class MeFacade extends Facade {
   private final ImageService imageService;
   private final RecentSignIn recentSignIn;
   private final ApplicationEventPublisher events;
+  private final GammaAuthorizationRepository authorizations;
+  private final DataDeletionRecorder dataDeletionRecorder;
+  private final DataDeletionRequestRepository dataDeletionRequestRepository;
 
   public MeFacade(
       AccessGuard accessGuard,
@@ -46,7 +63,10 @@ public class MeFacade extends Facade {
       GroupRepository groupRepository,
       ImageService imageService,
       RecentSignIn recentSignIn,
-      ApplicationEventPublisher events) {
+      ApplicationEventPublisher events,
+      GammaAuthorizationRepository authorizations,
+      DataDeletionRecorder dataDeletionRecorder,
+      DataDeletionRequestRepository dataDeletionRequestRepository) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
     this.events = events;
@@ -54,6 +74,9 @@ public class MeFacade extends Facade {
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
     this.imageService = imageService;
+    this.authorizations = authorizations;
+    this.dataDeletionRecorder = dataDeletionRecorder;
+    this.dataDeletionRequestRepository = dataDeletionRequestRepository;
   }
 
   public List<UserApprovedClientDTO> getSignedInUserApprovals() {
@@ -70,14 +93,116 @@ public class MeFacade extends Facade {
     }
   }
 
+  @Transactional
   public void deleteUserApproval(UUID clientUid) {
     this.accessGuard.require(isSignedIn());
 
     if (AuthenticationExtractor.getAuthentication()
         instanceof UserAuthentication userAuthentication) {
-      this.clientRepository.deleteUserApproval(
-          new ClientUid(clientUid), userAuthentication.gammaUser().id());
+      GammaUser me = userAuthentication.gammaUser();
+      this.dataDeletionRecorder.recordApprovalRevoked(me, new ClientUid(clientUid));
+      if (this.clientRepository.isApprovedByUser(me.id(), new ClientUid(clientUid))) {
+        this.clientRepository
+            .get(new ClientUid(clientUid))
+            .filter(client -> client.owner() instanceof ClientUserOwner)
+            .ifPresent(client ->
+                this.clientRepository.rememberWithdrawnContact(me.id(), client.clientUid()));
+      }
+      this.clientRepository.deleteUserApproval(new ClientUid(clientUid), me.id());
+      this.authorizations.revokeForUser(me.id().value().toString(), clientUid.toString());
     }
+  }
+
+  public List<UserApprovedClientDTO> getWithdrawnContacts() {
+    this.accessGuard.require(isSignedIn());
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn) {
+      return this.clientRepository.getWithdrawnContacts(signedIn.gammaUser().id()).stream()
+          .map(UserApprovedClientDTO::new)
+          .toList();
+    }
+    throw new IllegalCallerException();
+  }
+
+  public void dismissWithdrawnContact(UUID clientUid) {
+    this.accessGuard.require(isSignedIn());
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication signedIn) {
+      this.clientRepository.dismissWithdrawnContact(
+          signedIn.gammaUser().id(), new ClientUid(clientUid));
+    }
+  }
+
+  public AccountDeletionOverviewDTO getAccountDeletionOverview() {
+    this.accessGuard.require(isSignedIn());
+
+    if (!(AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthentication)) {
+      throw new IllegalCallerException("Can only be called by signed in sessions");
+    }
+
+    GammaUser me = userAuthentication.gammaUser();
+    List<String> officialClients = new ArrayList<>();
+    Map<UserId, OwnerContact> owners = new LinkedHashMap<>();
+
+    for (Client client :
+        Stream.concat(
+                this.clientRepository.getClientsByUserApproved(me.id()).stream(),
+                this.clientRepository.getWithdrawnContacts(me.id()).stream())
+            .distinct()
+            .toList()) {
+      if (client.owner() instanceof ClientOwnerOfficial) {
+        officialClients.add(client.prettyName().value());
+      } else if (client.owner() instanceof ClientUserOwner(UserId ownerId)) {
+        OwnerContact contact = owners.get(ownerId);
+        if (contact == null) {
+          Optional<Email> email = this.clientRepository.getUserOwnerEmail(client.clientUid());
+          if (email.isEmpty()) {
+            continue;
+          }
+          contact =
+              new OwnerContact(
+                  this.userRepository.get(ownerId).orElse(null), email.get(), new ArrayList<>());
+          owners.put(ownerId, contact);
+        }
+        contact.clients().add(client.prettyName().value());
+      }
+    }
+
+    List<UnofficialClientOwnerDTO> ownerDTOs =
+        owners.values().stream()
+            .map(contact ->
+                new UnofficialClientOwnerDTO(
+                    contact.owner() == null
+                        ? contact.email().value()
+                        : "%s '%s' %s"
+                            .formatted(
+                                contact.owner().firstName().value(),
+                                contact.owner().nick().value(),
+                                contact.owner().lastName().value()),
+                    contact.owner() == null ? null : contact.owner().firstName().value(),
+                    contact.email().value(),
+                    contact.clients().stream().sorted(String::compareToIgnoreCase).toList()))
+            .sorted(
+                Comparator.comparing(UnofficialClientOwnerDTO::name, String::compareToIgnoreCase))
+            .toList();
+
+    return new AccountDeletionOverviewDTO(
+        me.id().value(),
+        me.cid().value(),
+        me.firstName().value(),
+        Stream.concat(
+                officialClients.stream(),
+                this.dataDeletionRequestRepository.getOpenFor(me.id()).stream()
+                    .map(DataDeletionRequest::clientName)
+                    .map(PrettyName::value))
+            .distinct()
+            .sorted(String::compareToIgnoreCase)
+            .toList(),
+        this.dataDeletionRequestRepository.hasClearedFor(me.id()),
+        ownerDTOs,
+        this.clientRepository.getAllUserClients(me.id()).stream()
+            .map(client -> client.prettyName().value())
+            .sorted(String::compareToIgnoreCase)
+            .toList());
   }
 
   public MeDTO getMe() {
@@ -147,12 +272,18 @@ public class MeFacade extends Facade {
     }
   }
 
-  public void deleteMe(String password) {
+  @Transactional
+  public void deleteMe(String password, boolean clientDataDeleted) {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
       if (isMe(me, password)) {
+        this.userRepository.lockForUpdate(me.id());
+        if (!this.clientRepository.getAllUserClients(me.id()).isEmpty() && !clientDataDeleted) {
+          throw new ClientDataAcknowledgementRequiredException();
+        }
         try {
+          this.dataDeletionRecorder.recordAccountDeletion(me);
           this.userRepository.delete(me.id());
         } catch (UserRepository.UserNotFoundException e) {
           throw new IllegalStateException();
@@ -187,6 +318,7 @@ public class MeFacade extends Facade {
     return false;
   }
 
+  @Transactional
   public void setAvatar(Image image) throws ImageService.ImageCouldNotBeSavedException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
@@ -201,14 +333,17 @@ public class MeFacade extends Facade {
     }
   }
 
+  @Transactional
   public void deleteAvatar() throws ImageService.ImageCouldNotBeRemovedException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser user = userAuthentication.gammaUser();
       this.userRepository.save(user.withExtended(user.extended().withAvatarUri(null)));
-      this.imageService.removeImage(user.extended().avatarUri());
+      // Physical removal is queued transactionally by the avatar-row trigger.
     }
   }
+
+  public static class ClientDataAcknowledgementRequiredException extends RuntimeException {}
 
   public record UserApprovedClientDTO(
       UUID clientUid,
@@ -225,6 +360,20 @@ public class MeFacade extends Facade {
           client.scopes().stream().map(Enum::name).toList());
     }
   }
+
+  public record AccountDeletionOverviewDTO(
+      UUID userId,
+      String cid,
+      String firstName,
+      List<String> officialClients,
+      boolean hasClearedDeletionRecords,
+      List<UnofficialClientOwnerDTO> unofficialClientOwners,
+      List<String> ownedClients) {}
+
+  private record OwnerContact(GammaUser owner, Email email, List<String> clients) {}
+
+  public record UnofficialClientOwnerDTO(
+      String name, String firstName, String email, List<String> clients) {}
 
   public record MyMembership(
       PostFacade.PostDTO post, GroupFacade.GroupDTO group, String unofficialPostName) {

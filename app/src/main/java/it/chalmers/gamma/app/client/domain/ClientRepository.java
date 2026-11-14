@@ -2,6 +2,7 @@ package it.chalmers.gamma.app.client.domain;
 
 import it.chalmers.gamma.app.apikey.domain.ApiKeyId;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyToken;
+import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.UserId;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,19 @@ public interface ClientRepository {
   List<Client> getClientsByUserApproved(UserId id);
 
   void deleteUserApproval(ClientUid clientUid, UserId userId);
+
+  void rememberWithdrawnContact(UserId userId, ClientUid clientUid);
+
+  void dismissWithdrawnContact(UserId userId, ClientUid clientUid);
+
+  List<Client> getWithdrawnContacts(UserId userId);
+
+  Optional<Email> getUserOwnerEmail(ClientUid clientUid);
+
+  boolean isUserOwnerLocked(ClientUid clientUid);
+
+  /** Holds a shared row lock until issuance commits, excluding concurrent client deletion. */
+  boolean lockForAuthorization(ClientUid clientUid);
 
   Optional<Client> getByApiKey(ApiKeyToken apiKeyToken);
 

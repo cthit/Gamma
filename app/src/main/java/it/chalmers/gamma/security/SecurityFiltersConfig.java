@@ -245,6 +245,8 @@ public class SecurityFiltersConfig {
                 .permitAll()
                 .requestMatchers(HttpMethod.GET, "/webjars/**")
                 .permitAll()
+                .requestMatchers(HttpMethod.GET, "/privacy", "/user-agreement")
+                .permitAll()
                 .requestMatchers(HttpMethod.GET, "/login")
                 .permitAll()
                 .requestMatchers(HttpMethod.POST, "/login")
