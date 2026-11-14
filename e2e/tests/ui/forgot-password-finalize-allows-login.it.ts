@@ -22,8 +22,13 @@ test("admin recovery lets a user choose a password and requires saving a recover
   await expect(
     page.getByRole("heading", { name: "Save a new recovery key" }),
   ).toBeVisible();
+  const emailReminder = page.getByRole("heading", {
+    name: "Check your email address",
+  });
+  await expect(emailReminder).toBeVisible();
   await page.getByRole("button", { name: "Create a recovery key" }).click();
   await saveRecoveryKey(page);
+  await expect(emailReminder).toBeVisible();
   await page.getByRole("button", { name: "Continue to signing in" }).click();
   await expect(page).toHaveURL(/\/login\?sign-in-ready/);
   await page.goto(link);
@@ -31,6 +36,9 @@ test("admin recovery lets a user choose a password and requires saving a recover
     page.getByRole("button", { name: "Set up new sign-in credentials" }),
   ).toHaveCount(0);
   await login(page, gamma.url, "jhalpert", newPassword, "Big Tuna");
+  await expect(emailReminder).toBeVisible();
+  await page.reload();
+  await expect(emailReminder).toBeVisible();
   await page.goto(`${gamma.url}/me/security`);
   await expect(
     page.getByText("Verify a current email address", { exact: false }),
@@ -39,6 +47,7 @@ test("admin recovery lets a user choose a password and requires saving a recover
     page.getByRole("button", { name: "Turn on email recovery" }),
   ).toHaveCount(0);
   await page.goto(gamma.url);
+  await expect(emailReminder).toBeVisible();
   await page.getByRole("button", { name: "Change email" }).click();
   await page
     .getByLabel("New email", { exact: true })
@@ -56,6 +65,8 @@ test("admin recovery lets a user choose a password and requires saving a recover
   );
   await page.getByRole("button", { name: "Confirm new email" }).click();
   await expect(page.getByText("Your email has been changed")).toBeVisible();
+  await page.goto(gamma.url);
+  await expect(emailReminder).toHaveCount(0);
   await page.goto(`${gamma.url}/me/security`);
   await expect(
     page.getByRole("button", { name: "Turn on email recovery" }),

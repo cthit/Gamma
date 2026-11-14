@@ -338,6 +338,9 @@ test("another admin can be demoted, recovered without email, and restored after 
     await startAdminRecovery(user, link);
     await useAnotherVirtualAuthenticator(user);
     await addPasskey(user, "Recovered admin device");
+    await expect(
+      user.getByRole("heading", { name: "Check your email address" }),
+    ).toBeVisible();
     await user.getByRole("button", { name: "Create a recovery key" }).click();
     await saveRecoveryKey(user);
     await user.getByRole("button", { name: "Continue to signing in" }).click();

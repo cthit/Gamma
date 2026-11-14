@@ -124,7 +124,8 @@ public class HomeController {
             me.acceptanceYear(),
             me.groups(),
             form.language,
-            me.isAdmin()));
+            me.isAdmin(),
+            me.recoveryEmailUnverified()));
     mv.addObject("gdpr", this.userGdprTrainingFacade.hasGdprTraining(me.id()));
 
     return mv;

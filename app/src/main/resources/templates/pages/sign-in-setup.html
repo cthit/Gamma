@@ -61,6 +61,15 @@
         </footer>
     </article>
 
+    <article th:if="${done and setup.reason().name() == 'ADMIN_RECOVERY'}">
+        <header><h2>Check your email address</h2></header>
+        <p>
+            After signing in, choose Change email on your profile to verify an address you can access.
+            You can confirm your current address or enter a new one if your old student email no longer works.
+        </p>
+        <p>Email recovery stays off until you verify an address and choose to turn it on.</p>
+    </article>
+
     <article th:if="${done and setup.needsRecoveryKey()}">
         <header><h2>Save a new recovery key</h2></header>
         <p>Email recovery is off for your account, so you need a new recovery key to get back in with.</p>

@@ -97,7 +97,8 @@ public class MeFacade extends Facade {
     List<MyMembership> groups =
         this.groupRepository.getAllByUser(user.id()).stream().map(MyMembership::new).toList();
 
-    return new MeDTO(user, groups, isAdmin);
+    return new MeDTO(
+        user, groups, isAdmin, this.userRepository.emailRecoveryRequiresVerification(user.id()));
   }
 
   public void updateMe(UpdateMe updateMe) {
@@ -245,8 +246,13 @@ public class MeFacade extends Facade {
       int acceptanceYear,
       List<MyMembership> groups,
       String language,
-      boolean isAdmin) {
-    public MeDTO(GammaUser user, List<MyMembership> groups, boolean isAdmin) {
+      boolean isAdmin,
+      boolean recoveryEmailUnverified) {
+    public MeDTO(
+        GammaUser user,
+        List<MyMembership> groups,
+        boolean isAdmin,
+        boolean recoveryEmailUnverified) {
       this(
           user.nick().value(),
           user.firstName().value(),
@@ -257,7 +263,8 @@ public class MeFacade extends Facade {
           user.acceptanceYear().value(),
           groups,
           user.language().name(),
-          isAdmin);
+          isAdmin,
+          recoveryEmailUnverified);
     }
   }
 
