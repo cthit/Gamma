@@ -4,10 +4,9 @@ import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.user.domain.Cid;
 import it.chalmers.gamma.app.user.domain.UserId;
+import it.chalmers.gamma.app.user.domain.UserRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetRepository;
 import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
@@ -20,16 +19,16 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
 
   private final UserJpaRepository userJpaRepository;
   private final AdminRepository adminRepository;
-  private final EntityManager entityManager;
+  private final UserRepository userRepository;
   private final UserPasswordResetJpaRepository userPasswordResetJpaRepository;
 
   public UserPasswordResetRepositoryAdapter(
       UserJpaRepository userJpaRepository,
       UserPasswordResetJpaRepository userPasswordResetJpaRepository,
       AdminRepository adminRepository,
-      EntityManager entityManager) {
+      UserRepository userRepository) {
     this.adminRepository = adminRepository;
-    this.entityManager = entityManager;
+    this.userRepository = userRepository;
     this.userJpaRepository = userJpaRepository;
     this.userPasswordResetJpaRepository = userPasswordResetJpaRepository;
   }
@@ -38,9 +37,13 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
       throws UserNotFoundException {
     // An email request may have passed its initial policy check before an admin reset or promotion.
     // Recheck under the same lock before replacing the account's pending recovery token.
+    try {
+      this.userRepository.lockSignInMethods(new UserId(userEntity.id));
+    } catch (UserRepository.UserNotFoundException e) {
+      throw new UserNotFoundException();
+    }
     userEntity =
-        this.userJpaRepository.lockById(userEntity.id).orElseThrow(UserNotFoundException::new);
-    this.entityManager.refresh(userEntity, LockModeType.PESSIMISTIC_WRITE);
+        this.userJpaRepository.findById(userEntity.id).orElseThrow(UserNotFoundException::new);
     if (userEntity.locked
         || this.adminRepository.isAdmin(new UserId(userEntity.id))
         || (!adminRecovery

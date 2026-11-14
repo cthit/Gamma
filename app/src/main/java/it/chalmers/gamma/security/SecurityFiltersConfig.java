@@ -20,6 +20,7 @@ import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import it.chalmers.gamma.security.signin.FactorCheckedAtStartProvider;
 import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
 import it.chalmers.gamma.security.signin.PasskeyConfig;
+import it.chalmers.gamma.security.signin.PasskeyRegistrationOptionsGuardFilter;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationFilter;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
 import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
@@ -55,6 +56,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -65,9 +67,11 @@ import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationFilter;
 import org.springframework.security.web.webauthn.authentication.WebAuthnAuthenticationProvider;
 import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
@@ -235,6 +239,9 @@ public class SecurityFiltersConfig {
         .addFilterAfter(
             new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
             UsernamePasswordAuthenticationFilter.class)
+        // Runs inside ExceptionTranslationFilter, before Spring Security serves the options.
+        .addFilterAfter(
+            new PasskeyRegistrationOptionsGuardFilter(signIn), ExceptionTranslationFilter.class)
         .authorizeHttpRequests(authorize ->
             authorize
                 .requestMatchers(HttpMethod.GET, "/img/**")
@@ -267,6 +274,10 @@ public class SecurityFiltersConfig {
                 .requestMatchers("/me/security", "/me/security/**")
                 .access(signIn.recentlySignedIn())
                 .requestMatchers("/me/edit-password", "/users/*/reset-sign-in", "/admins")
+                .access(signIn.recentlySignedIn())
+                .requestMatchers(HttpMethod.GET, "/users/*/edit")
+                .access(signIn.recentlySignedIn())
+                .requestMatchers(savesUserEdit())
                 .access(signIn.recentlySignedIn())
                 .requestMatchers("/me/edit-email", "/delete-your-account")
                 .access(signIn.recentlySignedInIfPasswordless())
@@ -339,6 +350,19 @@ public class SecurityFiltersConfig {
                     "default-src 'self'; object-src 'none'; frame-ancestors 'none'; frame-src 'none'; base-uri 'none';")));
 
     return http.build();
+  }
+
+  /**
+   * The edit user form posts with a hidden {@code _method=put}. That is only turned into a PUT
+   * after this filter chain, so a rule for PUT alone would never match the form.
+   */
+  private static RequestMatcher savesUserEdit() {
+    PathPatternRequestMatcher.Builder paths = PathPatternRequestMatcher.withDefaults();
+    RequestMatcher put = paths.matcher(HttpMethod.PUT, "/users/{id}");
+    RequestMatcher post = paths.matcher(HttpMethod.POST, "/users/{id}");
+    return request ->
+        put.matches(request)
+            || (post.matches(request) && "put".equalsIgnoreCase(request.getParameter("_method")));
   }
 
   private static void signInSteps(

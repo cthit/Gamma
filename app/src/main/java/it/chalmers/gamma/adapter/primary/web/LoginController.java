@@ -78,10 +78,7 @@ public class LoginController {
 
     SignInMethodsFacade.SignInMethodsDTO methods = this.signInMethodsFacade.getMine();
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    boolean signedInWithPassword =
-        authentication != null
-            && authentication.getAuthorities().stream()
-                .anyMatch(authority -> SignInFactors.PASSWORD.equals(authority.getAuthority()));
+    boolean signedInWithPassword = hasFactor(authentication, SignInFactors.PASSWORD);
 
     boolean adminAddingFirstPasskey = methods.isAdmin() && !methods.hasPasskeys();
     boolean passwordRecent = SignInFactors.isRecent(authentication, SignInFactors.PASSWORD);
@@ -89,6 +86,17 @@ public class LoginController {
         && passwordRecent
         && methods.totpEnabled()
         && !SignInFactors.isRecent(authentication, SignInFactors.TOTP)) {
+      return new ModelAndView("redirect:/login/totp");
+    }
+
+    // A session that has given the password but not the code yet hasn't signed in, so it doesn't
+    // get to see the account's sign-in methods.
+    if (signedInWithPassword
+        && methods.hasPassword()
+        && methods.totpEnabled()
+        && !methods.hasPasskeys()
+        && !hasFactor(authentication, SignInFactors.TOTP)
+        && !hasFactor(authentication, SignInFactors.PASSKEY)) {
       return new ModelAndView("redirect:/login/totp");
     }
 
@@ -116,6 +124,12 @@ public class LoginController {
     ModelAndView mv = page("pages/login-recovery", htmxRequest, response);
     mv.addObject("error", error != null);
     return mv;
+  }
+
+  private static boolean hasFactor(Authentication authentication, String factor) {
+    return authentication != null
+        && authentication.getAuthorities().stream()
+            .anyMatch(authority -> factor.equals(authority.getAuthority()));
   }
 
   private static ModelAndView page(String page, boolean htmxRequest, HttpServletResponse response) {
