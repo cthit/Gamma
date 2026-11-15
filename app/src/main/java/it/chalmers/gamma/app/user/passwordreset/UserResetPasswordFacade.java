@@ -72,11 +72,19 @@ public class UserResetPasswordFacade extends Facade {
     TimerBlock.minimum(3000)
         .execute(() -> {
           try {
-            Optional<UserId> userId = findUser(cidOrEmailString);
-            if (userId.isPresent() && !canRecoverByEmail(userId.get())) {
+            UserId userId =
+                findUser(cidOrEmailString)
+                    .orElseThrow(PasswordResetRepository.UserNotFoundException::new);
+            if (!canRecoverByEmail(userId)) {
               LOGGER.info(
                   "Not mailing a password reset link to {}, who can't recover by email",
-                  userId.get().value());
+                  userId.value());
+              return;
+            }
+            // Checked before a new link replaces the previous one, which would otherwise stop
+            // working without a new one being mailed.
+            if (!this.throttlingService.canProceed(userId.value() + "-password-reset", 3)) {
+              LOGGER.info("Throttling password reset process triggered.");
               return;
             }
 
@@ -85,21 +93,13 @@ public class UserResetPasswordFacade extends Facade {
                 instanceof SuccessfulValidation) {
               passwordReset =
                   this.passwordResetRepository.createNewToken(new Email(cidOrEmailString));
-            } else if (new Cid.CidValidator().validate(cidOrEmailString.toLowerCase())
-                instanceof SuccessfulValidation) {
+            } else {
               passwordReset =
                   this.passwordResetRepository.createNewToken(
                       new Cid(cidOrEmailString.toLowerCase()));
-            } else {
-              throw new IllegalArgumentException("Neither an email nor a cid.");
             }
 
-            if (throttlingService.canProceed(
-                passwordReset.email().value() + "-password-reset", 3)) {
-              sendPasswordResetTokenMail(passwordReset.email(), passwordReset.token());
-            } else {
-              LOGGER.info("Throttling password reset process triggered.");
-            }
+            sendPasswordResetTokenMail(passwordReset.email(), passwordReset.token());
           } catch (PasswordResetRepository.UserNotFoundException e) {
             LOGGER.debug(
                 "Someone tried to reset the password for the email {} that doesn't exist",
