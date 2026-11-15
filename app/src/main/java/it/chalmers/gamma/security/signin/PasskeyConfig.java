@@ -4,6 +4,7 @@ import it.chalmers.gamma.adapter.secondary.jpa.user.UserEntity;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.ObjectProvider;
@@ -55,7 +56,7 @@ public class PasskeyConfig {
             userEntities,
             userCredentials,
             PublicKeyCredentialRpEntity.builder().id(base.getHost()).name("Gamma").build(),
-            Set.of(base.getScheme() + "://" + base.getRawAuthority()));
+            Set.of(originOf(base)));
 
     operations.setCustomizeCreationOptions(options -> {
       options.authenticatorSelection(
@@ -77,6 +78,18 @@ public class PasskeyConfig {
         options -> options.userVerification(UserVerificationRequirement.REQUIRED));
 
     return operations;
+  }
+
+  /** The origin as a browser sends it, which leaves out a default port. */
+  static String originOf(URI base) {
+    String scheme = base.getScheme().toLowerCase(Locale.ROOT);
+    String host = base.getHost().toLowerCase(Locale.ROOT);
+    int port = base.getPort();
+    boolean defaultPort =
+        port == -1
+            || ("https".equals(scheme) && port == 443)
+            || ("http".equals(scheme) && port == 80);
+    return scheme + "://" + host + (defaultPort ? "" : ":" + port);
   }
 
   private static PublicKeyCredentialUserEntity shownUser(
