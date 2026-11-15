@@ -7,6 +7,7 @@ import {
 } from "../../helpers/passkeys";
 import { currentTimeStep, totpCode } from "../../helpers/totp";
 import { saveRecoveryKey } from "../../helpers/recovery-key";
+import { saveSetupRecoveryKey } from "../../helpers/admin-recovery";
 
 test("adding a passkey replaces the password and authenticator app, and a recovery key removes the passkeys", async ({
   page,
@@ -105,13 +106,12 @@ test("adding a passkey replaces the password and authenticator app, and a recove
   await page.getByLabel("Recovery key", { exact: true }).fill(key);
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/sign-in-setup/);
+  await saveSetupRecoveryKey(page);
   await page.getByLabel("Password", { exact: true }).fill("New-password-1337");
   await page
     .getByLabel("Confirm password", { exact: true })
     .fill("New-password-1337");
   await page.getByRole("button", { name: "Use a password" }).click();
-  await page.getByRole("button", { name: "Create a recovery key" }).click();
-  await saveRecoveryKey(page);
   await page.getByRole("button", { name: "Continue to signing in" }).click();
   await expect(page).toHaveURL(/\/login\?sign-in-ready/);
 

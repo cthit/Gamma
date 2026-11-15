@@ -5,60 +5,73 @@
         <p th:if="${setup.reason().name() == 'NEW_ACCOUNT'}">Your account has been created. Now choose how you sign in.</p>
         <p th:if="${setup.reason().name() == 'EMAIL'}">Choose a new way to sign in.</p>
         <p th:if="${setup.reason().name() == 'ADMIN_RECOVERY'}">
-            An admin helped you recover this account. Choose a new way to sign in and save your recovery key.
+            An admin helped you recover this account. Save a new recovery key, then choose a new way to sign in.
             Email recovery stays off until you verify a current email address from your profile after signing in.
         </p>
         <p th:if="${setup.reason().name() == 'RECOVERY_KEY'}">
             Your passkeys, password and authenticator app were removed, and you were signed out everywhere.
-            Choose a new way to sign in. Your recovery key keeps working until you have.
+            Choose a new way to sign in. Your recovery key keeps working until you have, or until you save a new one.
         </p>
 
-        <th:block th:if="${setup.canAddPasskey()}">
-            <h3>Passkey (recommended)</h3>
+        <th:block th:if="${setup.needsRecoveryKey()}">
+            <h3>First, save a new recovery key</h3>
             <p>
-                Sign in with your phone, a security key or your computer's fingerprint reader or PIN, without a password.
+                Email recovery is off for your account, so you need a recovery key to get back in with.
+                Save it before you choose how you sign in.
             </p>
-            <p th:if="${setup.hasPassword()}"><strong>Adding a passkey removes your current password.</strong></p>
-            <div class="field">
-                <label class="field__label" for="passkey-label">Name of the passkey</label>
-                <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">
-            </div>
-            <p class="field__error" id="passkey-error" role="alert" hidden></p>
-            <button class="button" type="button"
-                    data-passkey-register th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
-                    data-label-input="passkey-label"
-                    data-passkey-error="passkey-error" data-success="/sign-in-setup">
-                Add a passkey
-            </button>
+            <form th:action="@{/sign-in-setup/recovery-key}" th:method="post">
+                <button class="button" data-loading-disable>Create a recovery key</button>
+            </form>
         </th:block>
 
-        <h3 th:text="${setup.canAddPasskey()} ? 'Or a password' : 'Password'"></h3>
-        <form th:action="@{/sign-in-setup/password}" th:method="post" id="setup-password">
-            <input type="hidden" name="username" th:value="${setup.cid()}" autocomplete="username">
-            <div class="field">
-                <label class="field__label" for="newPassword">Password</label>
-                <input class="input" id="newPassword" type="password" name="newPassword" autocomplete="new-password"
-                       minlength="12" required
-                       th:attr="aria-invalid=${passwordInvalid ? 'true' : null},
-                               aria-describedby=${passwordInvalid ? 'new-password-error' : null}">
-                <small class="field__error" id="new-password-error" th:if="${passwordInvalid}">
-                    The password must be at least 12 characters long.
-                </small>
-            </div>
-            <div class="field">
-                <label class="field__label" for="confirmPassword">Confirm password</label>
-                <input class="input" id="confirmPassword" type="password" name="confirmPassword" autocomplete="new-password"
-                       minlength="12" required
-                       th:attr="aria-invalid=${passwordsDontMatch ? 'true' : null},
-                               aria-describedby=${passwordsDontMatch ? 'confirm-password-error' : null}">
-                <small class="field__error" id="confirm-password-error" th:if="${passwordsDontMatch}">
-                    The passwords were not the same.
-                </small>
-            </div>
-        </form>
-        <footer>
-            <button class="button button--secondary" form="setup-password" data-loading-disable>Use a password</button>
-        </footer>
+        <th:block th:if="${!setup.needsRecoveryKey()}">
+            <th:block th:if="${setup.canAddPasskey()}">
+                <h3>Passkey (recommended)</h3>
+                <p>
+                    Sign in with your phone, a security key or your computer's fingerprint reader or PIN, without a password.
+                </p>
+                <p th:if="${setup.hasPassword()}"><strong>Adding a passkey removes your current password.</strong></p>
+                <div class="field">
+                    <label class="field__label" for="passkey-label">Name of the passkey</label>
+                    <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">
+                </div>
+                <p class="field__error" id="passkey-error" role="alert" hidden></p>
+                <button class="button" type="button"
+                        data-passkey-register th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
+                        data-label-input="passkey-label"
+                        data-passkey-error="passkey-error" data-success="/sign-in-setup">
+                    Add a passkey
+                </button>
+            </th:block>
+
+            <h3 th:text="${setup.canAddPasskey()} ? 'Or a password' : 'Password'"></h3>
+            <form th:action="@{/sign-in-setup/password}" th:method="post" id="setup-password">
+                <input type="hidden" name="username" th:value="${setup.cid()}" autocomplete="username">
+                <div class="field">
+                    <label class="field__label" for="newPassword">Password</label>
+                    <input class="input" id="newPassword" type="password" name="newPassword" autocomplete="new-password"
+                           minlength="12" required
+                           th:attr="aria-invalid=${passwordInvalid ? 'true' : null},
+                                   aria-describedby=${passwordInvalid ? 'new-password-error' : null}">
+                    <small class="field__error" id="new-password-error" th:if="${passwordInvalid}">
+                        The password must be at least 12 characters long.
+                    </small>
+                </div>
+                <div class="field">
+                    <label class="field__label" for="confirmPassword">Confirm password</label>
+                    <input class="input" id="confirmPassword" type="password" name="confirmPassword" autocomplete="new-password"
+                           minlength="12" required
+                           th:attr="aria-invalid=${passwordsDontMatch ? 'true' : null},
+                                   aria-describedby=${passwordsDontMatch ? 'confirm-password-error' : null}">
+                    <small class="field__error" id="confirm-password-error" th:if="${passwordsDontMatch}">
+                        The passwords were not the same.
+                    </small>
+                </div>
+            </form>
+            <footer>
+                <button class="button button--secondary" form="setup-password" data-loading-disable>Use a password</button>
+            </footer>
+        </th:block>
     </article>
 
     <article th:if="${done and setup.reason().name() == 'ADMIN_RECOVERY'}">

@@ -1,6 +1,7 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import {
   issueAdminRecoveryLink,
+  saveSetupRecoveryKey,
   startAdminRecovery,
 } from "../../helpers/admin-recovery";
 import { articleByHeading, csrfTokenOf, rowWithText } from "../../helpers/a11y";
@@ -9,7 +10,6 @@ import {
   signInWithPasskey,
   useAnotherVirtualAuthenticator,
 } from "../../helpers/passkeys";
-import { saveRecoveryKey } from "../../helpers/recovery-key";
 import { login } from "../../helpers/auth";
 import { waitForMailLink } from "../../helpers/mail";
 import type { GammaEnvironment } from "../../gamma-setup";
@@ -216,7 +216,7 @@ test("recovery links and setup sessions reject locked accounts and newly promote
     );
     await user.reload();
     await expect(
-      user.getByRole("button", { name: "Use a password" }),
+      user.getByRole("button", { name: "Create a recovery key" }),
     ).toHaveCount(0);
   } finally {
     await context.close();
@@ -336,13 +336,12 @@ test("another admin can be demoted, recovered without email, and restored after 
     await user.goto(gamma.url);
     await expect(user).toHaveURL(/\/login/);
     await startAdminRecovery(user, link);
+    await saveSetupRecoveryKey(user);
     await useAnotherVirtualAuthenticator(user);
     await addPasskey(user, "Recovered admin device");
     await expect(
       user.getByRole("heading", { name: "Check your email address" }),
     ).toBeVisible();
-    await user.getByRole("button", { name: "Create a recovery key" }).click();
-    await saveRecoveryKey(user);
     await user.getByRole("button", { name: "Continue to signing in" }).click();
     await expect(user).toHaveURL(/\/login\?sign-in-ready/);
     await setAdmin(true);

@@ -34,6 +34,7 @@ public class SignInSetupFacade extends Facade {
   private final PasskeyRepository passkeyRepository;
   private final TotpRepository totpRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
+  private final SignInSetupRecoveryKey setupRecoveryKey;
 
   public SignInSetupFacade(
       AccessGuard accessGuard,
@@ -41,13 +42,15 @@ public class SignInSetupFacade extends Facade {
       AdminRepository adminRepository,
       PasskeyRepository passkeyRepository,
       TotpRepository totpRepository,
-      RecoveryKeyRepository recoveryKeyRepository) {
+      RecoveryKeyRepository recoveryKeyRepository,
+      SignInSetupRecoveryKey setupRecoveryKey) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.adminRepository = adminRepository;
     this.passkeyRepository = passkeyRepository;
     this.totpRepository = totpRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
+    this.setupRecoveryKey = setupRecoveryKey;
   }
 
   public SignInSetupDTO getSetup() {
@@ -64,9 +67,7 @@ public class SignInSetupFacade extends Facade {
         this.passkeyRepository.getAll(userId).stream()
             .map(Passkey::created)
             .anyMatch(created -> created != null && !created.isBefore(setup.startedAt()));
-    boolean needsRecoveryKey =
-        (hasTotp || !this.userRepository.isEmailRecoveryEnabled(userId))
-            && this.recoveryKeyRepository.createdAt(userId).isEmpty();
+    boolean needsRecoveryKey = this.setupRecoveryKey.isNeeded(setup);
 
     boolean canAddPasskey = !(setup.reason() == Reason.EMAIL && hasTotp);
 
@@ -82,7 +83,7 @@ public class SignInSetupFacade extends Facade {
 
   @Transactional
   public void setPassword(String newPassword, String confirmPassword)
-      throws PasswordsDontMatchException, PasskeyChosenException {
+      throws PasswordsDontMatchException, PasskeyChosenException, RecoveryKeyFirstException {
     this.accessGuard.require(isSettingUpSignIn());
 
     if (!newPassword.equals(confirmPassword)) {
@@ -93,13 +94,15 @@ public class SignInSetupFacade extends Facade {
     UserId userId = new UserId(setup.userId());
     this.userRepository.lockSignInMethods(userId);
     requireStillAllowed(setup);
-    if (getSetup().addedPasskey()) {
+    SignInSetupDTO current = getSetup();
+    if (current.addedPasskey()) {
       throw new PasskeyChosenException();
     }
-    this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
-    if (setup.reason() == Reason.RECOVERY_KEY) {
-      this.recoveryKeyRepository.delete(userId);
+    if (current.needsRecoveryKey()) {
+      throw new RecoveryKeyFirstException();
     }
+    this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
+    this.setupRecoveryKey.retireUsedKey(setup);
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
 
@@ -146,6 +149,8 @@ public class SignInSetupFacade extends Facade {
   public static final class RecoveryKeyNotNeededException extends Exception {}
 
   public static final class PasskeyChosenException extends Exception {}
+
+  public static final class RecoveryKeyFirstException extends Exception {}
 
   public static final class PasswordsDontMatchException extends Exception {}
 }

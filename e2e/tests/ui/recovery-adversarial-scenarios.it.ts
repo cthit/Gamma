@@ -2,6 +2,7 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import {
   issueAdminRecoveryLink,
+  saveSetupRecoveryKey,
   startAdminRecovery,
 } from "../../helpers/admin-recovery";
 import { csrfTokenOf } from "../../helpers/a11y";
@@ -32,19 +33,18 @@ async function setPassword(page: Page, password = "Recovered-password-1337") {
   await page.getByLabel("Confirm password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Use a password" }).click();
   await expect(
-    page.getByRole("heading", { name: "Save a new recovery key" }),
+    page.getByRole("heading", { name: "You're all set" }),
   ).toBeVisible();
 }
 
 async function finishSetup(page: Page) {
+  await saveSetupRecoveryKey(page);
   await setPassword(page);
-  await page.getByRole("button", { name: "Create a recovery key" }).click();
-  await saveRecoveryKey(page);
   await page.getByRole("button", { name: "Continue to signing in" }).click();
   await expect(page).toHaveURL(/\/login\?sign-in-ready/);
 }
 
-for (const stage of ["password form", "recovery key confirmation"] as const) {
+for (const stage of ["setup page", "recovery key confirmation"] as const) {
   test(`a second admin recovery revokes the unfinished ${stage} and cannot be overwritten by it`, async ({
     page,
     browser,
@@ -58,7 +58,6 @@ for (const stage of ["password form", "recovery key confirmation"] as const) {
       await startAdminRecovery(user, firstLink);
       let key = "";
       if (stage === "recovery key confirmation") {
-        await setPassword(user);
         await user
           .getByRole("button", { name: "Create a recovery key" })
           .click();
@@ -70,10 +69,9 @@ for (const stage of ["password form", "recovery key confirmation"] as const) {
         await user.getByRole("link", { name: "I have saved it" }).click();
       }
       const csrf = await csrfTokenOf(
-        user.getByLabel(
-          stage === "password form" ? "Password" : "Recovery key",
-          { exact: true },
-        ),
+        stage === "setup page"
+          ? user.getByRole("button", { name: "Create a recovery key" })
+          : user.getByLabel("Recovery key", { exact: true }),
       );
       await logout(page);
       const newLink = await issueAdminRecoveryLink(page, gamma, "jhalpert");
@@ -193,7 +191,9 @@ test("recovery key rotation rejects the previous key and a second redemption rev
   await page.getByLabel("Recovery key", { exact: true }).fill(key);
   await page.getByRole("button", { name: "Continue", exact: true }).click();
   await expect(page).toHaveURL(/\/sign-in-setup$/);
-  const csrf = await csrfTokenOf(page.getByLabel("Password", { exact: true }));
+  const csrf = await csrfTokenOf(
+    page.getByRole("button", { name: "Create a recovery key" }),
+  );
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
   try {
     const other = await context.newPage();

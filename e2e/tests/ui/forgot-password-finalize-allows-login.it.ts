@@ -2,10 +2,10 @@ import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
 import { login, logout } from "../../helpers/auth";
 import {
   issueAdminRecoveryLink,
+  saveSetupRecoveryKey,
   startAdminRecovery,
 } from "../../helpers/admin-recovery";
 import { waitForMailLink } from "../../helpers/mail";
-import { saveRecoveryKey } from "../../helpers/recovery-key";
 
 test("admin recovery lets a user choose a password and requires saving a recovery key", async ({
   page,
@@ -15,19 +15,17 @@ test("admin recovery lets a user choose a password and requires saving a recover
   const link = await issueAdminRecoveryLink(page, gamma, "jhalpert");
   await logout(page);
   await startAdminRecovery(page, link);
+  await expect(
+    page.getByRole("button", { name: "Use a password" }),
+  ).toHaveCount(0);
+  await saveSetupRecoveryKey(page);
   const newPassword = "recovered-password-1337";
   await page.getByLabel("Password", { exact: true }).fill(newPassword);
   await page.getByLabel("Confirm password", { exact: true }).fill(newPassword);
   await page.getByRole("button", { name: "Use a password" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Save a new recovery key" }),
-  ).toBeVisible();
   const emailReminder = page.getByRole("heading", {
     name: "Check your email address",
   });
-  await expect(emailReminder).toBeVisible();
-  await page.getByRole("button", { name: "Create a recovery key" }).click();
-  await saveRecoveryKey(page);
   await expect(emailReminder).toBeVisible();
   await page.getByRole("button", { name: "Continue to signing in" }).click();
   await expect(page).toHaveURL(/\/login\?sign-in-ready/);

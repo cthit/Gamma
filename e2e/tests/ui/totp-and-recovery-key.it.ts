@@ -102,7 +102,7 @@ test("a user signs in with their password and authenticator app, and gets back i
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page).toHaveURL(/\/sign-in-setup/);
   await expect(
-    page.getByText("Your recovery key keeps working until you have."),
+    page.getByText("Your recovery key keeps working until you have"),
   ).toBeVisible();
 
   await page.context().clearCookies();

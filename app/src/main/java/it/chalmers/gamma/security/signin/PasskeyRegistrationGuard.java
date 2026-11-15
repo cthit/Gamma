@@ -1,10 +1,9 @@
 package it.chalmers.gamma.security.signin;
 
 import it.chalmers.gamma.app.signin.PasskeyReplacesPassword;
-import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
+import it.chalmers.gamma.app.signin.SignInSetupRecoveryKey;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
-import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import jakarta.transaction.Transactional;
 import java.util.UUID;
 import org.springframework.security.core.Authentication;
@@ -17,17 +16,17 @@ public class PasskeyRegistrationGuard {
   private final UserRepository userRepository;
   private final SignInAuthorizationManagers signInAuthorizationManagers;
   private final PasskeyReplacesPassword passkeyReplacesPassword;
-  private final RecoveryKeyRepository recoveryKeyRepository;
+  private final SignInSetupRecoveryKey setupRecoveryKey;
 
   public PasskeyRegistrationGuard(
       UserRepository userRepository,
       SignInAuthorizationManagers signInAuthorizationManagers,
       PasskeyReplacesPassword passkeyReplacesPassword,
-      RecoveryKeyRepository recoveryKeyRepository) {
+      SignInSetupRecoveryKey setupRecoveryKey) {
     this.userRepository = userRepository;
     this.signInAuthorizationManagers = signInAuthorizationManagers;
     this.passkeyReplacesPassword = passkeyReplacesPassword;
-    this.recoveryKeyRepository = recoveryKeyRepository;
+    this.setupRecoveryKey = setupRecoveryKey;
   }
 
   @Transactional
@@ -45,9 +44,8 @@ public class PasskeyRegistrationGuard {
 
     save.run();
     this.passkeyReplacesPassword.passkeyAdded(userId);
-    if (authentication instanceof SignInSetupAuthenticationToken setup
-        && setup.getPrincipal().reason() == SignInSetupAuthentication.Reason.RECOVERY_KEY) {
-      this.recoveryKeyRepository.delete(userId);
+    if (authentication instanceof SignInSetupAuthenticationToken setup) {
+      this.setupRecoveryKey.retireUsedKey(setup.getPrincipal());
     }
   }
 }

@@ -5,6 +5,7 @@ import { waitForMailLink } from "../../helpers/mail";
 import { addPasskey, signInWithPasskey } from "../../helpers/passkeys";
 import {
   issueAdminRecoveryLink,
+  saveSetupRecoveryKey,
   startAdminRecovery,
 } from "../../helpers/admin-recovery";
 import { csrfTokenOf } from "../../helpers/a11y";
@@ -41,16 +42,15 @@ test("admin recovery works without old email and only permits email recovery aft
     ).rejects.toThrow();
     await startAdminRecovery(user, link);
     const csrf = await csrfTokenOf(
-      user.getByRole("button", { name: "Use a password" }),
+      user.getByRole("button", { name: "Create a recovery key" }),
     );
     const blocked = await user.request.post(
       `${gamma.url}/me/security/email-recovery/enable`,
       { form: { _csrf: csrf }, maxRedirects: 0 },
     );
     expect(blocked.status()).toBe(302);
+    await saveSetupRecoveryKey(user);
     await addPasskey(user, "Recovered phone");
-    await user.getByRole("button", { name: "Create a recovery key" }).click();
-    await saveRecoveryKey(user);
     await user.getByRole("button", { name: "Continue to signing in" }).click();
     await expect(user).toHaveURL(/\/login\?sign-in-ready/);
     await signInWithPasskey(user);

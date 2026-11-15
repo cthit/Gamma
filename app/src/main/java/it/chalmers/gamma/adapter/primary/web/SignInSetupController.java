@@ -64,7 +64,8 @@ public class SignInSetupController {
       this.signInSetupFacade.setPassword(newPassword, confirmPassword);
     } catch (PasswordsDontMatchException e) {
       return redirect("?error=passwords-dont-match");
-    } catch (SignInSetupFacade.PasskeyChosenException e) {
+    } catch (SignInSetupFacade.PasskeyChosenException
+        | SignInSetupFacade.RecoveryKeyFirstException e) {
       return redirect("");
     }
 

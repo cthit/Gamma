@@ -140,7 +140,9 @@ class TotpFactorRevocationTest {
         };
     Authentication current = current();
     AuthorizationResult result =
-        new SignInAuthorizationManagers(requirements).signedInUser().authorize(() -> current, null);
+        new SignInAuthorizationManagers(requirements, null)
+            .signedInUser()
+            .authorize(() -> current, null);
     return result != null && result.isGranted();
   }
 
