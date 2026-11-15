@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.web.webauthn.api.Bytes;
 import org.springframework.security.web.webauthn.api.CredentialRecord;
 import org.springframework.security.web.webauthn.management.JdbcUserCredentialRepository;
@@ -13,8 +14,17 @@ import org.springframework.security.web.webauthn.management.UserCredentialReposi
 
 public class PasskeyCredentialRepository implements UserCredentialRepository {
 
+  /**
+   * Spring Security's Webauthn4J operations compare the new signature counter only to the one in
+   * the registration attestation, so the counter stored since is checked here. A counter that
+   * doesn't increase means the passkey may have been cloned, unless the authenticator doesn't keep
+   * one and always sends 0. Doing it in the update also keeps two sign-ins with the same counter
+   * from both succeeding.
+   */
   private static final String UPDATE_USAGE_SQL =
-      "UPDATE user_credentials SET signature_count = ?, last_used = ? WHERE credential_id = ?";
+      "UPDATE user_credentials SET signature_count = ?, last_used = ?"
+          + " WHERE credential_id = ? AND (COALESCE(signature_count, 0) < ?"
+          + " OR (COALESCE(signature_count, 0) = 0 AND ? = 0))";
 
   private final JdbcUserCredentialRepository delegate;
   private final JdbcOperations jdbcOperations;
@@ -30,6 +40,9 @@ public class PasskeyCredentialRepository implements UserCredentialRepository {
   @Override
   public void save(CredentialRecord record) {
     if (Objects.equals(record.getCreated(), record.getLastUsed())) {
+      if (!PasskeyLabel.isValid(record.getLabel())) {
+        throw new IllegalArgumentException("Invalid passkey label");
+      }
       this.registrationGuard.getObject().register(() -> this.delegate.save(record));
       return;
     }
@@ -39,9 +52,14 @@ public class PasskeyCredentialRepository implements UserCredentialRepository {
             UPDATE_USAGE_SQL,
             record.getSignatureCount(),
             Timestamp.from(record.getLastUsed()),
-            record.getCredentialId().toBase64UrlString());
+            record.getCredentialId().toBase64UrlString(),
+            record.getSignatureCount(),
+            record.getSignatureCount());
     if (updated == 0) {
-      throw new IllegalStateException("The passkey has been removed");
+      if (this.delegate.findByCredentialId(record.getCredentialId()) == null) {
+        throw new IllegalStateException("The passkey has been removed");
+      }
+      throw new BadCredentialsException("The passkey's signature counter did not increase");
     }
   }
 

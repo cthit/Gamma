@@ -20,6 +20,7 @@ import it.chalmers.gamma.security.api.ApiAuthenticationProvider;
 import it.chalmers.gamma.security.signin.FactorCheckedAtStartProvider;
 import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
 import it.chalmers.gamma.security.signin.PasskeyConfig;
+import it.chalmers.gamma.security.signin.PasskeyRegistrationConverter;
 import it.chalmers.gamma.security.signin.PasskeyRegistrationOptionsGuardFilter;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationFilter;
 import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
@@ -317,6 +318,7 @@ public class SecurityFiltersConfig {
         .webAuthn(webAuthn ->
             webAuthn
                 .disableDefaultRegistrationPage(true)
+                .messageConverter(new PasskeyRegistrationConverter())
                 .creationOptionsRepository(new UserBoundCreationOptionsRepository(passkeyUsers))
                 .withObjectPostProcessor(
                     new ObjectPostProcessor<WebAuthnAuthenticationFilter>() {
