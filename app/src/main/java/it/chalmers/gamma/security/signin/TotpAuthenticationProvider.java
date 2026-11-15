@@ -35,6 +35,13 @@ public class TotpAuthenticationProvider implements AuthenticationProvider {
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    // Issue the factor at the time verification starts, like FactorCheckedAtStartProvider does for
+    // the other factors. Consuming the code commits before this method returns, so the
+    // authenticator could be replaced and sessions revoked in between, and a factor issued after
+    // that would outlive the revocation. A replacement that revokes after this instant revokes the
+    // factor. One that revoked before it had already replaced the secret, so the old code can't be
+    // consumed.
+    Instant checkedAt = Instant.now();
     TotpAuthenticationRequestToken request = (TotpAuthenticationRequestToken) authentication;
 
     UserId userId;
@@ -55,7 +62,7 @@ public class TotpAuthenticationProvider implements AuthenticationProvider {
             .orElseThrow(() -> new BadCredentialsException("No authenticator app"));
 
     OptionalLong timeStep =
-        TotpCodes.matchingTimeStep(totp.secret(), request.getCredentials(), Instant.now());
+        TotpCodes.matchingTimeStep(totp.secret(), request.getCredentials(), checkedAt);
     if (timeStep.isEmpty()) {
       throw new BadCredentialsException("Wrong code");
     }
@@ -65,7 +72,10 @@ public class TotpAuthenticationProvider implements AuthenticationProvider {
     }
 
     return UsernamePasswordAuthenticationToken.authenticated(
-        request.getName(), null, List.of(FactorGrantedAuthority.fromAuthority(SignInFactors.TOTP)));
+        request.getName(),
+        null,
+        List.of(
+            FactorGrantedAuthority.withAuthority(SignInFactors.TOTP).issuedAt(checkedAt).build()));
   }
 
   @Override

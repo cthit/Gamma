@@ -282,6 +282,8 @@ public class SecurityController {
       HttpSession session,
       HttpServletRequest request,
       HttpServletResponse response) {
+    // Taken before enabling, so a revocation committed after enabling also revokes this factor.
+    Instant verifiedAt = Instant.now();
     boolean replaced;
     try {
       replaced =
@@ -298,7 +300,7 @@ public class SecurityController {
       return signedOutAfterChange(request, response);
     }
 
-    this.currentSignIn.addFactor(request, response, SignInFactors.TOTP);
+    this.currentSignIn.addFactor(request, response, SignInFactors.TOTP, verifiedAt);
     return redirect("?done=totp-enabled");
   }
 

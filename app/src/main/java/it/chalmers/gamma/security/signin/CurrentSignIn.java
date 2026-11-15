@@ -2,6 +2,7 @@ package it.chalmers.gamma.security.signin;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.Instant;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.FactorGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -22,7 +23,12 @@ public class CurrentSignIn {
   private final SecurityContextRepository securityContextRepository =
       new HttpSessionSecurityContextRepository();
 
-  public void addFactor(HttpServletRequest request, HttpServletResponse response, String factor) {
+  /**
+   * Adds a factor to the current session. Take {@code verifiedAt} before committing the change that
+   * the factor proves, so that a revocation committed after that change also revokes the factor.
+   */
+  public void addFactor(
+      HttpServletRequest request, HttpServletResponse response, String factor, Instant verifiedAt) {
     Authentication current = SecurityContextHolder.getContext().getAuthentication();
     if (!SignInAuthorizationManagers.isUserSession(current)) {
       return;
@@ -32,7 +38,8 @@ public class CurrentSignIn {
         current.toBuilder()
             .authorities(authorities -> {
               authorities.removeIf(authority -> factor.equals(authority.getAuthority()));
-              authorities.add(FactorGrantedAuthority.fromAuthority(factor));
+              authorities.add(
+                  FactorGrantedAuthority.withAuthority(factor).issuedAt(verifiedAt).build());
             })
             .build();
 
