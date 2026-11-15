@@ -245,13 +245,15 @@ public class UserRepositoryAdapter implements UserRepository {
   }
 
   @Override
-  public void setEmail(UserId userId, Email email)
-      throws UserNotFoundException, EmailAlreadyInUseException {
+  public void setEmail(UserId userId, Email currentEmail, Email newEmail)
+      throws UserNotFoundException, EmailAlreadyInUseException, EmailChangedException {
     // The version is advanced so that a save based on a snapshot from before this change is
     // rejected as stale, instead of silently restoring the old email.
     int updated;
     try {
-      updated = this.repository.updateEmail(userId.value(), email.value(), Instant.now());
+      updated =
+          this.repository.updateEmail(
+              userId.value(), currentEmail.value(), newEmail.value(), Instant.now());
     } catch (DataIntegrityViolationException e) {
       if (emailNotUnique.equals(PersistenceErrorHelper.getState(e))) {
         throw new EmailAlreadyInUseException();
@@ -261,7 +263,11 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     if (updated == 0) {
-      throw new UserNotFoundException();
+      if (!this.repository.existsById(userId.value())) {
+        throw new UserNotFoundException();
+      }
+
+      throw new EmailChangedException();
     }
   }
 

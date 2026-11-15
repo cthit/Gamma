@@ -34,14 +34,18 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, UUID> {
 
   /**
    * Only touches the email and the version, so it can't overwrite a concurrent change to any other
-   * column, such as the password.
+   * column, such as the password. Only changes the email if it is still the current email.
    */
   @Transactional
   @Modifying
   @Query(
       "update UserEntity u set u.email = :email, u.version = u.version + 1, u.updatedAt = :now"
-          + " where u.id = :id")
-  int updateEmail(@Param("id") UUID id, @Param("email") String email, @Param("now") Instant now);
+          + " where u.id = :id and u.email = :currentEmail")
+  int updateEmail(
+      @Param("id") UUID id,
+      @Param("currentEmail") String currentEmail,
+      @Param("email") String email,
+      @Param("now") Instant now);
 
   @Transactional
   @Modifying(flushAutomatically = true, clearAutomatically = true)

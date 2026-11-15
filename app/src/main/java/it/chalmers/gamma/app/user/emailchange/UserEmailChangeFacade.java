@@ -117,7 +117,10 @@ public class UserEmailChangeFacade extends Facade {
   public String confirmEmailChange(String token)
       throws InvalidTokenException, EmailAlreadyInUseException {
     GammaUser me = lockSignedInUser();
-    Email oldEmail = me.extended().email();
+    // Read under the lock. Changing the email deletes the pending change (see
+    // V16__EMAIL_CHANGE_REVOKES_LINKS), and setEmail below only applies while the email is still
+    // this one, so a link asked for from an older email can't undo a change made since.
+    Email oldEmail = this.userRepository.get(me.id()).orElseThrow().extended().email();
 
     EmailChange change =
         this.emailChangeRepository
@@ -134,10 +137,13 @@ public class UserEmailChangeFacade extends Facade {
     }
 
     try {
-      this.userRepository.setEmail(me.id(), change.newEmail());
+      this.userRepository.setEmail(me.id(), oldEmail, change.newEmail());
       this.userRepository.confirmRecoveryEmail(me.id());
     } catch (UserRepository.EmailAlreadyInUseException e) {
       throw new EmailAlreadyInUseException();
+    } catch (UserRepository.EmailChangedException e) {
+      // Someone else, such as an admin, changed the email while this link was being used.
+      throw new InvalidTokenException();
     }
 
     LOGGER.info("User {} confirmed a change of their email", me.id().value());

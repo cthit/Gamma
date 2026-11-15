@@ -65,8 +65,12 @@ public interface UserRepository {
    */
   void setLocked(UserId userId, boolean locked) throws UserNotFoundException;
 
-  void setEmail(UserId userId, Email email)
-      throws UserNotFoundException, EmailAlreadyInUseException;
+  /**
+   * Changes the email, but only if it is still the given current email. This way a change that was
+   * decided on from an older email can't overwrite one made since.
+   */
+  void setEmail(UserId userId, Email currentEmail, Email newEmail)
+      throws UserNotFoundException, EmailAlreadyInUseException, EmailChangedException;
 
   class UserNotFoundException extends RuntimeException {}
 
@@ -76,4 +80,7 @@ public interface UserRepository {
   class CidAlreadyInUseException extends Exception {}
 
   class EmailAlreadyInUseException extends Exception {}
+
+  /** The email is no longer the one that was expected. */
+  class EmailChangedException extends Exception {}
 }

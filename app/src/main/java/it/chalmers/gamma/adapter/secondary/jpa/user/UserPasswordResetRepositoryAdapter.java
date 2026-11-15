@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
+import java.util.function.Predicate;
 import org.springframework.stereotype.Service;
 
 @Service("PasswordResetRepository")
@@ -33,7 +34,14 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     this.userPasswordResetJpaRepository = userPasswordResetJpaRepository;
   }
 
-  private PasswordReset createNewToken(UserEntity userEntity, boolean adminRecovery)
+  /**
+   * The user's row stays locked until the token is saved. A change of email deletes the user's
+   * token in the same transaction (see V16__EMAIL_CHANGE_REVOKES_LINKS), so it either waits for
+   * this token and deletes it, or commits first and is seen here. Either way no token outlives the
+   * email it is mailed to.
+   */
+  private PasswordReset createNewToken(
+      UserEntity userEntity, boolean adminRecovery, Predicate<String> stillMatches)
       throws UserNotFoundException {
     // An email request may have passed its initial policy check before an admin reset or promotion.
     // Recheck under the same lock before replacing the account's pending recovery token.
@@ -44,7 +52,9 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     }
     userEntity =
         this.userJpaRepository.findById(userEntity.id).orElseThrow(UserNotFoundException::new);
-    if (userEntity.locked
+    // The user may have been found by an email that has changed since.
+    if (!stillMatches.test(userEntity.email)
+        || userEntity.locked
         || this.adminRepository.isAdmin(new UserId(userEntity.id))
         || (!adminRecovery
             && (!userEntity.emailRecovery || userEntity.emailRecoveryRequiresVerification))) {
@@ -75,7 +85,8 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
       throw new UserNotFoundException();
     }
 
-    return this.createNewToken(maybeUserEntity.get(), false);
+    return this.createNewToken(
+        maybeUserEntity.get(), false, current -> current.equalsIgnoreCase(email.value()));
   }
 
   @Override
@@ -86,7 +97,7 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
       throw new UserNotFoundException();
     }
 
-    return this.createNewToken(maybeUserEntity.get(), false);
+    return this.createNewToken(maybeUserEntity.get(), false, current -> true);
   }
 
   @Override
@@ -97,14 +108,14 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
       throw new UserNotFoundException();
     }
 
-    return this.createNewToken(maybeUserEntity.get(), false);
+    return this.createNewToken(maybeUserEntity.get(), false, current -> true);
   }
 
   @Override
   public PasswordReset createAdminRecoveryToken(UserId userId) throws UserNotFoundException {
     UserEntity user =
         this.userJpaRepository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
-    return this.createNewToken(user, true);
+    return this.createNewToken(user, true, current -> true);
   }
 
   @Override
