@@ -34,8 +34,13 @@ test("a populated V11 database upgrades through deletion and authentication migr
     __dirname,
     "../../../app/src/main/resources/db/migration",
   );
-  const migrations = (await readdir(directory))
+  const allMigrations = (await readdir(directory))
     .map((file) => ({ file, version: Number(/^V(\d+)__/.exec(file)?.[1]) }))
+    .filter(({ version }) => Number.isInteger(version));
+  const latestVersion = Math.max(
+    ...allMigrations.map(({ version }) => version),
+  );
+  const migrations = allMigrations
     .filter(({ version }) => version <= 11)
     .sort((a, b) => a.version - b.version);
   expect(migrations).toHaveLength(11);
@@ -65,7 +70,7 @@ test("a populated V11 database upgrades through deletion and authentication migr
       await sql(
         "SELECT max(version::int) FROM flyway_schema_history WHERE version IS NOT NULL",
       ),
-    ).toBe("15");
+    ).toBe(String(latestVersion));
     expect(
       await sql(
         `SELECT cid, email, email_recovery, email_recovery_requires_verification FROM g_user WHERE user_id='${ownerId}'`,
