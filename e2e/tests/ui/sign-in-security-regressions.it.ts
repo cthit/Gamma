@@ -161,31 +161,13 @@ test("replacing an authenticator app revokes old completed MFA sessions", async 
   }
 });
 
-test("startup encrypts legacy TOTP secrets and existing codes still work", async ({
+test("instances sharing a database decrypt each other's TOTP secrets", async ({
   page,
   gamma,
   env,
 }) => {
-  await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
-  const { secret, step } = await enableTotp(page, gamma.url);
-  const legacy = await env.postgres.exec([
-    "psql",
-    "-U",
-    "postgres",
-    "-d",
-    "postgres",
-    "-v",
-    "ON_ERROR_STOP=1",
-    "-c",
-    `UPDATE g_user_totp SET secret='${secret}' WHERE user_id=(SELECT user_id FROM g_user WHERE cid='jhalpert')`,
-  ]);
-  expect(legacy.exitCode).toBe(0);
-  const upgraded = await startMockGamma(env, {
-    waitForAdminCredentials: false,
-    waitForBootstrapApiKeys: false,
-  });
-  try {
-    const stored = await env.postgres.exec([
+  const sql = async (query: string) => {
+    const result = await env.postgres.exec([
       "psql",
       "-U",
       "postgres",
@@ -193,19 +175,38 @@ test("startup encrypts legacy TOTP secrets and existing codes still work", async
       "postgres",
       "-At",
       "-c",
-      "SELECT secret FROM g_user_totp WHERE user_id=(SELECT user_id FROM g_user WHERE cid='jhalpert')",
+      query,
     ]);
-    expect(stored.stdout.trim()).toMatch(/^v1:/);
-    expect(stored.stdout).not.toContain(secret);
+    expect(result.exitCode).toBe(0);
+    return result.stdout.trim();
+  };
+  const masterSecret = "SELECT encode(value, 'hex') FROM g_application_secret";
+
+  await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
+  const { secret, step } = await enableTotp(page, gamma.url);
+  const encrypted = await sql(
+    "SELECT secret FROM g_user_totp WHERE user_id=(SELECT user_id FROM g_user WHERE cid='jhalpert')",
+  );
+  expect(encrypted).toMatch(/^v1:/);
+  const before = await sql(masterSecret);
+  expect(before).toMatch(/^[0-9a-f]{64}$/);
+
+  // The second instance checks the stored secret on startup and must reuse the first one's key.
+  const second = await startMockGamma(env, {
+    waitForAdminCredentials: false,
+    waitForBootstrapApiKeys: false,
+  });
+  try {
+    expect(await sql(masterSecret)).toBe(before);
     await page.context().clearCookies();
-    await rawPassword(page, upgraded.url);
+    await rawPassword(page, second.url);
     await page
       .getByLabel("Six digit code", { exact: true })
       .fill(totpCode(secret, Math.max(step, currentTimeStep()) + 1));
     await page.getByRole("button", { name: "Continue", exact: true }).click();
     await expect(page.getByText("Hey, Big Tuna!")).toBeVisible();
   } finally {
-    await stopGammaInstance(upgraded);
+    await stopGammaInstance(second);
   }
 });
 

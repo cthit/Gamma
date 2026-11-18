@@ -42,8 +42,8 @@ public class TotpSecretCipher {
   }
 
   public String decrypt(java.util.UUID userId, String stored) {
-    if (!isEncrypted(stored)) {
-      throw new IllegalStateException("The authenticator app secret has not been encrypted");
+    if (stored == null || !stored.startsWith(PREFIX)) {
+      throw new IllegalStateException("The authenticator app secret is not encrypted");
     }
     try {
       byte[] bytes = Base64.getDecoder().decode(stored.substring(PREFIX.length()));
@@ -60,12 +60,7 @@ public class TotpSecretCipher {
       return new String(
           cipher.doFinal(bytes, NONCE_BYTES, bytes.length - NONCE_BYTES), StandardCharsets.UTF_8);
     } catch (GeneralSecurityException | IllegalArgumentException failure) {
-      throw new IllegalStateException(
-          "Could not decrypt the authenticator app secret; was g_application_secret changed?");
+      throw new IllegalStateException("Could not decrypt the authenticator app secret", failure);
     }
-  }
-
-  public boolean isEncrypted(String stored) {
-    return stored != null && stored.startsWith(PREFIX);
   }
 }
