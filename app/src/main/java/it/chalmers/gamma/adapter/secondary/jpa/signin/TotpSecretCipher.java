@@ -1,38 +1,27 @@
 package it.chalmers.gamma.adapter.secondary.jpa.signin;
 
+import it.chalmers.gamma.adapter.secondary.jpa.secret.MasterSecret;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Base64;
 import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TotpSecretCipher {
   private static final String PREFIX = "v1:";
   private static final int NONCE_BYTES = 12;
-  private static final byte[] PURPOSE = "Gamma TOTP secret v1".getBytes(StandardCharsets.UTF_8);
-  private final SecretKeySpec key;
+  private static final String PURPOSE_NAME = "Gamma TOTP secret v1";
+  private static final byte[] PURPOSE = PURPOSE_NAME.getBytes(StandardCharsets.UTF_8);
+  private final SecretKey key;
   private final SecureRandom random = new SecureRandom();
 
-  public TotpSecretCipher(@Value("${application.totp.encryption-key}") String encodedKey) {
-    byte[] decoded;
-    try {
-      decoded = Base64.getDecoder().decode(encodedKey);
-    } catch (IllegalArgumentException invalid) {
-      throw new IllegalArgumentException(
-          "TOTP_ENCRYPTION_KEY must be a base64-encoded 32-byte key");
-    }
-    if (decoded.length != 32) {
-      throw new IllegalArgumentException(
-          "TOTP_ENCRYPTION_KEY must be a base64-encoded 32-byte key");
-    }
-    this.key = new SecretKeySpec(decoded, "AES");
-    Arrays.fill(decoded, (byte) 0);
+  public TotpSecretCipher(MasterSecret masterSecret) {
+    this.key = masterSecret.deriveAesKey(PURPOSE_NAME);
   }
 
   public String encrypt(java.util.UUID userId, String secret) {
@@ -72,7 +61,7 @@ public class TotpSecretCipher {
           cipher.doFinal(bytes, NONCE_BYTES, bytes.length - NONCE_BYTES), StandardCharsets.UTF_8);
     } catch (GeneralSecurityException | IllegalArgumentException failure) {
       throw new IllegalStateException(
-          "Could not decrypt the authenticator app secret; check TOTP_ENCRYPTION_KEY");
+          "Could not decrypt the authenticator app secret; was g_application_secret changed?");
     }
   }
 

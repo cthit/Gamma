@@ -24,8 +24,6 @@ Gamma is a **membership and identity management system** built for [Chalmers IT 
 In bash:
 
 ```bash
-# Generate once per database, and keep the same key when restarting with existing data.
-export TOTP_ENCRYPTION_KEY="$(openssl rand -base64 32)"
 # Starts Spring Boot with auto-started PostgreSQL and Redis via Testcontainers
 DEV_SERVICES_ENABLED=true PRODUCTION=false ./gradlew bootRun
 ```
@@ -33,7 +31,6 @@ DEV_SERVICES_ENABLED=true PRODUCTION=false ./gradlew bootRun
 In PowerShell:
 
 ```powershell
-$env:TOTP_ENCRYPTION_KEY=[Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
 $env:DEV_SERVICES_ENABLED="true"; $env:PRODUCTION="false"; ./gradlew bootRun
 ```
 
@@ -82,8 +79,6 @@ The mock data can also specify OAuth2 clients and their authorities. The default
 The client IDs, secrets and API keys are also logged on startup. Clients are only created if the database has no clients yet.
 
 ### Run with custom services
-
-Set the persistent `TOTP_ENCRYPTION_KEY` for this database first (see [Signing in](#signing-in)).
 
 ```bash
 export DB_HOST=localhost DB_PORT=5432 DB_NAME=gamma \
@@ -143,7 +138,6 @@ All configuration is environment-variable-driven via `application.yml`.
 | `PRODUCTION` | `true` | Production mode (disables Thymeleaf caching, dev services, etc.) |
 | `OAUTH2_SIGNING_KEY` | *(empty)* | RSA private key that signs OAuth2 tokens. Will be required in production from v3, see [OAuth2 signing keys](#oauth2-signing-keys) |
 | `OAUTH2_VERIFICATION_KEYS` | *(empty)* | Comma separated keys that are still published so the tokens they signed can be verified, but that no longer sign tokens |
-| `TOTP_ENCRYPTION_KEY` | **required** | Base64-encoded random 32-byte key encrypting authenticator app secrets. Keep it outside database backups and identical on every instance. |
 | `DEV_SERVICES_ENABLED` | `false` | Auto-start PostgreSQL + Redis via Testcontainers |
 | `IS_MOCKING` | `false` | Load mock data on startup |
 | `MOCK_DATA_RESOURCE` | `classpath:/mock/mock.json` | Path to mock data JSON |
@@ -166,7 +160,7 @@ Everything is built on Spring Security:
 - Each way of signing in is a Spring Security factor (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN` and Gamma's `FACTOR_TOTP`), and the factors each user needs are required factors (`AllRequiredFactorsAuthorizationManager`). Changing how you sign in needs a sign in from the last 10 minutes.
 - Authenticator app codes are checked with [java-otp](https://github.com/jchambers/java-otp) (HMAC-SHA1, six digits, 30 second steps), and each code can only be used once.
 
-Before deploying, generate `TOTP_ENCRYPTION_KEY` with `openssl rand -base64 32` and store it in your secret manager. Keep a secure backup separate from the database. Gamma uses AES-256-GCM with a fresh nonce and binds each encrypted secret to its user. Startup encrypts plaintext TOTP secrets from earlier revisions and refuses to start with a missing, invalid, or incorrect key. Do not replace this key without migrating the encrypted secrets or having users enroll their authenticator apps again.
+Authenticator app secrets are encrypted with AES-256-GCM, with a fresh nonce, and each encrypted secret is bound to its user. The key is derived with HKDF-SHA256 from a random master secret that Gamma generates on first start and stores in `g_application_secret`, so there is nothing to configure and every instance sharing the database uses the same key. Because the master secret is in the same database, this protects against leaks of single tables or values, not against a leaked copy of the whole database or its backups. Startup encrypts plaintext TOTP secrets from earlier revisions and refuses to start if the stored secrets can't be decrypted. Don't change or delete the `g_application_secret` row: users would have to set up their authenticator apps again.
 
 Removing a passkey or password, changing a password, and replacing or removing an authenticator app revoke previous Gamma sessions. Adding an authenticator app for the first time makes existing password sessions require its code. Credential changes and recovery send a notification to the account's email after the change commits. Changing admin membership also requires a sign-in from the last 10 minutes.
 

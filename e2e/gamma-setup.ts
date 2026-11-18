@@ -6,7 +6,6 @@ import {
   Wait,
 } from "testcontainers";
 import path from "node:path";
-import { randomBytes } from "node:crypto";
 import { access, mkdir, rename, rm } from "node:fs/promises";
 import { execFile } from "node:child_process";
 import { createServer } from "node:net";
@@ -55,7 +54,6 @@ export type GammaBootstrapApiKeyType =
   "INFO" | "ACCOUNT_SCAFFOLD" | "ALLOW_LIST";
 
 let instanceCounter = 0;
-const testTotpEncryptionKey = randomBytes(32).toString("base64");
 const generatedTlsDir = path.resolve(__dirname, ".generated", "tls");
 const tlsFilePrefix = `localhost-${process.pid}`;
 const generatedTlsCertificatePath = path.join(
@@ -161,7 +159,6 @@ export async function startGammaInstance(
     SERVER_SSL_ENABLED: "true",
     UPLOAD_FOLDER: "/tmp/uploads/",
     OAUTH2_SIGNING_KEY: getDefaultSigningKey().privateKeyPem,
-    TOTP_ENCRYPTION_KEY: testTotpEncryptionKey,
   };
 
   if (localhostTlsFilesAvailable) {

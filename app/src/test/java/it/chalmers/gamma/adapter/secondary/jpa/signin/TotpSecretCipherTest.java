@@ -2,6 +2,7 @@ package it.chalmers.gamma.adapter.secondary.jpa.signin;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import it.chalmers.gamma.adapter.secondary.jpa.secret.MasterSecret;
 import java.util.Base64;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class TotpSecretCipherTest {
   private final UUID user = UUID.randomUUID();
   private final TotpSecretCipher cipher =
-      new TotpSecretCipher(Base64.getEncoder().encodeToString(new byte[32]));
+      new TotpSecretCipher(new MasterSecret(new byte[MasterSecret.BYTES]));
 
   @Test
   void encryptionRoundTripsWithFreshNonces() {
@@ -29,9 +30,9 @@ class TotpSecretCipherTest {
   @Test
   void rejectsWrongKeyAndTamperedCiphertext() {
     String encrypted = cipher.encrypt(user, "JBSWY3DPEHPK3PXP");
-    byte[] otherKey = new byte[32];
-    otherKey[0] = 1;
-    TotpSecretCipher other = new TotpSecretCipher(Base64.getEncoder().encodeToString(otherKey));
+    byte[] otherSecret = new byte[MasterSecret.BYTES];
+    otherSecret[0] = 1;
+    TotpSecretCipher other = new TotpSecretCipher(new MasterSecret(otherSecret));
     assertThrows(IllegalStateException.class, () -> other.decrypt(user, encrypted));
     byte[] stored = Base64.getDecoder().decode(encrypted.substring(3));
     stored[stored.length - 1] ^= 1;
@@ -40,12 +41,7 @@ class TotpSecretCipherTest {
   }
 
   @Test
-  void rejectsMissingInvalidOrShortKeysAndPlaintext() {
-    assertThrows(IllegalArgumentException.class, () -> new TotpSecretCipher(""));
-    assertThrows(IllegalArgumentException.class, () -> new TotpSecretCipher("not base64"));
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new TotpSecretCipher(Base64.getEncoder().encodeToString(new byte[16])));
+  void rejectsPlaintextAndTruncatedCiphertext() {
     assertThrows(IllegalStateException.class, () -> cipher.decrypt(user, "JBSWY3DPEHPK3PXP"));
     assertThrows(IllegalStateException.class, () -> cipher.decrypt(user, "v1:AQ=="));
   }
