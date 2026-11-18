@@ -89,7 +89,13 @@ tasks.withType(Test).configureEach {
 
 tasks.named("bootBuildImage") {
     builder = "paketobuildpacks/builder-noble-java-tiny:0.0.211"
-    environment = ["BP_JVM_VERSION": "25.*"]
+    environment = [
+            "BP_JVM_VERSION": "25.*",
+            // Stopgap for CVE-2026-114938 (Java4Shell): disable the vulnerable HotSpot Base64
+            // intrinsic. Remove once the builder ships Liberica JDK 25.0.5.1 or later.
+            "BPE_DELIM_JAVA_TOOL_OPTIONS": " ",
+            "BPE_APPEND_JAVA_TOOL_OPTIONS": "-XX:-UseBASE64Intrinsics",
+    ]
 }
 
 
