@@ -8,8 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
- * Loads the master secret from the database, generating it on first start. Every instance sharing
- * the database reads the same secret, and it moves with database backups.
+ * Loads the master secret from the database, generating it on first start. Keeping it in the
+ * database means it survives restarts and moves with database backups.
  */
 @Configuration
 public class MasterSecretConfig {
@@ -22,7 +22,6 @@ public class MasterSecretConfig {
   public MasterSecret masterSecret(JdbcTemplate jdbc) {
     byte[] generated = new byte[MasterSecret.BYTES];
     new SecureRandom().nextBytes(generated);
-    // Instances starting at once all keep whichever secret was inserted first.
     int inserted =
         jdbc.update(
             "INSERT INTO g_application_secret (name, value) VALUES (?, ?)"

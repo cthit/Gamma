@@ -20,7 +20,7 @@ import path from "node:path";
 import type { Page } from "@playwright/test";
 import { csrfTokenOf } from "../../helpers/a11y";
 import { startMockGamma } from "../../helpers/gamma";
-import { stopGammaInstance } from "../../gamma-setup";
+import { stopGammaInstance, type GammaEnvironment } from "../../gamma-setup";
 
 test("OAuth token revocation accepts an untyped token and removes UserInfo access", async ({
   page,
@@ -161,12 +161,11 @@ test("replacing an authenticator app revokes old completed MFA sessions", async 
   }
 });
 
-test("instances sharing a database decrypt each other's TOTP secrets", async ({
-  page,
-  gamma,
-  env,
-}) => {
-  const sql = async (query: string) => {
+const masterSecretQuery =
+  "SELECT encode(value, 'hex') FROM g_application_secret";
+
+function sqlIn(env: GammaEnvironment) {
+  return async (query: string) => {
     const result = await env.postgres.exec([
       "psql",
       "-U",
@@ -180,7 +179,14 @@ test("instances sharing a database decrypt each other's TOTP secrets", async ({
     expect(result.exitCode).toBe(0);
     return result.stdout.trim();
   };
-  const masterSecret = "SELECT encode(value, 'hex') FROM g_application_secret";
+}
+
+test("a restart reuses the master secret and accepts existing TOTP secrets", async ({
+  page,
+  gamma,
+  env,
+}) => {
+  const sql = sqlIn(env);
 
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   const { secret, step } = await enableTotp(page, gamma.url);
@@ -188,16 +194,16 @@ test("instances sharing a database decrypt each other's TOTP secrets", async ({
     "SELECT secret FROM g_user_totp WHERE user_id=(SELECT user_id FROM g_user WHERE cid='jhalpert')",
   );
   expect(encrypted).toMatch(/^v1:/);
-  const before = await sql(masterSecret);
+  const before = await sql(masterSecretQuery);
   expect(before).toMatch(/^[0-9a-f]{64}$/);
 
-  // The second instance checks the stored secret on startup and must reuse the first one's key.
+  // A new start on the same database checks the stored secret and must reuse the existing key.
   const second = await startMockGamma(env, {
     waitForAdminCredentials: false,
     waitForBootstrapApiKeys: false,
   });
   try {
-    expect(await sql(masterSecret)).toBe(before);
+    expect(await sql(masterSecretQuery)).toBe(before);
     await page.context().clearCookies();
     await rawPassword(page, second.url);
     await page
@@ -208,6 +214,30 @@ test("instances sharing a database decrypt each other's TOTP secrets", async ({
   } finally {
     await stopGammaInstance(second);
   }
+});
+
+test("startup is refused when the master secret no longer decrypts TOTP secrets", async ({
+  page,
+  gamma,
+  env,
+}) => {
+  const sql = sqlIn(env);
+  await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
+  await enableTotp(page, gamma.url);
+  const before = await sql(masterSecretQuery);
+
+  await sql("DELETE FROM g_application_secret");
+  await expect(
+    startMockGamma(env, {
+      waitForAdminCredentials: false,
+      waitForBootstrapApiKeys: false,
+    }),
+  ).rejects.toThrow();
+
+  // Gamma stored a new master secret before refusing, so restoring the old one is an update.
+  const generated = await sql(masterSecretQuery);
+  expect(generated).toMatch(/^[0-9a-f]{64}$/);
+  expect(generated).not.toBe(before);
 });
 
 async function rawPassword(page: Page, baseUrl: string) {
