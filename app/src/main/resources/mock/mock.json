@@ -349,9 +349,8 @@
       "id": "ba241124-9f62-49c6-acba-9ba50623edbe",
       "token": "zXzc75Cj47Ay3GRJ4vLEMCgLD6bsJmlj"
     },
-    "authorities": []
-  },
-  {
+    "authorities": [ ]
+  }, {
     "id": "0087b689-0638-46d3-9c41-8e8e50c56169",
     "clientId": "GHTCW6FUKM3Y652DMXQFXJUD75QVCA",
     "clientSecret": "VqEzH8DtbY8voOo2hJiZeXDb6MOBYbxq",
@@ -365,6 +364,6 @@
       "id": "0e9c96be-0ae1-4bc7-b550-a65dc858ab90",
       "token": "sYeAtoUf6zZtwT4t9FOLcWUwWSryyEf4"
     },
-    "authorities": []
+    "authorities": [ ]
   } ]
 }
