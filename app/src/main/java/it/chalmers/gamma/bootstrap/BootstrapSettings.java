@@ -1,6 +1,3 @@
 package it.chalmers.gamma.bootstrap;
 
-public record BootstrapSettings(
-		boolean adminSetup,
-		boolean mocking,
-		String clientRedirectUrl) {}
+public record BootstrapSettings(boolean adminSetup, boolean mocking, String clientRedirectUrl) {}
