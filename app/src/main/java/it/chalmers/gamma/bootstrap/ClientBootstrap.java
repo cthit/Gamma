@@ -82,7 +82,7 @@ public class ClientBootstrap {
               + ", client secret: "
               + mockClient.clientSecret()
               + " and redirect url: "
-              + mockClient.redirectUrl());
+              + client.clientRedirectUrl());
 
       if (mockClient.apiKey() != null) {
         LOGGER.info(
@@ -127,7 +127,7 @@ public class ClientBootstrap {
         new ClientUid(mockClient.id()),
         new ClientId(mockClient.clientId()),
         new ClientSecret(this.passwordEncoder.encode(mockClient.clientSecret())),
-        new ClientRedirectUrl(mockClient.redirectUrl()),
+        new ClientRedirectUrl(this.bootstrapSettings.clientRedirectUrl()),
         new PrettyName(mockClient.prettyName()),
         new Text(mockClient.description().sv(), mockClient.description().en()),
         scopes,

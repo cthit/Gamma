@@ -64,6 +64,7 @@ application:
   production: "${PRODUCTION:true}"
   mocking: "${IS_MOCKING:false}"
   mock-data-resource: "${MOCK_DATA_RESOURCE:classpath:/mock/mock.json}"
+  mock-client-redirect-url: "${MOCK_CLIENT_REDIRECT_URL:http://localhost:8080}"
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"
   cookie:

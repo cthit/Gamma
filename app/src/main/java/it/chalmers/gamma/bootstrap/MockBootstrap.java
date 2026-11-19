@@ -25,8 +25,9 @@ public class MockBootstrap {
   public BootstrapSettings loadBootstrapSettings(
       @Value("${application.admin-setup}") boolean adminSetup,
       @Value("${application.production}") boolean production,
-      @Value("${application.mocking:false}") boolean isMocking) {
-    return new BootstrapSettings(adminSetup, !production || isMocking);
+      @Value("${application.mocking:false}") boolean isMocking,
+      @Value("${application.mock-client-redirect-url}") String mockClientRedirectUrl) {
+    return new BootstrapSettings(adminSetup, !production || isMocking, mockClientRedirectUrl);
   }
 
   @Bean

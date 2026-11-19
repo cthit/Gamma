@@ -56,7 +56,6 @@ public record MockData(
       UUID id,
       String clientId,
       String clientSecret,
-      String redirectUrl,
       String prettyName,
       MockText description,
       boolean emailScope,
