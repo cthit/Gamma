@@ -64,6 +64,12 @@ application:
   production: "${PRODUCTION:true}"
   mocking: "${IS_MOCKING:false}"
   mock-data-resource: "${MOCK_DATA_RESOURCE:classpath:/mock/mock.json}"
+  mock-client-redirect-url: "${MOCK_CLIENT_REDIRECT_URL:http://localhost:8080}"
+  mock-client-email-scope: "${MOCK_CLIENT_EMAIL_SCOPE:false}"
+  mock-client-authority-name: "${MOCK_CLIENT_AUTHORITY_NAME:admin}"
+  mock-client-authority-super-groups: "${MOCK_CLIENT_AUTHORITY_SUPER_GROUPS:2157ee72-04cd-4029-8d57-77142d3ef5fa,aed27030-ad90-4526-855c-1e909b1dcecb}"
+  mock-client-authority-super-group-posts: "${MOCK_CLIENT_AUTHORITY_SUPER_GROUP_POSTS:}"
+  mock-client-authority-users: "${MOCK_CLIENT_AUTHORITY_USERS:}"
   files:
     path: "${UPLOAD_FOLDER:./uploads/}"
   cookie:
