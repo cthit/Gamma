@@ -1,5 +1,6 @@
 package it.chalmers.gamma.security.signin;
 
+import it.chalmers.gamma.app.signin.SignInSetupCompletion;
 import it.chalmers.gamma.app.signin.SignInSetupRecoveryKey;
 import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInRequirements.UserSignInMethods;
@@ -28,11 +29,15 @@ public class SignInAuthorizationManagers {
 
   private final SignInRequirements signInRequirements;
   private final SignInSetupRecoveryKey setupRecoveryKey;
+  private final SignInSetupCompletion setupCompletion;
 
   public SignInAuthorizationManagers(
-      SignInRequirements signInRequirements, SignInSetupRecoveryKey setupRecoveryKey) {
+      SignInRequirements signInRequirements,
+      SignInSetupRecoveryKey setupRecoveryKey,
+      SignInSetupCompletion setupCompletion) {
     this.signInRequirements = signInRequirements;
     this.setupRecoveryKey = setupRecoveryKey;
+    this.setupCompletion = setupCompletion;
   }
 
   public <T> AuthorizationManager<T> signedIn() {
@@ -78,7 +83,9 @@ public class SignInAuthorizationManagers {
   }
 
   private boolean mayAddPasskeyDuringSetup(SignInSetupAuthenticationToken setup) {
-    if (!isSetupStillAllowed(setup) || this.setupRecoveryKey.isNeeded(setup.getPrincipal())) {
+    if (!isSetupStillAllowed(setup)
+        || this.setupCompletion.isDone(setup.getPrincipal())
+        || this.setupRecoveryKey.isNeeded(setup.getPrincipal())) {
       return false;
     }
     if (setup.getPrincipal().reason() != SignInSetupAuthentication.Reason.EMAIL) {

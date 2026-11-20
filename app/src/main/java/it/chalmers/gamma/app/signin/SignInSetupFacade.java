@@ -5,8 +5,6 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isSettingUpSignIn
 import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
-import it.chalmers.gamma.app.signin.domain.Passkey;
-import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
 import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
@@ -22,6 +20,7 @@ import java.time.Instant;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,26 +30,29 @@ public class SignInSetupFacade extends Facade {
 
   private final UserRepository userRepository;
   private final AdminRepository adminRepository;
-  private final PasskeyRepository passkeyRepository;
   private final TotpRepository totpRepository;
   private final RecoveryKeyRepository recoveryKeyRepository;
   private final SignInSetupRecoveryKey setupRecoveryKey;
+  private final SignInSetupCompletion setupCompletion;
+  private final ApplicationEventPublisher events;
 
   public SignInSetupFacade(
       AccessGuard accessGuard,
       UserRepository userRepository,
       AdminRepository adminRepository,
-      PasskeyRepository passkeyRepository,
       TotpRepository totpRepository,
       RecoveryKeyRepository recoveryKeyRepository,
-      SignInSetupRecoveryKey setupRecoveryKey) {
+      SignInSetupRecoveryKey setupRecoveryKey,
+      SignInSetupCompletion setupCompletion,
+      ApplicationEventPublisher events) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.adminRepository = adminRepository;
-    this.passkeyRepository = passkeyRepository;
     this.totpRepository = totpRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
     this.setupRecoveryKey = setupRecoveryKey;
+    this.setupCompletion = setupCompletion;
+    this.events = events;
   }
 
   public SignInSetupDTO getSetup() {
@@ -63,10 +65,7 @@ public class SignInSetupFacade extends Facade {
 
     boolean hasTotp = this.totpRepository.isEnabled(userId);
     boolean hasPassword = this.userRepository.hasPassword(userId);
-    boolean addedPasskey =
-        this.passkeyRepository.getAll(userId).stream()
-            .map(Passkey::created)
-            .anyMatch(created -> created != null && !created.isBefore(setup.startedAt()));
+    boolean done = this.setupCompletion.isDone(setup);
     boolean needsRecoveryKey = this.setupRecoveryKey.isNeeded(setup);
 
     boolean canAddPasskey = !(setup.reason() == Reason.EMAIL && hasTotp);
@@ -76,14 +75,14 @@ public class SignInSetupFacade extends Facade {
         user.nick().value(),
         setup.reason(),
         hasPassword,
-        addedPasskey,
+        done,
         canAddPasskey,
         needsRecoveryKey);
   }
 
   @Transactional
   public void setPassword(String newPassword, String confirmPassword)
-      throws PasswordsDontMatchException, PasskeyChosenException, RecoveryKeyFirstException {
+      throws PasswordsDontMatchException, SetupDoneException, RecoveryKeyFirstException {
     this.accessGuard.require(isSettingUpSignIn());
 
     if (!newPassword.equals(confirmPassword)) {
@@ -95,14 +94,15 @@ public class SignInSetupFacade extends Facade {
     this.userRepository.lockSignInMethods(userId);
     requireStillAllowed(setup);
     SignInSetupDTO current = getSetup();
-    if (current.addedPasskey()) {
-      throw new PasskeyChosenException();
+    if (current.done()) {
+      throw new SetupDoneException();
     }
     if (current.needsRecoveryKey()) {
       throw new RecoveryKeyFirstException();
     }
     this.userRepository.setPassword(userId, new UnencryptedPassword(newPassword));
     this.setupRecoveryKey.retireUsedKey(setup);
+    this.events.publishEvent(new SignInChanged(userId, "A password was set for your account."));
     LOGGER.info("User {} set a password while setting up how they sign in", userId.value());
   }
 
@@ -113,7 +113,8 @@ public class SignInSetupFacade extends Facade {
     SignInSetupAuthentication setup = currentSetup();
     UserId userId = new UserId(setup.userId());
     this.userRepository.lockSignInMethods(userId);
-    if (setup.reason() == Reason.EMAIL || !getSetup().needsRecoveryKey()) {
+    SignInSetupDTO current = getSetup();
+    if (setup.reason() == Reason.EMAIL || current.done() || !current.needsRecoveryKey()) {
       throw new RecoveryKeyNotNeededException();
     }
 
@@ -142,13 +143,13 @@ public class SignInSetupFacade extends Facade {
       String nick,
       Reason reason,
       boolean hasPassword,
-      boolean addedPasskey,
+      boolean done,
       boolean canAddPasskey,
       boolean needsRecoveryKey) {}
 
   public static final class RecoveryKeyNotNeededException extends Exception {}
 
-  public static final class PasskeyChosenException extends Exception {}
+  public static final class SetupDoneException extends Exception {}
 
   public static final class RecoveryKeyFirstException extends Exception {}
 

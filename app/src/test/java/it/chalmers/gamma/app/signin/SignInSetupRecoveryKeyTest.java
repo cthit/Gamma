@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
+import it.chalmers.gamma.app.signin.domain.Passkey;
 import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.RecoveryKey;
 import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
@@ -14,6 +15,7 @@ import it.chalmers.gamma.security.authentication.SignInSetupAuthentication.Reaso
 import it.chalmers.gamma.security.signin.SignInSetupAuthenticationToken;
 import java.lang.reflect.Proxy;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +30,8 @@ class SignInSetupRecoveryKeyTest {
   private boolean emailRecovery;
   private boolean hasPassword;
   private Instant keyCreatedAt;
+  private List<Passkey> passkeys = List.of();
+  private final List<Object> events = new ArrayList<>();
 
   @AfterEach
   void clear() {
@@ -72,10 +76,46 @@ class SignInSetupRecoveryKeyTest {
     facade.saveRecoveryKey(RecoveryKey.generate());
     Instant newKey = this.keyCreatedAt;
     facade.setPassword("a-new-password-1", "a-new-password-1");
-    facade.setPassword("a-new-password-2", "a-new-password-2");
+    assertThrows(
+        SignInSetupFacade.SetupDoneException.class,
+        () -> facade.setPassword("a-new-password-2", "a-new-password-2"));
 
     assertEquals(newKey, this.keyCreatedAt);
     assertFalse(facade.getSetup().needsRecoveryKey());
+  }
+
+  @Test
+  void aDoneSetupChangesNothingMore() throws Exception {
+    SignInSetupFacade facade = setUp(Reason.ADMIN_RECOVERY);
+    facade.saveRecoveryKey(RecoveryKey.generate());
+    facade.setPassword("a-new-password-1", "a-new-password-1");
+    assertTrue(facade.getSetup().done());
+    assertEquals(1, this.events.size());
+
+    this.keyCreatedAt = null;
+    assertTrue(facade.getSetup().needsRecoveryKey());
+    assertThrows(
+        SignInSetupFacade.SetupDoneException.class,
+        () -> facade.setPassword("a-new-password-2", "a-new-password-2"));
+    assertThrows(
+        SignInSetupFacade.RecoveryKeyNotNeededException.class,
+        () -> facade.saveRecoveryKey(RecoveryKey.generate()));
+    assertNull(this.keyCreatedAt);
+    assertEquals(1, this.events.size());
+  }
+
+  @Test
+  void aSetupIsDoneOnceAPasskeyIsAdded() {
+    this.emailRecovery = true;
+    SignInSetupFacade facade = setUp(Reason.EMAIL);
+    assertFalse(facade.getSetup().done());
+
+    this.passkeys = List.of(new Passkey("id", "My phone", this.revokedAt.plusSeconds(1), null));
+    assertTrue(facade.getSetup().done());
+    assertThrows(
+        SignInSetupFacade.SetupDoneException.class,
+        () -> facade.setPassword("a-new-password-1", "a-new-password-1"));
+    assertFalse(this.hasPassword);
   }
 
   @Test
@@ -157,12 +197,12 @@ class SignInSetupRecoveryKeyTest {
               if (!name.equals("isEnabled")) throw new AssertionError(name);
               return false;
             });
-    PasskeyRepository passkeys =
+    PasskeyRepository passkeyRepository =
         stub(
             PasskeyRepository.class,
             (name, args) -> {
               if (!name.equals("getAll")) throw new AssertionError(name);
-              return List.of();
+              return this.passkeys;
             });
     AdminRepository admins =
         stub(
@@ -176,10 +216,11 @@ class SignInSetupRecoveryKeyTest {
         new AccessGuard(users, null),
         users,
         admins,
-        passkeys,
         totps,
         keys,
-        new SignInSetupRecoveryKey(users, totps, keys));
+        new SignInSetupRecoveryKey(users, totps, keys),
+        new SignInSetupCompletion(users, passkeyRepository),
+        this.events::add);
   }
 
   private interface Handler {

@@ -120,7 +120,7 @@ test("an admin recovery can't set up a password or passkey before a recovery key
   }
 });
 
-test("a recovery key setup keeps the new recovery key however often the password is set", async ({
+test("a recovery key setup keeps the new recovery key and takes only one password", async ({
   page,
   env,
   gamma,
@@ -140,6 +140,7 @@ test("a recovery key setup keeps the new recovery key however often the password
   ).toBe("t");
 
   const newKey = await saveSetupRecoveryKey(page);
+  let firstHash = "";
   for (const password of ["First-password-1337", "Second-password-1337"]) {
     const set = await postPassword(page, gamma.url, password);
     expect(set.status()).toBe(302);
@@ -149,11 +150,17 @@ test("a recovery key setup keeps the new recovery key however often the password
         `SELECT COUNT(*) FROM g_user_recovery_key WHERE user_id=${jim}`,
       ),
     ).toBe("1");
+    const hash = await sql(
+      env,
+      `SELECT password FROM g_user WHERE user_id=${jim}`,
+    );
+    firstHash ||= hash;
+    expect(hash).toBe(firstHash);
   }
   await page.reload();
   await page.getByRole("button", { name: "Continue to signing in" }).click();
   await expect(page).toHaveURL(/\/login\?sign-in-ready/);
-  await login(page, gamma.url, "jhalpert", "Second-password-1337", "Big Tuna");
+  await login(page, gamma.url, "jhalpert", "First-password-1337", "Big Tuna");
   await logout(page);
 
   await useRecoveryKey(page, gamma.url, usedKey);
