@@ -84,11 +84,22 @@ public class SignInMethodsFacade extends Facade {
     return get(new UserId(userId));
   }
 
-  public TotpSecret startTotpSetup() {
+  public TotpSecret startTotpSetup() throws TotpUnavailableException {
     this.accessGuard.require(isSignedIn());
 
-    requireNotAdmin(me().id());
+    requireCanUseTotp(me().id());
     return TotpSecret.generate();
+  }
+
+  public boolean canUseTotp() {
+    this.accessGuard.require(isSignedIn());
+    UserId me = me().id();
+    return !userIsAdmin(me) && this.userRepository.hasPassword(me);
+  }
+
+  public boolean canUseRecoveryKey() {
+    this.accessGuard.require(isSignedIn());
+    return !userIsAdmin(me().id());
   }
 
   public OptionalLong checkTotpCode(TotpSecret secret, String code) {
@@ -98,13 +109,12 @@ public class SignInMethodsFacade extends Facade {
 
   @Transactional
   public boolean enableTotp(TotpSecret secret, long usedTimeStep, RecoveryKey newRecoveryKey)
-      throws RecoveryKeyRequiredException {
+      throws RecoveryKeyRequiredException, TotpUnavailableException {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
     lockAndRecheck(me);
-    requireNotAdmin(me);
-    requireHasPassword(me);
+    requireCanUseTotp(me);
 
     if (newRecoveryKey != null) {
       this.recoveryKeyRepository.save(me, newRecoveryKey);
@@ -182,7 +192,7 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public void replaceRecoveryKey(RecoveryKey key) {
+  public void replaceRecoveryKey(RecoveryKey key) throws RecoveryKeyUnavailableException {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
@@ -194,7 +204,8 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public void disableEmailRecovery(RecoveryKey newRecoveryKey) {
+  public void disableEmailRecovery(RecoveryKey newRecoveryKey)
+      throws RecoveryKeyUnavailableException {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
@@ -333,15 +344,15 @@ public class SignInMethodsFacade extends Facade {
     return this.adminRepository.isAdmin(userId);
   }
 
-  private void requireNotAdmin(UserId userId) {
+  private void requireNotAdmin(UserId userId) throws RecoveryKeyUnavailableException {
     if (userIsAdmin(userId)) {
-      throw new IllegalStateException("Admins sign in with passkeys only");
+      throw new RecoveryKeyUnavailableException();
     }
   }
 
-  private void requireHasPassword(UserId userId) {
-    if (!this.userRepository.hasPassword(userId)) {
-      throw new IllegalStateException("An authenticator app is only used with a password");
+  private void requireCanUseTotp(UserId userId) throws TotpUnavailableException {
+    if (userIsAdmin(userId) || !this.userRepository.hasPassword(userId)) {
+      throw new TotpUnavailableException();
     }
   }
 
@@ -378,4 +389,10 @@ public class SignInMethodsFacade extends Facade {
   public static final class RecoveryEmailUnverifiedException extends Exception {}
 
   public static final class RecoveryKeyRequiredException extends Exception {}
+
+  /** An authenticator app is only used together with a password, and never by admins. */
+  public static final class TotpUnavailableException extends Exception {}
+
+  /** Admins sign in with passkeys only and have no recovery key. */
+  public static final class RecoveryKeyUnavailableException extends Exception {}
 }
