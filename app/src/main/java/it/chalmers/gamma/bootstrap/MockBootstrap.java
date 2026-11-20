@@ -1,6 +1,9 @@
 package it.chalmers.gamma.bootstrap;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +29,27 @@ public class MockBootstrap {
       @Value("${application.admin-setup}") boolean adminSetup,
       @Value("${application.production}") boolean production,
       @Value("${application.mocking:false}") boolean isMocking,
-      @Value("${application.mock-client-redirect-url}") String mockClientRedirectUrl) {
-    return new BootstrapSettings(adminSetup, !production || isMocking, mockClientRedirectUrl);
+      @Value("${application.mock-client-redirect-url}") String mockClientRedirectUrl,
+      @Value("${application.mock-client-email-scope}") boolean mockClientEmailScope,
+      @Value("${application.mock-client-authority-name}") String mockClientAuthorityName,
+      @Value("${application.mock-client-authority-super-groups}")
+          List<UUID> mockClientAuthoritySuperGroups,
+      @Value("${application.mock-client-authority-super-group-posts}")
+          String mockClientAuthoritySuperGroupPosts,
+      @Value("${application.mock-client-authority-users}") List<UUID> mockClientAuthorityUsers) {
+    MockData.MockClientAuthority clientAuthority =
+        new MockData.MockClientAuthority(
+            mockClientAuthorityName,
+            mockClientAuthoritySuperGroups,
+            parseMockSuperGroupPosts(mockClientAuthoritySuperGroupPosts),
+            mockClientAuthorityUsers);
+
+    return new BootstrapSettings(
+        adminSetup,
+        !production || isMocking,
+        mockClientRedirectUrl,
+        mockClientEmailScope,
+        clientAuthority);
   }
 
   @Bean
@@ -48,5 +70,21 @@ public class MockBootstrap {
       LOGGER.error("Error when trying to read mock.json", e);
       return MockData.empty();
     }
+  }
+
+  private List<MockData.MockSuperGroupPost> parseMockSuperGroupPosts(String source) {
+    List<MockData.MockSuperGroupPost> posts = new ArrayList<>();
+    if (source == "") {
+      return posts;
+    }
+
+    String[] parts = source.split(",");
+    for (String part : parts) {
+      String[] subparts = part.split(":");
+      UUID superGroupId = UUID.fromString(subparts[0]);
+      UUID postId = UUID.fromString(subparts[1]);
+      posts.add(new MockData.MockSuperGroupPost(superGroupId, postId));
+    }
+    return posts;
   }
 }

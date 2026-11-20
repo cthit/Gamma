@@ -58,7 +58,6 @@ public record MockData(
       String clientSecret,
       String prettyName,
       MockText description,
-      boolean emailScope,
       UUID ownerId,
       MockApiKey apiKey,
       List<MockClientAuthority> authorities) {}

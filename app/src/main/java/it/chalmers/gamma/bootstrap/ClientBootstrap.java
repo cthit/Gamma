@@ -70,6 +70,10 @@ public class ClientBootstrap {
       Client client = toClient(mockClient);
       this.clientRepository.save(client);
 
+      if (this.bootstrapSettings.mockClientAuthority() != null) {
+        createAuthority(client, this.bootstrapSettings.mockClientAuthority());
+      }
+
       for (MockData.MockClientAuthority mockAuthority : mockClient.authorities()) {
         createAuthority(client, mockAuthority);
       }
@@ -114,7 +118,7 @@ public class ClientBootstrap {
 
     List<Scope> scopes = new ArrayList<>();
     scopes.add(Scope.PROFILE);
-    if (mockClient.emailScope()) {
+    if (this.bootstrapSettings.mockClientEmailScope()) {
       scopes.add(Scope.EMAIL);
     }
 
@@ -127,7 +131,7 @@ public class ClientBootstrap {
         new ClientUid(mockClient.id()),
         new ClientId(mockClient.clientId()),
         new ClientSecret(this.passwordEncoder.encode(mockClient.clientSecret())),
-        new ClientRedirectUrl(this.bootstrapSettings.clientRedirectUrl()),
+        new ClientRedirectUrl(this.bootstrapSettings.mockClientRedirectUrl()),
         new PrettyName(mockClient.prettyName()),
         new Text(mockClient.description().sv(), mockClient.description().en()),
         scopes,
