@@ -102,7 +102,9 @@ public class SecurityFiltersConfig {
         // well, so that a user that has been locked can't authorize clients.
         .addFilterAfter(
             new UpdateUserPrincipalFilter(
-                new TrustedUserDetailsRepository(userJpaRepository), adminRepository),
+                new TrustedUserDetailsRepository(userJpaRepository),
+                adminRepository,
+                signInAuthorizationManagers),
             SecurityContextHolderFilter.class)
         .with(
             authorizationServerConfigurer,
@@ -242,7 +244,7 @@ public class SecurityFiltersConfig {
                     new RecoveryKeyAuthenticationProvider(userRepository, recoveryKeyUse))),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
-            new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository),
+            new UpdateUserPrincipalFilter(trustedUserDetails, adminRepository, signIn),
             UsernamePasswordAuthenticationFilter.class)
         // Runs inside ExceptionTranslationFilter, before Spring Security serves the options.
         .addFilterAfter(
