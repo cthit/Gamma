@@ -37,6 +37,11 @@
             window.location.href = response.url;
             return new Promise(function () {});
         }
+        // The session behind the page's CSRF token has ended. Reload to get a new one.
+        if (response.status === 403) {
+            window.location.reload();
+            return new Promise(function () {});
+        }
         if (!response.ok) {
             throw new Error("The server answered " + response.status);
         }
