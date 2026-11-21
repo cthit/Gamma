@@ -62,10 +62,14 @@ public class LoginController {
   @GetMapping("/login/totp")
   public ModelAndView getTotp(
       @RequestParam(value = "error", required = false) String error,
+      @RequestParam(value = "too-many-codes", required = false) String tooManyCodes,
+      @RequestParam(value = "throttle", required = false) String throttle,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       HttpServletResponse response) {
     ModelAndView mv = page("pages/login-totp", htmxRequest, response);
     mv.addObject("error", error != null);
+    mv.addObject("tooManyCodes", tooManyCodes != null);
+    mv.addObject("throttle", throttle != null);
     return mv;
   }
 
@@ -119,10 +123,12 @@ public class LoginController {
   @GetMapping("/login/recovery")
   public ModelAndView getRecovery(
       @RequestParam(value = "error", required = false) String error,
+      @RequestParam(value = "throttle", required = false) String throttle,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       HttpServletResponse response) {
     ModelAndView mv = page("pages/login-recovery", htmxRequest, response);
     mv.addObject("error", error != null);
+    mv.addObject("throttle", throttle != null);
     return mv;
   }
 

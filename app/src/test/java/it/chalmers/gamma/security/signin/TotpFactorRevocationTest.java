@@ -3,6 +3,7 @@ package it.chalmers.gamma.security.signin;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.eatthepath.otp.TimeBasedOneTimePasswordGenerator;
+import it.chalmers.gamma.app.signin.TotpCodeLimit;
 import it.chalmers.gamma.app.signin.domain.Totp;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.signin.domain.TotpSecret;
@@ -105,11 +106,14 @@ class TotpFactorRevocationTest {
     ThrottlingService unthrottled =
         new ThrottlingService(null) {
           @Override
-          public boolean canProceed(String key, int maxPerDay) {
-            return true;
+          public long count(String key) {
+            return 1;
           }
+
+          @Override
+          public void uncount(String key) {}
         };
-    return new TotpAuthenticationProvider(this.totps, unthrottled)
+    return new TotpAuthenticationProvider(this.totps, new TotpCodeLimit(unthrottled, event -> {}))
         .authenticate(new TotpAuthenticationRequestToken(this.userId.value().toString(), code));
   }
 

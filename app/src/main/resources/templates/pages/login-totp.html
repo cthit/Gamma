@@ -7,6 +7,12 @@
         </header>
         <form class="login__form" th:action="@{/login/totp}" th:method="post">
             <h2>Enter the code from your authenticator app</h2>
+            <p class="callout callout--danger" th:if="${throttle}">
+                Too many sign-in attempts have been made from your network. Try again later.
+            </p>
+            <p class="callout callout--danger" th:if="${tooManyCodes}">
+                Too many wrong codes. Try again later or use your recovery key. Resetting your password also lifts this limit.
+            </p>
             <div class="field">
                 <label class="field__label" for="code">Six digit code</label>
                 <input class="input input--code" id="code" type="text" name="code"

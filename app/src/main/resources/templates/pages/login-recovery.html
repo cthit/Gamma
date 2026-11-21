@@ -7,6 +7,9 @@
         </header>
         <form class="login__form" th:action="@{/login/recovery}" th:method="post">
             <h2>Use your recovery key</h2>
+            <p class="callout callout--danger" th:if="${throttle}">
+                Too many sign-in attempts have been made from your network. Try again later.
+            </p>
             <p>
                 Your recovery key lets you set up a new way to sign in. It removes your passkeys, password and
                 authenticator app, and signs you out everywhere. It stops working once you have set up a new way

@@ -47,6 +47,7 @@ public class SignInMethodsFacade extends Facade {
   private final ApplicationEventPublisher events;
   private final PasswordResetRepository passwordResetRepository;
   private final EmailChangeRepository emailChangeRepository;
+  private final TotpCodeLimit totpCodeLimit;
   private final String baseUrl;
 
   public SignInMethodsFacade(
@@ -60,6 +61,7 @@ public class SignInMethodsFacade extends Facade {
       ApplicationEventPublisher events,
       PasswordResetRepository passwordResetRepository,
       EmailChangeRepository emailChangeRepository,
+      TotpCodeLimit totpCodeLimit,
       @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
@@ -71,6 +73,7 @@ public class SignInMethodsFacade extends Facade {
     this.events = events;
     this.passwordResetRepository = passwordResetRepository;
     this.emailChangeRepository = emailChangeRepository;
+    this.totpCodeLimit = totpCodeLimit;
     this.baseUrl = baseUrl;
   }
 
@@ -288,6 +291,7 @@ public class SignInMethodsFacade extends Facade {
   private void resetForAdminRecovery(UserId userId) {
     this.passkeyRepository.deleteAll(userId);
     this.totpRepository.delete(userId);
+    this.totpCodeLimit.reset(userId);
     this.recoveryKeyRepository.delete(userId);
     this.emailChangeRepository.delete(userId);
     this.userRepository.removePassword(userId);

@@ -3,9 +3,11 @@ package it.chalmers.gamma.adapter.secondary.mail;
 import it.chalmers.gamma.adapter.secondary.jpa.user.UserJpaRepository;
 import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.signin.SignInChanged;
+import it.chalmers.gamma.app.signin.TotpCodesGuessed;
 import it.chalmers.gamma.app.user.EmailChangedByAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -38,6 +40,31 @@ public class SignInChangeNotifications {
       // A mail outage must not roll back, or report failure for, a committed security change.
       LOGGER.error(
           "Could not send sign-in security notification for user {}", change.userId().value());
+    }
+  }
+
+  @EventListener
+  public void totpCodesGuessed(TotpCodesGuessed guessed) {
+    try {
+      this.users
+          .findById(guessed.userId().value())
+          .ifPresent(user ->
+              this.mail.sendSecurityNotification(
+                  user.email(),
+                  "Someone may know your password at the IT division of Chalmers",
+                  """
+                  Too many wrong authenticator app codes were entered after signing in to the account %s with its password.
+
+                  If that wasn't you, someone knows your password. Change it, or reset it with "Forgot password" on the sign-in page. Codes from your authenticator app are not accepted for up to a day, or until you change your password. You can still sign in with your recovery key.
+
+                  If you need help, contact ita@chalmers.it.
+                  """
+                      .formatted(user.cid())));
+    } catch (RuntimeException failure) {
+      // A mail outage must not break signing in.
+      LOGGER.error(
+          "Could not send wrong authenticator codes notification for user {}",
+          guessed.userId().value());
     }
   }
 

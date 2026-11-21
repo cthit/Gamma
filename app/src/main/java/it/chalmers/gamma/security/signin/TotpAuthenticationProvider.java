@@ -1,9 +1,9 @@
 package it.chalmers.gamma.security.signin;
 
+import it.chalmers.gamma.app.signin.TotpCodeLimit;
 import it.chalmers.gamma.app.signin.TotpCodes;
 import it.chalmers.gamma.app.signin.domain.Totp;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
-import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
 import java.time.Instant;
 import java.util.List;
@@ -22,15 +22,12 @@ public class TotpAuthenticationProvider implements AuthenticationProvider {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TotpAuthenticationProvider.class);
 
-  private static final int MAX_ATTEMPTS_PER_DAY = 30;
-
   private final TotpRepository totpRepository;
-  private final ThrottlingService throttlingService;
+  private final TotpCodeLimit codeLimit;
 
-  public TotpAuthenticationProvider(
-      TotpRepository totpRepository, ThrottlingService throttlingService) {
+  public TotpAuthenticationProvider(TotpRepository totpRepository, TotpCodeLimit codeLimit) {
     this.totpRepository = totpRepository;
-    this.throttlingService = throttlingService;
+    this.codeLimit = codeLimit;
   }
 
   @Override
@@ -51,24 +48,31 @@ public class TotpAuthenticationProvider implements AuthenticationProvider {
       throw new BadCredentialsException("Not a user");
     }
 
-    if (!this.throttlingService.canProceed("totp:" + userId.value(), MAX_ATTEMPTS_PER_DAY)) {
-      LOGGER.info("Throttled the authenticator app codes of user {}", userId.value());
-      throw new BadCredentialsException("Too many attempts");
-    }
+    TotpCodeLimit.Attempt attempt =
+        this.codeLimit
+            .start(userId)
+            .orElseThrow(() -> {
+              LOGGER.info("Throttled the authenticator app codes of user {}", userId.value());
+              return new TooManyTotpCodesException();
+            });
 
-    Totp totp =
-        this.totpRepository
-            .get(userId)
-            .orElseThrow(() -> new BadCredentialsException("No authenticator app"));
+    try (attempt) {
+      Totp totp =
+          this.totpRepository
+              .get(userId)
+              .orElseThrow(() -> new BadCredentialsException("No authenticator app"));
 
-    OptionalLong timeStep =
-        TotpCodes.matchingTimeStep(totp.secret(), request.getCredentials(), checkedAt);
-    if (timeStep.isEmpty()) {
-      throw new BadCredentialsException("Wrong code");
-    }
+      OptionalLong timeStep =
+          TotpCodes.matchingTimeStep(totp.secret(), request.getCredentials(), checkedAt);
+      if (timeStep.isEmpty()) {
+        attempt.wrong();
+        throw new BadCredentialsException("Wrong code");
+      }
 
-    if (!this.totpRepository.useTimeStep(userId, totp.secret(), timeStep.getAsLong())) {
-      throw new BadCredentialsException("The code has already been used");
+      if (!this.totpRepository.useTimeStep(userId, totp.secret(), timeStep.getAsLong())) {
+        attempt.wrong();
+        throw new BadCredentialsException("The code has already been used");
+      }
     }
 
     return UsernamePasswordAuthenticationToken.authenticated(

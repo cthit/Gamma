@@ -66,6 +66,7 @@ class PasswordResetThrottleTest {
             null,
             null,
             null,
+            null,
             "https://gamma.example.org")
         .startResetPasswordProcess("tester");
 

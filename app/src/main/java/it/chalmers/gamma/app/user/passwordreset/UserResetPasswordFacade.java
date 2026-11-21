@@ -8,6 +8,7 @@ import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
 import it.chalmers.gamma.app.signin.SignInChanged;
+import it.chalmers.gamma.app.signin.TotpCodeLimit;
 import it.chalmers.gamma.app.signin.domain.PasskeyRepository;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
@@ -41,6 +42,7 @@ public class UserResetPasswordFacade extends Facade {
   private final TotpRepository totpRepository;
   private final PasskeyRepository passkeyRepository;
   private final ApplicationEventPublisher events;
+  private final TotpCodeLimit totpCodeLimit;
   private final String baseUrl;
 
   public UserResetPasswordFacade(
@@ -53,8 +55,10 @@ public class UserResetPasswordFacade extends Facade {
       TotpRepository totpRepository,
       PasskeyRepository passkeyRepository,
       ApplicationEventPublisher events,
+      TotpCodeLimit totpCodeLimit,
       @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
+    this.totpCodeLimit = totpCodeLimit;
     this.adminRepository = adminRepository;
     this.totpRepository = totpRepository;
     this.passkeyRepository = passkeyRepository;
@@ -126,6 +130,7 @@ public class UserResetPasswordFacade extends Facade {
     this.userRepository.setPassword(userId, unencryptedPassword);
     this.passkeyRepository.deleteAll(userId);
     this.userRepository.revokeSessions(userId);
+    this.totpCodeLimit.reset(userId);
     this.events.publishEvent(
         new SignInChanged(
             userId,

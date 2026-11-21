@@ -22,6 +22,7 @@ import it.chalmers.gamma.app.image.domain.ImageUri;
 import it.chalmers.gamma.app.oauth2.domain.GammaAuthorizationRepository;
 import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.signin.SignInChanged;
+import it.chalmers.gamma.app.signin.TotpCodeLimit;
 import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.user.domain.*;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
@@ -55,6 +56,7 @@ public class MeFacade extends Facade {
   private final GammaAuthorizationRepository authorizations;
   private final DataDeletionRecorder dataDeletionRecorder;
   private final DataDeletionRequestRepository dataDeletionRequestRepository;
+  private final TotpCodeLimit totpCodeLimit;
 
   public MeFacade(
       AccessGuard accessGuard,
@@ -66,8 +68,10 @@ public class MeFacade extends Facade {
       ApplicationEventPublisher events,
       GammaAuthorizationRepository authorizations,
       DataDeletionRecorder dataDeletionRecorder,
-      DataDeletionRequestRepository dataDeletionRequestRepository) {
+      DataDeletionRequestRepository dataDeletionRequestRepository,
+      TotpCodeLimit totpCodeLimit) {
     super(accessGuard);
+    this.totpCodeLimit = totpCodeLimit;
     this.recentSignIn = recentSignIn;
     this.events = events;
     this.userRepository = userRepository;
@@ -263,6 +267,7 @@ public class MeFacade extends Facade {
         this.userRepository.setPassword(
             me.id(), new UnencryptedPassword(updatePassword.newPassword));
         this.userRepository.revokeSessions(me.id());
+        this.totpCodeLimit.reset(me.id());
         this.events.publishEvent(
             new SignInChanged(
                 me.id(), "Your password was changed and your previous sessions were revoked."));
