@@ -6,6 +6,10 @@
             <h1 class="login__title">Gamma</h1>
         </header>
 
+        <p class="callout callout--danger" th:if="${throttle}">
+            Too many sign-in attempts have been made from your network. Try again later.
+        </p>
+
         <th:block th:if="${methods.isAdmin() and !methods.hasPasskeys() and !adminConfirmsPassword}">
             <h2>Add a passkey to continue</h2>
             <p>

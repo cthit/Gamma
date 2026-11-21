@@ -76,6 +76,7 @@ public class LoginController {
   @GetMapping("/login/confirm")
   public ModelAndView getConfirm(
       @RequestParam(value = "error", required = false) String error,
+      @RequestParam(value = "throttle", required = false) String throttle,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       HttpServletResponse response) {
     ModelAndView mv = page("pages/login-confirm", htmxRequest, response);
@@ -112,6 +113,7 @@ public class LoginController {
     mv.addObject("methods", methods);
     mv.addObject("cid", cid);
     mv.addObject("error", error != null);
+    mv.addObject("throttle", throttle != null);
     mv.addObject("adminNeedsPasskey", methods.isAdmin() && signedInWithPassword);
     mv.addObject(
         "adminConfirmsPassword",
