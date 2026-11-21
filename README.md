@@ -180,6 +180,8 @@ If the last admin loses all their passkeys, a database operator must verify thei
 
 ```sql
 BEGIN;
+-- Gamma stores these timestamps as UTC
+SET LOCAL TIME ZONE 'UTC';
 SELECT user_id FROM g_user WHERE user_id = '<user id>' FOR UPDATE;
 DELETE FROM user_entities WHERE name = '<user id>';
 DELETE FROM g_admin_user WHERE user_id = '<user id>';
