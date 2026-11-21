@@ -6,6 +6,10 @@ import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
 import it.chalmers.gamma.app.user.emailchange.UserEmailChangeFacade;
+import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -49,12 +53,18 @@ public class EmailChangeController {
   public ModelAndView editEmail(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
       EditEmailForm form,
-      final BindingResult bindingResult) {
+      final BindingResult bindingResult,
+      HttpServletRequest request,
+      HttpServletResponse response)
+      throws IOException {
     validateObject(form, bindingResult);
 
     if (!bindingResult.hasErrors()) {
       try {
         this.userEmailChangeFacade.requestEmailChange(form.newEmail, form.currentPassword);
+      } catch (UserEmailChangeFacade.ConfirmationExpiredException e) {
+        HtmxAwareRedirects.redirect(request, response, "/login/confirm");
+        return null;
       } catch (UserEmailChangeFacade.PasswordIncorrectException e) {
         bindingResult.addError(
             new FieldError("form", "currentPassword", "Password is not correct"));

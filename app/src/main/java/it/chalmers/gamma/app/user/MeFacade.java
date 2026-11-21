@@ -282,7 +282,8 @@ public class MeFacade extends Facade {
   }
 
   @Transactional
-  public void deleteMe(String password, boolean clientDataDeleted) {
+  public void deleteMe(String password, boolean clientDataDeleted)
+      throws ConfirmationExpiredException {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
@@ -293,7 +294,11 @@ public class MeFacade extends Facade {
       if (!this.recentSignIn.isCurrent()) {
         throw new AccessGuard.AccessDeniedException();
       }
-      if (isMe(me, password)) {
+      boolean hasPassword = this.userRepository.hasPassword(me.id());
+      if (!hasPassword && !this.recentSignIn.isRecent()) {
+        throw new ConfirmationExpiredException();
+      }
+      if (!hasPassword || isCurrentPassword(me, password)) {
         if (!this.clientRepository.getAllUserClients(me.id()).isEmpty() && !clientDataDeleted) {
           throw new ClientDataAcknowledgementRequiredException();
         }
@@ -310,11 +315,7 @@ public class MeFacade extends Facade {
     }
   }
 
-  private boolean isMe(GammaUser me, String password) {
-    if (!this.userRepository.hasPassword(me.id())) {
-      return this.recentSignIn.isRecent();
-    }
-
+  private boolean isCurrentPassword(GammaUser me, String password) {
     UnencryptedPassword unencryptedPassword;
     try {
       unencryptedPassword = new UnencryptedPassword(password);
@@ -436,6 +437,8 @@ public class MeFacade extends Facade {
   public record UpdateMe(String nick, String firstName, String lastName, String language) {}
 
   public record UpdatePassword(String oldPassword, String newPassword, String confirmNewPassword) {}
+
+  public static final class ConfirmationExpiredException extends Exception {}
 
   public static final class NewPasswordNotConfirmedException extends Exception {}
 

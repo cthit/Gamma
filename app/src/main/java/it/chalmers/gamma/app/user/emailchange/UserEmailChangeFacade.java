@@ -63,11 +63,17 @@ public class UserEmailChangeFacade extends Facade {
   /** Mails a confirmation link to the new email. The email is not changed yet. */
   @Transactional
   public void requestEmailChange(String newEmailString, String currentPassword)
-      throws PasswordIncorrectException,
+      throws ConfirmationExpiredException,
+          PasswordIncorrectException,
           EmailUnchangedException,
           EmailAlreadyInUseException,
           TooManyRequestsException {
     GammaUser me = lockSignedInUser();
+
+    boolean hasPassword = this.userRepository.hasPassword(me.id());
+    if (!hasPassword && !this.recentSignIn.isRecent()) {
+      throw new ConfirmationExpiredException();
+    }
 
     // Counts every attempt, so a stolen session can't be used to guess the password or to probe
     // which emails are registered.
@@ -77,7 +83,7 @@ public class UserEmailChangeFacade extends Facade {
       throw new TooManyRequestsException();
     }
 
-    if (!isCurrentPassword(me, currentPassword)) {
+    if (hasPassword && !isCurrentPassword(me, currentPassword)) {
       throw new PasswordIncorrectException();
     }
 
@@ -154,10 +160,6 @@ public class UserEmailChangeFacade extends Facade {
   }
 
   private boolean isCurrentPassword(GammaUser me, String candidate) {
-    if (!this.userRepository.hasPassword(me.id())) {
-      return this.recentSignIn.isRecent();
-    }
-
     UnencryptedPassword password;
     try {
       password = new UnencryptedPassword(candidate);
@@ -220,6 +222,8 @@ public class UserEmailChangeFacade extends Facade {
     this.mailService.sendSecurityNotification(
         oldEmail.value(), "Your email at the IT division of Chalmers was changed", message);
   }
+
+  public static final class ConfirmationExpiredException extends Exception {}
 
   public static final class PasswordIncorrectException extends Exception {}
 
