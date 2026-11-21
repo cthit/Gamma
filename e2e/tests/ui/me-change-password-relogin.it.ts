@@ -1,5 +1,5 @@
 import { expect, testWithMockGamma as test } from "../../helpers/test-fixtures";
-import { login, logout } from "../../helpers/auth";
+import { login } from "../../helpers/auth";
 import { uniqueCid } from "../../helpers/strings";
 
 test("given a signed in user when changing password then old password fails and new password works", async ({
@@ -34,11 +34,7 @@ test("given a signed in user when changing password then old password fails and 
     page.getByRole("button", { name: "Save new password" }).click(),
   ]);
 
-  await expect(page.getByText("You have created a new password")).toBeVisible({
-    timeout: 10000,
-  });
-
-  await logout(page);
+  await expect(page).toHaveURL(/\/login\?security-changed/);
 
   await page.getByLabel("Cid or email", { exact: true }).fill("pbeesly");
   await page.getByLabel("Password", { exact: true }).fill("password1337");

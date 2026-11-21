@@ -10,4 +10,12 @@ public interface AdminRepository {
   void setAdmin(UserId userId, boolean admin);
 
   List<UserId> getAll();
+
+  /** Waits for other changes that could leave no usable admin, until the transaction ends. */
+  void lockAdminChanges();
+
+  /** Admins who aren't locked and have at least one passkey. */
+  long countUsableAdmins();
+
+  long countUsableAdminsOtherThan(UserId userId);
 }

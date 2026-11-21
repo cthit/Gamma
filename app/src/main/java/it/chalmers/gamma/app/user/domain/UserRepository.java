@@ -1,6 +1,7 @@
 package it.chalmers.gamma.app.user.domain;
 
 import it.chalmers.gamma.app.common.Email;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,9 +27,35 @@ public interface UserRepository {
 
   Optional<GammaUser> get(Email email);
 
+  Optional<UserId> findId(Cid cid);
+
+  Optional<UserId> findId(Email email);
+
   boolean checkPassword(UserId userId, UnencryptedPassword password) throws UserNotFoundException;
 
   void setPassword(UserId userId, UnencryptedPassword newPassword) throws UserNotFoundException;
+
+  boolean hasPassword(UserId userId) throws UserNotFoundException;
+
+  void removePassword(UserId userId) throws UserNotFoundException;
+
+  void lockSignInMethods(UserId userId) throws UserNotFoundException;
+
+  boolean isLocked(UserId userId) throws UserNotFoundException;
+
+  Optional<Instant> sessionsRevokedAt(UserId userId) throws UserNotFoundException;
+
+  void revokeSessions(UserId userId) throws UserNotFoundException;
+
+  boolean isEmailRecoveryEnabled(UserId userId) throws UserNotFoundException;
+
+  void setEmailRecoveryEnabled(UserId userId, boolean enabled) throws UserNotFoundException;
+
+  boolean emailRecoveryRequiresVerification(UserId userId) throws UserNotFoundException;
+
+  void requireEmailRecoveryVerification(UserId userId) throws UserNotFoundException;
+
+  void confirmRecoveryEmail(UserId userId) throws UserNotFoundException;
 
   void acceptUserAgreement(UserId userId) throws UserNotFoundException;
 
@@ -38,8 +65,12 @@ public interface UserRepository {
    */
   void setLocked(UserId userId, boolean locked) throws UserNotFoundException;
 
-  void setEmail(UserId userId, Email email)
-      throws UserNotFoundException, EmailAlreadyInUseException;
+  /**
+   * Changes the email, but only if it is still the given current email. This way a change that was
+   * decided on from an older email can't overwrite one made since.
+   */
+  void setEmail(UserId userId, Email currentEmail, Email newEmail)
+      throws UserNotFoundException, EmailAlreadyInUseException, EmailChangedException;
 
   class UserNotFoundException extends RuntimeException {}
 
@@ -49,4 +80,7 @@ public interface UserRepository {
   class CidAlreadyInUseException extends Exception {}
 
   class EmailAlreadyInUseException extends Exception {}
+
+  /** The email is no longer the one that was expected. */
+  class EmailChangedException extends Exception {}
 }

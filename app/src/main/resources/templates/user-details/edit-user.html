@@ -7,6 +7,10 @@
         <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
         <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
         <div th:replace="~{common/input :: emailInput2('email', 'Email')}"></div>
+        <p>
+            Changing the email turns email recovery off until the user verifies the new address with Change email.
+            To help someone who lost access to their account, use the recovery link on the user's page instead.
+        </p>
         <label class="field">
             <span class="field__label">Which year did you start at IT?</span>
             <select class="input input--select" th:field="*{acceptanceYear}">

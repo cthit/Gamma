@@ -17,7 +17,7 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "cid")
   protected String cid;
 
-  @Column(name = "password", nullable = true)
+  @Column(name = "password", nullable = true, updatable = false)
   protected String password;
 
   @Column(name = "nick")
@@ -54,6 +54,12 @@ public class UserEntity extends MutableEntity<UUID> {
   @Column(name = "sessions_revoked_at", updatable = false)
   protected Instant sessionsRevokedAt;
 
+  @Column(name = "email_recovery", updatable = false)
+  protected boolean emailRecovery = true;
+
+  @Column(name = "email_recovery_requires_verification", nullable = false, updatable = false)
+  protected boolean emailRecoveryRequiresVerification;
+
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   protected UserAvatarEntity userAvatar;
 
@@ -62,6 +68,30 @@ public class UserEntity extends MutableEntity<UUID> {
   @Override
   public UUID getId() {
     return this.id;
+  }
+
+  public String cid() {
+    return this.cid;
+  }
+
+  public String email() {
+    return this.email;
+  }
+
+  public String nick() {
+    return this.nick;
+  }
+
+  public String firstName() {
+    return this.firstName;
+  }
+
+  public String lastName() {
+    return this.lastName;
+  }
+
+  public boolean locked() {
+    return this.locked;
   }
 
   public void acceptUserAgreement() {

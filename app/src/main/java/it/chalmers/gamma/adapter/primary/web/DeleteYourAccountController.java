@@ -1,6 +1,10 @@
 package it.chalmers.gamma.adapter.primary.web;
 
 import it.chalmers.gamma.app.user.MeFacade;
+import it.chalmers.gamma.security.signin.HtmxAwareRedirects;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -44,27 +48,41 @@ public class DeleteYourAccountController {
 
   @DeleteMapping("/delete-your-account")
   public ModelAndView deleteYourAccount(
-      DeleteYourAccountForm form, final BindingResult bindingResult) {
+      @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
+      DeleteYourAccountForm form,
+      final BindingResult bindingResult,
+      HttpServletRequest request,
+      HttpServletResponse response)
+      throws IOException {
     try {
       this.meFacade.deleteMe(form.password, form.clientDataDeleted);
+    } catch (MeFacade.ConfirmationExpiredException e) {
+      HtmxAwareRedirects.redirect(request, response, "/login/confirm");
+      return null;
     } catch (MeFacade.ClientDataAcknowledgementRequiredException e) {
       bindingResult.addError(
           new FieldError(
               "form",
               "clientDataDeleted",
               "Confirm that you have deleted the personal data collected through your clients."));
-      return invalidForm(bindingResult);
+      return invalidForm(htmxRequest, bindingResult);
     } catch (IllegalArgumentException e) {
       bindingResult.addError(new FieldError("form", "password", "Incorrect password"));
 
-      return invalidForm(bindingResult);
+      return invalidForm(htmxRequest, bindingResult);
     }
 
     return new ModelAndView("redirect:/login?deleted");
   }
 
-  private ModelAndView invalidForm(BindingResult bindingResult) {
-    ModelAndView mv = new ModelAndView("pages/delete-your-account");
+  private ModelAndView invalidForm(boolean htmxRequest, BindingResult bindingResult) {
+    ModelAndView mv = new ModelAndView();
+    if (htmxRequest) {
+      mv.setViewName("pages/delete-your-account");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/delete-your-account");
+    }
     mv.addObject("form", new DeleteYourAccountForm("", false));
     mv.addObject(BindingResult.MODEL_KEY_PREFIX + "form", bindingResult);
     addClients(mv);

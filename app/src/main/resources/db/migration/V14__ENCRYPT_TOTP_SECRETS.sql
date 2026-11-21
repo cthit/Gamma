@@ -1,0 +1,1 @@
+ALTER TABLE g_user_totp ALTER COLUMN secret TYPE VARCHAR(256);

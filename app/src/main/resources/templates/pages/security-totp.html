@@ -1,0 +1,32 @@
+<header th:replace="~{common/header}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header><h2>Set up an authenticator app</h2></header>
+        <ol>
+            <li>Open your authenticator app and add a new account.</li>
+            <li>Scan the QR code, or enter the key below if you can't scan it.</li>
+            <li>Enter the six digit code that the app shows.</li>
+        </ol>
+        <div class="qr-code-container" th:utext="${qrCode}"></div>
+        <div class="field">
+            <span class="field__label" id="totp-secret-label">Key to enter in the app</span>
+            <code class="totp-secret" aria-labelledby="totp-secret-label" th:text="${secret}"></code>
+        </div>
+        <form th:action="@{/me/security/totp}" th:method="post" id="confirm-totp">
+            <div class="field">
+                <label class="field__label" for="code">Code from the app</label>
+                <input class="input input--code" id="code" type="text" name="code"
+                       inputmode="numeric" autocomplete="one-time-code" pattern="[0-9 ]*" maxlength="7" required
+                       th:attr="aria-invalid=${error ? 'true' : null},
+                               aria-describedby=${error ? 'code-error' : null}">
+                <small class="field__error" id="code-error" th:if="${error}">
+                    That code wasn't right. Check that the app shows Gamma, wait for a new code and try again.
+                </small>
+            </div>
+        </form>
+        <footer>
+            <a class="button button--secondary" href="/me/security">Cancel</a>
+            <button class="button" form="confirm-totp" data-loading-disable>Turn on</button>
+        </footer>
+    </article>
+</main>

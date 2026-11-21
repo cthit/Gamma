@@ -71,10 +71,14 @@ jobs:
           done
           docker image push --all-tags ghcr.io/${{ github.repository_owner }}/gamma
 
-  e2e-tests:
+  e2e-shard:
     needs: build-and-publish
-    timeout-minutes: 60
+    timeout-minutes: 45
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v7
         timeout-minutes: 20
@@ -101,14 +105,17 @@ jobs:
         timeout-minutes: 20
 
       - name: Check code formatting
+        if: matrix.shard == 1
         run: cd e2e && pnpm run format:check
         timeout-minutes: 20
 
       - name: Typecheck E2E
+        if: matrix.shard == 1
         run: cd e2e && pnpm run typecheck
         timeout-minutes: 20
 
       - name: Lint E2E
+        if: matrix.shard == 1
         run: cd e2e && pnpm run lint
         timeout-minutes: 20
 
@@ -124,17 +131,17 @@ jobs:
           echo "version=sha-${SHA:0:7}" >> $GITHUB_OUTPUT
 
       - name: Run E2E tests
-        run: make test-e2e GAMMA_VERSION=${{ steps.gamma-version.outputs.version }}
-        # Each test boots fresh Postgres, Redis and Gamma containers (~13-20 s per
-        # test depending on the runner), so 60+ tests can exceed 20 minutes.
-        timeout-minutes: 40
+        run: make test-e2e GAMMA_VERSION=${{ steps.gamma-version.outputs.version }} E2E_ARGS="--shard=${{ matrix.shard }}/4"
+        # Keep one worker per runner: Docker interface churn interrupts Chromium on Linux.
+        # Sharding across 4 runners keeps each shard (~45 isolated tests) well under the timeout.
+        timeout-minutes: 35
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7
         timeout-minutes: 20
         if: ${{ failure() }}
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.shard }}
           path: e2e/playwright-report/
           retention-days: 30
 
@@ -143,7 +150,17 @@ jobs:
         timeout-minutes: 20
         if: ${{ failure() }}
         with:
-          name: playwright-test-results
+          name: playwright-test-results-${{ matrix.shard }}
           path: e2e/test-results/
           if-no-files-found: ignore
           retention-days: 7
+
+  e2e-tests:
+    needs: [build-and-publish, e2e-shard]
+    if: always() && needs.build-and-publish.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Verify all E2E shards succeeded
+        if: needs.e2e-shard.result != 'success'
+        run: exit 1

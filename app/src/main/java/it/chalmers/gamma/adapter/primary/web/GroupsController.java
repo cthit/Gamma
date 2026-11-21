@@ -11,13 +11,13 @@ import it.chalmers.gamma.app.post.PostFacade;
 import it.chalmers.gamma.app.supergroup.SuperGroupFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.domain.Name.NameValidator;
+import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
+import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.util.Pair;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -139,9 +139,9 @@ public class GroupsController {
     mv.addObject("groupBannerVersion", this.imageFacade.getGroupBannerVersion(id));
 
     boolean canEditImages = false;
-    if (SecurityContextHolder.getContext().getAuthentication()
-        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthentication) {
+      UUID myUserId = userAuthentication.gammaUser().id().value();
 
       canEditImages =
           group.get().groupMembers().stream()
@@ -553,9 +553,9 @@ public class GroupsController {
   @PutMapping("/groups/{groupId}/my-posts")
   public ModelAndView updateUnofficialPostNames(
       @PathVariable("groupId") UUID groupId, MyMembershipsForm myMembershipsForm) {
-    if (SecurityContextHolder.getContext().getAuthentication()
-        instanceof UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) {
-      UUID myUserId = UUID.fromString(usernamePasswordAuthenticationToken.getName());
+    if (AuthenticationExtractor.getAuthentication()
+        instanceof UserAuthentication userAuthentication) {
+      UUID myUserId = userAuthentication.gammaUser().id().value();
 
       myMembershipsForm.postNames.forEach((postId, newUnofficialPostName) -> {
         groupFacade.changeUnofficialPostName(

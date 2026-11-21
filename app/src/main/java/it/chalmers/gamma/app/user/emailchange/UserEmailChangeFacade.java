@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.Facade;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.Email;
 import it.chalmers.gamma.app.mail.domain.MailService;
+import it.chalmers.gamma.app.signin.domain.RecentSignIn;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.GammaUser;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword;
@@ -15,10 +16,13 @@ import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeRepository.Email
 import it.chalmers.gamma.app.user.emailchange.domain.EmailChangeToken;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
+import it.chalmers.gamma.security.signin.SignInFactors;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,6 +40,7 @@ public class UserEmailChangeFacade extends Facade {
   private final EmailChangeRepository emailChangeRepository;
   private final MailService mailService;
   private final ThrottlingService throttlingService;
+  private final RecentSignIn recentSignIn;
   private final String baseUrl;
 
   public UserEmailChangeFacade(
@@ -44,8 +49,10 @@ public class UserEmailChangeFacade extends Facade {
       EmailChangeRepository emailChangeRepository,
       MailService mailService,
       ThrottlingService throttlingService,
+      RecentSignIn recentSignIn,
       @Value("${application.base-url}") String baseUrl) {
     super(accessGuard);
+    this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
     this.emailChangeRepository = emailChangeRepository;
     this.mailService = mailService;
@@ -54,12 +61,19 @@ public class UserEmailChangeFacade extends Facade {
   }
 
   /** Mails a confirmation link to the new email. The email is not changed yet. */
+  @Transactional
   public void requestEmailChange(String newEmailString, String currentPassword)
-      throws PasswordIncorrectException,
+      throws ConfirmationExpiredException,
+          PasswordIncorrectException,
           EmailUnchangedException,
           EmailAlreadyInUseException,
           TooManyRequestsException {
-    GammaUser me = signedInUser();
+    GammaUser me = lockSignedInUser();
+
+    boolean hasPassword = this.userRepository.hasPassword(me.id());
+    if (!hasPassword && !this.recentSignIn.isRecent()) {
+      throw new ConfirmationExpiredException();
+    }
 
     // Counts every attempt, so a stolen session can't be used to guess the password or to probe
     // which emails are registered.
@@ -69,17 +83,18 @@ public class UserEmailChangeFacade extends Facade {
       throw new TooManyRequestsException();
     }
 
-    if (!isCurrentPassword(me, currentPassword)) {
+    if (hasPassword && !isCurrentPassword(me, currentPassword)) {
       throw new PasswordIncorrectException();
     }
 
     Email newEmail = new Email(newEmailString);
 
-    if (newEmail.value().equalsIgnoreCase(me.extended().email().value())) {
+    if (newEmail.value().equalsIgnoreCase(me.extended().email().value())
+        && !this.userRepository.emailRecoveryRequiresVerification(me.id())) {
       throw new EmailUnchangedException();
     }
 
-    if (this.userRepository.get(newEmail).isPresent()) {
+    if (this.userRepository.get(newEmail).filter(user -> !user.id().equals(me.id())).isPresent()) {
       throw new EmailAlreadyInUseException();
     }
 
@@ -104,10 +119,14 @@ public class UserEmailChangeFacade extends Facade {
   }
 
   /** Changes the email of the signed in user and returns the new email. */
+  @Transactional
   public String confirmEmailChange(String token)
       throws InvalidTokenException, EmailAlreadyInUseException {
-    GammaUser me = signedInUser();
-    Email oldEmail = me.extended().email();
+    GammaUser me = lockSignedInUser();
+    // Read under the lock. Changing the email deletes the pending change (see
+    // V16__EMAIL_CHANGE_REVOKES_LINKS), and setEmail below only applies while the email is still
+    // this one, so a link asked for from an older email can't undo a change made since.
+    Email oldEmail = this.userRepository.get(me.id()).orElseThrow().extended().email();
 
     EmailChange change =
         this.emailChangeRepository
@@ -124,9 +143,13 @@ public class UserEmailChangeFacade extends Facade {
     }
 
     try {
-      this.userRepository.setEmail(me.id(), change.newEmail());
+      this.userRepository.setEmail(me.id(), oldEmail, change.newEmail());
+      this.userRepository.confirmRecoveryEmail(me.id());
     } catch (UserRepository.EmailAlreadyInUseException e) {
       throw new EmailAlreadyInUseException();
+    } catch (UserRepository.EmailChangedException e) {
+      // Someone else, such as an admin, changed the email while this link was being used.
+      throw new InvalidTokenException();
     }
 
     LOGGER.info("User {} confirmed a change of their email", me.id().value());
@@ -146,6 +169,18 @@ public class UserEmailChangeFacade extends Facade {
     }
 
     return this.userRepository.checkPassword(me.id(), password);
+  }
+
+  private GammaUser lockSignedInUser() {
+    GammaUser me = signedInUser();
+    this.userRepository.lockSignInMethods(me.id());
+    if (this.userRepository.isLocked(me.id())
+        || SignInFactors.isRevoked(
+            SecurityContextHolder.getContext().getAuthentication(),
+            this.userRepository.sessionsRevokedAt(me.id()).orElse(null))) {
+      throw new AccessGuard.AccessDeniedException();
+    }
+    return me;
   }
 
   private GammaUser signedInUser() {
@@ -187,6 +222,8 @@ public class UserEmailChangeFacade extends Facade {
     this.mailService.sendSecurityNotification(
         oldEmail.value(), "Your email at the IT division of Chalmers was changed", message);
   }
+
+  public static final class ConfirmationExpiredException extends Exception {}
 
   public static final class PasswordIncorrectException extends Exception {}
 

@@ -11,11 +11,14 @@ import it.chalmers.gamma.app.supergroup.domain.SuperGroupId;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserMembership;
 import it.chalmers.gamma.app.user.domain.UserRepository;
+import it.chalmers.gamma.security.signin.SignInAuthorizationManagers;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authorization.AuthorizationResult;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -32,17 +35,20 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
   private final GammaAuthorizationRepository gammaAuthorizationRepository;
   private final ClientRepository clientRepository;
   private final GroupRepository groupRepository;
+  private final SignInAuthorizationManagers signIn;
   private final UserRepository userRepository;
 
   public GammaAuthorizationService(
       GammaAuthorizationRepository gammaAuthorizationRepository,
       ClientRepository clientRepository,
       GroupRepository groupRepository,
-      UserRepository userRepository) {
+      UserRepository userRepository,
+      SignInAuthorizationManagers signIn) {
     this.gammaAuthorizationRepository = gammaAuthorizationRepository;
     this.clientRepository = clientRepository;
     this.groupRepository = groupRepository;
     this.userRepository = userRepository;
+    this.signIn = signIn;
   }
 
   @Override
@@ -51,8 +57,13 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     UserId userId = UserId.valueOf(authorization.getPrincipalName());
     // Serialize issuance with withdrawal and account deletion. A code exchange that was
     // already in flight cannot recreate a grant after it has been revoked.
-    this.userRepository.lockForUpdate(userId);
-    if (!this.userRepository.isActive(userId)
+    try {
+      this.userRepository.lockSignInMethods(userId);
+    } catch (UserRepository.UserNotFoundException e) {
+      throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_GRANT);
+    }
+    if (!isSignInValid(authorization)
+        || !this.userRepository.isActive(userId)
         || !this.clientRepository.lockForAuthorization(
             ClientUid.valueOf(authorization.getRegisteredClientId()))
         || this.clientRepository
@@ -65,10 +76,9 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
             && this.gammaAuthorizationRepository.findById(authorization.getId()).isEmpty())) {
       throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_GRANT);
     }
-    UsernamePasswordAuthenticationToken authenticationToken =
-        authorization.getAttribute(Principal.class.getName());
+    Authentication authentication = authorization.getAttribute(Principal.class.getName());
 
-    if (authenticationToken != null && authenticationToken.getPrincipal() instanceof User user) {
+    if (authentication != null && authentication.isAuthenticated()) {
       Client client =
           this.clientRepository
               .get(ClientUid.valueOf(authorization.getRegisteredClientId()))
@@ -77,19 +87,19 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
       // If the client has no restrictions, then any user can sign in.
       if (client.restrictions().isPresent()
           && !client.restrictions().get().superGroups().isEmpty()
-          && !userPassesRestriction(client.restrictions().get(), user)) {
+          && !userPassesRestriction(
+              client.restrictions().get(), UserId.valueOf(authentication.getName()))) {
         throw new UserNotAllowedRuntimeException();
       }
     }
 
     OAuth2Authorization authorizationToSave = authorization;
-    if (authenticationToken != null) {
+    if (authentication != null) {
       UsernamePasswordAuthenticationToken sanitizedAuthenticationToken =
-          new UsernamePasswordAuthenticationToken(
-              authenticationToken.getPrincipal(),
-              authenticationToken.getCredentials(),
-              authenticationToken.getAuthorities());
-      sanitizedAuthenticationToken.setDetails(null);
+          UsernamePasswordAuthenticationToken.authenticated(
+              new User(authentication.getName(), "", authentication.getAuthorities()),
+              null,
+              authentication.getAuthorities());
 
       authorizationToSave =
           OAuth2Authorization.from(authorization)
@@ -100,9 +110,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
     gammaAuthorizationRepository.save(authorizationToSave);
   }
 
-  private boolean userPassesRestriction(ClientRestriction restriction, User user) {
-    UserId userId = UserId.valueOf(user.getUsername());
-
+  private boolean userPassesRestriction(ClientRestriction restriction, UserId userId) {
     List<UserMembership> memberships = this.groupRepository.getAllByUser(userId);
     List<SuperGroupId> userSuperGroups =
         memberships.stream()
@@ -128,6 +136,7 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
   @Override
   public OAuth2Authorization findByToken(String token, OAuth2TokenType tokenType) {
     if (tokenType == null) {
+
       return Arrays.stream(GammaAuthorizationToken.Type.values())
           .map(type -> new GammaAuthorizationToken(token, type))
           .map(gammaAuthorizationRepository::findByToken)
@@ -142,6 +151,15 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
         .orElse(null);
   }
 
+  private boolean isSignInValid(OAuth2Authorization authorization) {
+    Authentication authentication = authorization.getAttribute(Principal.class.getName());
+    if (authentication == null) {
+      return false;
+    }
+    AuthorizationResult result = this.signIn.signedInUser().authorize(() -> authentication, null);
+    return result != null && result.isGranted();
+  }
+
   private boolean isApproved(OAuth2Authorization authorization) {
     return this.clientRepository.isApprovedByUser(
         UserId.valueOf(authorization.getPrincipalName()),
@@ -149,7 +167,8 @@ public class GammaAuthorizationService implements OAuth2AuthorizationService {
   }
 
   private boolean isUsable(OAuth2Authorization authorization) {
-    return this.userRepository.isActive(UserId.valueOf(authorization.getPrincipalName()))
+    return isSignInValid(authorization)
+        && this.userRepository.isActive(UserId.valueOf(authorization.getPrincipalName()))
         && this.clientRepository
             .get(ClientUid.valueOf(authorization.getRegisteredClientId()))
             .isPresent()

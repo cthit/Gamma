@@ -11,12 +11,12 @@ test("public password recovery follows the email, replaces the password, and rej
   await page.goto(`${gamma.url}/forgot-password`);
   await page
     .getByLabel("Cid or Email", { exact: true })
-    .fill("mscott@example.org");
+    .fill("dschrute@example.org");
   await page.getByRole("button", { name: /reset|send/i }).click();
   const link = await waitForMailLink(
     env.gotify,
     gamma.url,
-    "mscott@example.org",
+    "dschrute@example.org",
     "/forgot-password/finalize",
   );
   await page.goto(link);
@@ -26,11 +26,17 @@ test("public password recovery follows the email, replaces the password, and rej
     .fill("New-password-1337");
   await page.getByRole("button", { name: "Reset password" }).click();
   await expect(page).toHaveURL(/\/login\?password-reset/);
-  await page.getByLabel("Cid or email", { exact: true }).fill("mscott");
+  await page.getByLabel("Cid or email", { exact: true }).fill("dschrute");
   await page.getByLabel("Password", { exact: true }).fill("password1337");
   await page.getByRole("button", { name: "Login" }).click();
   await expect(page).toHaveURL(/\/login\?error/);
-  await login(page, gamma.url, "mscott", "New-password-1337", "Boss");
+  await login(
+    page,
+    gamma.url,
+    "dschrute",
+    "New-password-1337",
+    "Assistant Manager",
+  );
   await logout(page);
   await page.goto(link);
   await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
@@ -51,5 +57,11 @@ test("public password recovery follows the email, replaces the password, and rej
     },
     maxRedirects: 0,
   });
-  await login(page, gamma.url, "mscott", "New-password-1337", "Boss");
+  await login(
+    page,
+    gamma.url,
+    "dschrute",
+    "New-password-1337",
+    "Assistant Manager",
+  );
 });
