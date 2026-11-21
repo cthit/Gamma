@@ -55,7 +55,7 @@ public class SignInChangeNotifications {
                   """
                   Too many wrong authenticator app codes were entered after signing in to the account %s with its password.
 
-                  If that wasn't you, someone knows your password. Change it, or reset it with "Forgot password" on the sign-in page. Codes from your authenticator app are not accepted for up to a day, or until you change your password. You can still sign in with your recovery key.
+                  If that wasn't you, someone knows your password. Codes from your authenticator app are not accepted for up to a day. Sign in with your recovery key to set up a new password, or, if email recovery is on, reset your password with "Forgot password" on the sign-in page.
 
                   If you need help, contact ita@chalmers.it.
                   """

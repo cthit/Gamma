@@ -103,7 +103,9 @@ test("wrong authenticator codes are limited per user, correct ones don't count, 
     /Someone may know your password/,
   );
   expect(mail).toContain("jhalpert");
-  expect(mail).toContain("Change it, or reset it");
+  expect(mail).toContain(
+    "Sign in with your recovery key to set up a new password",
+  );
 
   // The correct code is refused without being checked, so it stays usable.
   const blocked = await unusedCode(enabled.secret, correct.step);
@@ -112,7 +114,7 @@ test("wrong authenticator codes are limited per user, correct ones don't count, 
   await expect(page).toHaveURL(/\/login\/totp\?too-many-codes/);
   await expect(
     page.getByText(
-      "Too many wrong codes. Try again later or use your recovery key. Resetting your password also lifts this limit.",
+      'Too many wrong codes. Try again later or use your recovery key. Resetting your password with "Forgot password" also lifts this limit, if email recovery is on.',
     ),
   ).toBeVisible();
   expect(await redisCount(env, "throttle:totp:*")).toBe(MAX_WRONG_CODES);
