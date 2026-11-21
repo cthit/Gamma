@@ -58,7 +58,10 @@
         </footer>
     </article>
 
-    <article th:if="${isAdmin and signInMethods != null}" th:fragment="sign-in-methods">
+    <article id="sign-in-methods"
+             th:if="${isAdmin and signInMethods != null}"
+             th:fragment="sign-in-methods"
+             th:attr="data-hx-swap-oob=${signInMethodsOob} ? 'outerHTML:#sign-in-methods' : null">
         <header>
             <h2>How the user signs in</h2>
         </header>

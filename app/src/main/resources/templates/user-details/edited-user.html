@@ -1,2 +1,3 @@
 <div th:replace="~{user-details/page :: userinfo}"></div>
+<th:block th:with="signInMethodsOob=true"><div th:replace="~{user-details/page :: sign-in-methods}"></div></th:block>
 <div th:replace="~{common/alert :: success('User updated')}"></div>

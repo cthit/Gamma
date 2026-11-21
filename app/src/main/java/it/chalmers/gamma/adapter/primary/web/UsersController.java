@@ -323,6 +323,7 @@ public class UsersController {
 
     mv.setViewName("user-details/edited-user");
     addAdminUserInfo(mv, user.get().user());
+    addAdminSignInMethods(mv, userId);
 
     return mv;
   }
@@ -360,8 +361,14 @@ public class UsersController {
 
     ModelAndView mv = new ModelAndView("user-details/lock-changed");
     addAdminUserInfo(mv, user.get());
+    addAdminSignInMethods(mv, userId);
 
     return mv;
+  }
+
+  private void addAdminSignInMethods(ModelAndView mv, UUID userId) {
+    mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(userId));
+    mv.addObject("isMe", isSignedInUser(userId));
   }
 
   @DeleteMapping("/users/{id}")
