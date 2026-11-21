@@ -6,6 +6,7 @@ import it.chalmers.gamma.app.signin.SignInSetupFacade.PasswordsDontMatchExceptio
 import it.chalmers.gamma.app.signin.SignInSetupFacade.SignInSetupDTO;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
 import it.chalmers.gamma.app.validation.FailedValidation;
+import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -147,6 +148,16 @@ public class SignInSetupController {
 
     this.signInSetupSessions.end(request, response);
     return new ModelAndView("redirect:/login?sign-in-ready");
+  }
+
+  @PostMapping(PAGE + "/cancel")
+  public ModelAndView cancel(HttpServletRequest request, HttpServletResponse response) {
+    SignInSetupDTO setup = this.signInSetupFacade.getSetup();
+    boolean unfinishedNewAccount =
+        !setup.done() && setup.reason() == SignInSetupAuthentication.Reason.NEW_ACCOUNT;
+    this.signInSetupSessions.end(request, response);
+    return new ModelAndView(
+        unfinishedNewAccount ? "redirect:/login?account-needs-sign-in" : "redirect:/login?logout");
   }
 
   private static ModelAndView redirect(String path) {

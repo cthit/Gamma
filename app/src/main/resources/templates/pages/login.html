@@ -50,6 +50,10 @@
                     Your account has been created.
                 </p>
 
+                <p class="callout" th:if="${accountNeedsSignIn}">
+                    Your account was created, but you haven't set up how to sign in yet. Use "Forgot password" below to add a passkey or password.
+                </p>
+
                 <p class="callout callout--success" th:if="${passwordReset}">
                     Your password was reset.
                 </p>

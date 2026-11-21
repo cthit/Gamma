@@ -30,6 +30,7 @@ public class LoginController {
       @RequestParam(value = "authorizing", required = false) String authorizing,
       @RequestParam(value = "deleted", required = false) String deleted,
       @RequestParam(value = "account-created", required = false) String accountCreated,
+      @RequestParam(value = "account-needs-sign-in", required = false) String accountNeedsSignIn,
       @RequestParam(value = "password-reset", required = false) String passwordReset,
       @RequestParam(value = "security-changed", required = false) String securityChanged,
       @RequestParam(value = "sign-in-ready", required = false) String signInReady,
@@ -51,6 +52,7 @@ public class LoginController {
     mv.addObject("deleted", deleted != null);
     mv.addObject("throttle", throttle != null);
     mv.addObject("accountCreated", accountCreated != null);
+    mv.addObject("accountNeedsSignIn", accountNeedsSignIn != null);
     mv.addObject("passwordReset", passwordReset != null);
     mv.addObject("securityChanged", securityChanged != null);
     mv.addObject("signInReady", signInReady != null);
