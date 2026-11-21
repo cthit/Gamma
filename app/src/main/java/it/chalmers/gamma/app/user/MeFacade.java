@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.user;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.admin.UsableAdminGuard;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
 import it.chalmers.gamma.app.client.domain.ClientOwnerOfficial;
@@ -55,6 +56,7 @@ public class MeFacade extends Facade {
   private final GammaAuthorizationRepository authorizations;
   private final DataDeletionRecorder dataDeletionRecorder;
   private final DataDeletionRequestRepository dataDeletionRequestRepository;
+  private final UsableAdminGuard usableAdminGuard;
 
   public MeFacade(
       AccessGuard accessGuard,
@@ -66,7 +68,8 @@ public class MeFacade extends Facade {
       ApplicationEventPublisher events,
       GammaAuthorizationRepository authorizations,
       DataDeletionRecorder dataDeletionRecorder,
-      DataDeletionRequestRepository dataDeletionRequestRepository) {
+      DataDeletionRequestRepository dataDeletionRequestRepository,
+      UsableAdminGuard usableAdminGuard) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
     this.events = events;
@@ -77,6 +80,7 @@ public class MeFacade extends Facade {
     this.authorizations = authorizations;
     this.dataDeletionRecorder = dataDeletionRecorder;
     this.dataDeletionRequestRepository = dataDeletionRequestRepository;
+    this.usableAdminGuard = usableAdminGuard;
   }
 
   public List<UserApprovedClientDTO> getSignedInUserApprovals() {
@@ -277,6 +281,7 @@ public class MeFacade extends Facade {
     GammaAuthentication authenticated = AuthenticationExtractor.getAuthentication();
     if (authenticated instanceof UserAuthentication userAuthentication) {
       GammaUser me = userAuthentication.gammaUser();
+      UsableAdminGuard.Check usableAdmin = this.usableAdminGuard.lock();
       // Recovery may finish while this request waits. Refresh and check credentials only
       // after acquiring the same lock used by recovery and credential changes.
       this.userRepository.lockSignInMethods(me.id());
@@ -288,6 +293,7 @@ public class MeFacade extends Facade {
           throw new ClientDataAcknowledgementRequiredException();
         }
         try {
+          usableAdmin.assertUsableAdminRemainsWithout(me.id());
           this.dataDeletionRecorder.recordAccountDeletion(me);
           this.userRepository.delete(me.id());
         } catch (UserRepository.UserNotFoundException e) {

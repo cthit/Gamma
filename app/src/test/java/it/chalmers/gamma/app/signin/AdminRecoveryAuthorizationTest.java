@@ -95,7 +95,8 @@ class AdminRecoveryAuthorizationTest {
         null,
         null,
         null,
-        "https://gamma.example.org");
+        "https://gamma.example.org",
+        null);
   }
 
   private void signIn(boolean admin) {

@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.authentication.AccessGuard.isNotSignedIn;
 import static it.chalmers.gamma.app.authentication.AccessGuard.isSignedIn;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.admin.UsableAdminGuard;
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.signin.domain.Passkey;
@@ -48,6 +49,7 @@ public class SignInMethodsFacade extends Facade {
   private final PasswordResetRepository passwordResetRepository;
   private final EmailChangeRepository emailChangeRepository;
   private final String baseUrl;
+  private final UsableAdminGuard usableAdminGuard;
 
   public SignInMethodsFacade(
       AccessGuard accessGuard,
@@ -60,7 +62,8 @@ public class SignInMethodsFacade extends Facade {
       ApplicationEventPublisher events,
       PasswordResetRepository passwordResetRepository,
       EmailChangeRepository emailChangeRepository,
-      @Value("${application.base-url}") String baseUrl) {
+      @Value("${application.base-url}") String baseUrl,
+      UsableAdminGuard usableAdminGuard) {
     super(accessGuard);
     this.recentSignIn = recentSignIn;
     this.userRepository = userRepository;
@@ -72,6 +75,7 @@ public class SignInMethodsFacade extends Facade {
     this.passwordResetRepository = passwordResetRepository;
     this.emailChangeRepository = emailChangeRepository;
     this.baseUrl = baseUrl;
+    this.usableAdminGuard = usableAdminGuard;
   }
 
   public SignInMethodsDTO getMine() {
@@ -145,6 +149,7 @@ public class SignInMethodsFacade extends Facade {
     this.accessGuard.require(isSignedIn());
 
     UserId me = me().id();
+    UsableAdminGuard.Check usableAdmin = this.usableAdminGuard.lock();
     lockAndRecheck(me);
     List<Passkey> passkeys = this.passkeyRepository.getAll(me);
     if (passkeys.stream().noneMatch(passkey -> passkey.credentialId().equals(credentialId))) {
@@ -157,6 +162,7 @@ public class SignInMethodsFacade extends Facade {
     }
 
     if (this.passkeyRepository.delete(me, credentialId)) {
+      usableAdmin.assertUsableAdminRemains();
       this.userRepository.revokeSessions(me);
       changed(me, "A passkey was removed from your account.");
       LOGGER.info("User {} removed a passkey", me.value());
