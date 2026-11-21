@@ -87,6 +87,8 @@ public class LoginController {
     SignInMethodsFacade.SignInMethodsDTO methods = this.signInMethodsFacade.getMine();
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     boolean signedInWithPassword = hasFactor(authentication, SignInFactors.PASSWORD);
+    boolean signedInWithoutPasskey =
+        signedInWithPassword && !hasFactor(authentication, SignInFactors.PASSKEY);
 
     boolean adminAddingFirstPasskey = methods.isAdmin() && !methods.hasPasskeys();
     boolean passwordRecent = SignInFactors.isRecent(authentication, SignInFactors.PASSWORD);
@@ -120,8 +122,8 @@ public class LoginController {
     mv.addObject(
         "passkeyAdded",
         passkeyAdded != null
-            || (signedInWithPassword && !methods.hasPassword() && methods.hasPasskeys()));
-    mv.addObject("adminNeedsPasskey", methods.isAdmin() && signedInWithPassword);
+            || (signedInWithoutPasskey && !methods.hasPassword() && methods.hasPasskeys()));
+    mv.addObject("adminNeedsPasskey", methods.isAdmin() && signedInWithoutPasskey);
     mv.addObject(
         "adminConfirmsPassword",
         adminAddingFirstPasskey && methods.hasPassword() && !passwordRecent);
