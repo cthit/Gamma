@@ -1,6 +1,7 @@
 package it.chalmers.gamma.adapter.secondary.jpa.user.admin;
 
 import it.chalmers.gamma.app.admin.domain.AdminRepository;
+import it.chalmers.gamma.app.signin.domain.RecoveryKeyRepository;
 import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import jakarta.transaction.Transactional;
@@ -15,10 +16,15 @@ public class AdminEntityRepositoryAdapter implements AdminRepository {
 
   private final UserRepository userRepository;
 
+  private final RecoveryKeyRepository recoveryKeyRepository;
+
   public AdminEntityRepositoryAdapter(
-      AdminEntityJpaRepository repository, UserRepository userRepository) {
+      AdminEntityJpaRepository repository,
+      UserRepository userRepository,
+      RecoveryKeyRepository recoveryKeyRepository) {
     this.userRepository = userRepository;
     this.repository = repository;
+    this.recoveryKeyRepository = recoveryKeyRepository;
   }
 
   @Override
@@ -39,6 +45,8 @@ public class AdminEntityRepositoryAdapter implements AdminRepository {
     } else {
       if (admin) {
         this.repository.save(new AdminEntity(userId.value()));
+        // Admins never use recovery keys; drop any old key so it can't reactivate on demotion.
+        this.recoveryKeyRepository.delete(userId);
       }
     }
   }
