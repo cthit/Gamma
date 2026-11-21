@@ -66,13 +66,14 @@ export async function addPasskey(page: Page, name: string): Promise<void> {
     .fill(name);
   const button = page.getByRole("button", { name: "Add a passkey" });
   const replacesPassword =
-    (await button.getAttribute("data-passkey-confirm")) !== null;
+    (await button.getAttribute("data-passkey-confirm-box")) !== null;
   if (replacesPassword) {
+    await button.click();
     await Promise.all([
       page.waitForURL((url) => url.pathname === "/login/confirm", {
         timeout: 15000,
       }),
-      button.click(),
+      page.getByRole("button", { name: "Continue and add passkey" }).click(),
     ]);
     await signInWithPasskey(page);
   } else {

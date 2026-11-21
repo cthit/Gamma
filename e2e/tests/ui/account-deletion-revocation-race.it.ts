@@ -54,7 +54,6 @@ for (const { method, clearPassword, scenario } of [
     }
     if (method === "passkey") {
       await page.goto(`${gamma.url}/me/security`);
-      page.once("dialog", (dialog) => dialog.accept());
       await addPasskey(page, "Deletion race device");
       await expect(
         page.getByRole("row", { name: /Deletion race device/ }),

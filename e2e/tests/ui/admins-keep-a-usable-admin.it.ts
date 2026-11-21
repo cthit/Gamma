@@ -142,7 +142,6 @@ test("an admin locking the other admin while being demoted by them leaves one ad
     const jim = await other.newPage();
     await login(jim, gamma.url, "jhalpert", "password1337", "Big Tuna");
     await jim.goto(`${gamma.url}/me/security`);
-    jim.once("dialog", (dialog) => dialog.accept());
     await addPasskey(jim, "Jim");
     await expect(jim.getByText("The passkey was added.")).toBeVisible();
 

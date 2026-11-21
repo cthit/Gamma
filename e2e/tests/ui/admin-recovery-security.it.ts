@@ -281,7 +281,6 @@ test("another admin can be demoted, recovered without email, and restored after 
     const user = await context.newPage();
     await login(user, gamma.url, "jhalpert", "password1337", "Big Tuna");
     await user.goto(`${gamma.url}/me/security`);
-    user.once("dialog", (d) => d.accept());
     await addPasskey(user, "Lost admin device");
     await login(
       page,

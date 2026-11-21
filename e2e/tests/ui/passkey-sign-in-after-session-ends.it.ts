@@ -8,7 +8,6 @@ test("the passkey button works again after the session behind an open sign-in pa
 }) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);
-  page.once("dialog", (dialog) => dialog.accept());
   await addPasskey(page, "Phone");
   await expect(page).toHaveURL(/done=passkey-added/, { timeout: 15000 });
   await logout(page);

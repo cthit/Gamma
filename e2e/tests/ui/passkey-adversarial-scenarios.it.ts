@@ -95,7 +95,6 @@ for (const scenario of invalidAssertions) {
   }) => {
     await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
     await page.goto(`${gamma.url}/me/security`);
-    page.once("dialog", (d) => d.accept());
     await addPasskey(page, "Adversarial device");
     await expect(
       page.getByRole("row", { name: /Adversarial device/ }),
@@ -213,7 +212,6 @@ test("a passkey assertion is bound to its browser session and cannot be replayed
 }) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);
-  page.once("dialog", (d) => d.accept());
   await addPasskey(page, "Replay device");
   await expect(page.getByRole("row", { name: /Replay device/ })).toBeVisible();
   await logout(page);

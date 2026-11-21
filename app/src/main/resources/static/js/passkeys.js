@@ -168,11 +168,36 @@
             return;
         }
 
+        var cancelConfirm = evt.target.closest("[data-passkey-confirm-cancel]");
+        if (cancelConfirm) {
+            evt.preventDefault();
+            var boxId = cancelConfirm.dataset.passkeyConfirmCancel;
+            var box = boxId ? document.getElementById(boxId) : null;
+            if (box) box.hidden = true;
+            cancelConfirm.hidden = true;
+            var reg = document.querySelector('[data-passkey-confirm-box="' + boxId + '"]');
+            if (reg && reg.dataset.originalLabel) {
+                reg.textContent = reg.dataset.originalLabel;
+            }
+            return;
+        }
+
         var registerButton = evt.target.closest("[data-passkey-register]");
         if (registerButton) {
             evt.preventDefault();
-            if (registerButton.dataset.passkeyConfirm && !window.confirm(registerButton.dataset.passkeyConfirm)) {
-                return;
+            var confirmBoxId = registerButton.dataset.passkeyConfirmBox;
+            if (confirmBoxId) {
+                var confirmBox = document.getElementById(confirmBoxId);
+                if (confirmBox && confirmBox.hidden) {
+                    confirmBox.hidden = false;
+                    var cancelButton = document.querySelector('[data-passkey-confirm-cancel="' + confirmBoxId + '"]');
+                    if (cancelButton) cancelButton.hidden = false;
+                    if (!registerButton.dataset.originalLabel) {
+                        registerButton.dataset.originalLabel = registerButton.textContent.trim();
+                    }
+                    registerButton.textContent = registerButton.dataset.confirmLabel || "Continue and add passkey";
+                    return;
+                }
             }
             run(registerButton, async function () {
                 var input = document.getElementById(registerButton.dataset.labelInput);

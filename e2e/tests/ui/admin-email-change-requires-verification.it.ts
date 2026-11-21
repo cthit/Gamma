@@ -35,7 +35,6 @@ test("an admin changing a user's email turns email recovery off until the user v
     const user = await userContext.newPage();
     await login(user, gamma.url, "jhalpert", "password1337", "Big Tuna");
     await user.goto(`${gamma.url}/me/security`);
-    user.once("dialog", (dialog) => dialog.accept());
     await addPasskey(user, "Tuna phone");
     await expect(user.getByRole("row", { name: /Tuna phone/ })).toBeVisible();
 

@@ -32,7 +32,6 @@ test("a cloned passkey whose signature counter went back can't sign in", async (
 }) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);
-  page.once("dialog", (d) => d.accept());
   await addPasskey(page, "Original device");
   await expect(
     page.getByRole("row", { name: /Original device/ }),

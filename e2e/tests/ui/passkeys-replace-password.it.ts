@@ -38,7 +38,6 @@ test("adding a passkey replaces the password and authenticator app, and a recove
       "Adding a passkey removes your password and authenticator app.",
     ),
   ).toBeVisible();
-  page.once("dialog", (dialog) => dialog.accept());
   await addPasskey(page, "Laptop");
   await expect(
     page.getByText("The passkey was added. You sign in with passkeys only."),

@@ -56,10 +56,20 @@
             <input class="input" id="passkey-label" type="text" maxlength="60" placeholder="My phone">
         </div>
         <p class="field__error" id="passkey-error" role="alert" hidden></p>
+        <p class="callout callout--warning" id="passkey-confirm" role="alert" th:if="${methods.hasPassword()}" hidden>
+            Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.
+            You will sign in with passkeys only.
+        </p>
         <footer>
+            <button class="button button--secondary" type="button"
+                    th:if="${methods.hasPassword()}"
+                    data-passkey-confirm-cancel="passkey-confirm"
+                    hidden>
+                Cancel
+            </button>
             <button class="button" type="button"
                     data-passkey-register
-                    th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token},data-passkey-confirm=${methods.hasPassword() ? (methods.totpEnabled() ? 'Adding a passkey removes your password and authenticator app. You will sign in with passkeys only. Continue?' : 'Adding a passkey removes your password. You will sign in with passkeys only. Continue?') : null}"
+                    th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token},data-passkey-confirm-box=${methods.hasPassword() ? 'passkey-confirm' : null}"
                     data-label-input="passkey-label"
                     data-passkey-error="passkey-error" data-success="/me/security?done=passkey-added">
                 Add a passkey

@@ -23,7 +23,6 @@ async function startTotpSetup(page: Page, url: string): Promise<string> {
 
 async function replacePasswordWithPasskey(page: Page, url: string) {
   await page.goto(`${url}/me/security`);
-  page.once("dialog", (dialog) => dialog.accept());
   await addPasskey(page, "Laptop");
   await expect(
     page.getByText("The passkey was added. You sign in with passkeys only."),

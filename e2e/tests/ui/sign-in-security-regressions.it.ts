@@ -71,7 +71,6 @@ test("email passkey recovery revokes old credentials before registering a replac
 }) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);
-  page.once("dialog", (d) => d.accept());
   await addPasskey(page, "Old device");
   await expect(page.getByRole("row", { name: /Old device/ })).toBeVisible();
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
@@ -277,7 +276,6 @@ test("removing a passkey revokes sessions and prevents the removed device enroll
 }) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);
-  page.once("dialog", (d) => d.accept());
   await addPasskey(page, "Lost laptop");
   await expect(
     page.getByText("The passkey was added. You sign in with passkeys only."),
@@ -335,7 +333,6 @@ test("email recovery removes old passkeys and revokes their sessions", async ({
 }) => {
   await login(page, gamma.url, "jhalpert", "password1337", "Big Tuna");
   await page.goto(`${gamma.url}/me/security`);
-  page.once("dialog", (d) => d.accept());
   await addPasskey(page, "Compromised laptop");
   await expect(
     page.getByRole("row", { name: /Compromised laptop/ }),
