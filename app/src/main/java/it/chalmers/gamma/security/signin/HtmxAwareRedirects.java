@@ -36,11 +36,19 @@ public final class HtmxAwareRedirects {
   }
 
   public static HttpSessionRequestCache requestCache() {
-    HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-    requestCache.setMatchingRequestParameterName(null);
     RequestMatcher pageLoads =
         request -> "GET".equals(request.getMethod()) && (!isHtmx(request) || isBoosted(request));
-    requestCache.setRequestMatcher(pageLoads);
+    HttpSessionRequestCache requestCache =
+        new HttpSessionRequestCache() {
+          @Override
+          public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
+            // The saved headers are replayed, so a saved boosted request would get a fragment.
+            if (pageLoads.matches(request)) {
+              super.saveRequest(new WithoutHtmxHeaders(request), response);
+            }
+          }
+        };
+    requestCache.setMatchingRequestParameterName(null);
     return requestCache;
   }
 
@@ -69,7 +77,36 @@ public final class HtmxAwareRedirects {
     requestCache.saveRequest(new PageLoad(request, uri), response);
   }
 
-  private static final class PageLoad extends HttpServletRequestWrapper {
+  private static class WithoutHtmxHeaders extends HttpServletRequestWrapper {
+
+    private WithoutHtmxHeaders(HttpServletRequest request) {
+      super(request);
+    }
+
+    private static boolean isHtmxHeader(String name) {
+      return name.regionMatches(true, 0, "HX-", 0, 3);
+    }
+
+    @Override
+    public String getHeader(String name) {
+      return isHtmxHeader(name) ? null : super.getHeader(name);
+    }
+
+    @Override
+    public Enumeration<String> getHeaders(String name) {
+      return isHtmxHeader(name) ? Collections.emptyEnumeration() : super.getHeaders(name);
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+      return Collections.enumeration(
+          Collections.list(super.getHeaderNames()).stream()
+              .filter(name -> !isHtmxHeader(name))
+              .toList());
+    }
+  }
+
+  private static final class PageLoad extends WithoutHtmxHeaders {
 
     private final URI uri;
 
@@ -114,16 +151,6 @@ public final class HtmxAwareRedirects {
       }
       url.append(getRequestURI());
       return url;
-    }
-
-    @Override
-    public String getHeader(String name) {
-      return name.startsWith("HX-") ? null : super.getHeader(name);
-    }
-
-    @Override
-    public Enumeration<String> getHeaders(String name) {
-      return name.startsWith("HX-") ? Collections.emptyEnumeration() : super.getHeaders(name);
     }
 
     @Override

@@ -19,6 +19,7 @@ group = "it.chalmers"
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter"
+    testImplementation "org.springframework:spring-test"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
     annotationProcessor(
             // Used to generate Record Builder classes
