@@ -178,19 +178,7 @@
                 var input = document.getElementById(registerButton.dataset.labelInput);
                 var label = input && input.value.trim() ? input.value.trim() : "Passkey";
                 await register(registerButton, label);
-                if (registerButton.hasAttribute("data-then-sign-in")) {
-                    var redirectUrl;
-                    try {
-                        redirectUrl = await signIn(registerButton);
-                    } catch (err) {
-                        console.error(err);
-                        window.location.reload();
-                        return;
-                    }
-                    window.location.href = registerButton.dataset.success || redirectUrl || "/";
-                } else {
-                    window.location.href = registerButton.dataset.success || window.location.href;
-                }
+                window.location.href = registerButton.dataset.success || window.location.href;
             });
         }
     });
@@ -204,4 +192,10 @@
     }
     document.addEventListener("DOMContentLoaded", markUnsupported);
     document.addEventListener("htmx:after:swap", markUnsupported);
+    window.addEventListener("pageshow", function (evt) {
+        if (!evt.persisted || !window.PublicKeyCredential) return;
+        document.querySelectorAll("[data-passkey-sign-in], [data-passkey-register]").forEach(function (button) {
+            button.disabled = false;
+        });
+    });
 })();

@@ -77,6 +77,7 @@ public class LoginController {
   public ModelAndView getConfirm(
       @RequestParam(value = "error", required = false) String error,
       @RequestParam(value = "throttle", required = false) String throttle,
+      @RequestParam(value = "passkey-added", required = false) String passkeyAdded,
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
       HttpServletResponse response) {
     ModelAndView mv = page("pages/login-confirm", htmxRequest, response);
@@ -114,6 +115,10 @@ public class LoginController {
     mv.addObject("cid", cid);
     mv.addObject("error", error != null);
     mv.addObject("throttle", throttle != null);
+    mv.addObject(
+        "passkeyAdded",
+        passkeyAdded != null
+            || (signedInWithPassword && !methods.hasPassword() && methods.hasPasskeys()));
     mv.addObject("adminNeedsPasskey", methods.isAdmin() && signedInWithPassword);
     mv.addObject(
         "adminConfirmsPassword",

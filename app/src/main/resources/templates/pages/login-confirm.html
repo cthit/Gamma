@@ -24,7 +24,7 @@
             </div>
             <button class="button button--block" type="button"
                     data-passkey-register th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
-                    data-then-sign-in
+                    data-success="/login/confirm?passkey-added"
                     data-label-input="passkey-label" data-passkey-error="passkey-error">
                 Add a passkey
             </button>
@@ -32,8 +32,11 @@
         </th:block>
 
         <th:block th:if="${methods.hasPasskeys()}">
-            <h2 th:text="${adminNeedsPasskey} ? 'Admins sign in with a passkey' : 'Confirm that it is you'"></h2>
-            <p th:if="${!adminNeedsPasskey}">Sign in again to continue.</p>
+            <h2 th:text="${passkeyAdded} ? 'Sign in with your new passkey' : (${adminNeedsPasskey} ? 'Admins sign in with a passkey' : 'Confirm that it is you')"></h2>
+            <p class="callout callout--success" role="status" th:if="${passkeyAdded}">
+                Your passkey was added and your password was removed. Sign in with your passkey to continue.
+            </p>
+            <p th:if="${!passkeyAdded and !adminNeedsPasskey}">Sign in again to continue.</p>
             <button class="button button--block" type="button"
                     data-passkey-sign-in th:attr="data-csrf-header=${_csrf.headerName},data-csrf-token=${_csrf.token}"
                     data-passkey-error="passkey-error">

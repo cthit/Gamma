@@ -64,7 +64,20 @@ export async function addPasskey(page: Page, name: string): Promise<void> {
   await page
     .getByLabel(/Name of the (new )?passkey/, { exact: true })
     .fill(name);
-  await page.getByRole("button", { name: "Add a passkey" }).click();
+  const button = page.getByRole("button", { name: "Add a passkey" });
+  const replacesPassword =
+    (await button.getAttribute("data-passkey-confirm")) !== null;
+  if (replacesPassword) {
+    await Promise.all([
+      page.waitForURL((url) => url.pathname === "/login/confirm", {
+        timeout: 15000,
+      }),
+      button.click(),
+    ]);
+    await signInWithPasskey(page);
+  } else {
+    await button.click();
+  }
 }
 
 async function credentialsOf(cdp: CDPSession, authenticatorId: string) {
@@ -134,12 +147,11 @@ export async function finishAdminSignIn(
   });
   if (await addPasskeyHeading.isVisible()) {
     await page.getByLabel("Name of the passkey", { exact: true }).fill("E2E");
-    await Promise.all([
-      page.waitForURL((url) => url.pathname !== "/login/confirm", {
-        timeout: 15000,
-      }),
-      page.getByRole("button", { name: "Add a passkey" }).click(),
-    ]);
+    await page.getByRole("button", { name: "Add a passkey" }).click();
+    await expect(
+      page.getByRole("button", { name: "Sign in with a passkey" }),
+    ).toBeVisible({ timeout: 15000 });
+    await signInWithPasskey(page);
     if (baseUrl && username) {
       await rememberPasskeys(page, baseUrl, username);
     }
