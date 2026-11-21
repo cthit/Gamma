@@ -95,6 +95,7 @@ class AdminRecoveryAuthorizationTest {
         null,
         null,
         null,
+        null,
         "https://gamma.example.org",
         null);
   }

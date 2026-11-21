@@ -97,7 +97,9 @@ class TotpAvailabilityTest {
         null,
         null,
         null,
-        "https://gamma.example.org");
+        null,
+        "https://gamma.example.org",
+        null);
   }
 
   private void signIn(boolean admin) {

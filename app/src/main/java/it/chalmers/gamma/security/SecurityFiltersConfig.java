@@ -11,6 +11,7 @@ import it.chalmers.gamma.app.client.domain.ClientRepository;
 import it.chalmers.gamma.app.oauth2.ClaimsMapper;
 import it.chalmers.gamma.app.oauth2.UserInfoMapper;
 import it.chalmers.gamma.app.signin.RecoveryKeyUse;
+import it.chalmers.gamma.app.signin.TotpCodeLimit;
 import it.chalmers.gamma.app.signin.domain.TotpRepository;
 import it.chalmers.gamma.app.throttling.ThrottlingService;
 import it.chalmers.gamma.app.user.domain.UserId;
@@ -27,6 +28,7 @@ import it.chalmers.gamma.security.signin.RecoveryKeyAuthenticationProvider;
 import it.chalmers.gamma.security.signin.SignInAccessDeniedHandler;
 import it.chalmers.gamma.security.signin.SignInAuthorizationManagers;
 import it.chalmers.gamma.security.signin.SignInFactors;
+import it.chalmers.gamma.security.signin.SignInRequirements;
 import it.chalmers.gamma.security.signin.SignInSessionStrategy;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import it.chalmers.gamma.security.signin.SignInStepEntryPoint;
@@ -206,6 +208,8 @@ public class SecurityFiltersConfig {
       TotpRepository totpRepository,
       RecoveryKeyUse recoveryKeyUse,
       ThrottlingService throttlingService,
+      TotpCodeLimit totpCodeLimit,
+      SignInRequirements signInRequirements,
       SignInAuthorizationManagers signIn,
       PublicKeyCredentialUserEntityRepository passkeyUsers,
       WebAuthnRelyingPartyOperations relyingPartyOperations)
@@ -228,9 +232,9 @@ public class SecurityFiltersConfig {
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
             new TotpAuthenticationFilter(
-                new ProviderManager(
-                    new TotpAuthenticationProvider(totpRepository, throttlingService)),
-                requestCache),
+                new ProviderManager(new TotpAuthenticationProvider(totpRepository, totpCodeLimit)),
+                requestCache,
+                signInRequirements),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(
             new RecoveryKeyAuthenticationFilter(

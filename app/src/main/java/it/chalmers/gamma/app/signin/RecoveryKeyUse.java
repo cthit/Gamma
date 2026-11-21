@@ -22,6 +22,7 @@ public class RecoveryKeyUse {
   private final RecoveryKeyRepository recoveryKeyRepository;
   private final TotpRepository totpRepository;
   private final PasskeyRepository passkeyRepository;
+  private final TotpCodeLimit totpCodeLimit;
   private final ApplicationEventPublisher events;
 
   public RecoveryKeyUse(
@@ -30,7 +31,9 @@ public class RecoveryKeyUse {
       RecoveryKeyRepository recoveryKeyRepository,
       TotpRepository totpRepository,
       PasskeyRepository passkeyRepository,
+      TotpCodeLimit totpCodeLimit,
       ApplicationEventPublisher events) {
+    this.totpCodeLimit = totpCodeLimit;
     this.userRepository = userRepository;
     this.adminRepository = adminRepository;
     this.recoveryKeyRepository = recoveryKeyRepository;
@@ -54,6 +57,7 @@ public class RecoveryKeyUse {
     }
 
     this.totpRepository.delete(userId);
+    this.totpCodeLimit.reset(userId);
     this.passkeyRepository.deleteAll(userId);
     if (this.userRepository.hasPassword(userId)) {
       this.userRepository.removePassword(userId);
