@@ -61,6 +61,38 @@ class HtmxAwareRedirectsTest {
     assertNull(cache.getRequest(request, this.response));
   }
 
+  @Test
+  void theCurrentPageOfABoostedFormSubmitIsSavedWithoutHtmxHeaders() {
+    RequestCache cache = HtmxAwareRedirects.requestCache();
+    MockHttpServletRequest request = htmx("POST", "/me/security/totp");
+    request.addHeader("hx-boosted", "true");
+    request.addHeader("hx-current-url", "https://gamma.test/me/security/totp");
+
+    cache.saveRequest(request, this.response);
+    assertNull(cache.getRequest(request, this.response));
+
+    HtmxAwareRedirects.saveCurrentPageOfHtmxRequest(request, this.response, cache);
+
+    SavedRequest saved = cache.getRequest(request, this.response);
+    assertEquals("https://gamma.test/me/security/totp", saved.getRedirectUrl());
+    assertEquals("GET", saved.getMethod());
+    assertWithoutHtmxHeaders(saved);
+  }
+
+  @Test
+  void aBoostedPageLoadKeepsItsTargetUrlInsteadOfCurrentUrl() {
+    RequestCache cache = HtmxAwareRedirects.requestCache();
+    MockHttpServletRequest request = htmx("GET", "/my-clients");
+    request.addHeader("hx-boosted", "true");
+    request.addHeader("hx-current-url", "https://gamma.test/");
+
+    cache.saveRequest(request, this.response);
+    HtmxAwareRedirects.saveCurrentPageOfHtmxRequest(request, this.response, cache);
+
+    assertEquals(
+        "https://gamma.test/my-clients", cache.getRequest(request, this.response).getRedirectUrl());
+  }
+
   private MockHttpServletRequest page(String path) {
     MockHttpServletRequest request = new MockHttpServletRequest("GET", path);
     request.setScheme("https");

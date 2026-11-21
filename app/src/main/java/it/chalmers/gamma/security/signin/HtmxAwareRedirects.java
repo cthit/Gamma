@@ -54,7 +54,9 @@ public final class HtmxAwareRedirects {
 
   public static void saveCurrentPageOfHtmxRequest(
       HttpServletRequest request, HttpServletResponse response, RequestCache requestCache) {
-    if (!isHtmx(request) || isBoosted(request)) {
+    // Boosted GETs are already saved as their target URL by requestCache(). Boosted forms
+    // (POST/PUT/DELETE) are not, so save their current page just like other htmx requests.
+    if (!isHtmx(request) || (isBoosted(request) && "GET".equals(request.getMethod()))) {
       return;
     }
 
