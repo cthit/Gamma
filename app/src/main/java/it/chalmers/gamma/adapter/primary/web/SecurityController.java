@@ -4,7 +4,10 @@ import it.chalmers.gamma.adapter.primary.web.PendingRecoveryKey.Purpose;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.LastSignInMethodException;
 import it.chalmers.gamma.app.signin.SignInMethodsFacade.RecoveryKeyRequiredException;
+import it.chalmers.gamma.app.signin.SignInMethodsFacade.RecoveryKeyUnavailableException;
+import it.chalmers.gamma.app.signin.SignInMethodsFacade.TotpUnavailableException;
 import it.chalmers.gamma.app.signin.TotpCodes;
+import it.chalmers.gamma.app.signin.domain.TotpSecret;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import it.chalmers.gamma.security.signin.CurrentSignIn;
@@ -49,6 +52,12 @@ public class SecurityController {
               "last-passkey",
               "You can't remove your only passkey, since you would have no way to sign in."),
           Map.entry("no-passkey", "Add a passkey before removing your password."),
+          Map.entry(
+              "totp-unavailable",
+              "An authenticator app is only used together with a password and not by admins, so it wasn't set up."),
+          Map.entry(
+              "recovery-key-unavailable",
+              "Admins sign in with passkeys only and don't use a recovery key."),
           Map.entry(
               "recovery-email-unverified",
               "Verify a current email address from your profile before turning email recovery on."));
@@ -110,7 +119,13 @@ public class SecurityController {
 
   @PostMapping(PAGE + "/totp/start")
   public ModelAndView startTotp(HttpSession session) {
-    PendingTotp.save(session, new PendingTotp(this.signInMethodsFacade.startTotpSetup(), -1));
+    TotpSecret secret;
+    try {
+      secret = this.signInMethodsFacade.startTotpSetup();
+    } catch (TotpUnavailableException e) {
+      return totpUnavailable(session);
+    }
+    PendingTotp.save(session, new PendingTotp(secret, -1));
     PendingRecoveryKey.clear(session);
     return new ModelAndView("redirect:" + PAGE + "/totp");
   }
@@ -123,6 +138,9 @@ public class SecurityController {
     Optional<PendingTotp> pending = PendingTotp.get(session);
     if (pending.isEmpty()) {
       return redirect("");
+    }
+    if (!this.signInMethodsFacade.canUseTotp()) {
+      return totpUnavailable(session);
     }
 
     String cid = "";
@@ -150,6 +168,9 @@ public class SecurityController {
     if (pending.isEmpty()) {
       return redirect("");
     }
+    if (!this.signInMethodsFacade.canUseTotp()) {
+      return totpUnavailable(session);
+    }
 
     OptionalLong timeStep = this.signInMethodsFacade.checkTotpCode(pending.get().secret(), code);
     if (timeStep.isEmpty()) {
@@ -174,12 +195,18 @@ public class SecurityController {
 
   @PostMapping(PAGE + "/recovery-key")
   public ModelAndView newRecoveryKey(HttpSession session) {
+    if (!this.signInMethodsFacade.canUseRecoveryKey()) {
+      return unavailable(session, Purpose.REPLACE);
+    }
     PendingRecoveryKey.start(session, Purpose.REPLACE);
     return new ModelAndView("redirect:" + PAGE + "/recovery-key");
   }
 
   @PostMapping(PAGE + "/email-recovery/disable")
   public ModelAndView disableEmailRecovery(HttpSession session) {
+    if (!this.signInMethodsFacade.canUseRecoveryKey()) {
+      return unavailable(session, Purpose.DISABLE_EMAIL_RECOVERY);
+    }
     PendingRecoveryKey.start(session, Purpose.DISABLE_EMAIL_RECOVERY);
     return new ModelAndView("redirect:" + PAGE + "/recovery-key");
   }
@@ -202,6 +229,9 @@ public class SecurityController {
     if (pending.isEmpty()) {
       return redirect("");
     }
+    if (!allowed(pending.get().purpose())) {
+      return unavailable(session, pending.get().purpose());
+    }
 
     ModelAndView mv = page("pages/recovery-key", htmxRequest);
     mv.addObject("recoveryKey", pending.get().key().formatted());
@@ -220,6 +250,9 @@ public class SecurityController {
     Optional<PendingRecoveryKey> pending = PendingRecoveryKey.get(session);
     if (pending.isEmpty()) {
       return redirect("");
+    }
+    if (!allowed(pending.get().purpose())) {
+      return unavailable(session, pending.get().purpose());
     }
 
     ModelAndView mv = page("pages/recovery-key-confirm", htmxRequest);
@@ -241,6 +274,9 @@ public class SecurityController {
     if (pending.isEmpty()) {
       return redirect("");
     }
+    if (!allowed(pending.get().purpose())) {
+      return unavailable(session, pending.get().purpose());
+    }
 
     if (!pending.get().matches(typedKey)) {
       return new ModelAndView("redirect:" + PAGE + "/recovery-key/confirm?error");
@@ -251,11 +287,19 @@ public class SecurityController {
 
     return switch (key.purpose()) {
       case REPLACE -> {
-        this.signInMethodsFacade.replaceRecoveryKey(key.key());
+        try {
+          this.signInMethodsFacade.replaceRecoveryKey(key.key());
+        } catch (RecoveryKeyUnavailableException e) {
+          yield unavailable(session, key.purpose());
+        }
         yield redirect("?done=recovery-key-replaced");
       }
       case DISABLE_EMAIL_RECOVERY -> {
-        this.signInMethodsFacade.disableEmailRecovery(key.key());
+        try {
+          this.signInMethodsFacade.disableEmailRecovery(key.key());
+        } catch (RecoveryKeyUnavailableException e) {
+          yield unavailable(session, key.purpose());
+        }
         yield redirect("?done=email-recovery-disabled");
       }
       case ENABLE_TOTP -> {
@@ -293,6 +337,8 @@ public class SecurityController {
       PendingTotp.save(session, totp);
       PendingRecoveryKey.start(session, Purpose.ENABLE_TOTP);
       return new ModelAndView("redirect:" + PAGE + "/recovery-key");
+    } catch (TotpUnavailableException e) {
+      return totpUnavailable(session);
     }
     PendingTotp.clear(session);
 
@@ -302,6 +348,34 @@ public class SecurityController {
 
     this.currentSignIn.addFactor(request, response, SignInFactors.TOTP, verifiedAt);
     return redirect("?done=totp-enabled");
+  }
+
+  private boolean allowed(Purpose purpose) {
+    return switch (purpose) {
+      case REPLACE, DISABLE_EMAIL_RECOVERY -> this.signInMethodsFacade.canUseRecoveryKey();
+      case ENABLE_TOTP -> this.signInMethodsFacade.canUseTotp();
+      case SIGN_IN_SETUP -> true;
+    };
+  }
+
+  // Sign-in methods can change in another tab while a setup is pending, so the stale setup is
+  // dropped.
+  private static ModelAndView unavailable(HttpSession session, Purpose purpose) {
+    if (purpose == Purpose.ENABLE_TOTP) {
+      return totpUnavailable(session);
+    }
+    PendingRecoveryKey.clear(session);
+    return redirect("?error=recovery-key-unavailable");
+  }
+
+  private static ModelAndView totpUnavailable(HttpSession session) {
+    PendingTotp.clear(session);
+    if (PendingRecoveryKey.get(session)
+        .filter(pending -> pending.purpose() == Purpose.ENABLE_TOTP)
+        .isPresent()) {
+      PendingRecoveryKey.clear(session);
+    }
+    return redirect("?error=totp-unavailable");
   }
 
   private static final ZoneId ZONE = ZoneId.of("Europe/Stockholm");
