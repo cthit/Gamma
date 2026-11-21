@@ -57,8 +57,7 @@
         </div>
         <p class="field__error" id="passkey-error" role="alert" hidden></p>
         <p class="callout callout--warning" id="passkey-confirm" role="alert" th:if="${methods.hasPassword()}" hidden>
-            Adding a passkey removes your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block>.
-            You will sign in with passkeys only.
+            Your password<th:block th:if="${methods.totpEnabled()}"> and authenticator app</th:block> will be removed and you will sign in with passkeys only.
         </p>
         <footer>
             <button class="button button--secondary" type="button"

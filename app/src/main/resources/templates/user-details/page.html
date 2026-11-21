@@ -107,7 +107,7 @@
             Give the link directly to them through a trusted channel. They do not need access to their old email.
             Email recovery stays off until they verify a current address.
         </p>
-        <p th:if="${!isMe and locked and !adminRecoveryUserLocked}">
+        <p th:if="${!isMe and locked and adminRecoveryUserLocked != true}">
             Unlock this user before resetting how they sign in.
         </p>
         <footer th:if="${!isMe and !locked}">
