@@ -11,10 +11,10 @@ ifdef GAMMA_VERSION
 	docker pull ghcr.io/cthit/gamma:$(GAMMA_VERSION)
 	docker image tag ghcr.io/cthit/gamma:$(GAMMA_VERSION) gamma-app:test
 	@echo "Running e2e tests with Gamma version $(GAMMA_VERSION)..."
-	cd e2e && pnpm test
+	cd e2e && pnpm exec playwright test $(E2E_ARGS)
 else
 	@echo "Running e2e tests..."
-	cd e2e && pnpm test
+	cd e2e && pnpm exec playwright test $(E2E_ARGS)
 endif
 
 e2e:
