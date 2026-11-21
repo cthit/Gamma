@@ -387,11 +387,19 @@ public class UsersController {
       mv.addObject("signInReset", true);
     } catch (SignInMethodsFacade.AdminRecoveryRequiresDemotionException e) {
       mv.addObject("adminRecoveryRequiresDemotion", true);
+    } catch (SignInMethodsFacade.UserLockedException e) {
+      mv.addObject("adminRecoveryUserLocked", true);
     }
 
     mv.setViewName("user-details/page :: sign-in-methods");
     mv.addObject("userId", userId);
     mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(userId));
+    mv.addObject(
+        "locked",
+        this.userFacade
+            .getExtendedAsAdmin(userId)
+            .map(UserFacade.UserExtendedDTO::locked)
+            .orElse(false));
     mv.addObject("isMe", false);
 
     return mv;

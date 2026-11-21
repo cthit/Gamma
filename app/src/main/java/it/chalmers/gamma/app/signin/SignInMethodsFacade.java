@@ -242,7 +242,8 @@ public class SignInMethodsFacade extends Facade {
   }
 
   @Transactional
-  public String resetSignInMethods(UUID userIdValue) throws AdminRecoveryRequiresDemotionException {
+  public String resetSignInMethods(UUID userIdValue)
+      throws AdminRecoveryRequiresDemotionException, UserLockedException {
     this.accessGuard.require(isAdmin());
     UserId userId = new UserId(userIdValue);
     if (userId.equals(me().id())) {
@@ -256,7 +257,7 @@ public class SignInMethodsFacade extends Facade {
       throw new AdminRecoveryRequiresDemotionException();
     }
     if (this.userRepository.isLocked(userId)) {
-      throw new AccessGuard.AccessDeniedException();
+      throw new UserLockedException();
     }
 
     resetForAdminRecovery(userId);
@@ -395,6 +396,8 @@ public class SignInMethodsFacade extends Facade {
   public static final class LastSignInMethodException extends Exception {}
 
   public static final class AdminRecoveryRequiresDemotionException extends Exception {}
+
+  public static final class UserLockedException extends Exception {}
 
   public static final class RecoveryEmailUnverifiedException extends Exception {}
 

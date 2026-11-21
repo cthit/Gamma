@@ -68,6 +68,9 @@
         <p th:if="${adminRecoveryRequiresDemotion}" class="callout callout--danger" role="alert">
             Remove this user's admin rights first, recover their account, and give the rights back once they have set up a new passkey.
         </p>
+        <p th:if="${adminRecoveryUserLocked}" class="callout callout--danger" role="alert">
+            Unlock this user before resetting how they sign in.
+        </p>
         <th:block th:if="${adminRecoveryLink != null}">
             <p>Single-use recovery link, valid for 15 minutes. Anyone with this link can recover this account.</p>
             <p><code th:text="${adminRecoveryLink}"></code></p>
@@ -101,7 +104,10 @@
             Give the link directly to them through a trusted channel. They do not need access to their old email.
             Email recovery stays off until they verify a current address.
         </p>
-        <footer th:if="${!isMe}">
+        <p th:if="${!isMe and locked and !adminRecoveryUserLocked}">
+            Unlock this user before resetting how they sign in.
+        </p>
+        <footer th:if="${!isMe and !locked}">
             <form th:data-hx-post="|/users/${userId}/reset-sign-in|" data-hx-target="closest article" data-hx-swap="outerHTML"
                   data-hx-confirm="Revoke this user's credentials and sessions and generate a recovery link?">
                 <div th:replace="~{common/form-csrf}"></div>

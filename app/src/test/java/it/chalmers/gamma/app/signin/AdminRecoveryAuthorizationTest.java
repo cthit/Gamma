@@ -42,6 +42,14 @@ class AdminRecoveryAuthorizationTest {
   }
 
   @Test
+  void aLockedUserMustBeUnlockedBeforeRecovery() {
+    signIn(true);
+    SignInMethodsFacade facade = facade(true, false, true);
+    assertThrows(
+        SignInMethodsFacade.UserLockedException.class, () -> facade.resetSignInMethods(targetId));
+  }
+
+  @Test
   void emailRecoveryCannotBeEnabledBeforeVerifyingAnAddress() {
     signIn(false);
     SignInMethodsFacade facade = facade(true, false);
@@ -50,6 +58,10 @@ class AdminRecoveryAuthorizationTest {
   }
 
   private SignInMethodsFacade facade(boolean recent, boolean targetAdmin) {
+    return facade(recent, targetAdmin, false);
+  }
+
+  private SignInMethodsFacade facade(boolean recent, boolean targetAdmin, boolean targetLocked) {
     UserRepository users =
         (UserRepository)
             Proxy.newProxyInstance(
@@ -58,6 +70,7 @@ class AdminRecoveryAuthorizationTest {
                 (proxy, method, args) ->
                     switch (method.getName()) {
                       case "lockSignInMethods" -> null;
+                      case "isLocked" -> targetLocked;
                       case "emailRecoveryRequiresVerification" -> true;
                       default ->
                           throw new AssertionError(

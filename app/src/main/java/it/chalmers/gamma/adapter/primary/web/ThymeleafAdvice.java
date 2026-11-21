@@ -87,11 +87,14 @@ public class ThymeleafAdvice {
   }
 
   @ExceptionHandler(AccessGuard.AccessDeniedException.class)
-  public ModelAndView handleAccessDeniedException(HttpServletRequest request) {
+  public ModelAndView handleAccessDeniedException(
+      HttpServletRequest request, HttpServletResponse response) {
     boolean htmxRequest = "true".equals(request.getHeader("HX-Request"));
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
+      response.addHeader("HX-Retarget", "body");
+      response.addHeader("HX-Reswap", "innerHTML");
       mv.setViewName("pages/unauthorized");
     } else {
       mv.setViewName("index");
