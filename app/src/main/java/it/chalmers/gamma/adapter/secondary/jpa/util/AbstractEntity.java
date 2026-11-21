@@ -15,7 +15,9 @@ public abstract class AbstractEntity<ID> implements Persistable<ID> {
 
   @PrePersist
   protected void onCreate() {
-    createdAt = Instant.now();
+    if (createdAt == null) {
+      createdAt = Instant.now();
+    }
   }
 
   @PostPersist
@@ -26,6 +28,10 @@ public abstract class AbstractEntity<ID> implements Persistable<ID> {
 
   protected Instant getCreatedAt() {
     return createdAt;
+  }
+
+  protected void setCreatedAt(Instant createdAt) {
+    this.createdAt = createdAt;
   }
 
   @Override

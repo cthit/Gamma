@@ -147,6 +147,9 @@ public class UserRepositoryAdapter implements UserRepository {
       throws UserNotFoundException {
     UserEntity entity =
         this.repository.findById(userId.value()).orElseThrow(UserNotFoundException::new);
+    if (entity.password == null) {
+      return false;
+    }
     return passwordEncoder.matches(password.value(), entity.password);
   }
 
@@ -202,7 +205,8 @@ public class UserRepositoryAdapter implements UserRepository {
 
   @Override
   public void revokeSessions(UserId userId) throws UserNotFoundException {
-    if (this.repository.revokeSessions(userId.value(), Instant.now()) == 0) {
+    if (this.repository.revokeSessions(userId.value(), Instant.now().truncatedTo(ChronoUnit.MICROS))
+        == 0) {
       throw new UserNotFoundException();
     }
   }

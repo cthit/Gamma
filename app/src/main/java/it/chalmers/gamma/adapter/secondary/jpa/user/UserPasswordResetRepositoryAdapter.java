@@ -10,6 +10,7 @@ import it.chalmers.gamma.app.user.passwordreset.domain.PasswordResetToken;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.function.Predicate;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,13 @@ public class UserPasswordResetRepositoryAdapter implements PasswordResetReposito
     userPasswordResetEntity.userId = userEntity.id;
     userPasswordResetEntity.tokenHash = token.hashed();
     userPasswordResetEntity.adminRecovery = adminRecovery;
+    // A reset token created right after revoking sessions can otherwise share the same timestamp
+    // (or lag behind a slightly faster peer clock), which would fail isAfter(sessionsRevokedAt).
+    Instant createdAt = Instant.now().truncatedTo(ChronoUnit.MICROS);
+    if (userEntity.sessionsRevokedAt != null && !createdAt.isAfter(userEntity.sessionsRevokedAt)) {
+      createdAt = userEntity.sessionsRevokedAt.truncatedTo(ChronoUnit.MICROS).plusMillis(1);
+    }
+    userPasswordResetEntity.assignCreatedAt(createdAt);
 
     this.userPasswordResetJpaRepository.save(userPasswordResetEntity);
 
