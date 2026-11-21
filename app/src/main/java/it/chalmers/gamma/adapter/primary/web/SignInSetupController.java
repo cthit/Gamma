@@ -6,8 +6,6 @@ import it.chalmers.gamma.app.signin.SignInSetupFacade.PasswordsDontMatchExceptio
 import it.chalmers.gamma.app.signin.SignInSetupFacade.SignInSetupDTO;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
 import it.chalmers.gamma.app.validation.FailedValidation;
-import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
-import it.chalmers.gamma.security.authentication.SignInSetupAuthentication;
 import it.chalmers.gamma.security.signin.SignInSetupSessions;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,8 +23,6 @@ public class SignInSetupController {
 
   private static final String PAGE = SignInSetupSessions.SETUP_URL;
 
-  private static final String PASSWORD_SET = SignInSetupController.class.getName() + ".passwordSet";
-
   private final SignInSetupFacade signInSetupFacade;
   private final SignInSetupSessions signInSetupSessions;
 
@@ -39,13 +35,12 @@ public class SignInSetupController {
   @GetMapping(PAGE)
   public ModelAndView getSetup(
       @RequestHeader(value = "HX-Request", required = false) boolean htmxRequest,
-      @RequestParam(value = "error", required = false) String error,
-      HttpSession session) {
+      @RequestParam(value = "error", required = false) String error) {
     SignInSetupDTO setup = this.signInSetupFacade.getSetup();
 
     ModelAndView mv = page("pages/sign-in-setup", htmxRequest);
     mv.addObject("setup", setup);
-    mv.addObject("done", isDone(setup, session));
+    mv.addObject("done", setup.done());
     mv.addObject("passwordInvalid", "password-invalid".equals(error));
     mv.addObject("passwordsDontMatch", "passwords-dont-match".equals(error));
     return mv;
@@ -54,8 +49,7 @@ public class SignInSetupController {
   @PostMapping(PAGE + "/password")
   public ModelAndView setPassword(
       @RequestParam("newPassword") String newPassword,
-      @RequestParam("confirmPassword") String confirmPassword,
-      HttpSession session) {
+      @RequestParam("confirmPassword") String confirmPassword) {
     if (new UnencryptedPasswordValidator().validate(newPassword) instanceof FailedValidation) {
       return redirect("?error=password-invalid");
     }
@@ -64,18 +58,16 @@ public class SignInSetupController {
       this.signInSetupFacade.setPassword(newPassword, confirmPassword);
     } catch (PasswordsDontMatchException e) {
       return redirect("?error=passwords-dont-match");
-    } catch (SignInSetupFacade.PasskeyChosenException
-        | SignInSetupFacade.RecoveryKeyFirstException e) {
+    } catch (SignInSetupFacade.SetupDoneException | SignInSetupFacade.RecoveryKeyFirstException e) {
       return redirect("");
     }
-
-    session.setAttribute(PASSWORD_SET, currentSetupId());
     return redirect("");
   }
 
   @PostMapping(PAGE + "/recovery-key")
   public ModelAndView newRecoveryKey(HttpSession session) {
-    if (!this.signInSetupFacade.getSetup().needsRecoveryKey()) {
+    SignInSetupDTO setup = this.signInSetupFacade.getSetup();
+    if (setup.done() || !setup.needsRecoveryKey()) {
       return redirect("");
     }
     PendingRecoveryKey.start(session, Purpose.SIGN_IN_SETUP);
@@ -148,28 +140,13 @@ public class SignInSetupController {
   }
 
   @PostMapping(PAGE + "/finish")
-  public ModelAndView finish(
-      HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-    SignInSetupDTO setup = this.signInSetupFacade.getSetup();
-    if (!isDone(setup, session) || setup.needsRecoveryKey()) {
+  public ModelAndView finish(HttpServletRequest request, HttpServletResponse response) {
+    if (!this.signInSetupFacade.getSetup().done()) {
       return redirect("");
     }
 
     this.signInSetupSessions.end(request, response);
     return new ModelAndView("redirect:/login?sign-in-ready");
-  }
-
-  private static boolean isDone(SignInSetupDTO setup, HttpSession session) {
-    String setupId = currentSetupId();
-    return setup.addedPasskey()
-        || (setupId != null && setupId.equals(session.getAttribute(PASSWORD_SET)));
-  }
-
-  private static String currentSetupId() {
-    if (AuthenticationExtractor.getAuthentication() instanceof SignInSetupAuthentication setup) {
-      return setup.userId() + "@" + setup.startedAt();
-    }
-    return null;
   }
 
   private static ModelAndView redirect(String path) {
