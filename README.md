@@ -201,7 +201,7 @@ SET password = NULL,
 WHERE user_id = '<user id>';
 COMMIT;
 -- after they have set up a new passkey:
-INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', now());
+INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', timezone('UTC', now()));
 ```
 
 Revocation is checked when Gamma exchanges authorization codes, serves UserInfo, or looks up an OAuth authorization. Already issued JWTs verified offline by other services remain valid until their expiry, and those services manage their own sessions. Gamma cannot end those external sessions by deleting its browser session.
