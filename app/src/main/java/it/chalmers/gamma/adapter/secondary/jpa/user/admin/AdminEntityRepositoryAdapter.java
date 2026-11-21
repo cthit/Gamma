@@ -49,4 +49,21 @@ public class AdminEntityRepositoryAdapter implements AdminRepository {
         .map(adminEntity -> new UserId(adminEntity.getId()))
         .toList();
   }
+
+  @Override
+  public void lockAdminChanges() {
+    this.repository.lockAdminChanges();
+  }
+
+  @Override
+  public long countUsableAdmins() {
+    this.repository.flush();
+    return this.repository.countUsableAdmins();
+  }
+
+  @Override
+  public long countUsableAdminsOtherThan(UserId userId) {
+    this.repository.flush();
+    return this.repository.countUsableAdminsOtherThan(userId.value());
+  }
 }

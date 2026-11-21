@@ -1,5 +1,6 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.admin.UsableAdminGuard;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.StaleDomainObjectException;
 import it.chalmers.gamma.app.datadeletion.DataDeletionFacade;
@@ -125,6 +126,26 @@ public class ThymeleafAdvice {
     } else {
       mv.setViewName("index");
       mv.addObject("page", "pages/stale-object");
+    }
+
+    return mv;
+  }
+
+  @ExceptionHandler(UsableAdminGuard.NoUsableAdminLeftException.class)
+  public ModelAndView handleNoUsableAdminLeftException(
+      HttpServletRequest request, HttpServletResponse response) {
+    boolean htmxRequest = "true".equals(request.getHeader("HX-Request"));
+
+    ModelAndView mv = new ModelAndView();
+    mv.setStatus(HttpStatus.CONFLICT);
+    if (htmxRequest) {
+      response.addHeader("HX-Retarget", "#alerts");
+      response.addHeader("HX-Reswap", "afterbegin");
+
+      mv.setViewName("common/no-usable-admin-left");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/no-usable-admin-left");
     }
 
     return mv;

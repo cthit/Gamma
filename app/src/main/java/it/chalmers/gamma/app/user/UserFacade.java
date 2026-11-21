@@ -3,6 +3,7 @@ package it.chalmers.gamma.app.user;
 import static it.chalmers.gamma.app.authentication.AccessGuard.*;
 
 import it.chalmers.gamma.app.Facade;
+import it.chalmers.gamma.app.admin.UsableAdminGuard;
 import it.chalmers.gamma.app.apikey.domain.ApiKeyType;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.client.domain.Client;
@@ -40,6 +41,7 @@ public class UserFacade extends Facade {
   private final EmailChangeRepository emailChangeRepository;
   private final RecentSignIn recentSignIn;
   private final ApplicationEventPublisher events;
+  private final UsableAdminGuard usableAdminGuard;
 
   public UserFacade(
       AccessGuard accessGuard,
@@ -49,7 +51,8 @@ public class UserFacade extends Facade {
       DataDeletionRecorder dataDeletionRecorder,
       EmailChangeRepository emailChangeRepository,
       RecentSignIn recentSignIn,
-      ApplicationEventPublisher events) {
+      ApplicationEventPublisher events,
+      UsableAdminGuard usableAdminGuard) {
     super(accessGuard);
     this.userRepository = userRepository;
     this.groupRepository = groupRepository;
@@ -58,6 +61,7 @@ public class UserFacade extends Facade {
     this.emailChangeRepository = emailChangeRepository;
     this.recentSignIn = recentSignIn;
     this.events = events;
+    this.usableAdminGuard = usableAdminGuard;
   }
 
   public Optional<UserDTO> get(UUID id) {
@@ -102,6 +106,7 @@ public class UserFacade extends Facade {
   @Transactional
   public void deleteUser(UUID id) {
     accessGuard.require(isAdmin());
+    this.usableAdminGuard.lock().assertUsableAdminRemainsWithout(new UserId(id));
 
     try {
       this.userRepository
@@ -117,8 +122,10 @@ public class UserFacade extends Facade {
    * Locks or unlocks a user account. A locked user can't sign in, is signed out of their current
    * sessions, can't authorize clients and is hidden from everyone but admins.
    */
+  @Transactional
   public void setLocked(UUID id, boolean locked) throws CannotLockYourselfException {
     accessGuard.require(isAdmin());
+    UsableAdminGuard.Check usableAdmin = this.usableAdminGuard.lock();
 
     UserId userId = new UserId(id);
 
@@ -129,6 +136,7 @@ public class UserFacade extends Facade {
     }
 
     this.userRepository.setLocked(userId, locked);
+    usableAdmin.assertUsableAdminRemains();
   }
 
   public static class CannotLockYourselfException extends Exception {}

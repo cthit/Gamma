@@ -130,7 +130,8 @@ class AdminEmailChangeTest {
             throw new AssertionError("An email change must require recent confirmation");
           }
         },
-        this.events::add);
+        this.events::add,
+        null);
   }
 
   private static GammaUser user(UserId id, String email) {
