@@ -8,8 +8,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
+import org.springframework.http.HttpMethod;
 import org.springframework.lang.NonNull;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class LoginThrottlingFilter extends OncePerRequestFilter {
@@ -18,18 +21,23 @@ public class LoginThrottlingFilter extends OncePerRequestFilter {
 
   private static final String UNCOUNT = LoginThrottlingFilter.class.getName() + ".UNCOUNT";
 
-  // The later sign-in steps show the throttling on their own page, since /login sends a session
-  // that is partway through signing in on to the next step.
-  private static final Map<String, String> THROTTLED_PAGES =
-      Map.of(
-          "/login",
-          "/login?throttle=true",
-          "/login/webauthn",
-          "/login?throttle=true",
-          TotpAuthenticationFilter.URL,
-          TotpAuthenticationFilter.URL + "?throttle",
-          RecoveryKeyAuthenticationFilter.URL,
-          RecoveryKeyAuthenticationFilter.URL + "?throttle");
+  // Matched like the sign-in filters match, on the decoded path, so that an encoded path such as
+  // /log%69n is counted too. The later steps show the throttling on their own page, since /login
+  // sends a session that is partway through signing in on to the next step.
+  private static final List<SignInStep> SIGN_IN_STEPS =
+      List.of(
+          new SignInStep("/login", "/login?throttle=true"),
+          new SignInStep("/login/webauthn", "/login?throttle=true"),
+          new SignInStep(TotpAuthenticationFilter.URL, TotpAuthenticationFilter.URL + "?throttle"),
+          new SignInStep(
+              RecoveryKeyAuthenticationFilter.URL,
+              RecoveryKeyAuthenticationFilter.URL + "?throttle"));
+
+  private record SignInStep(RequestMatcher matcher, String throttledPage) {
+    SignInStep(String path, String throttledPage) {
+      this(PathPatternRequestMatcher.withDefaults().matcher(HttpMethod.POST, path), throttledPage);
+    }
+  }
 
   private final ThrottlingService throttlingService;
 
@@ -44,9 +52,11 @@ public class LoginThrottlingFilter extends OncePerRequestFilter {
       @NonNull FilterChain filterChain)
       throws ServletException, IOException {
     String throttledPage =
-        "POST".equalsIgnoreCase(request.getMethod())
-            ? THROTTLED_PAGES.get(request.getRequestURI())
-            : null;
+        SIGN_IN_STEPS.stream()
+            .filter(step -> step.matcher().matches(request))
+            .map(SignInStep::throttledPage)
+            .findFirst()
+            .orElse(null);
     if (throttledPage == null) {
       filterChain.doFilter(request, response);
       return;
