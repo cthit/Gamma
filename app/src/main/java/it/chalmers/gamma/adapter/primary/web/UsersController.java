@@ -5,6 +5,7 @@ import static it.chalmers.gamma.app.common.UUIDValidator.isValidUUID;
 
 import it.chalmers.gamma.app.common.Email.EmailValidator;
 import it.chalmers.gamma.app.image.ImageFacade;
+import it.chalmers.gamma.app.signin.SignInMethodsFacade;
 import it.chalmers.gamma.app.user.UserCreationFacade;
 import it.chalmers.gamma.app.user.UserFacade;
 import it.chalmers.gamma.app.user.UserGdprTrainingFacade;
@@ -14,7 +15,6 @@ import it.chalmers.gamma.app.user.domain.FirstName.FirstNameValidator;
 import it.chalmers.gamma.app.user.domain.LastName.LastNameValidator;
 import it.chalmers.gamma.app.user.domain.Nick.NickValidator;
 import it.chalmers.gamma.app.user.domain.UnencryptedPassword.UnencryptedPasswordValidator;
-import it.chalmers.gamma.app.user.passwordreset.UserResetPasswordFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,19 +35,19 @@ public class UsersController {
 
   private final UserFacade userFacade;
   private final UserCreationFacade userCreationFacade;
-  private final UserResetPasswordFacade userResetPasswordFacade;
   private final UserGdprTrainingFacade userGdprTrainingFacade;
   private final ImageFacade imageFacade;
+  private final SignInMethodsFacade signInMethodsFacade;
 
   public UsersController(
       UserFacade userFacade,
       UserCreationFacade userCreationFacade,
-      UserResetPasswordFacade userResetPasswordFacade,
       UserGdprTrainingFacade userGdprTrainingFacade,
-      ImageFacade imageFacade) {
+      ImageFacade imageFacade,
+      SignInMethodsFacade signInMethodsFacade) {
+    this.signInMethodsFacade = signInMethodsFacade;
     this.userFacade = userFacade;
     this.userCreationFacade = userCreationFacade;
-    this.userResetPasswordFacade = userResetPasswordFacade;
     this.userGdprTrainingFacade = userGdprTrainingFacade;
     this.imageFacade = imageFacade;
   }
@@ -112,6 +112,8 @@ public class UsersController {
                         userGroup.group().prettyName() + " - " + userGroup.post().enName(),
                         userGroup.group().id()))
                 .toList());
+        mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(u.user().id()));
+        mv.addObject("isMe", userAuthenticated.gammaUser().id().value().equals(u.user().id()));
       } else {
         Optional<UserFacade.UserWithGroupsDTO> user =
             this.userFacade.getWithGroups(UUID.fromString(userId));
@@ -321,6 +323,7 @@ public class UsersController {
 
     mv.setViewName("user-details/edited-user");
     addAdminUserInfo(mv, user.get().user());
+    addAdminSignInMethods(mv, userId);
 
     return mv;
   }
@@ -358,8 +361,14 @@ public class UsersController {
 
     ModelAndView mv = new ModelAndView("user-details/lock-changed");
     addAdminUserInfo(mv, user.get());
+    addAdminSignInMethods(mv, userId);
 
     return mv;
+  }
+
+  private void addAdminSignInMethods(ModelAndView mv, UUID userId) {
+    mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(userId));
+    mv.addObject("isMe", isSignedInUser(userId));
   }
 
   @DeleteMapping("/users/{id}")
@@ -372,15 +381,33 @@ public class UsersController {
     return new ModelAndView("redirect:/users");
   }
 
-  @PostMapping("/users/{id}/generate-password-link")
-  public ModelAndView generatePasswordLink(
+  @PostMapping("/users/{id}/reset-sign-in")
+  public ModelAndView resetSignIn(
       @RequestHeader(value = "HX-Request", required = true) boolean htmxRequest,
-      @PathVariable("id") UUID userId) {
-    String passwordResetLink = userResetPasswordFacade.generatePasswordLink(userId);
-
+      @PathVariable("id") UUID userId,
+      jakarta.servlet.http.HttpServletResponse response) {
+    response.setHeader("Cache-Control", "no-store");
+    response.setHeader("Referrer-Policy", "no-referrer");
     ModelAndView mv = new ModelAndView();
-    mv.setViewName("user-details/page :: password-link-generated");
-    mv.addObject("passwordLink", passwordResetLink);
+    try {
+      mv.addObject("adminRecoveryLink", this.signInMethodsFacade.resetSignInMethods(userId));
+      mv.addObject("signInReset", true);
+    } catch (SignInMethodsFacade.AdminRecoveryRequiresDemotionException e) {
+      mv.addObject("adminRecoveryRequiresDemotion", true);
+    } catch (SignInMethodsFacade.UserLockedException e) {
+      mv.addObject("adminRecoveryUserLocked", true);
+    }
+
+    mv.setViewName("user-details/page :: sign-in-methods");
+    mv.addObject("userId", userId);
+    mv.addObject("signInMethods", this.signInMethodsFacade.getForUser(userId));
+    mv.addObject(
+        "locked",
+        this.userFacade
+            .getExtendedAsAdmin(userId)
+            .map(UserFacade.UserExtendedDTO::locked)
+            .orElse(false));
+    mv.addObject("isMe", false);
 
     return mv;
   }

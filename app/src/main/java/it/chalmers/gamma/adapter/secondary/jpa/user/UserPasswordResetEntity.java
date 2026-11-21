@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +21,14 @@ public class UserPasswordResetEntity extends ImmutableEntity<UUID> {
   @Column(name = "token")
   protected String tokenHash;
 
+  @Column(name = "admin_recovery", nullable = false)
+  protected boolean adminRecovery;
+
   protected UserPasswordResetEntity() {}
+
+  void assignCreatedAt(Instant createdAt) {
+    setCreatedAt(createdAt);
+  }
 
   @Override
   public UUID getId() {

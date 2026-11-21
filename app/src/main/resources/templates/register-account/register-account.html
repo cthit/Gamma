@@ -11,9 +11,31 @@
                 <div th:replace="~{common/input :: textInput2('nick', 'Nick')}"></div>
                 <div th:replace="~{common/input :: textInput2('firstName', 'First name')}"></div>
                 <div th:replace="~{common/input :: textInput2('lastName', 'Last name')}"></div>
+            </th:block>
+            <fieldset class="sign-in-choice">
+                <legend class="field__label">How do you want to sign in?</legend>
+                <label class="choice">
+                    <input class="radio" type="radio" th:field="*{signInMethod}" value="passkey"
+                           _="on change add @hidden to #password-fields">
+                    <span class="choice__label">
+                        <strong>With a passkey (recommended)</strong><br>
+                        Your phone, a security key or your computer's fingerprint reader or PIN. No password to remember,
+                        and it can't be phished. You add it right after creating your account.
+                    </span>
+                </label>
+                <label class="choice">
+                    <input class="radio" type="radio" th:field="*{signInMethod}" value="password"
+                           _="on change remove @hidden from #password-fields">
+                    <span class="choice__label">
+                        <strong>With a password</strong><br>
+                        You can add a passkey or an authenticator app later.
+                    </span>
+                </label>
+            </fieldset>
+            <div id="password-fields" th:hidden="${form.signInMethod() != 'password'}">
                 <div th:replace="~{common/input :: passwordTextInput2('password', 'Password')}"></div>
                 <div th:replace="~{common/input :: passwordTextInput2('confirmPassword', 'Confirm password')}"></div>
-            </th:block>
+            </div>
             <label class="field">
                 <span class="field__label">Which year did the user start at IT?</span>
                 <select class="input input--select" th:field="*{acceptanceYear}">

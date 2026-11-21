@@ -58,7 +58,8 @@
                 <label><input type="checkbox" th:field="*{clientDataDeleted}" required /> I confirm that I have deleted all personal information about users collected through my clients.</label>
                 <p th:if="${#fields.hasErrors('clientDataDeleted')}" th:errors="*{clientDataDeleted}" role="alert"></p>
             </div>
-            <th:block th:with="passwordPurpose='current-password'">
+            <input type="hidden" name="password" value="" th:if="${!hasPassword}" />
+            <th:block th:if="${hasPassword}" th:with="passwordPurpose='current-password'">
                 <div th:replace="~{common/input :: passwordTextInput2(field='password', label='Confirm password')}"></div>
             </th:block>
         </form>

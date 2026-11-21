@@ -27,5 +27,7 @@ public interface EmailChangeRepository {
    */
   Optional<EmailChange> use(EmailChangeToken token, UserId userId);
 
+  void delete(UserId userId);
+
   int removeExpired();
 }

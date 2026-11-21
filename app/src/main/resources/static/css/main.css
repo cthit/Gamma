@@ -866,6 +866,41 @@ article ul:not([class]) li::marker {
     opacity: 0.6;
 }
 
+.radio {
+    display: inline-grid;
+    place-content: center;
+    flex: none;
+    width: 1.375rem;
+    height: 1.375rem;
+    margin: 0.1rem 0 0;
+    border: 2px solid var(--color-border-strong);
+    border-radius: 50%;
+    background: var(--color-surface);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color var(--duration);
+}
+
+.radio::before {
+    content: "";
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--color-primary);
+    transform: scale(0);
+    transition: transform var(--duration);
+}
+
+.radio:hover,
+.radio:checked {
+    border-color: var(--color-primary);
+}
+
+.radio:checked::before {
+    transform: scale(1);
+}
+
 /* A label with a checkbox in front of its text. */
 .choice {
     display: flex;
@@ -1648,6 +1683,29 @@ article.callout > header {
     margin: 0 0 var(--space-2);
 }
 
+.login__passkey {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.login__divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.login__divider::before,
+.login__divider::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--color-border);
+}
+
 .login__links {
     display: flex;
     flex-wrap: wrap;
@@ -1769,4 +1827,62 @@ article.callout > header {
         box-shadow: none;
         break-inside: avoid;
     }
+}
+
+.sign-in-choice {
+    margin: 0 0 var(--space-4);
+    padding: 0;
+    border: 0;
+}
+
+.sign-in-choice > legend {
+    margin-bottom: var(--space-3);
+    padding: 0;
+}
+
+.input--code {
+    max-width: 10rem;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    letter-spacing: 0.2em;
+}
+
+.qr-code-container {
+    width: min(100%, 14rem);
+    margin: 0 0 var(--space-4);
+}
+
+.qr-code {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+}
+
+.totp-secret {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 1rem;
+    user-select: all;
+}
+
+.recovery-key {
+    margin: 0 0 var(--space-4);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius);
+    background: var(--color-surface-muted);
+    font-family: var(--font-mono);
+    font-size: 1.125rem;
+    line-height: 1.8;
+    word-spacing: 0.25em;
+    overflow-wrap: anywhere;
+    user-select: all;
+}
+
+.recovery-key-input {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
 }

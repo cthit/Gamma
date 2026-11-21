@@ -97,11 +97,11 @@ public class UserCreationFacade extends Facade {
   }
 
   @Transactional
-  public void createUserWithCode(
+  public UUID createUserWithCode(
       NewUserByCode data, String token, String confirmPassword, boolean acceptsUserAgreement) {
     this.accessGuard.require(isNotSignedIn());
 
-    if (!data.password.equals(confirmPassword)) {
+    if (data.password != null && !data.password.equals(confirmPassword)) {
       throw new IllegalArgumentException("Password not confirmed");
     }
 
@@ -110,11 +110,12 @@ public class UserCreationFacade extends Facade {
     }
 
     Cid cid = this.userActivationRepository.useToken(new UserActivationToken(token));
+    UserId userId = UserId.generate();
 
     try {
       this.userRepository.create(
           new GammaUser(
-              UserId.generate(),
+              userId,
               cid,
               new Nick(data.nick),
               new FirstName(data.firstName),
@@ -122,7 +123,7 @@ public class UserCreationFacade extends Facade {
               new AcceptanceYear(data.acceptanceYear),
               Language.valueOf(data.language),
               new UserExtended(new Email(data.email), 0, false, null)),
-          new UnencryptedPassword(data.password));
+          data.password == null ? null : new UnencryptedPassword(data.password));
     } catch (UserRepository.CidAlreadyInUseException
         | UserRepository.EmailAlreadyInUseException e) {
       throw new SomePropertyNotUniqueRuntimeException();
@@ -130,6 +131,8 @@ public class UserCreationFacade extends Facade {
 
     this.userActivationRepository.removeActivation(cid);
     this.allowListRepository.remove(cid);
+
+    return userId.value();
   }
 
   private void sendEmail(Cid cid, UserActivationToken userActivationToken) {

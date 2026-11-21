@@ -1,0 +1,15 @@
+<header th:replace="~{common/header-without-nav}"></header>
+<main id="main" class="app__main">
+    <article>
+        <header>
+            <h2>Recovery link no longer valid</h2>
+        </header>
+        <p>
+            This recovery link is invalid, has expired, or has already been used.
+            Ask an admin for a new recovery link.
+        </p>
+        <footer>
+            <a class="button button--secondary" th:href="@{/login}">Back to signing in</a>
+        </footer>
+    </article>
+</main>

@@ -126,7 +126,7 @@ All configuration is environment-variable-driven via `application.yml`.
 | Variable | Default | Description |
 |---|---|---|
 | `SERVER_PORT` | `8081` | HTTP port |
-| `BASE_URL` | `http://localhost:8081` | Public base URL (used for redirect URIs, etc.) |
+| `BASE_URL` | `http://localhost:8081` | Public base URL (used for redirect URIs, passkeys, etc.) |
 | `DB_HOST` | `db` | PostgreSQL host |
 | `DB_PORT` | `5432` | PostgreSQL port |
 | `DB_NAME` | `postgres` | Database name |
@@ -149,6 +149,62 @@ All configuration is environment-variable-driven via `application.yml`.
 | `ROOT_DEBUG_LEVEL` | `INFO` | Root log level |
 | `SERVER_SSL_ENABLED` | *(varies)* | Enable HTTPS |
 
+
+## Signing in
+
+Users sign in with a **passkey**, or with their **password** and, if they have set one up, a code from an **authenticator app** (TOTP). Admins must sign in with a passkey: an admin who signs in with their password can only add a passkey until they have one, and can't use Gamma or sign in to other clients before that. A user who is made admin gets the same on their next request.
+
+Everything is built on Spring Security:
+
+- Passkeys use Spring Security's WebAuthn support (`http.webAuthn()`), which stores them in the `user_entities` and `user_credentials` tables. Passkeys must verify the user, for example with a fingerprint or PIN. They belong to the domain of `BASE_URL` and only work on it, so `BASE_URL` must be the address users open. Changing its domain makes every passkey stop working.
+- Each way of signing in is a Spring Security factor (`FACTOR_PASSWORD`, `FACTOR_WEBAUTHN` and Gamma's `FACTOR_TOTP`), and the factors each user needs are required factors (`AllRequiredFactorsAuthorizationManager`). Changing how you sign in needs a sign in from the last 10 minutes.
+- Authenticator app codes are checked with [java-otp](https://github.com/jchambers/java-otp) (HMAC-SHA1, six digits, 30 second steps), and each code can only be used once.
+
+Authenticator app secrets are encrypted with AES-256-GCM, with a fresh nonce, and each encrypted secret is bound to its user. The key is derived with HKDF-SHA256 from a random master secret that Gamma generates on first start and stores in `g_application_secret`, so there is nothing to configure. Because the master secret is in the same database, this protects against leaks of single tables or values, not against a leaked copy of the whole database or its backups. Back up and restore `g_application_secret` together with the rest of the database. If its row is lost, Gamma generates a new master secret and logs that it did, and then refuses to start while there are authenticator app secrets it can't decrypt. Either replace the `master` row with the one from the backup (Gamma has already stored a new value, so update the row rather than insert it), or delete the affected `g_user_totp` rows. Deleting them turns the authenticator app off for those users without telling them, so their accounts can be signed in to with the password alone until they set up an app again: let them know. Gamma reads the master secret only when it starts, so then restart Gamma.
+
+Removing a passkey or password, changing a password, and replacing or removing an authenticator app revoke previous Gamma sessions. Adding an authenticator app for the first time makes existing password sessions require its code. Credential changes and recovery send a notification to the account's email after the change commits. Changing admin membership also requires a sign-in from the last 10 minutes.
+
+Keep at least two passkeys on independently accessible devices or security keys, especially for admins. An admin loses password access as soon as their first passkey is added.
+
+Choosing passkeys replaces the password: adding a passkey removes the user's password and authenticator app, wherever it is added. Users then sign in with passkeys only.
+
+Users manage this under **Sign in and security** (`/me/security`): add and remove passkeys, set up an authenticator app (QR code, or the key typed in by hand) while they use a password, and turn email recovery off.
+
+### Getting back in
+
+- **Email recovery**: the forgot password link lets the user set a new password, or start setting up a passkey instead. Both paths remove old passkeys and revoke previous Gamma sessions and OAuth authorization. Starting passkey setup also removes the old password immediately. For users with an authenticator app the link only resets the password, so the app is still needed. Admins can never recover by email.
+- **Recovery key**: users with an authenticator app, and users who turn off email recovery, get a 64 character recovery key. It is shown once, and has to be typed back on the next page before it is saved, as a hash. Signing in with it (`/login/recovery`) removes their passkeys, password and authenticator app, signs them out everywhere, and lets them set up a new passkey or password. The key stops working once they have, so a setup that is left half way can be started again with the same key.
+- **Admin recovery**: after verifying the person's identity, an admin can reset their account from the user's page with recent passkey confirmation. This revokes old passwords, passkeys, authenticator apps, recovery keys and Gamma sessions, and displays a single-use recovery link valid for 15 minutes. Give the link directly to the verified person through a trusted channel; access to the old email address is not needed. The link opens restricted credential setup, including saving a recovery key. Email recovery stays off until the user verifies a current address through Change email in their profile, then explicitly turns it on. Existing pending email changes are invalidated. To recover another admin, first remove their admin rights, recover them, and restore their rights after they enroll a new passkey. Admins are trusted to recover other accounts; the acting admin cannot recover their own account this way. An admin changing a user's email on the user's page also needs recent passkey confirmation, turns email recovery off until the user verifies the address through Change email, invalidates pending email changes, and notifies both the previous and the new address.
+
+Gamma refuses to change admins, lock or delete accounts, or remove passkeys when that would leave no admin who is not locked and has a passkey.
+
+If the last admin loses all their passkeys, a database operator must verify their identity and establish an email address they can currently access. Update the stored email first if it is outdated. Then remove their passkeys and admin rights and enable recovery for that address using the transaction below, let them enroll a new passkey through the forgot password page, and restore their rights:
+
+```sql
+BEGIN;
+-- Gamma stores these timestamps as UTC
+SET LOCAL TIME ZONE 'UTC';
+SELECT user_id FROM g_user WHERE user_id = '<user id>' FOR UPDATE;
+DELETE FROM user_entities WHERE name = '<user id>';
+DELETE FROM g_admin_user WHERE user_id = '<user id>';
+DELETE FROM g_user_totp WHERE user_id = '<user id>';
+DELETE FROM g_user_recovery_key WHERE user_id = '<user id>';
+DELETE FROM g_password_reset WHERE user_id = '<user id>';
+DELETE FROM g_email_change WHERE user_id = '<user id>';
+UPDATE g_user
+SET password = NULL,
+    email_recovery = true,
+    email_recovery_requires_verification = false,
+    sessions_revoked_at = greatest(coalesce(sessions_revoked_at, clock_timestamp()), clock_timestamp()),
+    version = version + 1,
+    updated_at = clock_timestamp()
+WHERE user_id = '<user id>';
+COMMIT;
+-- after they have set up a new passkey:
+INSERT INTO g_admin_user (user_id, created_at) VALUES ('<user id>', timezone('UTC', now()));
+```
+
+Revocation is checked when Gamma exchanges authorization codes, serves UserInfo, or looks up an OAuth authorization. Already issued JWTs verified offline by other services remain valid until their expiry, and those services manage their own sessions. Gamma cannot end those external sessions by deleting its browser session.
 
 ## OAuth2 signing keys
 

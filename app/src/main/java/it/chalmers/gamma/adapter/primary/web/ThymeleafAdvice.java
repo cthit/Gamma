@@ -1,8 +1,10 @@
 package it.chalmers.gamma.adapter.primary.web;
 
+import it.chalmers.gamma.app.admin.UsableAdminGuard;
 import it.chalmers.gamma.app.authentication.AccessGuard;
 import it.chalmers.gamma.app.common.StaleDomainObjectException;
 import it.chalmers.gamma.app.datadeletion.DataDeletionFacade;
+import it.chalmers.gamma.app.user.MeFacade;
 import it.chalmers.gamma.security.authentication.AuthenticationExtractor;
 import it.chalmers.gamma.security.authentication.UserAuthentication;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,12 +29,15 @@ public class ThymeleafAdvice {
   private static final Logger LOGGER = LoggerFactory.getLogger(ThymeleafAdvice.class);
 
   private final ImageUploadLimit imageUploadLimit;
+  private final MeFacade meFacade;
   private final DataDeletionFacade dataDeletionFacade;
 
   public ThymeleafAdvice(
       @Value("${spring.servlet.multipart.max-file-size}") DataSize maxImageSize,
+      MeFacade meFacade,
       DataDeletionFacade dataDeletionFacade) {
     this.imageUploadLimit = new ImageUploadLimit(maxImageSize);
+    this.meFacade = meFacade;
     this.dataDeletionFacade = dataDeletionFacade;
   }
 
@@ -55,6 +60,14 @@ public class ThymeleafAdvice {
     }
   }
 
+  @ModelAttribute("hasPassword")
+  public boolean hasPassword() {
+    if (AuthenticationExtractor.getAuthentication() instanceof UserAuthentication) {
+      return this.meFacade.hasPassword();
+    }
+    return false;
+  }
+
   @ModelAttribute("dataDeletionActionRequired")
   public DataDeletionFacade.ActionRequiredDTO dataDeletionActionRequired() {
     if (!isAdmin()) {
@@ -74,11 +87,14 @@ public class ThymeleafAdvice {
   }
 
   @ExceptionHandler(AccessGuard.AccessDeniedException.class)
-  public ModelAndView handleAccessDeniedException(HttpServletRequest request) {
+  public ModelAndView handleAccessDeniedException(
+      HttpServletRequest request, HttpServletResponse response) {
     boolean htmxRequest = "true".equals(request.getHeader("HX-Request"));
 
     ModelAndView mv = new ModelAndView();
     if (htmxRequest) {
+      response.addHeader("HX-Retarget", "body");
+      response.addHeader("HX-Reswap", "innerHTML");
       mv.setViewName("pages/unauthorized");
     } else {
       mv.setViewName("index");
@@ -113,6 +129,26 @@ public class ThymeleafAdvice {
     } else {
       mv.setViewName("index");
       mv.addObject("page", "pages/stale-object");
+    }
+
+    return mv;
+  }
+
+  @ExceptionHandler(UsableAdminGuard.NoUsableAdminLeftException.class)
+  public ModelAndView handleNoUsableAdminLeftException(
+      HttpServletRequest request, HttpServletResponse response) {
+    boolean htmxRequest = "true".equals(request.getHeader("HX-Request"));
+
+    ModelAndView mv = new ModelAndView();
+    mv.setStatus(HttpStatus.CONFLICT);
+    if (htmxRequest) {
+      response.addHeader("HX-Retarget", "#alerts");
+      response.addHeader("HX-Reswap", "afterbegin");
+
+      mv.setViewName("common/no-usable-admin-left");
+    } else {
+      mv.setViewName("index");
+      mv.addObject("page", "pages/no-usable-admin-left");
     }
 
     return mv;
