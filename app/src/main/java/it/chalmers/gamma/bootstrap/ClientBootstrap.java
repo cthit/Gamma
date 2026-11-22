@@ -75,9 +75,9 @@ public class ClientBootstrap {
         for (MockData.MockClientAuthority mockAuthority : mockClient.authorities()) {
           createAuthority(client, mockAuthority);
         }
-      } else if (this.bootstrapSettings.mockClientAuthority() != null) {
+      } else if (this.bootstrapSettings.mockDefaultClientAuthority() != null) {
         // Create default authority
-        createAuthority(client, this.bootstrapSettings.mockClientAuthority());
+        createAuthority(client, this.bootstrapSettings.mockDefaultClientAuthority());
       }
 
       LOGGER.info(
@@ -107,7 +107,7 @@ public class ClientBootstrap {
             "Client "
                 + mockClient.prettyName()
                 + " has the default client authority with name: "
-                + this.bootstrapSettings.mockClientAuthority().name());
+                + this.bootstrapSettings.mockDefaultClientAuthority().name());
       } else if (mockClient.authorities().size() > 0) {
         int authorityCount = mockClient.authorities().size();
         LOGGER.info(
@@ -144,7 +144,7 @@ public class ClientBootstrap {
     }
 
     boolean shouldAddEmailScope =
-        mockClient.emailScope().orElse(this.bootstrapSettings.mockClientEmailScope());
+        mockClient.emailScope().orElse(this.bootstrapSettings.mockDefaultClientEmailScope());
 
     List<Scope> scopes = new ArrayList<>();
     scopes.add(Scope.PROFILE);
@@ -160,7 +160,7 @@ public class ClientBootstrap {
     String redirectUrl =
         mockClient.redirectUrl() != null
             ? mockClient.redirectUrl()
-            : this.bootstrapSettings.mockClientRedirectUrl();
+            : this.bootstrapSettings.mockDefaultClientRedirectUrl();
 
     return new Client(
         new ClientUid(mockClient.id()),
