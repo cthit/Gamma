@@ -1,0 +1,37 @@
+# Example Docker compose configuration for running a local instance of Gamma for
+# development. Mocking is enabled.
+
+services:
+  gamma:
+    image: ghcr.io/cthit/gamma:latest
+    environment:
+      PRODUCTION: false
+      ADMIN_SETUP: true
+      IS_MOCKING: true
+      BASE_URL: http://localhost:9090
+      SERVER_PORT: 9090
+      THC_PORT: 9090 # Tiny health checker port. Should match SERVER_PORT
+      ROOT_DEBUG_LEVEL: INFO
+      DB_HOST: gamma-db
+      DB_USER: postgres
+      DB_NAME: gamma
+      DB_PASSWORD: password
+      REDIS_HOST: gamma-redis
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', '/workspace/health-check']
+      interval: 10s
+      timeout: 2m
+      retries: 10
+
+  gamma-redis:
+    image: redis:7
+
+  gamma-db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: gamma
+      POSTGRES_PASSWORD: password
