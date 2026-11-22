@@ -19,6 +19,7 @@ import it.chalmers.gamma.app.user.domain.UserId;
 import it.chalmers.gamma.app.user.domain.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -70,12 +71,13 @@ public class ClientBootstrap {
       Client client = toClient(mockClient);
       this.clientRepository.save(client);
 
-      if (this.bootstrapSettings.mockClientAuthority() != null) {
+      if (mockClient.authorities() != null) {
+        for (MockData.MockClientAuthority mockAuthority : mockClient.authorities()) {
+          createAuthority(client, mockAuthority);
+        }
+      } else if (this.bootstrapSettings.mockClientAuthority() != null) {
+        // Create default authority
         createAuthority(client, this.bootstrapSettings.mockClientAuthority());
-      }
-
-      for (MockData.MockClientAuthority mockAuthority : mockClient.authorities()) {
-        createAuthority(client, mockAuthority);
       }
 
       LOGGER.info(
@@ -85,6 +87,8 @@ public class ClientBootstrap {
               + mockClient.clientId()
               + ", client secret: "
               + mockClient.clientSecret()
+              + ", scopes: "
+              + client.scopes().toString()
               + " and redirect url: "
               + client.clientRedirectUrl());
 
@@ -96,6 +100,29 @@ public class ClientBootstrap {
                 + mockClient.apiKey().id()
                 + " and token: "
                 + mockClient.apiKey().token());
+      }
+
+      if (mockClient.authorities() == null) {
+        LOGGER.info(
+            "Client "
+                + mockClient.prettyName()
+                + " has the default client authority with name: "
+                + this.bootstrapSettings.mockClientAuthority().name());
+      } else if (mockClient.authorities().size() > 0) {
+        int authorityCount = mockClient.authorities().size();
+        LOGGER.info(
+            "Client "
+                + mockClient.prettyName()
+                + " has "
+                + Integer.toString(authorityCount)
+                + " "
+                + (authorityCount > 1 ? "authorities" : "authority")
+                + " with "
+                + (authorityCount > 1 ? "names" : "name")
+                + ": "
+                + mockClient.authorities().stream()
+                    .map(a -> a.name())
+                    .collect(Collectors.joining(", ")));
       }
     }
 
@@ -116,9 +143,12 @@ public class ClientBootstrap {
               new ApiKeyToken(this.passwordEncoder.encode(mockClient.apiKey().token())));
     }
 
+    boolean shouldAddEmailScope =
+        mockClient.emailScope().orElse(this.bootstrapSettings.mockClientEmailScope());
+
     List<Scope> scopes = new ArrayList<>();
     scopes.add(Scope.PROFILE);
-    if (this.bootstrapSettings.mockClientEmailScope()) {
+    if (shouldAddEmailScope) {
       scopes.add(Scope.EMAIL);
     }
 
@@ -127,11 +157,16 @@ public class ClientBootstrap {
             ? new ClientOwnerOfficial()
             : new ClientUserOwner(new UserId(mockClient.ownerId()));
 
+    String redirectUrl =
+        mockClient.redirectUrl() != null
+            ? mockClient.redirectUrl()
+            : this.bootstrapSettings.mockClientRedirectUrl();
+
     return new Client(
         new ClientUid(mockClient.id()),
         new ClientId(mockClient.clientId()),
         new ClientSecret(this.passwordEncoder.encode(mockClient.clientSecret())),
-        new ClientRedirectUrl(this.bootstrapSettings.mockClientRedirectUrl()),
+        new ClientRedirectUrl(redirectUrl),
         new PrettyName(mockClient.prettyName()),
         new Text(mockClient.description().sv(), mockClient.description().en()),
         scopes,

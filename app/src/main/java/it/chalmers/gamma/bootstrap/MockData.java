@@ -2,6 +2,7 @@ package it.chalmers.gamma.bootstrap;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public record MockData(
@@ -56,8 +57,10 @@ public record MockData(
       UUID id,
       String clientId,
       String clientSecret,
+      String redirectUrl,
       String prettyName,
       MockText description,
+      Optional<Boolean> emailScope,
       UUID ownerId,
       MockApiKey apiKey,
       List<MockClientAuthority> authorities) {}
